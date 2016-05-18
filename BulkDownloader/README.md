@@ -11,16 +11,20 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
 ### Sources
 <ul>
-<li>USPTO Bulk Patent Download, grants and applications from Google or Reedtech</li>
+<li>USPTO Bulk Patent Download, grants and applications from USPTO, Reedtech, or Google (google stopped update on May 2015)</li>
 <li>Patent CPC Classification Scheme</li>
-<li>FDA "NDA" Drug Database</li>
 </ul>
 
 ### Example Usage
 
 ## Bulk Patent XML Zip
 
-#### Download Bulk Patent Zip, utilizing limit.
+#### Download Bulk Patent Zip from USPTO, utilizing limit.
+     # Downloads from https://bulkdata.uspto.gov/
+     gov.uspto.bulkdata.cli2.BulkData --limit=2 --years="2014, 2016" --outdir="../download"
+
+#### Download Bulk Patent Zip from Reedtech, utilizing limit.
+     # Downloads from http://patents.reedtech.com/
      gov.uspto.bulkdata.cli.Download --source reedtech --type application --limit 1
 
 #### Download Bulk Patent Zip, utilizing filename.     
@@ -41,11 +45,9 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
 ## CPC Classification Scheme
 #### Download CPC Clasification Scheme (which updates 1-2 times per month)
+     # Downloads from http://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/Bulk.html
      gov.uspto.bulkdata.cli.Download --source cpc --limit 1 --outdir="../download"
      
-## Other Datasources
-#### FDA National Drug Code Database (NDC)
-     gov.uspto.bulkdata.cli.Download --source fda --limit 1 --outdir="../download"
 
 ## Download Any File
      gov.uspto.bulkdata.cli.DownloadFile --url="http://opennlp.sourceforge.net/models-1.5/en-sent.bin" --dir="../download"
