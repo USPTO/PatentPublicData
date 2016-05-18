@@ -2,7 +2,7 @@
 
 All patent document formats parse into a single common Patent model.  Field validation is applied to many fields, where invalid values and their document fragment are logged.  Flexibility and completeness is stressed over efficiency.
 
-## Formats
+## Patent Document Formats
 
 | Format           | Years        | Revisions  |  Documentation |
 | :-------------- | ------------| :-------------------:| :-------------: |
@@ -13,7 +13,7 @@ All patent document formats parse into a single common Patent model.  Field vali
 
 ## Also Parses
 <ul>
-<li><a href=" http://www.uspto.gov/sites/default/files/products/AIA_CPC_XML_Documentation.pdf">CPC Classification XML<a/></li>
+<li><a href=" http://www.uspto.gov/sites/default/files/products/AIA_CPC_XML_Documentation.pdf">CPC Patent Classification Definition XML<a/></li>
 </ul>
 
 ## Validate and Normalize
