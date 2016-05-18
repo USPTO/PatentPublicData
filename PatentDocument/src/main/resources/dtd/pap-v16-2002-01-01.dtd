@@ -1,0 +1,1383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DOCTYPE patent-application-publication [ -->
+
+<!-- DOCUMENT TYPE DEFINITION FOR UNITED STATES PATENT APPLICATION PUBLICATIONS
+Reference this DTD as PUBLIC "-//USPTO//DTD PAP V1.6 2002-01-01//EN"
+Alias: Application Red Book (ARB)
+
+Contact:
+Jay V. Nixon
+Information Products Division
+U.S. Patent and Trademark Office
+Crystal Park 3, Suite 441
+Washington, DC 20231
+vox: 703-306-2614
+fax: 703-306-2737
+Jay.Nixon@uspto.gov
+-->
+
+<!-- ***** START REVISION HISTORY *****
+
+2001-10-23 
+ 1) (This is not a DTD change) The front page drawing is being added to Application Red Book in a future
+    issue yet to be determined. This is not a DTD change. The front page drawing will have a drawing
+    number of "D00000" as in "US20010001161A1-20010517-D00000.TIF".
+ 2) Added highlight to the paragraph-federal-research-statement element.
+ 
+2001-09-25
+ 1) Removed element usc371c124-date. This information is no longer captured within application red book.
+ 2) Multiple PCT applications are not valid for the patent in-hand and the 2001-09-18 change to 
+    element international-conventions was removed. The content model reverted to:
+        (pct-application,pct-publication?)
+ 3) Element highlight was expanded to include elements uline (underline) and duline (double underline).
+    Although these elements will not be used within EFS, pacer data (paper applications) often utilized
+    single character underlining.
+ 
+2001-09-18
+ 1) Change element dependent-claim-reference content model from claim-text to PCDATA.
+ 2) Deleted elements usc371-date and usc102e-date and replaced with optional usc371c124-date.
+ 3) The content model for international-conventions was changed to allow for multiple PCT applications:
+        (pct-application+,usc371c124-date?,pct-publication?)
+ 4) Entity references have been consolidated into a single entity declaration. File pap-v16-2002-01-01.ent
+    must be local (in the same directory) to this DTD and contain the DTD's list of entity references.
+
+2001-07-18
+ 1) Sequence listing element s-2-ix-d contains descriptive text and was modified to
+    (#PCDATA | highlight)*.
+ 2) Changed element name-2 from required to optional.
+ 3) Added optional state to element residence-non-us, from (city,country-code) to (city,state?,country-code).
+
+2001-07-11
+ 1) Changed version to V1.6 and the build date to 2002-01-01.
+ 2) Changed the DTD public identifier to "-//USPTO//DTD PAP V1.6 2002-01-01//EN"
+ 3) Modified the following elements to include an alt attribute for compliance to
+    section 508 of the Rehabilitation Act Amendments of 1998:
+	chemistry-chemdraw-file with default value "chemistry chemdraw file"
+	chemistry-mol-file      with default value "chemistry mol file"
+	custom-character        with default value "custom character"
+	image                   with default value "embedded image"
+	mathematica-file        with default value "mathematica file"
+ 4) Modified sequence listing element s-2-vi-a (organism) to be optional.
+ 5) Renamed element continued-prosecution-application-flag to continued-prosecution-application
+    and modified the content model to be PCDATA. The renamed element is to contain the full
+    text of the CPA notice (added as comment within this DTD).
+ 6) Added optional attribute lang to element document-id.
+ 7) Element usc102e-date is to either contain "none" or a date. It was already required.
+    (This is not a DTD change, just content clarification)
+ 8) Modified the frequency of element international-conventions from optional to zero or more.
+ 9) Removed the optional image element from table-cwu.
+10) Removed the optional image element from sequence-cwu.
+11) Changed the attribute sequence of elements image and custom-character to conform to the
+    sequence used by the other file link elements.
+
+2001-01-31
+1) Removed pending issue comment concerning EFS utilizing spanspec. EFS currently does not use
+   spanspec.
+2) Added external entity tbl.table.att overriding the default CALSxml DTD values to allow for a
+   portrait or landscape orientation definition within tables, and tabstyle to identify monospace
+   tables. Also added comments highlighting the fact that overrides are being used. 
+3) Corrected attribute name of element division-of (from st332-name to st32-name).
+4) External entity contents were un-commented and the doctype statement was commented for 
+   distribution. This is the format used in production to parse document instances. Prior
+   releases may have been in the "nf" form (Near&Far) to quickly parse and view the DTD.
+5) Since tables within tables are not supported, modified the CALS table paracon external entity
+   to exclude table-cwu.
+6) Changed version to V1.5 and the build date to 2001-01-31.
+7) Changed the DTD public identifier to "-//USPTO//DTD PAP V1.5 2001-01-31//EN"
+
+2000-11-01
+1) Made element chemistry optional
+2) Changed the DTD public identifier to "-//USPTO//DTD PAP V1.4 2000-11-01//EN"
+
+2000-09-13
+1) Attribute id added to subdoc-drawings to allow figure references to point to the drawing section.
+2) Changed version to V1.4 and build date to 2000-09-13.
+3) Changed the paragraph levels to support 0-7 (identical to Grant Red Book)
+
+2000-09-06
+1) Changed version to V1.3 and build date to 2000-09-06.
+2) Changed element usc371-date to optional since it will not be included on the published
+   application cover page.
+3) Added optional element military-address to the address element. The data capture contractor
+   will extract the military address text from the address line text.
+4) Modified the residence element to distinguish between US and non-US residences.
+
+2000-08-22
+1) Removed addition-to related application code.
+2) Changed version to V1.2 and date to 2000-08-22.
+
+2000-08-08
+1) Changed the xml encoding from "ISO-8859-1" to "UTF-8"
+
+2000-08-02
+1) Moved the botanic model from the specification (in front of the background-of-invention) to
+...the bibliographic (after the title-of-invention) section.
+2) Within the patent application DTD, the sequence-cwu model was modified to include an object
+...reference for patents with sequence listings that are not to be published. The sequence-cwu
+...model changed:
+...From: (number,(sequence-list-old-rules | sequence-list-new-rules | table),image*)
+...To: (number,(sequence-list-old-rules | sequence-list-new-rules | table | object-reference),image*)
+3) Moved element sequence-cwu to before subdoc-claims.
+4) Added a-371-of-international to the patent application DTD (missing)
+5) Added reissue-of to the patent application DTD (missing)
+6) Renamed element "substitute-for" to "substitution-for" so it would match the EFS counterpart element.
+7) Added footnote to the paragraph content model. Moved out of the external references.
+8) Changed version to V1.1 and date to 2000-08-02.
+
+2000-07-27
+1) Removed attribute data-format-notation from elements email and telephone. No longer in the 
+...EFS source and value of "to_come_from_LM" was unresolved.
+2) New plant patents rules require the latin name and variety per the UPOV international
+...agreement. Added before the background-of-invention the new optional element botanic 
+...with the model (latin-name, variety) where latin-name and variety are both pcdata.
+
+2000-07-18
+1) Changed version to V1.0 and date to 2000-07-18.
+2) Changed element object-reference content model to (object-description,object-id,object-contents)
+
+2000-07-12
+1) Changed version to V010 and date to 2000-07-12.
+2) Added the image element to the paragraph content model
+3) Renamed the procedure element to publication-filing-type
+4) Modified artifact-reference to look like appendix-data in the specification dtd:
+... - Rename artifact-reference to appendix-data
+... - Rename object to object-reference and include the ID attribute
+... - Remove object-pto-id
+5) Made heading within  federal-research-statement optional 
+
+2000-07-10
+1) Changed version to V0.9 and date to 2000-07-11.
+2) Sequence Listing - Changed occurrence of <s-2-vii-b> to OPTIONAL
+3) Sequence Listing - Changed occurrence of <s-2-i-a> to OPTIONAL
+4) Sequence Listing - Changed occurrence <s-2-x-a>, <s-2-x-b> to OPTIONAL
+
+2000-06-26
+1) Changed version to V0.8 and date to 2000-06-26.
+2) Removed reference-number under name and element.
+3) Address removed the label attribute
+4) Added optional correspondence-address after assignee of subdoc-bibliographic-information. Used
+...the bibliographic DTD model.
+5) Removed section from the brief-description-of-sequences content model.
+6) Added paragraph-federal-research-statement model including grant-number, contract-number, 
+...and us-agency.
+7) Removed the class/label attribute from the following elements:
+....address-1
+....address-2
+....biological-deposit
+....chemistry-cwu
+....copyright-statement
+....cross-reference
+....dependent-claim-reference
+....deposit-accession-number
+....deposit-date
+....deposit-description
+....deposit-term
+....depository
+....drawing-reference-character
+....email
+....fax
+....highlight
+....list-item
+....math-cwu
+....middle-name
+....postalcode
+....program-listing
+....program-listing-deposit
+....table-cwu
+....telephone
+....grant-number
+....us-agency
+
+2000-06-22
+1) Changed version to V0.7 and date to 2000-06-22.
+2) Modified element patent-application-publication attributes to remove dtd and add version and
+...distribution as values (not fixed).
+...The version attribute is the version number in the format of "[Electronic Version 0.7] ".
+...The distribution attribute is the DTD distribution/build date in the form of "2000-06-22".
+3) Removed element field-of-search. Does not belong.
+4) Since elements a1, a2, and a9 are redundant with the kind code of the document id, they have
+...been renoved. Model changed from (a1,a2*,a9*) to (document-id+).
+5) Removed domestic-family and replaced with prior-publication.
+6) Added element representative-figure.
+
+2000-06-21
+1) Changed occurrence of <S-2-VIII-A>, <S-2-VIII-B>, <S-2-VIII-C>,
+                         <S-2-X-C>, <S-2-X-D>, <S-2-X-E>, <S-2-X-F> to OPTIONAL
+                         
+2000-06-20
+1) In the PGPUB meeting decided that the list-item content model does not need number and 
+...program-listing.
+
+2000-06-16
+1) Modified the lists content model in paragraphs to use the EFS list model. Since only the 
+...markush-group type list is within claims, it was not modified. Consequently the following
+...elements were deleted:
+......list-definitions
+......term
+......definition
+......list-ordered
+......list-simple
+......list-unordered
+......claim-item (Referenced only by definition, list-ordered, list-simple, and list-unordered.
+..................This was a mis-named element since claims only supported the markush group.)
+...The list-item element was added with the paragraph model excluding number and program-listing:
+......(#PCDATA | biological-deposit-citation | citation | chemistry-cwu | cross-reference
+...............| custom-character | highlight |in-line-formula | lists | math-cwu | table-cwu)*
+...And the lists element content model was changed:
+......from: (list-definitions | list-ordered | list-simple | list-unordered)
+........to: (list-item+)
+
+2000-06-15
+1) Changed the model for element s-1-viii-a from (party)  to (name).
+2) Changed the model for element s-2-x-a    from (party+) to (name+).
+3) Changed the model for element s301       from (party+) to (name+).
+
+2000-06-12
+1) Changed occurrence of <s-2-ix-a>, <s-2-x-g>, & <s-2-x-k> to OPTIONAL
+
+Revised 2000-06-07 JVN
+..Changed version date to 2000-06-07
+..Changed Sequence Listing structures to match Red Book. The monospace table attribute in Red Book
+......is not within this dtd.
+.. Added attribute st32name to sequence-cwu element.
+
+Revised 2000-05-23, Bruce B. Cox
+..Changed version date to 2000-05-23
+..Element provisional was renamed to non-provisional-of-provisional.
+..Changed the external entities to comply with the hardcoded system identifier.
+..The following elements were modified to replace the party structure with the format within
+..the bibdata dtd:
+...... content model for element assignee changed
+..........from: (party,assignee-type)
+............to: (name?,organization-name?,address?,assignee-type)
+...... content model for element first-named-inventor changed
+..........from: (party)
+............to: (name,address?,residence,authority-applicant?)
+...... content model for element inventor changed
+..........from: (party)
+............to: (name,address?,residence?,authority-applicant?)
+...... content model for element party changed
+..........from: (name?,organization-name?,address?,residence?,authority-applicant?)
+............to: (name,organization-name?,address?)
+..The following elements were modified to allow a mix of header/paragraph/section content
+..that parallels formats encountered within Red Book:
+...... content model for element background-of-invention changed
+..........from: (section|paragraph)+
+............to: (heading|paragraph|section)+
+...... content model for element brief-description-of-drawings changed
+..........from: (heading?,paragraph+)
+............to: (heading|paragraph|section)+
+...... content model for element brief-description-of-sequences changed
+..........from: (paragraph+)
+............to: (heading|paragraph|section)+
+...... content model for element copyright-statement changed
+..........from: (paragraph)
+............to: (heading|paragraph)+
+...... content model for element cross-reference-to-related-applications changed
+..........from: (heading?,paragraph+)
+............to: (heading|paragraph)+
+...... content model for element detailed-description changed
+..........from: (biological-deposit*,(section|paragraph)+)
+............to: (biological-deposit*,(heading|paragraph|section)+)
+...... content model for element federal-research-statement changed
+..........from: (heading?,paragraph+)
+............to: (heading|paragraph)+
+...... content model for element section changed
+..........from: (heading,paragraph+)
+............to: (heading|paragraph|section)+
+...... content model for element subdoc-abstract changed
+..........from: (heading?,paragraph+)
+............to: (heading|paragraph)+
+...... content model for element summary-of-invention changed
+..........from: (section|paragraph)+
+............to: (heading|paragraph|section)+
+..
+Revised 2000-05-17, Bruce B. Cox and Jay V. Nixon
+..Changed version to 0.5 and date to 2000-05-17
+..Changed party content model (name is now optional)
+......from: (name,organization-name?,address?,residence?,authority-applicant?)
+........to: (name?,organization-name?,address?,residence?,authority-applicant?)
+......Note that this does not enforce the requirement of at least one of name or
+......organization-name.
+..Renamed element list to lists due to mathml conflict. Changed paragraph to
+......reference lists.
+..Changed address content model (all fields optional)
+......from: (address-1,address-2?,city,state,postalcode,country,email*,telephone*,fax*)
+........to: (address-1?,address-2?,city?,state?,postalcode?,country,email*,telephone*,fax*)
+..Changed the citation content model (incorrect repetition)
+......from: ((cited-patent-literature | cited-non-patent-literature),relevant-section*)
+........to: ((cited-patent-literature | cited-non-patent-literature),relevant-section?)
+..Changed the technical-infornation content model (for mult. citations)
+......from: (classification-ipc,classification-us,title-of-invention,citation?,field-of-search)
+........to: (classification-ipc,classification-us,title-of-invention,citation*,field-of-search)
+..Changed element depository content model (added )
+......from: (address)
+........to: (organization-name?,address)
+..Changed sequence-cwu content model (allowing for non-compliant sequence data)
+......from: (number,(sequence-list-old-rules | sequence-list-new-rules),image*)
+........to: (number,(sequence-list-old-rules | sequence-list-new-rules | table),image*)
+..Changed filing-date, usc371-date, and usc102e-date from a content model of (date) to (pcdata).
+........Did not remove the date element since it is still used by several sequence date elements
+........that do not have "-date" as part of the element name.
+..Added element footnote to be used only within table processing.
+..Added external system references for math and tables that point to current xml structures
+......(not the sgmlized versions from Red Book).
+..Removed the following table elements since they are within the cals-exchange dtd:
+......table
+......tgroup
+......colspec
+......spanspec
+......thead..........Used to allow only (#PCDATA | highlight)*. Now allows any valid paragraph
+.....................content. Reference ENTITY paracon.
+......tbody
+......row
+......entry..........Used to allow only (#PCDATA | highlight)*. Now allows any valid paragraph
+.....................content. Reference ENTITY paracon.
+..Removed the math attlist declaration. It is within the mathml dtd.
+..Changed the content model of math-cwu from: (number,math,mathematica-file,image) to
+......(number,math+,mathematica-file,image), allowing for muliple math structures that are often
+......generated by Mathematica.
+..Removed element doubleunderline. Not a valid highlighting.
+..Changed sequence element s-1-ix-a content model from (TEL) to (telephone).
+..Removed attribute id from element usc102e-date.
+..Corrected the following st32-name attribute references:
+......uspc...................."B521, B582"
+......uspc-freeform.......... "B522, B583US"
+......ipc....................."B511, B512, B581"
+......document-id............."B100, DOC"
+......document-date..........."B140, DOC"
+......country-code............"B190, B330, ADR, DOC"
+......kind-code..............."B130, DOC"
+......party..................."PARTY-US"
+......classification-ipc......"B510, B561"
+......cited-patent-literature."B561, CIT"
+......math-cwu................"MATH-US" added attribute
+......domestic-family removed st32name attribute and reference to B650.
+..Initialized paracon and titles for the cals-exchange dtd.
+..Modified content model of element cross-reference-to-related-applications
+......from: (paragraph+)
+........to: (heading?,paragraph+)
+..Modified content model of element brief-description-of-drawings
+......from: (paragraph+)
+........to: (heading?,paragraph+)
+..The heading content model was changed from PCDATA to (#PCDATA | custom-character | highlight)*
+..Made the image optional within table-cwu content model: (number,table,image?)
+..Made sure id,file,label,hytime,class,lx,ly,wi,he,imf,ti,target,depends_on,lvl,align,
+......tsize,compact,level,prefix,numstyle,st attributes,dtd are all lower case.
+..The cited-non-patent-literature model was changed from PCDATA to (#PCDATA | custom-character | highlight)*
+..Modified content model of element subdoc-abstract
+......from: (heading?,paragraph)
+........to: (heading?,paragraph+)
+..Modified content model of element federal-research-statement
+......from: (paragraph)
+........to: (heading?,paragraph+)
+..
+Revised (date unknown) Bruce B. Cox
+..Changed party content model
+......from: (name,organization-name?,address?,residence?,authority-applicant?)
+........to: (name,residence?,address?)
+..Added element authority-applicant
+..Removed name-1,name-2, and address-label from element address, and deleted
+......the three elements and attribute references.
+..Organization-name removed from element name.
+..
+Revised 2000-04-12, Bruce B. Cox and Jay V. Nixon
+..Changed version to 0.3 and date to 2000-04-12
+..Replaced sequence listing markup.
+..Added number element to content model of math-cwu, chenistry-cwu, and table-cwu.
+..Changed party content model from: (name,residence?,correspondence-address?)
+................................to: (name,residence?,address?)
+..Changed claim content model from: (claim-text)
+................................to: (claim-text+)
+Revised 2000-04-04, Bruce B. Cox
+..Changed version to 0.2 and date to 2000-04-04.
+..Added a new element, number, to the content model of paragraph, biological-deposit
+...program-listing-deposit, and sequence-cwu. Used for object sequence number.
+...See specification for markup instructions.
+..Added a new attribute, inid-code, to almost all the elements in
+...subdoc-bibliographic-information. This attribute will contain the INID code as
+...assigned by data-capture contractor and which appears on the page-composed
+...image next to that element. See specification for details.
+Revised 2000-03-27, Bruce B. Cox
+..Extensive revisions based on PGPub DTD Team meetings over the past two months.
+..First official distribution of the DTD on this date.
+Created 2000-02-16, Bruce B. Cox
+********** END REVISION HISTORY ********** -->
+
+<!ELEMENT patent-application-publication  (
+               subdoc-bibliographic-information,subdoc-abstract,subdoc-description,
+               sequence-cwu?,subdoc-claims,subdoc-drawings?) >
+
+<!-- version is the version number in the format of "[Electronic Version xxx] "  -->
+<!-- distribution is the DTD distribution/build date in the form of "yyyy-mm-dd" -->
+<!ATTLIST patent-application-publication
+               version      CDATA "[Electronic Version 1.6] "
+               distribution CDATA "2002-01-01" >
+
+
+<!-- ***** start external references ***** -->
+
+<!-- 
+     *************************************************************************
+     * NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE *
+     *************************************************************************
+     * The following entities override default values within the CALSxml DTD *
+     *************************************************************************
+-->
+<!ENTITY % yesorno  "NMTOKEN" >
+<!ENTITY % titles   "heading?" >
+<!ENTITY % paracon
+               "#PCDATA | number | biological-deposit-citation | citation |
+                    chemistry-cwu | cross-reference | custom-character | highlight |
+                    in-line-formula | lists | math-cwu | program-listing |
+                    footnote" >
+<!ENTITY % tbl.table.att        " pgwide      %yesorno;       #IMPLIED
+                                  orient      (port | land)   #IMPLIED
+                                  tabstyle    NMTOKEN         #IMPLIED">
+
+<!-- 
+     *************************************************************************
+     * End of the CALSxml DTD overrides                                      *
+     *************************************************************************
+     * NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE *
+     *************************************************************************
+-->
+
+<!ENTITY % USPTOentities SYSTEM "..\dtds\pap-v16-2002-01-01.ent"                                          >
+%USPTOentities;
+
+<!NOTATION TIF PUBLIC "-//Aldus//NOTATION Tagged Image File Format//EN" >
+<!NOTATION CDX PUBLIC "-//CambridgeSoft Corp.//NOTATION ChemDraw Format 4.x//EN" >
+<!NOTATION MOL PUBLIC "-//MDL Information Systems//NOTATION Chemical Expression File Format//EN" >
+<!NOTATION NB PUBLIC "-//Mathmatica//NOTATION Mathmatica File Format//EN" >
+
+<!-- ***** end external references ***** -->
+
+<!ELEMENT a-371-of-international  (parent-child) >
+
+<!ATTLIST a-371-of-international
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT address  (military-address?,address-1?,address-2?,city?,state?,postalcode?,country?,
+		email*,telephone*,fax*) >
+
+<!ATTLIST address
+               st32-name  CDATA    #FIXED "ADR" >
+
+<!ELEMENT address-1  (#PCDATA) >
+
+<!ELEMENT address-2  (#PCDATA) >
+
+<!ELEMENT application-number  (doc-number) >
+
+<!ATTLIST application-number
+               st32-name  CDATA   "B210"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT application-number-series-code  (#PCDATA) >
+
+<!ATTLIST application-number-series-code
+               st32-name  CDATA    #FIXED " B211US"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT appendix-data  (object-reference+) >
+
+<!ATTLIST appendix-data
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT assignee  (name?,organization-name?,address?,assignee-type) >
+
+<!ATTLIST assignee
+               st32-name  CDATA    #FIXED " B730"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT assignee-type  (#PCDATA) >
+
+<!ATTLIST assignee-type
+               st32-name  CDATA    #FIXED "B732US"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT authority-applicant  (#PCDATA) >
+
+<!ELEMENT background-of-invention  (heading | paragraph | section)+ >
+
+<!ELEMENT biological-deposit  (number,deposit-date,deposit-term,depository,
+               deposit-accession-number,deposit-description) >
+
+<!ATTLIST biological-deposit
+               id  ID    #REQUIRED
+               st32-name  CDATA    #FIXED "B830" >
+
+<!ELEMENT biological-deposit-citation  (depository-name,deposit-accession-number) >
+
+<!ELEMENT bold  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT botanic  (latin-name, variety) >
+
+<!ELEMENT brief-description-of-drawings  (heading | paragraph | section)+ >
+
+<!ATTLIST brief-description-of-drawings
+               st32-name  CDATA    #FIXED "DRWDESC" >
+
+<!ELEMENT brief-description-of-sequences  (heading | paragraph)+ >
+
+<!ELEMENT chemistry  (#PCDATA) >
+
+<!ELEMENT chemistry-chemdraw-file   EMPTY  >
+
+<!ATTLIST chemistry-chemdraw-file
+               id  ID    #REQUIRED
+               alt   CDATA   "chemistry chemdraw file"
+               file  ENTITY    #REQUIRED  >
+
+<!ELEMENT chemistry-cwu  (number,image,chemistry?,chemistry-chemdraw-file,
+               chemistry-mol-file) >
+
+<!ATTLIST chemistry-cwu
+               id  ID    #REQUIRED
+               st32-name  CDATA    #FIXED "CHEM-US" >
+
+<!ELEMENT chemistry-mol-file   EMPTY  >
+
+<!ATTLIST chemistry-mol-file
+               id  ID    #REQUIRED
+               alt   CDATA   "chemistry mol file"
+               file  ENTITY    #REQUIRED  >
+
+<!ELEMENT child  (document-id) >
+
+<!ELEMENT citation  ((cited-patent-literature | cited-non-patent-literature),
+               relevant-section?) >
+
+<!ATTLIST citation
+               st32-name  CDATA    #FIXED "B560"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT cited-non-patent-literature  (#PCDATA | custom-character | highlight)* >
+
+<!ATTLIST cited-non-patent-literature
+               st32-name  CDATA    #FIXED "B562" >
+
+<!ELEMENT cited-patent-literature  (document-id,party*,classification-ipc?,
+               classification-us?) >
+
+<!ATTLIST cited-patent-literature
+               st32-name  CDATA    #FIXED "B561,CIT" >
+
+<!ELEMENT citizenship  (country-code) >
+
+<!ELEMENT city  (#PCDATA) >
+
+<!ELEMENT claim  (claim-text+) >
+
+<!ATTLIST claim
+               id  ID    #REQUIRED
+               st32-name  CDATA    #FIXED "B800" >
+
+<!ELEMENT claim-text  (#PCDATA | claim-text | biological-deposit-citation |
+               chemistry-cwu | cross-reference | custom-character | highlight |
+               in-line-formula | markush-group | math-cwu | table-cwu |
+               dependent-claim-reference)* >
+
+<!ELEMENT class  (#PCDATA) >
+
+<!ELEMENT classification-ipc  (classification-ipc-primary,
+               classification-ipc-secondary*,classification-ipc-edition) >
+
+<!ATTLIST classification-ipc
+               st32-name  CDATA    #FIXED "B510, B561"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT classification-ipc-edition  (#PCDATA) >
+
+<!ATTLIST classification-ipc-edition
+               st32-name  CDATA   "B516"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT classification-ipc-primary  (ipc) >
+
+<!ATTLIST classification-ipc-primary
+               st32-name  CDATA    #FIXED "B511"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT classification-ipc-secondary  (ipc) >
+
+<!ATTLIST classification-ipc-secondary
+               st32-name  CDATA    #FIXED "B512"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT classification-us  (classification-us-primary,classification-us-secondary*) >
+
+<!ATTLIST classification-us
+               st32-name  CDATA    #FIXED "B520"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT classification-us-primary  (uspc) >
+
+<!ATTLIST classification-us-primary
+               st32-name  CDATA    #FIXED "B521"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT classification-us-secondary  (uspc | uspc-freeform) >
+
+<!ATTLIST classification-us-secondary
+               st32-name  CDATA    #FIXED "B522"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT continuation-in-part-of  (parent-child,parent-pct?) >
+
+<!ATTLIST continuation-in-part-of
+               st32-name  CDATA    #FIXED "B632"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT continuation-of  (parent-child,parent-pct?) >
+
+<!ATTLIST continuation-of
+               st32-name  CDATA    #FIXED "B631"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT continuations  (continuation-of | continuation-in-part-of |
+               continuing-reissue-of)+ >
+
+<!ATTLIST continuations
+               st32-name  CDATA    #FIXED "B630"
+               inid-code  CDATA    #IMPLIED  >
+<!-- 
+
+Element continued-prosecution-application will contain the following text:
+
+"This is a publication of a continued prosecution application (CPA) filed under 37 CFR 1.53(d)."
+
+-->
+<!ELEMENT continued-prosecution-application   (#PCDATA)  >
+
+<!ATTLIST continued-prosecution-application
+               st32-name  CDATA   "B222US"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT continuing-reissue-of  (parent-child) >
+
+<!ATTLIST continuing-reissue-of
+               st32-name  CDATA    #FIXED "B633"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT continuity-data  (( division-of | continuations | a-371-of-international |
+               substitution-for | reissue-of | non-provisional-of-provisional | 
+               corrected-republication-of)+) >
+
+<!ATTLIST continuity-data
+               st32-name  CDATA    #FIXED "B600"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT copyright-statement  (heading | paragraph)+ >
+
+<!ATTLIST copyright-statement
+               id  ID    #REQUIRED>
+
+<!ELEMENT corrected-republication-of  (document-id) >
+
+<!ATTLIST corrected-republication-of
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT country  (country-code) >
+
+<!ELEMENT country-code  (#PCDATA) >
+
+<!ATTLIST country-code
+               st32-name  CDATA   "B190, B330, ADR, DOC"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT correspondence-address  (name-1,name-2?,address) >
+
+<!ELEMENT name-1  (#PCDATA) >
+
+<!ELEMENT name-2  (#PCDATA) >
+
+<!ELEMENT cross-reference  (#PCDATA) >
+
+<!ATTLIST cross-reference
+               hytime  CDATA    #FIXED "hylink"
+               target  IDREFS    #REQUIRED  >
+
+<!ELEMENT cross-reference-to-related-applications  (heading | paragraph)+ >
+
+<!ATTLIST cross-reference-to-related-applications
+               st32-name  CDATA    #FIXED "RELAPP" >
+
+<!ELEMENT custom-character   EMPTY  >
+
+<!ATTLIST custom-character
+               id  ID    #REQUIRED
+               alt   CDATA    "custom character"
+               file  ENTITY   #REQUIRED
+               ly  NMTOKEN    #IMPLIED
+               lx  NMTOKEN    #IMPLIED
+               wi  NMTOKEN    #IMPLIED
+               he  NMTOKEN    #IMPLIED  >
+
+<!ELEMENT date  (#PCDATA) >
+
+<!ELEMENT dependent-claim-reference  (#PCDATA) >
+
+<!ATTLIST dependent-claim-reference
+               hytime  CDATA    #FIXED "hylink"
+               depends_on  IDREFS    #IMPLIED  >
+
+<!ELEMENT deposit-accession-number  (#PCDATA) >
+
+<!ATTLIST deposit-accession-number
+               st32-name  CDATA    #FIXED "B831" >
+
+<!ELEMENT deposit-date  (#PCDATA) >
+
+<!ATTLIST deposit-date
+               st32-name  CDATA    #FIXED "B833" >
+
+<!ELEMENT deposit-description  (#PCDATA) >
+
+<!ELEMENT deposit-term  (#PCDATA) >
+
+<!ELEMENT depository  (organization-name?,address) >
+
+<!ATTLIST depository
+               st32-name  CDATA    #FIXED "B832" >
+
+<!ELEMENT depository-name  (#PCDATA) >
+
+<!ELEMENT detailed-description  (biological-deposit*,(heading | paragraph | section)+) >
+
+<!ATTLIST detailed-description
+               st32-name  CDATA    #FIXED "DETDESC" >
+
+<!ELEMENT division-of  (parent-child,parent-pct?) >
+
+<!ATTLIST division-of
+               st32-name  CDATA    #FIXED "B620"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT doc-number  (#PCDATA) >
+
+<!ATTLIST doc-number
+               st32-name  CDATA    #FIXED "DNUM"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT document-date  (#PCDATA) >
+
+<!ATTLIST document-date
+               st32-name  CDATA   "B140, DOC"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT document-id  (doc-number,kind-code?,document-date?,country-code?) >
+
+<!ATTLIST document-id
+               lang       CDATA    #IMPLIED
+               st32-name  CDATA   "B100, DOC"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT domestic-filing-data  (application-number,application-number-series-code,
+               filing-date,continued-prosecution-application?,rule-47-flag?) >
+
+<!ATTLIST domestic-filing-data
+               st32-name  CDATA   "B200"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT drawing-reference-character  (#PCDATA) >
+
+<!ATTLIST drawing-reference-character
+               id  ID    #IMPLIED
+                >
+
+<!ELEMENT duline  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT email  (#PCDATA) >
+
+<!ATTLIST email
+               data-format  CDATA    #FIXED "?@?.?" >
+
+<!ELEMENT family-name  (#PCDATA) >
+
+<!ATTLIST family-name
+               st32-name  CDATA    #FIXED "SNM" >
+
+<!ELEMENT fax  (#PCDATA) >
+
+<!ELEMENT federal-research-statement  (heading?,paragraph-federal-research-statement+) >
+
+<!ATTLIST federal-research-statement
+               st32-name  CDATA    #FIXED "GOVINT" >
+
+<!ELEMENT figure  ((image,drawing-reference-character*) | chemistry-cwu | math-cwu |
+               table-cwu) >
+
+<!ATTLIST figure
+               id  ID    #REQUIRED
+               st32-name  CDATA    #FIXED "EMI" >
+
+<!ELEMENT filing-date  (#PCDATA) >
+
+<!ATTLIST filing-date
+               st32-name  CDATA   "B220, B320"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT first-named-inventor  (name,address?,residence,authority-applicant?) >
+
+<!ATTLIST first-named-inventor
+               st32-name  CDATA    #FIXED "B721"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT footnote  (#PCDATA | number | biological-deposit-citation | citation |
+               cross-reference | custom-character | highlight | in-line-formula |
+               lists | program-listing)* >
+<!ATTLIST footnote
+               st32-name  CDATA    #FIXED "FOO"
+               id  ID    #REQUIRED  >
+
+<!ELEMENT foreign-priority-data  (priority-application-number,filing-date,
+               country-code) >
+
+<!ATTLIST foreign-priority-data
+               st32-name  CDATA   "B300"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT given-name  (#PCDATA) >
+
+<!ATTLIST given-name
+               st32-name  CDATA    #FIXED "FNM" >
+
+<!ELEMENT heading  (#PCDATA | custom-character | highlight)* >
+
+<!ATTLIST heading
+               lvl (0 | 1 | 2 | 3 | 4 | 5)   #IMPLIED
+               align (CENTER | LEFT | RIGHT)  "LEFT" >
+
+<!ELEMENT highlight  (literal | superscript | subscript | bold | italic | smallcaps | uline | duline)* >
+
+<!ELEMENT image   EMPTY  >
+
+<!ATTLIST image
+               id  ID    #REQUIRED
+               alt   CDATA    "embedded image"
+               file  ENTITY    #REQUIRED
+               he  NMTOKEN    #IMPLIED
+               wi  NMTOKEN    #IMPLIED
+               lx  NMTOKEN    #IMPLIED
+               ly  NMTOKEN    #IMPLIED
+               imf (ST33 | TIFF)   #IMPLIED
+               ti (AD | CF | CI | CP | DN | DR | FG | FF | GR | MF | PA | PH | SR |
+               TB | TX | UI)   #IMPLIED
+               st32-name  CDATA    #FIXED "EMI" >
+
+<!ELEMENT in-line-formula  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT international-conventions  (pct-application,pct-publication?) >
+
+<!ATTLIST international-conventions
+               st32-name  CDATA    #FIXED "B800"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT inventor  (name,address?,residence?,authority-applicant?) >
+
+<!ATTLIST inventor
+               st32-name  CDATA    #FIXED "B721"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT inventors  (first-named-inventor,inventor*) >
+
+<!ATTLIST inventors
+               st32-name  CDATA    #FIXED "B720"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT ipc  (#PCDATA) >
+
+<!ATTLIST ipc
+               st32-name  CDATA    #FIXED "B511, B512, B581"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT italic  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT kind-code  (#PCDATA) >
+
+<!ATTLIST kind-code
+               st32-name  CDATA   "B130, DOC"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT latin-name  (#PCDATA) >
+
+<!ELEMENT lists  (list-item+) >
+
+<!ATTLIST lists
+               id  ID    #REQUIRED >
+               
+<!ELEMENT list-item  (#PCDATA | biological-deposit-citation | citation | chemistry-cwu |
+                      cross-reference | custom-character | highlight |in-line-formula |
+                      lists | math-cwu | table-cwu)* >
+
+<!ELEMENT literal  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT markush-group  (markush-item+) >
+
+<!ELEMENT markush-item  (claim-text) >
+
+<!ELEMENT math-cwu  (number,math+,mathematica-file,image) >
+
+<!ATTLIST math-cwu
+               id  ID    #REQUIRED
+               display (display)   #IMPLIED
+               st32-name  CDATA    #FIXED "MATH-US" >
+
+<!ELEMENT mathematica-file   EMPTY  >
+
+<!ATTLIST mathematica-file
+               id  ID    #REQUIRED
+               alt   CDATA    "mathematica file"
+               file  ENTITY    #REQUIRED  >
+
+<!ELEMENT middle-name  (#PCDATA) >
+
+<!ATTLIST middle-name
+               st32-name  CDATA    #FIXED "FNM" >
+
+<!ELEMENT military-address  (#PCDATA) >
+
+<!ELEMENT military-service  (#PCDATA) >
+
+<!ELEMENT name  (name-prefix?,given-name?,middle-name?,family-name,name-suffix?) >
+
+<!ATTLIST name
+               st32-name  CDATA    #FIXED "NAM" >
+
+<!ELEMENT name-prefix  (#PCDATA) >
+
+<!ATTLIST name-prefix
+               st32-name  CDATA    #FIXED "TTL" >
+
+<!ELEMENT name-suffix  (#PCDATA) >
+
+<!ATTLIST name-suffix
+               st32-name  CDATA    #FIXED "SFX" >
+
+<!ELEMENT number  (#PCDATA) >
+
+<!ELEMENT object-reference  (object-description,object-id,object-contents) >
+<!ATTLIST object-reference id  ID    #REQUIRED  >
+
+<!ELEMENT object-contents  (#PCDATA) >
+
+<!ELEMENT object-description  (#PCDATA) >
+
+<!ELEMENT object-id  (#PCDATA) >
+
+<!ELEMENT organization-name  (#PCDATA) >
+
+<!ATTLIST organization-name
+               st32-name  CDATA    #FIXED "ONM" >
+
+<!ELEMENT paragraph  (#PCDATA | number | biological-deposit-citation | citation |
+               chemistry-cwu | cross-reference | custom-character | highlight | image |
+               in-line-formula | lists | math-cwu | program-listing | table-cwu | 
+               footnote)* >
+
+<!ATTLIST paragraph
+               id  ID    #IMPLIED
+               lvl (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7)   #IMPLIED
+               st32-name  CDATA    #FIXED "PARA" >
+
+<!ELEMENT paragraph-federal-research-statement  (#PCDATA | number | grant-number | 
+               contract-number | us-agency | highlight )* >
+
+<!ATTLIST paragraph-federal-research-statement
+               id  ID    #REQUIRED >
+      
+<!ELEMENT grant-number  (#PCDATA) >
+
+<!ATTLIST grant-number
+               hytime  CDATA    #FIXED "hylink" >
+
+<!ELEMENT contract-number  (#PCDATA) >
+
+<!ELEMENT us-agency  (#PCDATA) >
+
+<!ELEMENT parent  (document-id) >
+
+<!ELEMENT parent-child  (child,parent,parent-status,parent-patent?) >
+
+<!ELEMENT parent-patent  (document-id) >
+
+<!ELEMENT parent-pct  (document-id) >
+
+<!ELEMENT parent-status  (#PCDATA) >
+
+<!ELEMENT party  (name,organization-name?,address?) >
+
+<!ATTLIST party
+               st32-name  CDATA    #FIXED "PARTY-US" >
+
+<!ELEMENT pct-application  (document-id) >
+
+<!ATTLIST pct-application
+               st32-name  CDATA    #FIXED "B860"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT pct-publication  (document-id) >
+
+<!ATTLIST pct-publication
+               st32-name  CDATA    #FIXED "B871"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT postalcode  (#PCDATA) >
+
+<!ELEMENT priority-application-number  (doc-number) >
+
+<!ATTLIST priority-application-number
+               st32-name  CDATA    #FIXED "B310"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT prior-publication  (document-id+) > 
+
+<!ATTLIST prior-publication
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT publication-filing-type  (#PCDATA) >
+
+<!ATTLIST publication-filing-type
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT program-listing  (#PCDATA) >
+
+<!ATTLIST program-listing
+               id  ID    #REQUIRED
+               xml:space (default | preserve)   #FIXED "preserve"
+                >
+
+<!ELEMENT program-listing-deposit  (heading?,number,program-listing) >
+
+<!ATTLIST program-listing-deposit
+               id  ID    #REQUIRED
+               maximum-page-count  CDATA    #FIXED "10" >
+
+<!ELEMENT non-provisional-of-provisional  (document-id) >
+
+<!ATTLIST non-provisional-of-provisional
+               st32-name  CDATA    #FIXED "B680US"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT reissue-of  (parent-child) >
+
+<!ATTLIST reissue-of
+               st32-name  CDATA    #FIXED "B640"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT relevant-section  (#PCDATA) >
+
+<!ELEMENT representative-figure  (#PCDATA) >
+
+<!ELEMENT residence  (military-service | ( (residence-us | residence-non-us), citizenship?) ) >
+
+<!ELEMENT residence-us  (city,state,country-code) >
+
+<!ELEMENT residence-non-us (city,state?,country-code) >
+
+<!ELEMENT rule-47-flag   EMPTY  >
+
+<!ATTLIST rule-47-flag
+               st32-name  CDATA    #FIXED "B221US"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT section  (heading | paragraph | section)+ >
+
+<!ELEMENT smallcaps  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT state  (#PCDATA) >
+
+<!ELEMENT subclass  (#PCDATA) >
+
+<!ELEMENT subdoc-abstract  (heading | paragraph)+ >
+
+<!ATTLIST subdoc-abstract
+               st32-name  CDATA   "SDOAB"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT subdoc-bibliographic-information  (document-id,publication-filing-type,
+               domestic-filing-data,foreign-priority-data*,technical-information,
+               continuity-data?,prior-publication?,inventors,assignee*,correspondence-address?,
+               international-conventions*,appendix-data?) >
+
+<!ATTLIST subdoc-bibliographic-information
+               st32-name  CDATA   "SDOBI"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT subdoc-claims  (heading?,claim+) >
+
+<!ATTLIST subdoc-claims
+               st32-name  CDATA   "SDOCL" >
+
+<!ELEMENT subdoc-description  (copyright-statement?,
+               cross-reference-to-related-applications?,federal-research-statement?,
+               background-of-invention?,summary-of-invention?,
+               brief-description-of-drawings?,brief-description-of-sequences?,
+               detailed-description,program-listing-deposit?) >
+
+<!ATTLIST subdoc-description
+               st32-name  CDATA   "SDODE" >
+
+<!ELEMENT subdoc-drawings  (heading,representative-figure,figure+) >
+
+<!ATTLIST subdoc-drawings
+               id  ID    #REQUIRED
+               st32-name  CDATA   "SDODR" >
+
+<!ELEMENT subscript  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT substitution-for  (parent-child) >
+
+<!ATTLIST substitution-for
+               st32-name  CDATA    #FIXED "B660"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT summary-of-invention  (heading | paragraph | section)+ >
+
+<!ATTLIST summary-of-invention
+               st32-name  CDATA    #FIXED "BRFSUM" >
+
+<!ELEMENT superscript  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT table-cwu  (number,table) >
+
+<!ATTLIST table-cwu
+               id  ID    #REQUIRED
+               display (display)   #IMPLIED
+               st32-name  CDATA    #FIXED "TABLE-US" >
+
+<!ELEMENT technical-information  (classification-ipc,classification-us,
+               title-of-invention,botanic?,citation*) >
+
+<!ATTLIST technical-information
+               st32-name  CDATA   "B500" >
+
+<!ELEMENT telephone  (#PCDATA) >
+
+<!ATTLIST telephone
+               data-format  CDATA    #FIXED
+               "###.###.####|###-###-####|##########|(###) ###-#####|011.##########" >
+
+<!ELEMENT title-of-invention  (#PCDATA | custom-character | in-line-formula |
+               highlight)* >
+
+<!ATTLIST title-of-invention
+               st32-name  CDATA    #FIXED "B540"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT uspc  (class,subclass) >
+
+<!ATTLIST uspc
+               st32-name  CDATA    #FIXED "B521, B582"
+               inid-code  CDATA    #IMPLIED  >
+               
+<!ELEMENT uspc-freeform  (#PCDATA) >
+
+<!ATTLIST uspc-freeform
+               st32-name  CDATA    #FIXED "B522, B583US"
+               inid-code  CDATA    #IMPLIED  >
+
+<!ELEMENT sequence-cwu  (number,(sequence-list-old-rules | sequence-list-new-rules | table | object-reference)) >
+
+<!ATTLIST sequence-cwu
+               id  ID    #REQUIRED
+               st32-name  CDATA    #FIXED "SEQLST-US" >
+
+<!ELEMENT sequence-list-old-rules  (s-1,s-2+) >
+
+<!ELEMENT s-1  (s-1-iii,s-1-iv?,s-1-v?,s-1-viii?,s-1-ix?) >
+
+<!ELEMENT s-1-iii  (#PCDATA) >
+
+<!ELEMENT s-1-iv  (party) >
+
+<!ELEMENT s-1-v  (s-1-v-a,s-1-v-b,s-1-v-c,s-1-v-d) >
+
+<!ELEMENT s-1-v-a  (#PCDATA) >
+
+<!ELEMENT s-1-v-b  (#PCDATA) >
+
+<!ELEMENT s-1-v-c  (#PCDATA) >
+
+<!ELEMENT s-1-v-d  (#PCDATA) >
+
+<!ELEMENT s-1-viii  (s-1-viii-a,s-1-viii-b,s-1-viii-c) >
+
+<!ELEMENT s-1-viii-a  (name) >
+
+<!ELEMENT s-1-viii-b  (#PCDATA) >
+
+<!ELEMENT s-1-viii-c  (#PCDATA) >
+
+<!ELEMENT s-1-ix  (s-1-ix-a,s-1-ix-b,s-1-ix-c) >
+
+<!ELEMENT s-1-ix-a  (telephone) >
+
+<!ELEMENT s-1-ix-b  (#PCDATA) >
+
+<!ELEMENT s-1-ix-c  (#PCDATA) >
+
+<!ELEMENT s-2  (s-2-i,s-2-ii*,s-2-iii?,s-2-iv?,s-2-v*,s-2-vi?,s-2-vii?,s-2-viii?,
+               s-2-ix*,s-2-x*,s-2-xi) >
+
+<!ATTLIST s-2
+               seq-no  CDATA    #REQUIRED  >
+
+<!ELEMENT s-2-i  (s-2-i-a?,s-2-i-b,s-2-i-c?,s-2-i-d) >
+
+<!ELEMENT s-2-i-a  (#PCDATA) >
+
+<!ELEMENT s-2-i-b  (#PCDATA) >
+
+<!ELEMENT s-2-i-c  (#PCDATA) >
+
+<!ELEMENT s-2-i-d  (#PCDATA) >
+
+<!ELEMENT s-2-ii  (s-2-ii-mt,s-2-ii-a?) >
+
+<!ELEMENT s-2-ii-mt  (#PCDATA) >
+
+<!ELEMENT s-2-ii-a  (#PCDATA) >
+
+<!ELEMENT s-2-iii  (#PCDATA) >
+
+<!ELEMENT s-2-iv  (#PCDATA) >
+
+<!ELEMENT s-2-v  (#PCDATA) >
+
+<!ELEMENT s-2-vi  (s-2-vi-a?,s-2-vi-b?,s-2-vi-c?,s-2-vi-d?,s-2-vi-e?,s-2-vi-f?,
+               s-2-vi-g?,s-2-vi-h?,s-2-vi-i?) >
+
+<!ELEMENT s-2-vi-a  (#PCDATA) >
+
+<!ELEMENT s-2-vi-b  (#PCDATA) >
+
+<!ELEMENT s-2-vi-c  (#PCDATA) >
+
+<!ELEMENT s-2-vi-d  (#PCDATA) >
+
+<!ELEMENT s-2-vi-e  (#PCDATA) >
+
+<!ELEMENT s-2-vi-f  (#PCDATA) >
+
+<!ELEMENT s-2-vi-g  (#PCDATA) >
+
+<!ELEMENT s-2-vi-h  (#PCDATA) >
+
+<!ELEMENT s-2-vi-i  (#PCDATA) >
+
+<!ELEMENT s-2-vii  (s-2-vii-a?,s-2-vii-b?) >
+
+<!ELEMENT s-2-vii-a  (#PCDATA) >
+
+<!ELEMENT s-2-vii-b  (#PCDATA) >
+
+<!ELEMENT s-2-viii  (s-2-viii-a?,s-2-viii-b?,s-2-viii-c?) >
+
+<!ELEMENT s-2-viii-a  (#PCDATA) >
+
+<!ELEMENT s-2-viii-b  (#PCDATA) >
+
+<!ELEMENT s-2-viii-c  (#PCDATA) >
+
+<!ELEMENT s-2-ix  (s-2-ix-a?,s-2-ix-b?,s-2-ix-c?,s-2-ix-d?) >
+
+<!ELEMENT s-2-ix-a  (#PCDATA) >
+
+<!ELEMENT s-2-ix-b  (#PCDATA) >
+
+<!ELEMENT s-2-ix-c  (#PCDATA) >
+
+<!ELEMENT s-2-ix-d  (#PCDATA | highlight)* >
+
+<!ELEMENT s-2-x  (s-2-x-a?,s-2-x-b?,s-2-x-c?,s-2-x-d?,s-2-x-e?,s-2-x-f?,s-2-x-g?,s-2-x-h?,
+               s-2-x-i?,s-2-x-j?,s-2-x-k?) >
+
+<!ELEMENT s-2-x-a  (name+) >
+
+<!ELEMENT s-2-x-b  (#PCDATA) >
+
+<!ELEMENT s-2-x-c  (#PCDATA) >
+
+<!ELEMENT s-2-x-d  (#PCDATA) >
+
+<!ELEMENT s-2-x-e  (#PCDATA) >
+
+<!ELEMENT s-2-x-f  (#PCDATA) >
+
+<!ELEMENT s-2-x-g  (#PCDATA | date)* >
+
+<!ELEMENT s-2-x-h  (doc-number) >
+
+<!ELEMENT s-2-x-i  (date) >
+
+<!ELEMENT s-2-x-j  (date) >
+
+<!ELEMENT s-2-x-k  (#PCDATA) >
+
+<!ELEMENT s-2-xi  (#PCDATA) >
+
+<!ELEMENT sequence-list-new-rules  (s100,(s200,s300?,s400)+) >
+
+<!ELEMENT s100  (s130?,s160,s170?) >
+
+<!ELEMENT s130  (#PCDATA) >
+
+<!ELEMENT s160  (#PCDATA) >
+
+<!ELEMENT s170  (#PCDATA) >
+
+<!ELEMENT s200  (s210,s211,s212,s213,s220*) >
+
+<!ELEMENT s210  (#PCDATA) >
+
+<!ELEMENT s211  (#PCDATA) >
+
+<!ELEMENT s212  (#PCDATA) >
+
+<!ELEMENT s213  (#PCDATA) >
+
+<!ELEMENT s220  (s221?,s222?,s223?) >
+
+<!ELEMENT s221  (#PCDATA) >
+
+<!ELEMENT s222  (#PCDATA) >
+
+<!ELEMENT s223  (#PCDATA) >
+
+<!ELEMENT s300  (s301?,s302?,s303?,s304?,s305?,s306?,s307?,s308?,s309?,s310?,s311?,
+               s313?) >
+
+<!ELEMENT s301  (name+) >
+
+<!ELEMENT s302  (#PCDATA) >
+
+<!ELEMENT s303  (#PCDATA) >
+
+<!ELEMENT s304  (#PCDATA) >
+
+<!ELEMENT s305  (#PCDATA) >
+
+<!ELEMENT s306  (#PCDATA) >
+
+<!ELEMENT s307  (#PCDATA | date)* >
+
+<!ELEMENT s308  (#PCDATA) >
+
+<!ELEMENT s309  (date) >
+
+<!ELEMENT s310  (doc-number) >
+
+<!ELEMENT s311  (date) >
+
+<!ELEMENT s313  (#PCDATA) >
+
+<!ELEMENT s400  (#PCDATA) >
+
+<!ELEMENT uline  (#PCDATA | custom-character | highlight)* >
+
+<!ELEMENT variety  (#PCDATA) >
+
+<!-- ] -->

@@ -1,0 +1,22 @@
+#
+# Any Phrase with any of the word listed will be killed.
+#
+# Special Notes:
+#   the following:  embodiment, invention, patent-figure ; will be removed since there is often useful leading or trailing words.
+#
+attorney docket
+attorney docket no
+japanese patent
+patent application
+patent literature
+intellectual property office
+prior art
+embodiments
+embodiment
+patent
+patents
+invention
+inventions
+invent
+inventor
+council

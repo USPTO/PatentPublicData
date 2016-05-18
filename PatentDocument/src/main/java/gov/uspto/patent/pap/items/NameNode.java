@@ -1,0 +1,90 @@
+package gov.uspto.patent.pap.items;
+
+import javax.naming.directory.InvalidAttributesException;
+
+import org.dom4j.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.model.entity.Name;
+import gov.uspto.patent.model.entity.NameOrg;
+import gov.uspto.patent.model.entity.NamePerson;
+
+/**
+ * Parse Name (Inventor)
+ *
+ *<p><pre>
+ * {@code
+ * <!ELEMENT name  (name-prefix?,given-name?,middle-name?,family-name,name-suffix?) >
+ * }
+ *</pre></p>
+ * 
+ * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ *
+ */
+public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(NameNode.class);
+	
+	private static final String ITEM_NODE_NAME = "name";
+
+	public NameNode(Node itemNode) {
+		super(itemNode, ITEM_NODE_NAME);
+	}
+
+	@Override
+	public Name read() {
+
+		NameOrg orgName = getOrgName(itemNode);
+		if (orgName != null){
+			return orgName;
+		}
+
+		return getPersonName(itemNode);
+	}
+
+	public NameOrg getOrgName(Node node){
+		Node orgNameN = node.selectSingleNode("organization-name");
+		String orgName = orgNameN != null ? orgNameN.getText() : null;
+
+		if (orgName != null){
+			try {
+				return new NameOrg(orgName);
+			} catch (InvalidAttributesException e) {
+				LOGGER.warn("Unable to create NameOrg from {}", itemNode.asXML(), e);
+			}
+		}
+		return null;
+	}
+	
+	public NamePerson getPersonName(Node node){
+		Node prefixN = node.selectSingleNode("name-prefix");
+		String prefix = prefixN != null ? prefixN.getText() : null;
+		
+		Node firstN = node.selectSingleNode("given-name");
+		String firstName = firstN != null ? firstN.getText() : null;
+		
+		Node middleN = node.selectSingleNode("middle-name");
+		String middleName = middleN != null ? middleN.getText() : null;
+
+		Node lastN = node.selectSingleNode("family-name");
+		String lastName = lastN != null ? lastN.getText() : null;
+		
+		Node suffixN = node.selectSingleNode("name-suffix");
+		String suffix = suffixN != null ? suffixN.getText() : null;
+
+		NamePerson name = null;
+		if (lastName != null || firstName != null){
+			try {
+				name = new NamePerson(firstName, middleName, lastName);
+				name.setPrefix(prefix);
+				name.setSuffix(suffix);
+			} catch (InvalidAttributesException e) {
+				LOGGER.warn("Unable to create NamePerson from {}", node.asXML(), e);
+			}
+		}
+
+		return name;
+	}
+	
+}

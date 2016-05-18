@@ -1,0 +1,2016 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--DOCTYPE PATDOC [ -->
+<!--DOCUMENT TYPE DEFINITION FOR UNITED STATES PUBLISHED PATENT DOCUMENTS
+USPTO-MODIFIED VERSION OF WIPO STANDARD ST.32 DTD
+Reference this DTD as PUBLIC "-//USPTO//DTD ST.32 US PATENT GRANT V2.5 XML 2002-01-01//EN"
+Alias: Grant Red Book (GRB)
+
+Contact:
+Jay V. Nixon
+Information Products Division
+U.S. Patent and Trademark Office
+Crystal Park 3, Suite 441
+Washington, DC 20231
+vox: 703-306-2614
+fax: 703-306-2737
+Jay.Nixon@uspto.gov
+
+********** REVISION HISTORY **********
+2001-10-03
+ 1) Modified element CLREF from EMPTY to PDAT.
+
+2001-09-25
+ 1) Element B800 content model changed back to (B860,B870?). Multiple PCT references are only allowed
+    within related application data.
+
+2001-09-18
+ 1) Deleted B863 & B864 and replaced with optional B864US for the 371 (c)(1)(2)(4) PCT date.
+ 2) B645 is now used for reexaminations requested by the  applicant, assignee, or commissioner.
+ 3) Added element B646US for reexamination requested by a 3rd party.
+
+2001-09-04
+ 1) Modified CALS table references to use the default CALS-xml DTD. Table elements and attributes
+    are now lower case and both Grant and Application Red Book (XML) use the same table and math
+    DTDs. The CALSxmlUC DTD overrides (#7 in the 2001-07-11 updates) have been removed. In addition
+    the content model for TABLE-CALS changed from (TABLE) to (table), and the content model for
+    SEQLST-US changed from (SEQ-LST-OLD | SEQ-LST-NEW | TABLE) to (SEQ-LST-OLD | SEQ-LST-NEW | table).
+ 2) Entity references have been consolidated into a single entity declaration. File ST32-US-Grant-025xml.ent
+    must be local (in the same directory) to this DTD and contain the DTD's list of entity references.
+
+2001-07-18
+ 1) Sequence listing elements S-2-IX-D content model replaced with (STEXT+).
+ 2) Removed attribute FILE from element PATDOC.
+ 3) Element B800 content model changed to (B860+,B870?) to allow for multiple PCT.
+ 4) SEQLST-US content model removed the EMI* reference.
+ 5) Changed element references of TABLE to table to comply with the mathml dtd. Elements TABLE-CALS
+    and SEQLST-US were impacted.
+
+2001-07-11 Converted the DTD to XML
+ 1) Modified PUBLIC identifier to: "-//USPTO//DTD ST.32 US PATENT GRANT V2.5 XML 2002-01-01//EN"
+ 2) Modified the contact information and added the xml processing instruction.
+ 3) Removed all element minimization parameters (- -,o -,- o,o o)
+ 4) Modified the dtd to utilize the patent application publication entity and notation
+    references, as well as the cals-xml and original mathml DTDs.
+ 5) Element S-2 attribute SEQ-NO changed from NUMBER to CDATA.
+ 6) Changed element references of MATH to math to comply with the mathml dtd. Elements F and
+    MATHML were impacted. In SGML elements are case insensitive, and in the production data the
+    lower case math element tag mapped to the MATH element. However in xml the elements and
+    attributes are case sensitive. Since the data was already lower case, the DTD was modified
+    to conform to the data.
+ 7) Case sensitivity problems existed with all of the table elements and attributes. Consequently
+    a new upper case cals xml dtd was created (CALSxmlUC.dtd) and this dtd was modified to
+    reference it. Entities YESORNO, PARACON, TITLES, and TBL.TABLE.ATT were also modified for
+    upper case (in this DTD).
+ 8) The DTD was modified to reference the local entity file ST32-US-Grant-025xml.ent which contains
+    the external file entity declarations. The DTD no longer needs to be modified for entity file path
+    changes, and no longer has any hard-coded path information.
+
+2001-07-10
+ 1) Modified PUBLIC identifier to: "-//USPTO//DTD ST.32 US PATENT GRANT V2.5 2002-01-01//EN"
+ 2) Kind code changes effective 2001-01-02 to accommodate pre-grant publication status (B130)
+    required a comment change in the dtd.
+ 3) CHEM-US and MATH-US content mode changed from EMI* to EMI?. A single image file is provided.
+    The file however may be a multi-page tiff image.
+ 4) Modified the following elements to include an ALT attribute for compliance to
+    section 508 of the Rehabilitation Act Amendments of 1998:
+	CHEMCDX           with default value "chemistry chemdraw file"
+	CHEMMOL           with default value "chemistry mol file"
+	CUSTOM-CHARACTER  with default value "custom character"
+	EMI               with default value "embedded image"
+	MATHEMATICA       with default value "mathematica file"
+	RTI               with default value "replaced text with image"
+ 5) Changed the attribute sequence of CUSTOM-CHARACTER to conform to the sequence used by the
+    other file link elements.
+ 6) Modified sequence listing element S-2-VI-A (organism) to be optional.
+ 7) Re-added attributes HE, WI, LX, and LY to elements CUSTOM-CHARACTER, RTI, and EMI. They had
+    been removed in version V2.3 with the assumption that the information could be extracted
+    from the TIFF header. The attribute sequence may have changed from V2.2.
+ 8) Added element B690US (prior publication) to related applications. Multiple B690US elements
+    may exist.
+ 9) Added optional attribute LANG to element DOC.
+10) Element B864 is now optional.
+
+2000-09-20
+1) Modified PUBLIC identifier to: "-//USPTO//DTD ST.32 US PATENT GRANT V2.4 2000-09-20//EN"
+2) Changed optional element LEGAL-REPRESENTATIVE of B721 (inventor) to zero or more.
+3) Added alias comment to DTD description.
+
+2000-08-28
+1) Modified PUBLIC identifier to: "-//USPTO//DTD ST.32 US PATENT GRANT V2.3 2000-09-08//EN"
+2) Made element B863 (35 USC 371 (PCT) date) optional since it no longer being captured within
+   Application Red Book.
+3) Modified B561 (Citing a patent document) and B562 (Citing non-patent literature) to include
+   optional elements CITED-BY-EXAMINER and CITED-BY-OTHER.
+4) In the B500 model (Technical information), added optional element BOTANIC after B540
+   (Title of Invention). Element BOTANIC is required for all Plant patents within Application Red
+   Book, and will eventually be populated within Grant Red Book.
+5) Element B222US content model changed from EMPTY to PDAT to allow for the inclusion of the
+   notice text.
+6) Comments for elements B561 (Citing a patent document) and B562 (Citing non-patent literature)
+   were modified to clarify usage.
+7) Added optional element LEGAL-REPRESENTATIVE to B721 (inventor). It contains a PARTY-US element
+   with DTXT containing the text identifying the type of legal representative such as:
+       legal representative
+       executor
+       executrix
+       heir
+       heiress
+       adminsitrator
+       administratrix
+   Element LEGAL-REPRESENTATIVE is used when the inventor is deceased or incapacitated. If deceased,
+   DTXT within the inventor party-US element will contain the "deceased" text.
+8) Comments were added to name elements TTL, SFX, IID, and IRF indicating that they are reserved for
+   future use. These elements are not used even if appropriate content exists within the first name
+   (FNM) or sir name (SNM).
+9) Comments were added to address elements CNTY, EAD, TEL, and FAX indicating that they are reserved
+   for future use. These elements are not used even if appropriate content exists within one of the
+   other address elements.
+10)Removed the optional TIFF image reference (EMI) from the table CWU. The data capture contractor
+   does not create TIFF images for tables.
+11)Removed attributes HE, WI, LX, LY, and TI from element EMI. HE, WI, LX, and LY information should be
+   extracted from the TIFF header. TI is not initialized and the ST32 definitions are unclear.
+12)Removed attributes HE, WI, LX, and LY from element CUSTOM-CHARACTER and RTI. This information
+   should be extracted from the TIFF header.
+13)Removed attribute option ST33 (leaving just TIFF) from the IMF attribute of elements EMI and RTI.
+14)Added attribute TYPE to element EMI with values CCITG4 (default) and HALFTONE. CCITG4 indicates
+   that the image is 400dpi with CCITG4 compression. HALFTONE indicates that the image is a 100dpi
+   grayscale image with LZW compression.
+15)Modified element NCIT to include optional DOC for patent applications. Since the existing data
+   capture procedures have not changed, patent application citation information will continue to be
+   included as text within STEXT. This change is intented to allow implementation when the data
+   capture procedures change.
+16)Added INID codes as an element attribute where appropriate. Impacted elements are:
+   [10] B100 Document Identification
+   [11] B110 Document Number
+   [12] B130 Document Kind (Render in Descriptive Form)
+   [45] B140 Document Date (publication or issue)
+   [19] B190 Publishing Country or Organization (WIPO ST.3)
+   [21] B210 Application Number For US Documents
+   [22] B220 Application or PCT Filing Date
+   [30] B300 Foreign Priority Data
+   [51] B510 International Patent Classification (IPC) Data
+   [52] B520 Domestic or National Classification Data
+   [54] B540 Title of Invention
+   [56] B560 Citations
+   [57] B570 Abstract or Design Claim and Figure Description
+   [58] B580 Field of Search
+   [60] B600 Continuity Data/Prior Provisional Application
+   [62] B620 Division of
+   [63] B630 Continuation of
+   [64] B640 Reissue of
+   [66] B660 Document for which this is a substitute
+   [73] B730 Assignee (grantee, assignee, holder, owner)
+   [86] B860 PCT International Application Number
+   [87] B870 PCT Publication Date/Number
+
+2000-08-21
+1) Modified PUBLIC identifier to: "-//USPTO//DTD ST.32 US PATENT GRANT V2.2 2000-08-21//EN"
+2) Removed PBOX from ADR - It is included as part of STR per current data capture procedures.
+3) Added element B597US to indicate if there is an exemplary drawing.
+4) FGREF changed from EMPTY to PDAT.
+5) Added attribute ID to element SDODR.
+6) B570 content model changed from (B577,B578US*) to (B577,B578US+) since there will always
+   be a an exemplary claim.
+Note: SDT current data capture procedures only allows for 0 or 1 STR, even though the DTD uses STR*.
+
+
+2000-07-06
+1) Sequence Listing - Changed occurrence of <S-2-VII-B> to OPTIONAL (06087127)
+
+2000-06-30
+1) Sequence Listing - Changed occurrence of <S-2-I-A> to OPTIONAL - (0684625)
+
+2000-06-29
+1) Sequence Listing - Changed occurrence <S-2-X-A>, <S-2-X-B> to OPTIONAL - (06083712)
+
+2000-06-28
+1) Changed the content model for B700 from (B720,B730?,B740?,B745) to (B720,B730*,B740?,B745).
+...A document may have more than one assignee.
+2) Changed the PTEXT content model by moving PDAT to the start of the list for XML compatibility.
+....from (B830|CIT|CLREF|CRF|CWU|DFREF|DNUM|FGREF|FOO|FOR|HIL|IMG|LST|LSTREF|PAREF|PDAT|SEQREF|TBLREF)
+....  to (PDAT|B830|CIT|CLREF|CRF|CWU|DFREF|DNUM|FGREF|FOO|FOR|HIL|IMG|LST|LSTREF|PAREF|SEQREF|TBLREF).
+3) Changed content model for B540 (title), H (headers), and CLM (claims) to allow complex work units.
+...These elements are found to contain complex work units. Added CWU to STEXT.
+
+2000-06-21
+1) Changed occurrence of <S-2-VIII-A>, <S-2-VIII-B>, <S-2-VIII-C>,
+                         <S-2-X-C>, <S-2-X-D>, <S-2-X-E>, <S-2-X-F> to OPTIONAL
+2000-06-15
+1) Changed the model for element S-1-VIII-A from (PARTY-US)  to (NAM).
+2) Changed the model for element S-2-X-A    from (PARTY-US+) to (NAM+).
+3) Changed the model for element S301       from (PARTY-US+) to (NAM+).
+4) Changed the comments for elements S-2-X-A and S301 to eliminate the reference to one name per line.
+
+2000-06-12
+1) Changed occurrence of <S-2-IX-A>, <S-2-X-G>, & <S-2-X-K> to OPTIONAL
+
+2000-06-01
+1) Changed SEQLST-US content model (allowing for non-compliant sequence data)
+......from: ((SEQ-LST-1,EMI*) | (SEQ-LST-2,EMI*))
+........to: ((SEQ-LST-OLD | SEQ-LST-NEW | TABLE),EMI*)
+2) Renamed element SEQ-LST-1 to SEQ-LST-OLD
+3) Renamed element SEQ-LST-2 to SEQ-LST-NEW
+
+2000-05-02
+1) Changed comment text from:
+...S-1-IX		(1)(ix) TELECOMMUNICATION INFOR-MATION (O)
+...To:
+...S-1-IX		(1)(ix) TELECOMMUNICATION INFORMATION (O)
+
+2000-05-01 Bio-Sequence Updates. The following element modifications are proposed by LAB
+per bio-sequence data content:
+1) The following required elements are now optional:
+...S-2-III
+...S-2-IV
+...S-2-VI
+...S-2-VII
+...S-2-VII-A
+...S-2-VIII
+...S-2-VI-B
+...S-2-VI-C
+...S-2-VI-D
+...S-2-VI-E
+...S-2-VI-F
+...S-2-VI-G
+...S-2-VI-H
+...S-2-VI-I
+...S-2-IX-B
+...S-2-IX-C
+...S-2-IX-D
+2) The following elements are defined with a frequency of 0 or more:
+...S-2-II (was 1 or more)
+...S-2-IX (was 1 or more)
+...S220	(was optional)
+3) Changed the content model of <SEQ-LST-2> to (S100, (S200, S300?, S400)+)
+
+2000-04-18, added SEQREF missing element
+
+2000-4-13, All date fields defined as yyyymmdd
+2000-4-13, RTIS notes that several required data fields are not being initialized. Let the parser
+.....identify any additional DTD changes.
+2000-4-12, RTIS recommends discarding element S-2-II-MT and creating the attribute
+..... MOLECULE-TYPE on S-2-II. Not implemented. In Red Book attributes are used for retaining
+..... unique identification or presentation information and not for data content. In addition
+..... attribute information is not as easily searched within some search engines. Attributes
+..... tend to hide the data.
+2000-4-12, OPTI identifies redundant elements between "B" tags and this DTD content. These elements
+..... reflect redundant information within Red Book, and since the "B" tags are already required,
+..... the corresponding sequence listing tags (and data content) are to be deleted. The impacted
+..... elements are:
+.....
+.....Old. Deleted....Original
+.....New .Element....Element
+.....____.__________._________________________________________
+.....Old..S-1-I......B721..Applicant
+.....Old..S-1-II.....B540..Title of invention
+.....Old..S-1-VI-A...B210..Application number
+.....Old..S-1-VI-B...B220..Application filing date
+.....Old..S-1-VI-C...B510..International Patent Classification
+.....Old..S-1-VII-A..B310..Priority application number
+.....Old..S-1-VII-B..B320..Filing date of priority application
+.....Old..S-1-VIII-A.B741..Attorney name and address
+.....Old..S-2-X-J....B140..Document date (publication or issue)
+.....Old..S-1-VI...........All content is duplicated
+.....Old..S-1-VII..........All content is duplicated
+.....New..S110.......B721..Applicant
+.....New..S120.......B540..Title of invention
+.....New..S140.......B210..Application number
+.....New..S141.......B220..Application filing date
+.....New..S150.......B310..Priority application number
+.....New..S151.......B320..Filing date of priority application
+.....New..S312.......B140..Document date (publication or issue)
+2000-3-29, RTIS recommended adding a SEQ-NO attribute to S-2. Implemented
+
+Revised 2000-03-07, By JVN
+
+.. Element B580 changed from B582+,B583US* to (B582|B583US)+ to allow for any
+		order of structured or unstructured national classification
+.. Element F, added PTEXT to allow non-CWU in-line formula
+.. Element H, removed F (now part of STEXT)
+.. Element PAR, LVL attribute changed from (0 | 1 | 2 | 3 | 4 | 5)
+		to (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) in order to capture all known paragraph types.
+.. Element PTEXT added F to allow non-CWU in-line formula
+.. Changed version number to 1.9 and date to 2000-03-07
+
+Revised 1999 July 29, Bruce B. Cox
+..changed version number to 1.7
+..added "mathentity" delcaration and invocation for MathML entity names
+Revised 1999 July 12, Bruce B. Cox
+..changed version number to 1.6
+..FILE ENTITY attribute changed to #REQUIRED everywhere except in PATDOC
+..changed comment on B210 to reflect content change
+..added attribute LVL to PARA with allowed values of 0, 1, 2, 3, 4, 5
+..added ? quantifier to SDOAB - Design patents have no abstract
+..added ? quantifier to DETDESC - Plant patents have no detailed description
+..added CUSTOM-CHARACTER empty element for image of non-ISO standard character
+..changed PDAT content model from (#PCDATA | DEL-S | DEL-E | INS-S | INS-E) to
+...(#PCDATA | DEL-S | DEL-E | INS-S | INS-E | CUSTOM-CHARACTER)
+...do not use IMG for non-ISO standard characters
+..added CLMSTEP for steps or elements of a claim
+..changed CLM content model from (PTEXT | PARA)+ to (PTEXT | PARA | CLMSTEP)+
+..changed HIL content model from (LTL | SP | SB )+ to
+...(LTL | SP | SB | BOLD | ITALIC | ULINE | DULINE | SMALLCAPS)*
+..changed LTL content model from (STEXT)+ to (PDAT)
+Revised 1999 June 10, Bruce B. Cox
+..changed version number to 1.5
+..changed the comment to B522 to restrict this tag to official cross references
+..added B522US for unofficial cross references
+Revised 1999 April 5, Bruce B. Cox
+..changed version number to 1.4
+..added ISO-PUB and ISO-AMSA character sets
+..added NOTATION declarations for TIF, MOL, CDX, and MAT
+Revised 199 April 1, Bruce B. Cox
+..changed version number and date to v1.3, 1999 April 1
+Revised 1999 March 23, Bruce B. Cox
+..corrected FOR content model from (STEXT) to EMPTY
+Revised 1999 March 22, Bruce B. Cox
+..corrected B580 model from (B581* | B582+ | B583US*) to (B581*, B582+, B583US*)
+Revised 1999 March 9, Bruce B. Cox
+..changed version number to 1.2
+..removed B450, B523, B862 - not needed in US documents
+...changed B400 model from (B450?,B472?) to (B472)
+...changed B520 model from (B521,(B522 | B523)*) to (B521,B522*)
+...changed B860 model from (B861,B862?,B863?,B864?) to (B861,B863?,B864?)
+..changed B561 model from (PDAT | PCIT) to (PCIT) - must use citation structure
+..changed B562 model from (PTEXT* | NCIT) to (NCIT) - must use citation structure
+..changed B580 model from (B581 | B582 | B583US)+ to (B581*, B582+, B583US*)
+... - repetitions within rather than of B580
+..changed B800 model from (B860?,B870?) to (B860,B870?) - element required
+..changed B860 model from (B861,B862?,B863?,B864?) to (B861,B863,B864) - PCT information required
+..changed IMG model from (EMI | EMR | ELE | RTI | DEL-S | DEL-E | INS-S | INS-E)
+..................... to (EMI | EMR | ELE | RTI | DEL-S | DEL-E | INS-S | INS-E)+
+..changed NCIT model from (ARTCIT | BOOKCIT | DBASECIT | OTHCIT) to (STEXT)
+..removed ARTCIT, BOOKCIT, DBASECIT, OTHCIT, and all subordinate elements
+... - complex structure no benefit to searching because of high probability of errors
+..added S300, S301, S302, S303, S304, S305, S306, S307, S308, S309, S313
+...to comply with ST.25 in absence of removed citation tags
+..changed S200 model from (S210,S211,S212,S-2-I?,S-2-II?,S-2-III?,S-2-IV?,S-2-V?,S213,S-2-VI?,S-2-VII?,S-2-VIII?,S220*,CIT*,S400)
+...................... to (S210,S211,S212,S-2-I?,S-2-II?,S-2-III?,S-2-IV?,S-2-V?,S213,S-2-VI?,S-2-VII?,S-2-VIII?,S220*,S300*,CIT*,S400)
+..changed CIT model from (((DOC,B220,B140,NAM*,PIC*,PNC*) | NCIT),REL*)*
+..................... to (((DOC,B220,B140,NAM*,PIC*,PNC*) | NCIT),REL*)+
+Revised 1999 January 20, Bruce B. Cox
+..changed version number to 1.1
+..added IMG to PTEXT and STEXT models for character images
+..revised mechanism for changed text as follows:
+...removed CHG-S and CHG-E
+...added DEL-S, DEL-E, INS-S, INS-E
+...added those four tags to PDAT content model and a few other places
+...modified all #PCDATA-only content models to PDAT
+...(deleted/inserted text allowed anywhere but no inclusions per XML)
+...all branches of the tree terminate in PDAT!
+..in STEXT, replaced SB and SP with HIL
+..changed SDOCL model from (H|CL) to (H?,CL)
+..added PARACON and TITLES entities for CALSTabl
+..in SDODR, moved * quantifier from EMI to the whole model
+..added + quantifier within both STEXT and PTEXT
+..added ? quantifier to B122US in B100 model
+..added * quantifier to EMI in each CWU model; any one CWU may have multiple image files
+..changed ID attribute type from IDREF to ID for all external files referenced in a CWU
+..added ? quantifier to FNM
+..added PAREF, reference to a paragraph number
+Revised 1998 December 8, Bruce B. Cox
+..moved LST out of CWU definition
+..changed P tag to PARA for CALS Table compatability
+..changed ELE content model from PTEXT to STEXT
+..added elements to SEQLST-US for old rules and embedded sequences
+..removed bib tags from SEQLST-US (redundant) and tags for data not captured
+..added SEQREF to PTEXT
+..replaced special image tags in all CWUs with EMI
+..fixed CWU empty tag attributes to add external file entities
+Revised 1998 December 4, Bruce B. Cox
+..version number set to 1.0
+..revised to comply with the latest, extensive revisions to Red Book and
+...XML 1.0 (except empty tags and UNICODE) consistent with SGML
+..replaced CALS math with MathML which was modified to be SGML compliant
+Revised 1998 November 20, Bruce B. Cox
+Revised 1998 September 30, Bruce B. Cox
+Note: this DTD was developed by the USPTO in August of 1997 to support
+..the publishing of patent documents. It was derived from version 3.4 of the
+..WIPO Standard ST.32 DTD. The original DTD was modified to handle only those
+..elements used by the USPTO. It incorporates the CALS table and equation
+..models, and handles graphics as external entities. The last revision
+..occured on 03/09/1998.
+********** END REVISION HISTORY **********
+-->
+
+<!--Patent Document-->
+<!ELEMENT PATDOC   (SDOBI,SDOAB?,SDODE,SDOCL,SDODR?,SDOCR?) >
+
+<!--cy = Country, organization (code from WIPO Standard ST.3)
+dnum = Identification number
+date = date of publication
+file = file identification
+kind = Kind of patent (code from WIPO Standard ST.16)
+status = Status of the patent document
+dtd = Version NUMBER of DTD-->
+<!ATTLIST PATDOC
+               CY  CDATA    #IMPLIED
+               DNUM  CDATA    #IMPLIED
+               DATE  NMTOKEN    #IMPLIED
+               KIND  CDATA    #IMPLIED
+               STATUS  CDATA    #IMPLIED
+               DTD  NMTOKEN    #IMPLIED  >
+
+<!-- ***** start external references ***** -->
+
+<!-- (this must precede the CALS table declaration)
+     *************************************************************************
+     * NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE *
+     *************************************************************************
+     * The following entities override default values within the CALSxml DTD *
+     *************************************************************************
+-->
+<!ENTITY % yesorno  "NMTOKEN" >
+<!ENTITY % paracon "PTEXT*" >
+<!ENTITY % titles "PTEXT*" >
+<!ENTITY % tbl.table.att        " pgwide      %yesorno;       #IMPLIED
+                                  orient      (port | land)   #IMPLIED
+                                  tabstyle    NMTOKEN         #IMPLIED">
+
+<!--
+     *************************************************************************
+     * End of the CALSxml DTD overrides                                      *
+     *************************************************************************
+     * NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE *
+     *************************************************************************
+-->
+
+<!ENTITY % USPTOentities SYSTEM "..\dtds\ST32-US-Grant-025xml.ent"                                         >
+%USPTOentities;
+
+<!NOTATION TIF PUBLIC "-//Aldus//NOTATION Tagged Image File Format//EN" >
+<!NOTATION CDX PUBLIC "-//CambridgeSoft Corp.//NOTATION ChemDraw Format 4.x//EN" >
+<!NOTATION MOL PUBLIC "-//MDL Information Systems//NOTATION Chemical Expression File Format//EN" >
+<!NOTATION NB  PUBLIC "-//Mathmatica//NOTATION Mathmatica File Format//EN" >
+
+<!-- ***** end external references ***** -->
+
+<!--Components of an address-->
+<!ELEMENT ADR   (OMC?,STR*,CITY?,CNTY?,STATE?,CTRY?,PCODE?,EAD*,TEL*,FAX*) >
+
+<!--Document identification-->
+<!ELEMENT B100   (B110,B122US?,B130,B140,B190) >
+<!ATTLIST B100 INID  CDATA #FIXED "[10]" >
+
+<!--Document number.-->
+<!ELEMENT B110   (DNUM) >
+<!ATTLIST B110 INID  CDATA #FIXED "[11]" >
+
+<!--Literal: "A statutory invention registration is not a patent. It has the defensive attributes of a
+patent but does not have the enforceable attributes of a patent. No article or advertisement
+or the like may use the term patent, or any term suggestive of a patent, when referring to a
+statutory invention registration. For more specific information on the rights associated with a
+statutory invention registration see 35 U.S.C.157."
+-->
+<!ELEMENT B122US   (PDAT) >
+
+<!--
+Kind codes changed effective 2001-01-02 to accommodate pre-grant publication status.
+
+A1 - Utility Patent issued prior to January 2, 2001.
+A1 - Utility Patent Application published on or after January 2, 2001.
+A2 - Second or subsequent publication of a Utility Patent Application.
+A9 - Corrected published Utility Patent Application.
+Bn - Reexamination Certificate issued prior to January 2, 2001. NOTE: "n" represents a value 1 through 9.
+B1 - Utility Patent (no pre-grant publication) issued on or after January 2, 2001.
+B2 - Utility Patent (with pre-grant publication) issued on or after January 2, 2001.
+Cn - Reexamination Certificate issued on or after January 2, 2001. NOTE: "n" represents a value 1 through 9 denoting the publication level.
+E1 - Reissue Patent.
+Fn - Reexamination Certificate of a Reissue Patent NOTE: "n" represents a value 1 through 9 denoting the publication level.
+H1 - Statutory Invention Registration (SIR) Patent Documents. SIR documents began with the December 3, 1985 issue.
+I1 - "X" Patents issued from July 31, 1790 to July 13, 1836.
+I2 - "X" Reissue Patents issued from July 31, 1790 to July 13, 1836.
+I3 - Additional Improvements - Patents issued between 1838 and 1861.
+I4 - Defensive Publication - Documents issued from November 5, 1968 through May 5, 1987.
+I5 - Trial Voluntary Protest Program (TVPP) Patent Documents.
+NP - Non-Patent Literature.
+P1 - Plant Patent issued prior to January 2, 2001.
+P1 - Plant Patent Application published on or after January 2, 2001.
+P2 - Plant Patent (no pre-grant publication) issued on or after January 2, 2001.
+P3 - Plant Patent (with pre-grant publication) issued on or after January 2, 2001.
+P4 - Second or subsequent publication of a Plant Patent Application.
+P9 - Correction publication of a Plant Patent Application.
+S1 - Design Patent.
+
+-->
+
+<!ELEMENT B130   (PDAT) >
+<!ATTLIST B130 INID  CDATA #FIXED "[12]" >
+
+<!--Document date (publication or issue).-->
+<!ELEMENT B140   (DATE) >
+<!ATTLIST B140 INID  CDATA #FIXED "[45]" >
+
+<!--Publishing country or organization code from WIPO Standard ST.3.-->
+<!ELEMENT B190   (PDAT) >
+<!ATTLIST B190 INID  CDATA #FIXED "[19]" >
+
+<!--Domestic filing data-->
+<!ELEMENT B200   (B210,B211US,B220,B221US?,B222US?) >
+
+<!--Application number
+For US documents: SSnnnnnn
+(two-digit series code, six-digit serial number with leading zeros)-->
+<!ELEMENT B210   (DNUM) >
+<!ATTLIST B210 INID  CDATA #FIXED "[21]" >
+
+<!--Series Code, two-digit, representing the following time periods and document types:
+02 ... up to ...1947-12-31
+03 1948-01-01...1959-12-31
+04 1960-01-01...1969-12-31
+05 1970-01-01...1978-12-31
+06 1979-01-01...1986-12-31
+07 1987-01-01...1992-12-31
+08 1993-01-01...1997-12-29
+09 1997-12-30...and after
+29 Design Application
+60 Provisional Application
+90 Reexamination Request-->
+<!ELEMENT B211US   (PDAT) >
+
+<!--Application filing date-->
+<!ELEMENT B220   (DATE) >
+<!ATTLIST B220 INID  CDATA #FIXED "[22]" >
+
+<!--When present, signifies that the application was filed under Rule 47, indicating
+the applicant(s) refused to execute the application or could not be found.-->
+<!ELEMENT B221US    EMPTY  >
+
+<!--When present, signifies the prosecution of the application
+includes the Continued Prosecution Application (CPA) procedure, and contains the notice text-->
+<!ELEMENT B222US   (PDAT)  >
+
+<!--Foreign priority data-->
+<!ELEMENT B300   (B310,B320,B330) >
+<!ATTLIST B300 INID  CDATA #FIXED "[30]" >
+
+<!--Priority application number-->
+<!ELEMENT B310   (DNUM) >
+
+<!--Filing date of priority application.-->
+<!ELEMENT B320   (DATE) >
+
+<!--Publishing country or organization.-->
+<!ELEMENT B330   (CTRY) >
+
+<!--Public availability dates and term of protection-->
+<!ELEMENT B400   (B472) >
+
+<!--Term of grant.-->
+<!ELEMENT B472   (B473?,B473US?,B474?,B474US?) >
+
+<!--Disclaimer date-->
+<!ELEMENT B473   (DATE) >
+
+<!--When present, this tag signifies that the patent is subject to a terminal disclaimer.-->
+<!ELEMENT B473US    EMPTY  >
+
+<!--Term of Grant.
+MANDATORY for US Design Patents only.-->
+<!ELEMENT B474   (PDAT) >
+
+<!--Term extension under 35 USC 154(b). Either "5 years", or the number of days (as an integer)
+if the extension is less than five years.-->
+<!ELEMENT B474US   (PDAT) >
+
+<!--Technical information-->
+<!ELEMENT B500   (B510,B520,B540,BOTANIC?,B560?,B570,B580,B590?) >
+
+<!--International Patent Classification (IPC) data.-->
+<!ELEMENT B510   (B511,B512*,B516) >
+<!ATTLIST B510 INID  CDATA #FIXED "[51]" >
+
+<!--International Patent Classification (IPC) Main classification
+or Locarno Classification for Design patents-->
+<!ELEMENT B511   (PDAT) >
+
+<!--Further IPC classification-->
+<!ELEMENT B512   (PDAT) >
+
+<!--Edition, version of IPC-->
+<!ELEMENT B516   (PDAT) >
+
+<!--Domestic or national classification data-->
+<!ELEMENT B520   (B521,B522*,B522US*) >
+<!ATTLIST B520 INID  CDATA #FIXED "[52]" >
+
+<!--Domestic or National classification, Main classification.
+US: Original classification (OR).-->
+<!ELEMENT B521   (PDAT) >
+
+<!--Further classification
+US: Cross-reference classification (official, or XR)-->
+<!ELEMENT B522   (PDAT) >
+
+<!--Further classification
+US: Cross-reference classification (unofficial, or UR)-->
+<!ELEMENT B522US   (PDAT) >
+
+<!--Title of invention-->
+<!ELEMENT B540   (STEXT+) >
+<!ATTLIST B540 INID  CDATA #FIXED "[54]" >
+
+<!--Citations-->
+<!ELEMENT B560   (B561 | B562)+ >
+<!ATTLIST B560 INID  CDATA #FIXED "[56]" >
+
+<!--Citing a patent document-->
+<!ELEMENT B561   (PCIT,(CITED-BY-EXAMINER | CITED-BY-OTHER)?) >
+
+<!--Citing non-patent literature-->
+<!ELEMENT B562   (NCIT,(CITED-BY-EXAMINER | CITED-BY-OTHER)?) >
+
+<!--Claims allowed or representative claim(s).-->
+<!ELEMENT B570   (B577,B578US+) >
+<!ATTLIST B570 INID  CDATA #FIXED "[57]" >
+
+<!--Number of claims allowed.-->
+<!ELEMENT B577   (PDAT) >
+
+<!--Exemplary claim number.-->
+<!ELEMENT B578US   (PDAT) >
+
+<!--Field of search-->
+<!ELEMENT B580   (B581*,(B582|B583US)+) >
+<!ATTLIST B580 INID  CDATA #FIXED "[58]" >
+
+<!--International patent classification (IPC)-->
+<!ELEMENT B581   (PDAT) >
+
+<!--National classification.
+Use for structured US Classification information:
+...Pos. 1 - 3 ... Class
+3 alphanumeric characters, right justified; D for design classes,
+followed by one or two right-justified digits; PLT for Plant classes
+...Pos. 4 - ... Subclass
+alphanumeric, variable length-->
+<!ELEMENT B582   (PDAT) >
+
+<!--US classification, unstructured. Could be any combination of classes, subclasses, ranges
+of subclasses, etc.-->
+<!ELEMENT B583US   (PDAT) >
+
+<!--Specification and drawings-->
+<!ELEMENT B590   (B594US?,B595?,B595US?,B596,B597US?) >
+
+<!--If there is an optical microform (microfiche, microfilm, microcard, etc.) appendix,
+the number of microforms and the number of pages imaged thereon (separated by a comma)
+are shown here.-->
+<!ELEMENT B594US   (PDAT) >
+
+<!--Number of drawing sheets submitted by applicant-->
+<!ELEMENT B595   (PDAT) >
+
+<!--Number of drawing sheets submitted in color-->
+<!ELEMENT B595US   (PDAT) >
+
+<!--Number of figures (not the same as B595)-->
+<!ELEMENT B596   (PDAT) >
+
+<!--Indicates that there is an exemplary drawing-->
+<!ELEMENT B597US    EMPTY  >
+
+<!--Related patents or applications-->
+<!ELEMENT B600   (B610 | B620 | B630 | B640 | B641US | B645 | B645US | B646US | B660 |
+               B680US | B690US)+ >
+<!ATTLIST B600 INID  CDATA #FIXED "[60]" >
+
+<!--Earlier document to which this is an addition-->
+<!ELEMENT B610   (PARENT-US) >
+
+<!--Earlier application from which the present document has been divided out.-->
+<!ELEMENT B620   (PARENT-US) >
+<!ATTLIST B620 INID  CDATA #FIXED "[62]" >
+
+<!--Continuations-->
+<!ELEMENT B630   (B631 | B632 | B633)+ >
+<!ATTLIST B630 INID  CDATA #FIXED "[63]" >
+
+<!--Earlier application of which the present document is a continuation-->
+<!ELEMENT B631   (PARENT-US) >
+
+<!--Document of which this is a continuation-in-part-->
+<!ELEMENT B632   (PARENT-US) >
+
+<!--Document of which this is a continuing reissue-->
+<!ELEMENT B633   (PARENT-US) >
+
+<!--Reissue-->
+<!ELEMENT B640   (PARENT-US) >
+<!ATTLIST B640 INID  CDATA #FIXED "[64]" >
+
+<!--Divisional resissue information of a related US document-->
+<!ELEMENT B641US   (PARENT-US,SIBLING+) >
+
+<!--Reexamination requested by the  applicant, assignee, or commissioner-->
+<!ELEMENT B645   (PARENT-US) >
+
+<!--Present when a reissue application was merged with a reexamination proceeding.
+The issuing document is a reissue patent which shows the following Reexamination results
+statement on the reissue patent front page, immediately following the abstract.
+NNNNN represents the Reexamination Request Number, and YYYYMMDD the filing date.
+"The questions raised in reexamination request No.90/NNNNN, filed YYYYMMDD, have
+been considered and the results thereof are reflected in this reissue patent which constitutes
+the reexamination certificate required by 35 USC 307 as provided in 37 CFR 1.570(e)."
+-->
+<!ELEMENT B645US   (PDAT) >
+
+<!--Reexamination requested by a 3rd party-->
+<!ELEMENT B646US   (PARENT-US) >
+
+<!--Previously-published document concerning the same application-->
+<!ELEMENT B650   (DOC) >
+
+<!--Document for which this is a substitute-->
+<!ELEMENT B660   (PARENT-US) >
+<!ATTLIST B660 INID  CDATA #FIXED "[66]" >
+
+<!--US Provisional Application information-->
+<!ELEMENT B680US   (DOC) >
+
+<!--Parties concerned with the document-->
+<!ELEMENT B700   (B720,B730*,B740?,B745) >
+
+<!--Inventor information-->
+<!ELEMENT B720   (B721+) >
+
+<!--Inventor name, address, and residence.-->
+<!ELEMENT B721   (PARTY-US, LEGAL-REPRESENTATIVE*) >
+
+<!--Assignee-->
+<!ELEMENT B730   (B731,B732US)+ >
+<!ATTLIST B730 INID  CDATA #FIXED "[73]" >
+
+<!--Assignee name and address-->
+<!ELEMENT B731   (PARTY-US) >
+
+<!--Assignee type code:
+01 Unassigned
+02 United States company or corporation
+03 Foreign company or corporation
+04 United States individual
+05 Foreign individual
+06 United States government
+07 Foreign government
+08 County government (US)
+09 State government (US)-->
+<!ELEMENT B732US   (PDAT) >
+
+<!--Attorney, agent, or representative.
+US: Maximum of three.-->
+<!ELEMENT B740   (B741+) >
+
+<!--Attorney name and address-->
+<!ELEMENT B741   (PARTY-US) >
+
+<!--Persons acting upon the document-->
+<!ELEMENT B745   (B746,B747*,B748US) >
+
+<!--Primary examiner name-->
+<!ELEMENT B746   (PARTY-US) >
+
+<!--Assistant examiner name-->
+<!ELEMENT B747   (PARTY-US) >
+
+<!--Technology Center, Industry Sector, Art Unit, or other grouping of US patent examiners.-->
+<!ELEMENT B748US   (PDAT) >
+
+<!--Data related to international conventions-->
+<!ELEMENT B800   (B860,B870?) >
+
+<!--Microorganism deposit information-->
+<!ELEMENT B830   (B831,B832?,B833?) >
+
+<!--Deposit file number-->
+<!ELEMENT B831   (PDAT) >
+
+<!--Identificaiton of authority where deposit was made-->
+<!ELEMENT B832   (PDAT) >
+
+<!--Date of deposit-->
+<!ELEMENT B833   (DATE) >
+
+<!--PCT or regional authority filing information-->
+<!ELEMENT B860   (B861,B864US?) >
+<!ATTLIST B860 INID  CDATA #FIXED "[86]" >
+
+<!--PCT document identification. CTRY is always WO.-->
+<!ELEMENT B861   (DOC) >
+
+<!--371 (c)(1)(2)(4) PCT date-->
+<!ELEMENT B864US   (DATE) >
+
+<!--PCT or regional authority publication information-->
+<!ELEMENT B870   (B871) >
+<!ATTLIST B870 INID  CDATA #FIXED "[87]" >
+
+<!--Document identification; CTRY is always WO.-->
+<!ELEMENT B871   (DOC) >
+
+<!--Bulletin number-->
+<!ELEMENT BNUM   (PDAT) >
+
+<!ELEMENT BOLD   (PDAT | HIL )* >
+
+<!-- Plant Patent Botanic information -->
+<!ELEMENT BOTANIC  (LATIN-NAME, VARIETY) >
+
+<!--Brief Summary-->
+<!ELEMENT BRFSUM   (BTEXT) >
+
+<!--Body text (container for many kinds of text).-->
+<!ELEMENT BTEXT   (H | PARA | CWU | IMG)+ >
+
+<!--Child document identification-->
+<!ELEMENT CDOC   (DOC) >
+
+<!--Chemical Notation-->
+<!ELEMENT CHEM-US   (CHEMCDX,CHEMMOL,EMI?) >
+
+<!ATTLIST CHEM-US
+               ID  ID    #REQUIRED  >
+
+<!--Chemical Notation in CDX4 Format-->
+<!ELEMENT CHEMCDX    EMPTY  >
+
+<!ATTLIST CHEMCDX
+               ID  ID    #REQUIRED
+               ALT   CDATA    "chemistry chemdraw file"
+               FILE  ENTITY    #REQUIRED  >
+
+<!--Chemical notation in MOL format-->
+<!ELEMENT CHEMMOL    EMPTY  >
+
+<!ATTLIST CHEMMOL
+               ID  ID    #REQUIRED
+               ALT   CDATA    "chemistry mol file"
+               FILE  ENTITY    #REQUIRED  >
+
+<!--Citation of patent or non-patent (NCIT) literature-->
+<!ELEMENT CIT   (((DOC,B220,B140,NAM*,PIC*,PNC*) | NCIT),REL*)+ >
+
+<!-- Cited by the Eximiner -->
+<!ELEMENT CITED-BY-EXAMINER    EMPTY >
+
+<!-- Cited by other than examiner -->
+<!ELEMENT CITED-BY-OTHER    EMPTY >
+
+<!--City or town-->
+<!ELEMENT CITY   (PDAT) >
+
+<!--Ordered Claim list-->
+<!ELEMENT CL   (CLM+) >
+
+<!--A singular claim-->
+<!ELEMENT CLM   (PTEXT | PARA | CLMSTEP)+ >
+
+<!--Claim ID-->
+<!ATTLIST CLM
+               ID  ID    #REQUIRED  >
+
+<!--A logical step or element of a claim.-->
+<!ELEMENT CLMSTEP   (PTEXT | PARA)+ >
+
+<!--Allowed values are 0, 1, 2, 3, 4, 5.-->
+<!ATTLIST CLMSTEP
+               LVL (0 | 1 | 2 | 3 | 4 | 5)   #IMPLIED  >
+
+<!--Reference to a claim-->
+<!ELEMENT CLREF    (PDAT)  >
+
+<!ATTLIST CLREF
+               ID  IDREF    #REQUIRED  >
+
+<!--County, parish, department, etc.-->
+<!--This element is not used even if appropriate content exists within one of the other address elements.-->
+<!ELEMENT CNTY   (PDAT) >
+
+<!--Reference to chemical expression-->
+<!ELEMENT CRF    EMPTY  >
+
+<!ATTLIST CRF
+               ID  IDREFS    #REQUIRED  >
+
+<!--Country. Use WIPO Standard ST.3 codes.-->
+<!ELEMENT CTRY   (PDAT) >
+
+<!--A TIFF image file containing a character which cannot be
+represented using any ISO standard character set.-->
+<!ELEMENT CUSTOM-CHARACTER    EMPTY  >
+
+<!ATTLIST CUSTOM-CHARACTER
+               ID  ID    #REQUIRED
+               ALT   CDATA    "custom character"
+               FILE  ENTITY    #REQUIRED
+               HE  NMTOKEN    #IMPLIED
+               WI  NMTOKEN    #IMPLIED
+               LX  NMTOKEN    #IMPLIED
+               LY  NMTOKEN    #IMPLIED  >
+
+<!--Complex work units-->
+<!ELEMENT CWU   (TABLE-US | MATH-US | CHEM-US | SEQLST-US | DEL-S | DEL-E |
+               INS-S | INS-E) >
+
+<!--Date. YYYYMMDD: four-digit year, two-digit month
+(leading zeros) and two-digit day (leading zeros).-->
+<!ELEMENT DATE   (PDAT) >
+
+<!--Definition description-->
+<!ELEMENT DD   (PTEXT | PARA)+ >
+
+<!--End of deleted text. Must be paired with a DEL-S to which it refers.-->
+<!ELEMENT DEL-E    EMPTY  >
+
+<!ATTLIST DEL-E
+               ID  IDREF    #REQUIRED  >
+
+<!--Start of deleted text. Must be paired with a DEL-E which refers to it.-->
+<!ELEMENT DEL-S    EMPTY  >
+
+<!ATTLIST DEL-S
+               ID  ID    #REQUIRED
+               DATE  NMTOKEN    #IMPLIED  >
+
+<!ELEMENT DETDESC   (BTEXT) >
+
+<!--Reference to formula (math)-->
+<!ELEMENT DFREF    EMPTY  >
+
+<!ATTLIST DFREF
+               ID  IDREFS    #REQUIRED  >
+
+<!--Identifying number of division-->
+<!ELEMENT DID   (PDAT) >
+
+<!--List, Definition-->
+<!ELEMENT DL   (DT,DD)+ >
+
+<!--tsize = Term size attribute
+compact = Spacing between items-->
+<!ATTLIST DL
+               TSIZE  NMTOKEN    #IMPLIED
+               COMPACT (COMPACT)   #IMPLIED  >
+
+<!--Document, application, or publication number.-->
+<!ELEMENT DNUM   (PDAT) >
+
+<!--Components of document identification-->
+<!ELEMENT DOC   (DNUM,DATE?,CTRY?,KIND?,BNUM?,DTXT*) >
+<!ATTLIST DOC LANG CDATA    #IMPLIED >
+
+<!--Drawing Descriptions-->
+<!ELEMENT DRWDESC   (BTEXT) >
+
+<!--List, Definition, Term-->
+<!ELEMENT DT   (STEXT+) >
+
+<!--Descriptive text-->
+<!ELEMENT DTXT   (STEXT*) >
+
+<!--Double underline-->
+<!ELEMENT DULINE   (PDAT | HIL)* >
+
+<!--Electronic address (e.g., email)-->
+<!--This element is not used even if appropriate content exists within one of the other address elements.-->
+<!ELEMENT EAD   (PDAT) >
+
+<!--Figure caption; embedded-image legend-->
+<!ELEMENT ELE   (STEXT) >
+
+<!--Points to the figure (image) to which this is a caption.-->
+<!ATTLIST ELE
+               ID  IDREF    #REQUIRED  >
+
+<!--Embedded image-->
+<!ELEMENT EMI    EMPTY  >
+
+<!ATTLIST EMI
+               ID  ID    #REQUIRED
+               ALT   CDATA    "embedded image"
+               FILE  ENTITY    #REQUIRED
+               HE  NMTOKEN    #IMPLIED
+               WI  NMTOKEN    #IMPLIED
+               LX  NMTOKEN    #IMPLIED
+               LY  NMTOKEN    #IMPLIED
+               TYPE (CCITG4 | HALFTONE)  "CCITG4"
+               IMF (TIFF)   #IMPLIED >
+
+<!--Reference to emi-->
+<!ELEMENT EMR    EMPTY  >
+
+<!ATTLIST EMR
+               ID  IDREF    #REQUIRED  >
+
+<!--In-line formula-->
+<!ELEMENT F   (math | PTEXT) >
+
+<!--Fax telephone number-->
+<!--This element is not used even if appropriate content exists within one of the other address elements.-->
+<!ELEMENT FAX   (PDAT) >
+
+<!--Reference to a figure (drawing)-->
+<!ELEMENT FGREF   (PDAT)  >
+
+<!ATTLIST FGREF
+               ID  IDREF    #REQUIRED  >
+
+<!--Given and middle name(s) or initials-->
+<!ELEMENT FNM   (PDAT) >
+
+<!--Footnotes-->
+<!ELEMENT FOO   (PTEXT+) >
+
+<!--Footnote id.-->
+<!ATTLIST FOO
+               ID  ID    #REQUIRED  >
+
+<!--Rreference to a footnote-->
+<!ELEMENT FOR    EMPTY  >
+
+<!--Footnote reference ID-->
+<!ATTLIST FOR
+               ID  IDREF    #REQUIRED  >
+
+<!--Government Interest-->
+<!ELEMENT GOVINT   (BTEXT) >
+
+<!--Header-->
+<!ELEMENT H   (STEXT+) >
+
+<!--lvl = level
+align = Alignment
+Allowed values are 0, 1, 2, 3, 4, 5.-->
+<!ATTLIST H
+               LVL (0 | 1 | 2 | 3 | 4 | 5)   #IMPLIED
+               ALIGN (CENTER | LEFT | RIGHT)  "LEFT" >
+
+<!--Highlighting: literal text, superscripts, subscripts, bold, italic,
+underline, double underline, and small caps.-->
+<!ELEMENT HIL   (LTL | SP | SB | BOLD | ITALIC | ULINE | DULINE | SMALLCAPS)* >
+
+<!--Individual ID number (e.g., US SSSN)-->
+<!--This element is not used even when appropriate content exists within the first or sir name. -->
+<!ELEMENT IID   (PDAT) >
+
+<!--Image. For non-ISO standard characters use
+CUSTOM-CHARACTER.-->
+<!ELEMENT IMG   (EMI | EMR | ELE | RTI | DEL-S | DEL-E | INS-S | INS-E)+ >
+
+<!--End of inserted text. Must be paired with an INS-S to which it refers.-->
+<!ELEMENT INS-E    EMPTY  >
+
+<!ATTLIST INS-E
+               ID  IDREF    #REQUIRED  >
+
+<!--Start of inserted text. Must be paired with an INS-E which refers to it.-->
+<!ELEMENT INS-S    EMPTY  >
+
+<!ATTLIST INS-S
+               ID  ID    #REQUIRED
+               DATE  NMTOKEN    #IMPLIED  >
+
+<!--Individual reference number (filing, etc.)-->
+<!--This element is not used even when appropriate content exists within the first or sir name. -->
+<!ELEMENT IRF   (PDAT) >
+
+<!ELEMENT ITALIC   (PDAT | HIL)* >
+
+<!--Document kind (WIPO Standard ST.16), or kind generally-->
+<!ELEMENT KIND   (PDAT) >
+
+<!-- Plant Patent Botanic information: Latin name -->
+<!ELEMENT LATIN-NAME  (PDAT) >
+
+<!-- Indicates that the specified party is not the inventor but rather the legal
+     representative of the previous inventor. It will contain text identifying the
+     type of legal representative such as:
+       Legal Representative
+       Executor
+       Executrix
+       heir
+       Heiress
+       Adminsitrator
+       Administratrix -->
+<!ELEMENT LEGAL-REPRESENTATIVE   (PARTY-US) >
+
+<!--List item-->
+<!ELEMENT LI   (PTEXT | PARA)+ >
+
+<!--List-->
+<!ELEMENT LST   (DL | OL | SL | UL) >
+
+<!ATTLIST LST
+               ID  ID    #REQUIRED  >
+
+<!--Reference to a list.-->
+<!ELEMENT LSTREF    EMPTY  >
+
+<!ATTLIST LSTREF
+               ID  IDREF    #REQUIRED  >
+
+<!--Literal text-->
+<!ELEMENT LTL   (PDAT) >
+
+<!--Displayed and in-line math formulae-->
+<!ELEMENT MATH-US   (MATHEMATICA,MATHML,EMI?) >
+
+<!ATTLIST MATH-US
+               ID  ID    #REQUIRED  >
+
+<!--Formula in Mathematica format-->
+<!ELEMENT MATHEMATICA    EMPTY  >
+
+<!ATTLIST MATHEMATICA
+               ID  ID    #REQUIRED
+               ALT   CDATA    "mathematica file"
+               FILE  ENTITY    #REQUIRED  >
+
+<!--Formula in MathML format.-->
+<!ELEMENT MATHML   (math+) >
+
+<!--Military service where the applicant resides.
+USN : US Navy
+USA : US Army
+USAF : US Air Force
+USMC : US Marine Corp
+USCG : US Coast Guard
+etc.
+-->
+<!ELEMENT MILS   (PDAT) >
+
+<!--Name of an individual or organization-->
+<!ELEMENT NAM   ((TTL?,FNM?,SNM,SFX?,IID?,IRF?) | (ONM,SYN*,OID?,(ODV,DID?)*)) >
+
+<!--Non-patent literature citation (include patent applications within the DOC model) -->
+<!ELEMENT NCIT   (DOC?,STEXT+) >
+
+<!--Country of nationality-->
+<!ELEMENT NCTRY   (CTRY) >
+
+<!--Division of organization-->
+<!ELEMENT ODV   (STEXT+) >
+
+<!--Identifying number of organization-->
+<!ELEMENT OID   (PDAT) >
+
+<!--List, Ordered-->
+<!ELEMENT OL   (LI+) >
+
+<!--compact = Spacing between items
+level = Nesting level of list
+prefix = Prefix for each list item
+numstyle = Numbering style-->
+<!ATTLIST OL
+               COMPACT (COMPACT)   #IMPLIED
+               LEVEL  NMTOKEN    #IMPLIED
+               PREFIX  CDATA    #IMPLIED
+               NUMSTYLE  CDATA    #IMPLIED  >
+
+<!--Organization mail code
+US: use for military address, e.g., Unit 3400 Box 672 APO AE 09128.-->
+<!ELEMENT OMC   (PDAT) >
+
+<!--Organization name-->
+<!ELEMENT ONM   (STEXT+) >
+
+<!--Paragraph. Corresponds to P in ST.32. PARA name required for
+compatability with CALS Table markup.-->
+<!ELEMENT PARA   (PTEXT+) >
+
+<!ATTLIST PARA
+               ID  ID    #IMPLIED
+               LVL (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7)   #IMPLIED  >
+
+<!--Reference to a paragraph number-->
+<!ELEMENT PAREF    EMPTY  >
+
+<!ATTLIST PAREF
+               ID  IDREF    #IMPLIED  >
+
+<!--Parent/child relationship-->
+<!ELEMENT PARENT-US   (CDOC,PDOC,B650?,PSTA,PPUB?) >
+
+<!--Components of party-->
+<!ELEMENT PARTY-US   (NAM,ADR?,RESIDENCE?,DTXT?,RCTRY?,NCTRY?) >
+
+<!--Patent citation-->
+<!ELEMENT PCIT   (DOC,PARTY-US*,PIC*,PNC*,REL?) >
+
+<!--Postal code or zip code-->
+<!ELEMENT PCODE   (PDAT) >
+
+<!--For compatability with XML (eliminates inclusions and unacceptable
+mixed content models). Terminal element of most branches.-->
+<!ELEMENT PDAT   (#PCDATA | DEL-S | DEL-E | INS-S | INS-E | CUSTOM-CHARACTER)* >
+
+<!--Parent document identification-->
+<!ELEMENT PDOC   (DOC) >
+
+<!--International classification of citation (IPC).-->
+<!ELEMENT PIC   (PDAT) >
+
+<!--National classificaiton of citation-->
+<!ELEMENT PNC   (PDAT) >
+
+<!--id of patent associated with parent-->
+<!ELEMENT PPUB   (DOC) >
+
+<!--  prior publication -->
+<!ELEMENT B690US  (DOC) >
+
+<!--Parent status code.
+00 ... Pending
+01 ... Granted (Patent)
+03 ... Abandoned
+04 ... Statutory Invention Registration (SIR)-->
+<!ELEMENT PSTA   (PDAT) >
+
+<!--Contents of a paragraph-->
+<!ELEMENT PTEXT   (PDAT | B830 | CIT | CLREF | CRF | CWU | DFREF | DNUM | F | FGREF | FOO |
+               FOR | HIL | IMG | LST | LSTREF | PAREF | SEQREF | TBLREF)+ >
+
+<!--Country of residence-->
+<!ELEMENT RCTRY   (CTRY) >
+
+<!--Identifies relevant spot in citation
+(page numbers, paragraph numbers, relevant residues (in sequence listing), etc.)-->
+<!ELEMENT REL   (STEXT+) >
+
+<!--Other Patent Relations-->
+<!ELEMENT RELAPP   (BTEXT) >
+
+<!--Inventor's residence.-->
+<!ELEMENT RESIDENCE   (MILS | (CITY,(STATE | CTRY))) >
+
+<!--Replace text with image-->
+<!ELEMENT RTI   (PDAT) >
+
+<!ATTLIST RTI
+               ID  ID    #REQUIRED
+               ALT   CDATA    "replaced text with image"
+               FILE  ENTITY    #REQUIRED
+               HE  NMTOKEN    #IMPLIED
+               WI  NMTOKEN    #IMPLIED
+               LX  NMTOKEN    #IMPLIED
+               LY  NMTOKEN    #IMPLIED
+               IMF (TIFF)   #IMPLIED  >
+
+<!--Subscript-->
+<!ELEMENT SB   (PDAT | HIL)* >
+
+<!--Subdocument: Abstract. All US patent types have an abstract;
+for a Design patent, the abstract consists of a drawing only.-->
+<!ELEMENT SDOAB   (BTEXT) >
+
+<!--la = language (ISO 639)
+cy = country code (WIPO Standard ST.3)
+status = Status of the sub-doc.-->
+<!ATTLIST SDOAB
+               LA  NMTOKEN    #IMPLIED
+               CY  NMTOKEN    #IMPLIED
+               STATUS  CDATA    #IMPLIED  >
+
+<!--Subdocument: Bibliographic information.-->
+<!ELEMENT SDOBI   (B100,B200,B300*,B400?,B500,B600?,B700,B800?) >
+
+<!--la = language (ISO 639)
+cy = country code (WIPO Standard ST.3)
+status = Status of the sub-doc.-->
+<!ATTLIST SDOBI
+               LA  NMTOKEN    #IMPLIED
+               CY  NMTOKEN    #IMPLIED
+               STATUS  CDATA    #IMPLIED  >
+
+<!--Divisional reissue sibling application-->
+<!ELEMENT SDOC   (DOC) >
+
+<!--Subdocument: Claims-->
+<!ELEMENT SDOCL   (H?,CL) >
+
+<!--la = language (ISO 639)
+cy = country code (WIPO Standard ST.3)
+status = Status of the sub-doc.-->
+<!ATTLIST SDOCL
+               LA  NMTOKEN    #IMPLIED
+               CY  NMTOKEN    #IMPLIED
+               STATUS  CDATA    #IMPLIED  >
+
+<!--Subdocument: OCR (optical character recognition) of first-page (bibliographic
+information) contents. Where OCR failed to associate all content with elements,
+the entire first page text is included in this element. Appears only in those US
+documents which have been subjected to OCR processing.-->
+<!ELEMENT SDOCR   (PDAT) >
+
+<!--la = language (ISO 639)
+cy = country code (WIPO Standard ST.3)
+status = Status of the sub-doc.-->
+<!ATTLIST SDOCR
+               LA  NMTOKEN    #IMPLIED
+               CY  NMTOKEN    #IMPLIED
+               STATUS  CDATA    #IMPLIED  >
+
+<!--Subdocument: Description of the invention.-->
+<!ELEMENT SDODE   (RELAPP?,GOVINT?,BRFSUM?,DRWDESC?,DETDESC?) >
+
+<!--la = language (ISO 639)
+cy = country code (WIPO Standard ST.3)
+status = Status of the sub-doc.-->
+<!ATTLIST SDODE
+               LA  NMTOKEN    #IMPLIED
+               CY  NMTOKEN    #IMPLIED
+               STATUS  CDATA    #IMPLIED  >
+
+<!--Subdocument: Drawings-->
+<!ELEMENT SDODR   (EMI | DEL-S | DEL-E | INS-S | INS-E)* >
+
+<!--la = language (ISO 639)
+cy = country code (WIPO Standard ST.3)
+status = Status of the sub-doc.-->
+
+<!ATTLIST SDODR
+               ID  ID         #REQUIRED
+               LA  NMTOKEN    #IMPLIED
+               CY  NMTOKEN    #IMPLIED
+               STATUS  CDATA    #IMPLIED  >
+
+<!--Suffix (e.g., II, Jr., Esq. et al.)-->
+<!--This element is not used even when appropriate content exists within the first or sir name. -->
+<!ELEMENT SFX   (PDAT) >
+
+<!--Divisional reissue siblings-->
+<!ELEMENT SIBLING   (CDOC,SDOC,SPUB) >
+
+<!--List, Simple-->
+<!ELEMENT SL   (LI+) >
+
+<!--compact = Spacing between items
+level = Nesting level of list-->
+<!ATTLIST SL
+               COMPACT (COMPACT)   #IMPLIED
+               LEVEL  NMTOKEN    #IMPLIED  >
+
+<!ELEMENT SMALLCAPS   (PDAT | HIL)* >
+
+<!--Family, last, surname or organisation-->
+<!ELEMENT SNM   (STEXT+) >
+
+<!--Superscript-->
+<!ELEMENT SP   (PDAT | HIL)* >
+
+<!--Divisional reissue sibling patent-->
+<!ELEMENT SPUB   (DOC) >
+
+<!--Region of country (state, province)-->
+<!ELEMENT STATE   (PDAT) >
+
+<!--Text including subscripts and superscripts.-->
+<!ELEMENT STEXT   (PDAT | F | FOR | IMG | HIL | CWU)+ >
+
+<!--Street, house number or house name-->
+<!ELEMENT STR   (PDAT) >
+
+<!--Synonym or cross reference-->
+<!ELEMENT SYN   (PDAT) >
+
+<!--Table in CALS markup-->
+<!ELEMENT TABLE-CALS   (table) >
+
+<!--Table-->
+<!ELEMENT TABLE-US   (TABLE-CALS) >
+
+<!ATTLIST TABLE-US
+               ID  ID    #REQUIRED  >
+
+<!--Reference to a table.-->
+<!ELEMENT TBLREF    EMPTY  >
+
+<!--Table reference(s)-->
+<!ATTLIST TBLREF
+               ID  IDREFS    #IMPLIED  >
+
+<!--Telephone number-->
+<!--This element is not used even if appropriate content exists within one of the other address elements.-->
+<!ELEMENT TEL   (PDAT) >
+
+<!--Title (e.g., Mr., Mrs.) applied to a name-->
+<!--This element is not used even when appropriate content exists within the first or sir name. -->
+<!ELEMENT TTL   (PDAT) >
+
+<!--List, Unordered-->
+<!ELEMENT UL   (LI+) >
+
+<!--st = Ulist symbol
+level = Nesting level of list
+compact = Spacing between items-->
+<!ATTLIST UL
+               ST  CDATA    #REQUIRED
+               LEVEL  NMTOKEN    #IMPLIED
+               COMPACT (COMPACT)   #IMPLIED  >
+
+<!--Underline-->
+<!ELEMENT ULINE   (PDAT | HIL)* >
+
+<!-- "OLD" Sequence Listing format:
+
+		Legend: M mandatory, O optional, R recommended but not required, rep repeatable
+
+
+Element.........Reference in MPEP Appendix R, Patent Rules in Title 37 C.F.R., Section 1.823.
+................effective Oct. 1, 1990
+______________..___________________________________________________________________________________
+
+S-1.............(1) GENERAL INFORMATION (Application, diskette/tape and publication information)
+
+Duplicate.......(1)(i) APPLICANT (maximum of first ten named applicants; specify one name per line:
+of B721................SURNAME comma OTHER NAMES and/or INITIALS - M/rep)
+
+Duplicate.......(1)(ii) TITLE OF INVENTION (title of the invention, as elsewhere in application,
+of B540.................four lines maximum - M)
+
+S-1-III.........(1)(iii) NUMBER OF SEQUENCES (number of sequences in the "Sequence Listing" - M)
+
+S-1-IV..........(1)(iv) CORRESPONDENCE ADDRESS (M)
+(PARTY-US)
+ONM of NAM......(1)(iv)(A) ADDRESSEE (name of applicant, firm, company or institution,
+...........................as may be appropriate)
+STR of ADR......(1)(iv)(B) STREET (correspondence street address, as elsewhere in application,
+...........................four lines maximum)
+CITY of ADR.....(1)(iv)(C) CITY (correspondence city address, as elsewhere in application)
+STATE of ADR....(1)(iv)(D) STATE (correspondence state, as elsewhere in application)
+CTRY of ADR.....(1)(iv)(E) COUNTRY (correspondence country, as elsewhere in application)
+PCODE of ADR....(1)(iv)(F) ZIP (correspondence zip or postal code, as elsewhere in application)
+
+S-1-V...........(1)(v) COMPUTER READABLE FORM (M)
+S-1-V-A.........(1)(v)(A) MEDIUM TYPE (type of diskette/tape submitted)
+S-1-V-B.........(1)(v)(B) COMPUTER (type of computer used with diskette/tape submitted)
+S-1-V-C.........(1)(v)(C) OPERATING SYSTEM (type of operating system used)
+S-1-V-D.........(1)(v)(D) SOFTWARE (type of software used to create computer readable form)
+
+All Content.....(1)(vi) CURRENT APPLICATION DATA (M, if available)
+Duplicated
+Duplicate.......(1)(vi)(A) APPLICATION NUMBER (U.S application number, including a series code,
+of B210....................a slash and a serial number, or U.S. PCT application number, including
+...........................the letters PCT, a slash, a two letter code indicating the U.S. as the
+...........................Receiving Office, a two digit indication of the year, a slash and a
+...........................five digit number, if available)
+Duplicate.......(1)(vi)(B) FILING DATE (U.S. or PCT application filing date, if available; specify as
+of B220....................dd-MMM-yyyy) **** in Red Book use yyyymmdd *****
+Duplicate.......(1)(vi)(C) CLASSIFICATION (IPC/US classification or F-term designation, where F-terms
+of B510....................have been developed, if assigned, specify each designation, left
+...........................justified, within an eighteen position alpha numeric field - rep, to a
+...........................maximum of ten classification designations)
+
+All Content.....(1)(vii) PRIOR APPLICATION DATA (prior domestic, foreign priority or international
+Duplicated...............application data, if applicable - M/rep)
+Duplicate.......(1)(vii)(A) APPLICATION NUMBER (application number; specify as two letter country code
+of B310.....................and an eight digit application number; or if a PCT application, specify
+............................as the letters PCT, a slash, a two letter code indicating the Receiving
+............................Office, a two digit indication of the year, a slash and a five digit
+............................number)
+Duplicate.......(1)(vii)(B) FILING DATE (document filing date, specify as dd-MMM-yyyy)
+of B320.....................**** in Red Book use yyyymmdd *****
+S-1-VIII........(1)(viii) ATTORNEY/AGENT INFORMATION (O)
+S-1-VIII-A......(1)(viii)(A) NAME (attorney/agent name; SURNAME comma OTHER NAMES and/or INITIALS)
+S-1-VIII-B......(1)(viii)(B) REGISTRATION NUMBER (attorney/agent registration number)
+S-1-VIII-C......(1)(viii)(C) REFERENCE/DOCKET NUMBER (attorney/agent reference or docket number)
+
+S-1-IX..........(1)(ix) TELECOMMUNICATION INFORMATION (O)
+S-1-IX-A........(1)(ix)(A) TELEPHONE (telephone number of applicant or attorney/agent)
+S-1-IX-B........(1)(ix)(B) TELEFAX (telefax number of applicant or attorney/agent)
+S-1-IX-C........(1)(ix)(C) TELEX (telex number of applicant or attorney/ agent)
+
+S-2.............(2) INFORMATION FOR SEQ ID NO: X (rep)
+
+S-2-I...........(2)(i) SEQUENCE CHARACTERISTICS (M)
+S-2-I-A.........(2)(i)(A) LENGTH (sequence length, expressed as number of base pairs or amino acid
+..........................residues)
+S-2-I-B.........(2)(i)(B) TYPE (sequence type, i.e., whether nucleic acid or amino acid)
+S-2-I-C.........(2)(i)(C) STRANDEDNESS (if nucleic acid, number of strands of source organism molecule,
+..........................i.e., whether single stranded, double stranded, both or unknown to
+..........................applicant)
+S-2-I-D.........(2)(i)(D) TOPOLOGY (whether source organism molecule is circular, linear, both or unknown
+..........................to applicant)
+
+S-2-II &........(2)(ii) MOLECULE TYPE (type of molecule sequenced in SEQ ID NO:X (at least one of the
+S-2-II-MT...............following should be included with subheadings, if any, in Sequence
+........................Listing - R))
+........................Genomic RNA; Genomic DNA; mRNA; tRNA; rRNA; snRNA; scRNA; preRNA;
+........................cDNA to genomic RNA; cDNA to mRNA; cDNA to tRNA; cDNA to rRNA;
+........................cDNA to snRNA; cDNA to scRNA; Other nucleicacid
+S-2-II-A........(2)(ii)(A) DESCRIPTION (four lines maximum) protein and peptide.
+
+S-2-III.........(2)(iii) HYPOTHETICAL (yes/n R)
+
+S-2-IV..........(2)(iv) ANTI-SENSE (yes/n R)
+
+S-2-V...........(2)(v) FRAGMENT TYPE (for proteins and peptides only, at least one of the following
+.......................should be included in the Sequence Listing - R)
+.......................N-terminal fragment; C-terminal fragment and internal fragment.
+
+S-2-VI..........(2)(vi) ORIGINAL SOURCE (original source of molecule sequenced in SEQ ID NO:X - R)
+S-2-VI-A........(2)(vi)(A) ORGANISM (scientific name of source organism)
+S-2-VI-B........(2)(vi)(B) STRAIN
+S-2-VI-C........(2)(vi)(C) INDIVIDUAL ISOLATE (name/number of individual/isolate)
+S-2-VI-D........(2)(vi)(D) DEVELOPMENTAL STAGE (give developmental stage of source organism and indicate
+...........................whether derived from germ-line or rearranged developmental pattern)
+S-2-VI-E........(2)(vi)(E) HAPLOTYPE
+S-2-VI-F........(2)(vi)(F) TISSUE TYPE
+S-2-VI-G........(2)(vi)(G) CELL TYPE
+S-2-VI-H........(2)(vi)(H) CELL LINE
+S-2-VI-I........(2)(vi)(I) ORGANELLE
+
+S-2-VII.........(2)(vii) IMMEDIATE SOURCE (immediate experimental source of the sequence
+.........................in SEQ ID NO:X - R)
+S-2-VII-A.......(2)(vii)(A) LIBRARY (library -type,name)
+S-2-VII-B.......(2)(vii)(B) CLONE (clone(s))
+
+S-2-VIII........(2)(viii) POSITION IN GENOME (position of sequence in SEQ ID NO:X in genome - R)
+S-2-VIII-A......(2)(viii)(A) CHROMOSOME/SEGMENT (chromosome/segment-name/number)
+S-2-VIII-B......(2)(viii)(B) MAP POSITION
+S-2-VIII-C......(2)(viii)(C) UNITS (units for map position, i.e., whether units are genome percent,
+.............................nucleotide number or other/specify)
+
+S-2-IX..........(2)(ix) FEATURE (description of points of biological significance in the sequence
+........................in SEQ ID NO:X -R/rep)
+S-2-IX-A........(2)(ix)(A) NAME/KEY (provide appropriate identifier for feature - four lines maximum)
+S-2-IX-B........(2)(ix)(B) LOCATION (specify location according to syntax of DDBJ/EMBL/GenBank Feature
+...........................Tables Definition, including whether feature is on complement of presented
+...........................sequence; where appropriate state number of first and last bases/amino
+...........................acids in feature - four lines maximum)
+S-2-IX-C........(2)(ix)(C) IDENTIFICATION METHOD (method by which the feature was identified,
+...........................i.e., by experiment, by similarity with known sequence or to an
+...........................established consensus sequence, or by similarity to some other pattern -
+...........................four lines maximum)
+S-2-IX-D........(2)(ix)(D) OTHER INFORMATION (include information on phenotype conferred, biological
+...........................activity of sequence or its product, macromolecules which bind to sequence
+...........................or its product, or other relevant information - four lines maximum)
+
+S-2-X...........(2)(x) PUBLICATION INFORMATION (Repeat section for each relevant publication /rep)
+S-2-X-A.........(2)(x)(A) AUTHORS (maximum of first ten named authors of publication; specify one name
+..........................per line: SURNAME comma OTHER NAMES and/or INITIALS - rep)
+S-2-X-B.........(2)(x)(B) TITLE (title of publication)
+S-2-X-C.........(2)(x)(C) JOURNAL (journal name in which data published)
+S-2-X-D.........(2)(x)(D) VOLUME (journal volume in which data published)
+S-2-X-E.........(2)(x)(E) ISSUE (journal issue number in which data published)
+S-2-X-F.........(2)(x)(F) PAGES (journal page numbers in which data published)
+S-2-X-G.........(2)(x)(G) DATE (journal date in which data published; specify as dd-MMM-yyyy, MMM-yyyy or
+..........................Season-yyyy) **** in Red Book use yyyymmdd *****
+S-2-X-H.........(2)(x)(H) DOCUMENT NUMBER (document number, for patent type citations only; specify as
+..........................two letter country code, eight digit document number (right justified),
+..........................one letter and, as appropriate, one number or a space as a document type
+..........................code; or if a PCT application, specify as the letters PCT, a slash, a
+..........................two letter code indicating the Receiving Office, a two digit indication
+..........................of the year, a slash and a five digit number; or if a PCT publication,
+..........................specify as the two letters WO, a two digit indication of the year, a
+..........................slash and a five digit publication number)
+S-2-X-I.........(2)(x)(I) FILING DATE (document filing date, for patent-type citations only; specify
+..........................as dd-MMM-yyyy) **** in Red Book use yyyymmdd *****
+S-2-X-J.........(2)(x)(J) PUBLICATION DATE (document publication date; for patent-type citations only,
+..........................specify as dd-MMM-yyyy) **** in Red Book use yyyymmdd *****
+S-2-X-K.........(2)(x)(K) RELEVANT RESIDUES IN SEQ ID NO:X (rep): FROM (position) TO (position)
+
+S-2-XI..........(2)(xi) SEQUENCE DESCRIPTION: SEQ ID NO:X
+
+-->
+
+
+<!--Sequence Listing-->
+<!ELEMENT SEQLST-US   (SEQ-LST-OLD | SEQ-LST-NEW | table) >
+
+<!ATTLIST SEQLST-US
+               ID  ID    #REQUIRED  >
+
+<!--OLD Sequence Listing format from Title 37 C.F.R., Section 1.823, effective Oct. 1, 1990-->
+<!ELEMENT SEQ-LST-OLD   (S-1,S-2+) >
+
+<!--(1) GENERAL INFORMATION (Application, diskette/tape and publication information)-->
+<!ELEMENT S-1   (S-1-III, S-1-IV?, S-1-V?, S-1-VIII?, S-1-IX?) >
+
+<!--(1)(iii) NUMBER OF SEQUENCES (number of sequences in the "Sequence Listing" - M)-->
+<!ELEMENT S-1-III   (PDAT) >
+
+<!--(1)(iv) CORRESPONDENCE ADDRESS (M)-->
+<!ELEMENT S-1-IV   (PARTY-US) >
+
+<!--(1)(v) COMPUTER READABLE FORM (M)-->
+<!ELEMENT S-1-V   (S-1-V-A, S-1-V-B, S-1-V-C, S-1-V-D) >
+
+<!--(1)(v)(A) MEDIUM TYPE (type of diskette/tape submitted)-->
+<!ELEMENT S-1-V-A   (PDAT) >
+
+<!--(1)(v)(B) COMPUTER (type of computer used with diskette/tape submitted)-->
+<!ELEMENT S-1-V-B   (PDAT) >
+
+<!--(1)(v)(C) OPERATING SYSTEM (type of operating system used)-->
+<!ELEMENT S-1-V-C   (PDAT) >
+
+<!--(1)(v)(D) SOFTWARE (type of software used to create computer readable form)-->
+<!ELEMENT S-1-V-D   (PDAT) >
+
+<!--(1)(viii) ATTORNEY/AGENT INFORMATION (O)-->
+<!ELEMENT S-1-VIII  (S-1-VIII-A, S-1-VIII-B, S-1-VIII-C) >
+
+<!--(1)(viii)(A) NAME (attorney/agent name; SURNAME comma OTHER NAMES and/or INITIALS)-->
+<!ELEMENT S-1-VIII-A  (NAM) >
+
+<!--(1)(viii)(B) REGISTRATION NUMBER (attorney/agent registration number)-->
+<!ELEMENT S-1-VIII-B  (PDAT) >
+
+<!--(1)(viii)(C) REFERENCE/DOCKET NUMBER (attorney/agent reference or docket number)-->
+<!ELEMENT S-1-VIII-C  (PDAT) >
+
+<!--(1)(ix) TELECOMMUNICATION INFORMATION (O)-->
+<!ELEMENT S-1-IX  (S-1-IX-A, S-1-IX-B, S-1-IX-C) >
+
+<!--(1)(ix)(A) TELEPHONE (telephone number of applicant or attorney/agent)-->
+<!ELEMENT S-1-IX-A  (TEL) >
+
+<!--(1)(ix)(B) TELEFAX (telefax number of applicant or attorney/agent)-->
+<!ELEMENT S-1-IX-B  (PDAT) >
+
+<!--(1)(ix)(C) TELEX (telex number of applicant or attorney/ agent)-->
+<!ELEMENT S-1-IX-C  (PDAT) >
+
+<!--(2) INFORMATION FOR SEQ ID NO: X (rep)-->
+<!ELEMENT S-2  (S-2-I, S-2-II*, S-2-III?, S-2-IV?, S-2-V*, S-2-VI?, S-2-VII?,
+			S-2-VIII?, S-2-IX*, S-2-X*, S-2-XI) >
+<!ATTLIST S-2 SEQ-NO CDATA  #REQUIRED>
+
+<!--(2)(i) SEQUENCE CHARACTERISTICS (M)-->
+<!ELEMENT S-2-I  (S-2-I-A?, S-2-I-B, S-2-I-C?, S-2-I-D) >
+
+<!--(2)(i)(A) LENGTH (sequence length, expressed as number of base pairs or amino acid residues)-->
+<!ELEMENT S-2-I-A  (PDAT) >
+
+<!--(2)(i)(B) TYPE (sequence type, i.e., whether nucleic acid or amino acid)-->
+<!ELEMENT S-2-I-B  (PDAT) >
+
+<!--(2)(i)(C) STRANDEDNESS (if nucleic acid, number of strands of source organism molecule,
+		i.e., whether single stranded, double stranded, both or unknown to applicant)-->
+<!ELEMENT S-2-I-C  (PDAT) >
+
+<!--(2)(i)(D) TOPOLOGY (whether source organism molecule is circular, linear, both or unknown
+		to applicant)-->
+<!ELEMENT S-2-I-D  (PDAT) >
+
+<!-- Molecule Information -->
+<!ELEMENT S-2-II   (S-2-II-MT, S-2-II-A?) >
+
+<!--(2)(ii) TYPE (type of molecule sequenced in SEQ ID NO:X (at least one of the
+		following should be included with subheadings, if any, in Sequence Listing - R))
+			Genomic RNA; Genomic DNA; mRNA; tRNA; rRNA; snRNA; scRNA; preRNA;
+			cDNA to genomic RNA; cDNA to mRNA; cDNA to tRNA; cDNA to rRNA;
+			cDNA to snRNA; cDNA to scRNA; Other nucleicacid-->
+<!ELEMENT S-2-II-MT  (PDAT) >
+
+<!--(2)(ii)(A) DESCRIPTION (four lines maximum) protein and peptide.-->
+<!ELEMENT S-2-II-A  (PDAT) >
+
+<!--(2)(iii) HYPOTHETICAL (yes/n R)-->
+<!ELEMENT S-2-III  (PDAT) >
+
+<!--(2)(iv) ANTI-SENSE (yes/n R)-->
+<!ELEMENT S-2-IV  (PDAT) >
+
+<!--(2)(v) FRAGMENT TYPE (for proteins and peptides only, at least one of the following
+		should be included in the Sequence Listing - R)
+		N-terminal fragment; C-terminal fragment and internal fragment.-->
+<!ELEMENT S-2-V  (PDAT) >
+
+<!--(2)(vi) ORIGINAL SOURCE (original source of molecule sequenced in SEQ ID NO:X - R)-->
+<!ELEMENT S-2-VI  (S-2-VI-A?, S-2-VI-B?, S-2-VI-C?, S-2-VI-D?, S-2-VI-E?,
+			S-2-VI-F?, S-2-VI-G?, S-2-VI-H?, S-2-VI-I?) >
+
+<!--(2)(vi)(A) ORGANISM (scientific name of source organism)-->
+<!ELEMENT S-2-VI-A  (PDAT) >
+
+<!--(2)(vi)(B) STRAIN-->
+<!ELEMENT S-2-VI-B  (PDAT) >
+
+<!--(2)(vi)(C) INDIVIDUAL ISOLATE (name/number of individual/isolate)-->
+<!ELEMENT S-2-VI-C  (PDAT) >
+
+<!--(2)(vi)(D) DEVELOPMENTAL STAGE (give developmental stage of source organism and indicate
+		whether derived from germ-line or rearranged developmental pattern)-->
+<!ELEMENT S-2-VI-D  (PDAT) >
+
+<!--(2)(vi)(E) HAPLOTYPE-->
+<!ELEMENT S-2-VI-E  (PDAT) >
+
+<!--(2)(vi)(F) TISSUE TYPE-->
+<!ELEMENT S-2-VI-F  (PDAT) >
+
+<!--(2)(vi)(G) CELL TYPE-->
+<!ELEMENT S-2-VI-G  (PDAT) >
+
+<!--(2)(vi)(H) CELL LINE-->
+<!ELEMENT S-2-VI-H  (PDAT) >
+
+<!--(2)(vi)(I) ORGANELLE-->
+<!ELEMENT S-2-VI-I  (PDAT) >
+
+<!--(2)(vii) IMMEDIATE SOURCE (immediate experimental source of the sequence in SEQ ID NO:X - R)-->
+<!ELEMENT S-2-VII  (S-2-VII-A?, S-2-VII-B?) >
+
+<!--(2)(vii)(A) LIBRARY (library -type,name)-->
+<!ELEMENT S-2-VII-A  (PDAT) >
+
+<!--(2)(vii)(B) CLONE (clone(s))-->
+<!ELEMENT S-2-VII-B  (PDAT) >
+
+<!--(2)(viii) POSITION IN GENOME (position of sequence in SEQ ID NO:X in genome - R)-->
+<!ELEMENT S-2-VIII  (S-2-VIII-A?, S-2-VIII-B?, S-2-VIII-C?) >
+
+<!--(2)(viii)(A) CHROMOSOME/SEGMENT (chromosome/segment-name/number)-->
+<!ELEMENT S-2-VIII-A  (PDAT) >
+
+<!--(2)(viii)(B) MAP POSITION-->
+<!ELEMENT S-2-VIII-B  (PDAT) >
+
+<!--(2)(viii)(C) UNITS (units for map position, i.e., whether units are genome percent,
+		nucleotide number or other/specify)-->
+<!ELEMENT S-2-VIII-C  (PDAT) >
+
+<!--(2)(ix) FEATURE (description of points of biological significance in the sequence
+		in SEQ ID NO:X -R/rep)-->
+<!ELEMENT S-2-IX  (S-2-IX-A?, S-2-IX-B?, S-2-IX-C?, S-2-IX-D?) >
+
+<!--(2)(ix)(A) NAME/KEY (provide appropriate identifier for feature - four lines maximum)-->
+<!ELEMENT S-2-IX-A  (PDAT) >
+
+<!--(2)(ix)(B) LOCATION (specify location according to syntax of DDBJ/EMBL/GenBank Feature
+		Tables Definition, including whether feature is on complement of presented
+		sequence; where appropriate state number of first and last bases/amino
+		acids in feature - four lines maximum)-->
+<!ELEMENT S-2-IX-B  (PDAT) >
+
+<!--(2)(ix)(C) IDENTIFICATION METHOD (method by which the feature was identified,
+		i.e., by experiment, by similarity with known sequence or to an
+		established consensus sequence, or by similarity to some other pattern -
+		four lines maximum)-->
+<!ELEMENT S-2-IX-C  (PDAT) >
+
+<!--(2)(ix)(D) OTHER INFORMATION (include information on phenotype conferred, biological
+		activity of sequence or its product, macromolecules which bind to sequence
+		or its product, or other relevant information - four lines maximum)-->
+<!ELEMENT S-2-IX-D  (STEXT+) >
+
+
+<!--(2)(x) PUBLICATION INFORMATION (Repeat section for each relevant publication /rep)-->
+<!ELEMENT S-2-X  (S-2-X-A?, S-2-X-B?, S-2-X-C?, S-2-X-D?, S-2-X-E?, S-2-X-F?,
+			S-2-X-G?, S-2-X-H?, S-2-X-I?, S-2-X-J?, S-2-X-K?) >
+
+<!--(2)(x)(A) AUTHORS (maximum of first ten named authors of publication;
+                       SURNAME comma OTHER NAMES and/or INITIALS - rep)-->
+<!ELEMENT S-2-X-A  (NAM+) >
+
+<!--(2)(x)(B) TITLE (title of publication)-->
+<!ELEMENT S-2-X-B  (STEXT+) >
+
+<!--(2)(x)(C) JOURNAL (journal name in which data published)-->
+<!ELEMENT S-2-X-C  (PDAT) >
+
+<!--(2)(x)(D) VOLUME (journal volume in which data published)-->
+<!ELEMENT S-2-X-D  (PDAT) >
+
+<!--(2)(x)(E) ISSUE (journal issue number in which data published)-->
+<!ELEMENT S-2-X-E  (PDAT) >
+
+<!--(2)(x)(F) PAGES (journal page numbers in which data published)-->
+<!ELEMENT S-2-X-F  (PDAT) >
+
+<!--(2)(x)(G) DATE (journal date in which data published; reformat dd-MMM-yyyy to YYYYMMDD in DATE, MMM-yyyy or
+		Season-yyyy use pdat)-->
+<!ELEMENT S-2-X-G  (DATE | PDAT) >
+
+<!--(2)(x)(H) DOCUMENT NUMBER (document number, for patent type citations only; specify as
+		two letter country code, eight digit document number (right justified),
+		one letter and, as appropriate, one number or a space as a document type
+		code; or if a PCT application, specify as the letters PCT, a slash, a
+		two letter code indicating the Receiving Office, a two digit indication
+		of the year, a slash and a five digit number; or if a PCT publication,
+		specify as the two letters WO, a two digit indication of the year, a
+		slash and a five digit publication number) -->
+<!ELEMENT S-2-X-H  (DNUM) >
+
+<!--(2)(x)(I) FILING DATE (document filing date, for patent-type citations only;
+		REFORMATTED FROM dd-MMM-yyyy  TO YYYYMMDD FOR REDBOOK)-->
+<!ELEMENT S-2-X-I  (DATE) >
+
+<!--(2)(x)(J) PUBLICATION DATE (document publication date; for patent-type citations only,
+		REFORMATTED FROM dd-MMM-yyyy  TO YYYYMMDD FOR REDBOOK)-->
+<!ELEMENT S-2-X-J  (DATE) >
+
+<!--(2)(x)(K) RELEVANT RESIDUES IN SEQ ID NO:X (rep): FROM (position) TO (position)-->
+<!ELEMENT S-2-X-K  (PDAT) >
+
+<!--(2)(xi) SEQUENCE DESCRIPTION: SEQ ID NO:X-->
+<!ELEMENT S-2-XI  (PDAT) >
+
+
+<!-- "NEW" Sequence Listing format:
+
+................Legend: M mandatory, M? mandatory under specified conditions, O optional, R recommended but not required, rep repeatable
+
+
+Element.........Reference in MPEP Appendix R, Patent Rules in Title 37 C.F.R., Section 1.823.
+................effective July 1, 1998
+______________..___________________________________________________________________________________
+<S100>..........(GENERAL INFORMATION)
+Duplicate.......M Applicant, Preferably max. of 10 names; one name per line;
+of B721...........preferable format: Surname, Other Names and/or Initials.
+Duplicate.......M Title of Invention
+of B540
+<S130>..........M? File Reference, Personal file reference, Used when filed prior to assignment or
+...................appl. number
+Duplicate.......M? Current Application Number, Specify as: US 07/999,999 or PCT/US96/99999,
+of B210............if available.
+Duplicate.......M? Current Filing Date, Specify as: yyyy-mm-dd, if available.
+of B220
+Duplicate.......M? Prior Application Number, Specify as: US 07/999,999 or PCT/US96/99999,
+of B310............if applicable include priority documents under 35 USC 119 and 120
+Duplicate.......M? Prior Application Filing Date, Specify as: yyyy-mm-dd, if applicable
+of B320
+<S160>..........M Number of SEQ ID NOs., Count includes total number of SEQ ID NOs
+<S170>..........O Software, Name of software used to create the Sequence Listing.
+
+<S200>..........(SEQUENCE CHARACTERISTICS)
+<S210>..........M SEQ ID NO, Response shall be an integer representing the SEQ ID NO shown.
+<S211>..........M Length, Respond with an integer expressing the number of bases or amino acid
+..................residues.
+<S212>..........M Type Whether presented sequence molecule is DNA, RNA, or PRT (protein). If a
+..................nucleotide sequence contains both DNA and RNA fragments, the type shall
+..................be "DNA." In addition, the combined DNA/ RNA molecule shall be further
+..................described in the <220> to <223> feature section.
+<S213>..........M Organism Scientific name, i.e. Genus/ species, Unknown or Artificial Sequence.
+..................In addition, the "Unknown" or "Artificial Sequence" organisms shall be
+..................further described in the <220> to <223> feature section.
+<S220>..........M? Feature Leave blank after <220>. <221-223> provide for a description of points
+...................of biological significance in the sequence. Mandaroty under the following
+...................conditions:
+.....................if "n," "Xaa," or a modified or unusual L-amino acid or modified
+.........................base was used in a sequence;
+.....................if ORGANISM is "Artificial Sequence" or "Unknown";
+.....................if molecule is combined DNA/RNA"
+<S221>..........M? Name/Key  Provide appropriate identifier for feature, preferably from WIPO
+...................Standard ST.25 (1998), Appendix 2, Tables 5 and 6. Mandatory under the
+...................following conditions:
+.......................if "n," "Xaa," or a modified or unusual L-amino acid or modified
+.......................base was used in a sequence.
+<S222>..........M? Location Specify location within sequence; where appropriate state number of
+...................first and last bases/amino acids in feature. Mandatory under the following
+...................conditions:
+.......................if "n," "Xaa," or a modified or unusual L-amino acid or modified
+.......................base was used in a sequence.
+<S223>..........M? Other Information Other relevant information; four lines maximum Mandatory under
+...................the following conditions:
+.......................if "n," "Xaa," or a modified or unusual L-amino acid or modified
+...........................base was used in a sequence;
+.......................if ORGANISM is "Artificial Sequence" or "Unknown";
+.......................if molecule is combined DNA/RNA.
+
+<S300>..........O Publication Information
+<S301>..........O Authors Preferably max of ten named authors of publication; specify one name
+..................per line; preferable format: Surname, Other Names and/or Initials.
+<S302>..........O Title
+<S303>..........O Journal
+<S304>..........O Volume
+<S305>..........O Issue
+<S306>..........O Pages
+<S307>..........O Date, Journal date on which data published; specify as yyyy- mm-dd, MMM-yyyy or
+..................Season- yyyy. **** in Red Book use yyyymmdd *****
+<S308>..........O Database Accession Number, Accession number assigned by database including
+..................database name.
+<S309>..........O Database Entry Date, Date of entry in database; specify as yyyy-mm-dd or MMM-yyyy.
+<S310>..........O Patent Document Number, Document number; for patent- type citations only.
+..................**** in Red Book use yyyymmdd *****
+<S311>..........O Patent Filing Date, Document filing date, for patent-type citations only;
+..................specify as yyyy-mm-dd. **** in Red Book use yyyymmdd *****
+Duplicate.......O Publication Date, Document publication date, for patent-type citations only;
+of B140...........specify as yyyy-mm-dd. **** in Red Book use yyyymmdd *****
+<S313>..........O Relevant Residues FROM (position) TO (position)
+
+<S400>..........M Sequence, SEQ ID NO should follow the numeric identifier and should appear on
+..................the line preceding the actual sequence.
+-->
+
+<!--NEW Sequence Listing format from Title 37 C.F.R., Section 1.823, effective  July 1, 1998-->
+<!ELEMENT SEQ-LST-NEW   (S100, (S200, S300?, S400)+) >
+
+<!--GENERAL INFORMATION-->
+<!ELEMENT S100   (S130?, S160, S170?) >
+
+<!--File Reference, Personal file reference, Used when filed prior to assignment or appl. number-->
+<!ELEMENT S130  (PDAT) >
+
+<!--Number of SEQ ID NOs., Count includes total number of SEQ ID NOs-->
+<!ELEMENT S160   (PDAT) >
+
+<!--Software, Name of software used to create the Sequence Listing.-->
+<!ELEMENT S170   (PDAT) >
+
+<!--SEQUENCE CHARACTERISTICS-->
+<!ELEMENT S200   (S210, S211, S212, S213, S220*) >
+
+
+<!--SEQ ID NO, Response shall be an integer representing the SEQ ID NO shown.-->
+<!ELEMENT S210   (PDAT) >
+
+<!--Length, Respond with an integer expressing the number of bases or amino acid  residues.-->
+<!ELEMENT S211   (PDAT) >
+
+<!--Type: Whether presented sequence molecule is DNA, RNA, or PRT (protein). If a
+	nucleotide sequence contains both DNA and RNA fragments, the type shall
+	be "DNA." In addition, the combined DNA/ RNA molecule shall be further
+	described in the <220> to <223> feature section.-->
+<!ELEMENT S212   (PDAT) >
+
+<!--Organism Scientific name, i.e. Genus/ species, Unknown or Artificial Sequence.
+	In addition, the "Unknown" or "Artificial Sequence" organisms shall be
+	further described in the <220> to <223> feature section.-->
+<!ELEMENT S213   (PDAT) >
+
+<!--Feature: Provide for a description of points  of biological significance in
+	the sequence. Mandaroty under the following conditions:
+		if "n," "Xaa," or a modified or unusual L-amino acid or modified
+			base was used in a sequence;
+		if ORGANISM is "Artificial Sequence" or "Unknown";
+		if molecule is combined DNA/RNA" -->
+<!ELEMENT S220   (S221?, S222?, S223?) >
+
+<!--Name/Key  Provide appropriate identifier for feature, preferably from WIPO
+	Standard ST.25 (1998), Appendix 2, Tables 5 and 6. Mandatory under the
+	following conditions:
+		if "n," "Xaa," or a modified or unusual L-amino acid or modified
+			base was used in a sequence.-->
+<!ELEMENT S221   (STEXT+) >
+
+<!--Location Specify location within sequence; where appropriate state number of
+	first and last bases/amino acids in feature. Mandatory under the following
+	conditions:
+		if "n," "Xaa," or a modified or unusual L-amino acid or modified
+		base was used in a sequence.-->
+<!ELEMENT S222   (STEXT+) >
+
+<!--Other Information Other relevant information; four lines maximum Mandatory under
+	the following conditions:
+		if "n," "Xaa," or a modified or unusual L-amino acid or modified
+			base was used in a sequence;
+		if ORGANISM is "Artificial Sequence" or "Unknown";
+		if molecule is combined DNA/RNA.-->
+<!ELEMENT S223   (STEXT+) >
+
+<!--Publication Information-->
+<!ELEMENT S300   (S301?,S302?,S303?,S304?,S305?,S306?,S307?,S308?,S309?,
+	S310?,S311?,S313?) >
+
+<!--Authors Preferably max of ten named authors of publication;
+	preferable format: Surname, Other Names and/or Initials.-->
+<!ELEMENT S301   (NAM+) >
+
+<!--Title-->
+<!ELEMENT S302   (PDAT) >
+
+<!--Journal-->
+<!ELEMENT S303   (PDAT) >
+
+<!--Volume-->
+<!ELEMENT S304   (PDAT) >
+
+<!--Issue-->
+<!ELEMENT S305   (PDAT) >
+
+<!--Pages-->
+<!ELEMENT S306   (PDAT) >
+
+<!--Journal date on which data published; reformat yyyy-mm-dd to yyyymmdd, and MMM-yyyy or Season-yyyy use PDAT-->
+<!ELEMENT S307   (DATE | PDAT) >
+
+
+<!--Database Accession Number, Accession number assigned by database including database name.-->
+<!ELEMENT S308   (PDAT) >
+
+<!--Database Entry Date, Date of entry in database; reformat  yyyy-mm-dd to yyyymmdd or MMM-yyyy.use PDAT-->
+<!ELEMENT S309   (DATE) >
+
+<!--Patent Document Number, Document number; for patent- type citations only.
+	Specify as, for example, US 07/ 999,999.-->
+<!ELEMENT S310   (DNUM) >
+
+<!--Patent Filing Date, Document filing date, for patent-type citations only; reformat yyyy-mm-dd. to yyyymmdd-->
+<!ELEMENT S311   (DATE) >
+
+<!--Relevant Residues FROM (position) TO (position)-->
+<!ELEMENT S313   (PDAT) >
+
+<!--The Sequence Listing, SEQ ID NO should follow the numeric identifier and should appear on
+		the line preceding the actual sequence.-->
+<!ELEMENT S400   (PDAT) >
+
+<!--Reference to a sequence listing.-->
+<!ELEMENT SEQREF    EMPTY  >
+
+<!-- Plant Patent Botanic information: Plant variety -->
+<!ELEMENT VARIETY  (PDAT) >
+
+<!-- ] -->

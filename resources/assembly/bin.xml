@@ -1,0 +1,82 @@
+<assembly>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<includes>
+				<include>README*</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${basedir}/resources/scripts</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>*.bat</include>
+			</includes>
+			<lineEnding>dos</lineEnding>
+		</fileSet>
+
+		<fileSet>
+			<directory>${basedir}/resources/scripts</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>*.sh</include>
+			</includes>
+			<lineEnding>unix</lineEnding>
+			<fileMode>0755</fileMode>
+		</fileSet>
+
+		<fileSet>
+			<directory>${basedir}/resources</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>log4j.properties</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${basedir}/resources</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>solrClient.properties</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${basedir}/target</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>dependency-jars/*</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${basedir}/BulkDownloader/target</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>dependency-jars/*</include>
+				<include>BulkDownloader-*.jar</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${basedir}/PatentDocument/target</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>dependency-jars/*</include>
+				<include>PatentDocument-*.jar</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory></directory>
+			<includes>
+				<include></include>
+			</includes>
+			<outputDirectory>download</outputDirectory>
+		</fileSet>
+
+	</fileSets>
+</assembly>

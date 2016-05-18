@@ -1,0 +1,1309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Document Type Definition for United States Patent Grant Publications 
+USPTO-modified version of WIPO Standard ST.36 DTD xx-patent-document 
+Reference this DTD as PUBLIC "-//USPTO//DTD us-patent-grant v4.4 2013-05-16//EN" 
+Alias: Grant Red Book (GRB) 
+Contact: Bruce B. Cox 
+U.S. Patent and Trademark Office 
+600 Dulany, MDW-5D01
+Alexandria, VA  22313
++1-571-272-9004
+bruce.cox@uspto.gov 
+
+***** Revision History *****
+2013-05-16 N.Tith
+- Added prior-disclosure-affidavit-filed element to us-term-of-grant
+- Added classification-cpc-combination-text to us-field-of-classification-search
+- Updated revision history text in section dated 2012-12-04 to accurately reflect all the changes in version 4.3.  
+ 
+2012-12-04 N.Tith
+- Renamed applicant to us-applicant
+- Removed nationality element from us-applicant
+- Deleted nationality element from DTD
+- Added applicant-authority-category attribute to us-applicant (enumerated values: 
+	           inventor, legal-representative, party-of-interest, obligated-assignee, assignee)
+- Renamed applicants to us-applicants
+- Renamed citation to us-citation
+- Added classification-cpc-text to us-citation and us-field-of-classification-search
+- Removed field-of-search from DTD.  This is replaced by us-field-of-classification-search.
+- Renamed parties to us-parties
+- Removed correspondence-address from us-parties
+- Deleted corrondence-address from DTD
+- Made inventors element mandatory in us-parties
+- Renamed references-cited to us-references-cited
+- Added classifications-cpc and its sub elements to us-bibliographic-data-grant
+- Made classification-national optional in us-bibliographic-data-grant
+- Removed us-deceased-inventor from us-bibliographic-data-grant
+- Deleted us-deceased-inventor from DTD
+
+2006-08-23 B. Cox
+ . Changed o element attribute name style to ostyle.
+2006-07-26
+ . Added sub and sup elements to b, i, u.
+ . Added overscore element o (#PCDATA | b | i | smallcaps | sup | sub )* 
+ ..to b, i, u, claim-text, crossref, dd, dt, figref, heading, invention-title,
+ ..li, othercit, p, smallcaps, sub, sub2, sup, sup2 and us-claim-statement.
+
+2005-08-25
+. Added us-field-of-classification-search element to bibliographic-data. the content model including
+..a new us-classification-ipcr(#PCDATA) element.
+. Added us-claim-statement element to make a place for the claim lead-in text.
+. US-localized sequence-list-doc element. Added optional p element to the content models.
+. Added a new us-megatable-doc element.
+. Added ENTITY % tbl.entry.att "id ID #IMPLIED" to cals table model.
+. Removed wipo.ent reference.
+. Removed classification-ipc element from bibliographic-data.
+. Changed comment on us-divisional-reissue,INID code from B631 to B41US.
+. Changed comment on us-371c124-date to read"PCT Section 371(c)(1)(2)(4)date. ST.32 equivalency = B864US".
+
+2004-12-02
+
+. Added optional us-provisional-application-status(#PCDATA) to us-provisional-application element.
+
+2004-10-28
+. Added us-deceased-inventor* to us-bibliographic-data-grant. The content model
+.. of us-deceased-inventor is addressbook with required sequence attribute.  
+. Changed pre attribute xml:space to (preserve) #FIXED 'preserve'.
+. Added 'undefined' value to img attribute img-content. Renamed value flow-chart to flowchart and chemistry to chem.
+. Changed chem-type attribute of chem element from required to implied.
+. Changed the order of crossref element in p element to before figref.
+. Added id ID #IMPLIED attribute to sequence-list element and removed country attribute.
+. Changed the order of attributes in a few elements in compliance with WIPO DTDs.
+. Changed the order of sub2 and sup2 elements in sub, sup element in compliance with WIPO DTDs. 
+. Changed the place holder elements math and table content model to EMPTY.
+. Changed num attributes from required to implied in nplcit and patcit.
+. Added classifications-ipcr to citation element.
+. Changed dl element attribute tsize from NMTOKEN to CDATA type.
+. Changed subname subname-type CDATA to subname-type (editor | translator | other-subname-type )  'editor'
+. Changed type-of-correction element to optional in correction element.
+
+2004-09-27
+. Change in mathml2 dtd reference to work around with Microsoft MSXML3 parser
+.. 'Default Namespace Declaration not supported in DTD' issue in Internet Explorer.
+.. MATHML.xmlns.attrib is set to nothing instead of setting MATHML.xmlns to nothing.
+
+2004-09-08
+. Added phone? ,fax? ,email? to authorized-officer element. 
+. Change element subname attribute subname-type  from CDATA #IMPLIED to 
+.. subname-type  (editor | translator)  'editor'.
+. Changed element us-rights attribute applicant-ref CDATA  #REQUIRED back to
+.. to-dead-inventor CDATA  #REQUIRED. 
+2004-07-19
+. Changed us-rights content model from empty to #PCDATA. 
+. Changed rel-passage content model from(text | (passage+ , category? , rel-claims?)+)
+.. to rel-passage (text | (passage+ , category* , rel-claims*)+).
+. Changed number-of-drawing-sheets and number-of-figures in figures element
+.. from required to optional.
+. Changed patent-family content model to patent-family(priority-application |
+.. (family-member+|text) and added id attribute.
+. Removed examiner-group element. Populate department element in 
+.. the examiner name-group instead. 
+. Added gazette-reference element and gazette-num elements. 
+. Replaced bulletin-gazette element with gazette-reference element used in 
+.. correction and pct-or-regional-publishing-data element.
+.. Added gazette-reference to correction element.
+. Removed cited-patents and cited-others with citation content model.
+.. Replaced us-references-cited with references-cited new content model.
+. Removed dates-of-public-availability element and all sub elements.
+. Changed chemistry content model to (img | (chem,img?)). 
+.. Added a place holder element chem for future chemistry xml root element. 
+.. chem element has id, file and chem-type attributes.
+. Added sequence-list-doc element and modified sequence-list element.
+.. Replaced sequence-list with sequence-list-doc in us-patent-grant.
+.. Changed sequence-list country attribute type to #CDATA.
+. Changed addressbook lang to optional.
+. Added claim-type to claim and claims elements.
+. Added new element classifications-ipcr to us-bibliographic-data and field-of-search.
+..classifications-ipcr include one or more classification-ipcr. classifications-ipcr 
+..include the following elements:
+..      ipc-version-indicator
+..      classification-level
+..      section 
+..      class(reuse)
+..      subclass 
+..      main-group
+..      subgroup
+..      symbol-position
+..      classification-value
+..      action-date
+..      generating-office
+..      classification-status
+..      classification-data-source
+. Added pre to claim-text,dd,li.
+. Changed nplcit (text | (article | book | online | othercit)*) 
+.. to (text | article | book | online | othercit).
+. Added further-classification to classification-locarno.
+. Added sequence attribute to further-classification element.
+. Changed he and wi to #CDATA in img and doc-page.
+. Changed id attribute of crossref to IDREF type.
+. Added flow-chart to img-content allowed values and changed DNA to dna.
+. Changed date attribute to date-produced in element us-patent-grant.
+. Added date-publ attribute to element us-patent-grant.
+. Changed bibliographic-data id attribute to ID type.
+. Changed address_group text element from optional to required.
+. Changed text element in depositary to #PCDATA.
+. Renamed table-external-ref element to table-external-doc.
+.. Changed external-type attribute in table-external-doc to optional.
+. Changed parent-PCT-document to parent-pct-document.
+. Added id ID #IMPLIED to addressbook,application-reference,
+.. classification-ipc,classification-locarno ,new element 
+.. classifications-ipcr,classification-ipcr,priority-claim and publication-reference.
+
+2004-04-15 H. Li
+. Added num attribute to li element.
+. Changed content model maths from  (img | math) to (img | (math,img?)).
+. Added date attribute to element us-patent-application.
+. Added math, chemistry, table, program-listing to img-content allowed values
+.. and changed dna to DNA.
+. Add figref to li, dd, claim-text elements and table cell entry.
+. Changed subname? to subname* in serial, article and online elements.
+. Renamed table-external element to table-external-ref.
+
+
+2004-03-04 B. Cox
+. Renamed us-continued-prosecution-application to 
+.. us-issued-on-continued-prosecution-application
+.. and renamed attribute from cpa-text to grant-cpa-text
+.. and changed attribute value (see below).
+
+2004-02-14
+. Removed tiff-file attribute from us-math element. 
+. Changed date to date? in disclaimer.
+
+
+2004-02-12
+. Renamed element references-cited to us-references-cited.
+. Renamed element cited-patents to us-cited-patents.
+. Added element us-classification to us-cited-patents.
+
+
+2003-11-23
+. Changed us-math element attribute idref (IDREF) to idrefs (IDREFS).
+. Element othercit modified to support highlighting.
+. Added subname-type to element subname.
+
+
+2003-10-31 
+. Modified element us-rights to contain legal-representative information.
+. Changed element related-publication content model from (#PCDATA) to (#PCDATA | document-id)*.
+. Added new optional element parent-PCT-document to the content model of parent-doc.
+. Added attributes pgwide, orient, & tabstyle to the cals table attributes to support required composition features (see entity tbl.table.att).
+. Element crossref modified to support highlighting.
+
+2003-10-09
+. Added (img?) content model to us-math element.
+. Added more uspto specific character entities to the wipo.ent, please update accordingly.
+2003-08-14 
+. Changed comments on elements and attributes from PCT to USPTO practice.
+. Moved us-continued-prosecution-application text from comment to cpa-text attribute.
+. Moved us-sir-flag text from comment to sir-text attribute.
+2003-08-07 
+. Changed following id attribute type from CDATA to ID: abstract, claims, description, drawings.
+. Changed following idref attribute type from CDATA to IDREF: us-chemistry, us-math.
+. please note we leave crossref idref attribute type as CDATA.
+2003-06-10 
+. Added assignees element.
+. Added id attr for author element.
+. changed depository content model to (text|address)*.
+. Reverse sequence of address? and name in imprint.
+. Added lang to deceased-inventor.
+. Changed table-external from empty to #PCDATA and changed external-type attribute.
+. Added sup2 and sub2.
+. Added pre to p.
+. Added lang attr to nplcit.
+. Added class-type attr to class element.
+. Added figure-labels attr to figure element.
+2002-05-10 Bruce B. Cox
+. First public draft. 
+***** End Revision History *****-->
+<!--us-patent-grant, root element of the document and contains within it 
+all elements, content, and references to external entities, that constitute
+the document. Contains a bibliographic section (front page information),
+abstract, description, claim list, and possibly drawings. An abstract is
+required for all types of U.S. patents except for design patents. 
+ST.32 name: PATDOC.
+Attributes:
+lang = ISO639 code for language of document (US: fixed "EN" for publishing)
+dtd-version = dtd version number
+file = filename of an instance of this DTD
+status = status of the document; (US: not used for publishing)
+id = ID for the root element, unique within the instance
+country = WIPO ST.3 code (US: fixed "US")
+file-reference-id = applicant's or agent's file reference (docket number), if any
+
+            -->
+<!ELEMENT us-patent-grant (doc-page+ | (us-bibliographic-data-grant, abstract*, drawings?, description, us-sequence-list-doc?, us-megatable-doc?, table-external-doc*, us-chemistry*, us-math*, us-claim-statement, claims))>
+<!ATTLIST us-patent-grant
+	lang CDATA #REQUIRED
+	dtd-version CDATA #IMPLIED
+	file CDATA #IMPLIED
+	status CDATA #IMPLIED
+	id ID #IMPLIED
+	country CDATA #REQUIRED
+	file-reference-id CDATA #IMPLIED
+	date-produced CDATA #IMPLIED
+	date-publ CDATA #IMPLIED
+>
+<!--to include mathml2.dtd  change MATHML2_DTD value to "INCLUDE", 
+change MATH_PLACEHOLDER value to "IGNORE", the same for the TABLE_DTD 
+and TABLE_PLACEHOLDER
+
+INCLUDE
+IGNORE
+-->
+<!ENTITY % UNICODE_PLANE1D_ESCAPE "INCLUDE">
+<!ENTITY % MATHML2_DTD "INCLUDE">
+<!ENTITY % TABLE_DTD "INCLUDE">
+<!ENTITY % MATH_PLACEHOLDER "IGNORE">
+<!ENTITY % TABLE_PLACEHOLDER "IGNORE">
+<![%UNICODE_PLANE1D_ESCAPE; [
+ <!ENTITY % plane1D  "&#38;#38;#xE">
+]]>
+<![%MATHML2_DTD; [
+<!-- DTD MathML2: maintained by W3C.  Download from:
+     http://www.w3.org/TR/MathML2/DTD-MathML-20010221.zip
+
+     If using nsgmls-based parser (SP, Near & Far Designer, etc.)
+     Uncomment 'mathml-charent-module' switch below or replace the 
+     Referenced MathML2 DTD with the version downloadable from:
+     http://www.w3.org/Math/DTD/dtd-sp.zip
+
+     This notice copied from: http://www.w3.org/Math/DTD/
+     
+     "DTD for nsgmls
+      Some systems (including the popular nsgmls parser) may not be able 
+      to process files using 'plane 1' characters which have Unicode 
+      numbers higher than #xFFFF. The versions of the DTD provided here
+      incorporate the modifications mentioned above, but the high 
+      characters are replaced by the equivalent mchar construct 
+      <mchar name="..." /> this allows the DTD to be read and for MathML
+      files to be validated using such systems."
+-->
+<!--ENTITY % mathml-charent.module "IGNORE" -->
+<!ENTITY % MATHML.prefixed "IGNORE">
+
+<!--Work around with Microsoft MSXML3 parser in IE-->
+<!ENTITY % MATHML.xmlns.attrib "">
+
+<!--import MathML2 dtd -->
+<!ENTITY % mathml2 PUBLIC "-//W3C//DTD MathML 2.0//EN" "mathml2.dtd">
+%mathml2;
+]]>
+<![%TABLE_DTD; [
+<!-- DTD OASIS Open XML Exchange Table Model.  
+       Maintained by OASIS; download from:
+       http://oasis-open.org/specs/soextblx.dtd
+       Note that the FPI in soextblx.dtd refers to itself as 'calstblx'.  
+       That convention has been followed here.
+-->
+<!--  create content for title element in table  -->
+<!ENTITY % title "<!ELEMENT title (#PCDATA | b | i | o | u | sup | sub | smallcaps)* > ">
+%title;
+
+<!--override OASIS Exchange <entry> model -->
+<!ENTITY % tbl.entry.mdl "(#PCDATA | b | i | o | u | sup | sub | smallcaps | br 
+                 | patcit | nplcit | bio-deposit | crossref | figref | img 
+                 | dl | ul | ol | chemistry | maths)* ">
+
+<!--import OASIS Exchange model -->
+<!ENTITY % calstblx PUBLIC "-//OASIS//DTD XML Exchange Table Model 19990315//EN" 
+                           "soextblx.dtd">
+<!ENTITY % yesorno  "NMTOKEN" >
+<!ENTITY % tbl.table.att        " pgwide      %yesorno;       #IMPLIED
+                                  orient      (port | land)   #IMPLIED
+                                  tabstyle    NMTOKEN         #IMPLIED">
+<!ENTITY % tbl.entry.att "id ID #IMPLIED">
+%calstblx;
+]]>
+<![%MATH_PLACEHOLDER; [
+<!--(PLACEHOLDER:w3c math dtd)-->
+<!ELEMENT math EMPTY>
+]]>
+<![%TABLE_PLACEHOLDER; [
+<!--(PLACEHOLDER:cals table dtd)-->
+<!ELEMENT table EMPTY>
+]]>
+<!ENTITY % name_group "((name | (prefix? , (last-name | orgname) , first-name? , middle-name? , suffix? , iid? , role? , orgname? , department? , synonym*)) , registered-number?)">
+<!ENTITY % address_group "((address-1? , address-2? , address-3? , mailcode? , pobox? , room? , address-floor? , building? , street? , city? , county? , state? , postcode? , country) | text)">
+<!--(US: not used in publication.)-->
+<!ELEMENT absno (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT abst-problem (p+)>
+<!ATTLIST abst-problem
+	id ID #IMPLIED
+>
+<!--A concise summary of the disclosure.-->
+<!ELEMENT abstract (doc-page+ | (abst-problem, abst-solution) | p+)>
+<!ATTLIST abstract
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+	status CDATA #IMPLIED
+>
+<!--(US: not used in publishing.)-->
+<!ELEMENT abst-solution (p+)>
+<!ATTLIST abst-solution
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT accepted (date)>
+<!--The date the symbol was allocated to the patent document. -->
+<!ELEMENT action-date (date)>
+<!--Earlier document to which this is an addition. INID 61, ST.32 equivalency = B610.-->
+<!ELEMENT addition (relation)>
+<!--Additional information. ST.32 equivalency = B513.-->
+<!ELEMENT additional-info (#PCDATA)>
+<!--
+      -->
+<!ELEMENT address (%address_group;)>
+<!--Address, first line.-->
+<!ELEMENT address-1 (#PCDATA)>
+<!--Address, second line.-->
+<!ELEMENT address-2 (#PCDATA)>
+<!--Address, third line.-->
+<!ELEMENT address-3 (#PCDATA)>
+<!--ADDRESSBOOK GROUP: Holds name and contact information for individuals/organizations. The LANG attribute is REQUIRED for certain document types, e.g. the JPO PCT Request where names and addresses may be repeated in two different languages. If no structure possible use text.-->
+<!ELEMENT addressbook ((%name_group;, address, phone*, fax*, email*, url*, ead*, dtext?) | text)>
+<!ATTLIST addressbook
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+>
+<!--Address floor, e.g., 10th.-->
+<!ELEMENT address-floor (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT advantageous-effects (heading*, p+)+>
+<!ATTLIST advantageous-effects
+	id ID #IMPLIED
+>
+<!--ST.32 name: B741-->
+<!ELEMENT agent (addressbook+)>
+<!ATTLIST agent
+	sequence CDATA #REQUIRED
+	rep-type (agent | attorney | common-representative) #REQUIRED
+>
+<!--Information regarding Agents or common representatives.-->
+<!ELEMENT agents (customer-number | agent+)>
+<!--(US: not used in publication.)-->
+<!ELEMENT alttitle (#PCDATA)>
+<!--(US: applicant is always the inventor. Use "applicant" with applicant type attribute of "applicant-inventor.")-->
+<!ELEMENT us-applicant (addressbook+, residence, us-rights*, designated-states?, designated-states-as-inventor?)>
+<!ATTLIST us-applicant
+	sequence CDATA #REQUIRED
+	app-type (applicant | applicant-inventor) #REQUIRED
+	designation (all | all-except-us | us-only | as-indicated) #REQUIRED
+	applicant-authority-category (inventor | legal-representative | party-of-interest | obligated-assignee | assignee) #IMPLIED
+>
+<!--Applicants information.-->
+<!ELEMENT us-applicants (us-applicant+)>
+<!--Identification of a patent application.-->
+<!ELEMENT application-reference (document-id)>
+<!ATTLIST application-reference
+	id ID #IMPLIED
+	appl-type CDATA #REQUIRED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT article (text | (author*, atl?, subname*, (serial | book), absno?, location?, class*, keyword*, cpyrt?, artid?, refno*))>
+<!--(US: not used in publication.)-->
+<!ELEMENT artid (#PCDATA)>
+<!--(US: for assignee type, one of the following codes is placed in the role element. Assignee types for U.S. patents are taken from the following table: 01 Unassigned; 02 United States company or corporation; 03 Foreign company or corporation; 04 United States individual; 05 Foreign individual; 06 U.S. Federal government; 07 Foreign government; 08 U.S. county government; 09 U.S. state government.) ST.32 name: B730.-->
+<!ELEMENT assignee (%name_group; | addressbook)>
+<!--
+      -->
+<!ELEMENT assignees (assignee+)>
+<!--ST.32 name: B747.-->
+<!ELEMENT assistant-examiner (%name_group;, electronic-signature?)>
+<!--(US: not used in publication.)-->
+<!ELEMENT atl (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT author (%name_group; | addressbook)>
+<!ATTLIST author
+	id ID #IMPLIED
+>
+<!--
+      -->
+<!ELEMENT authorized-officer (%name_group;, phone?, fax?, email?, electronic-signature?)>
+<!--(US: not used in publication.)-->
+<!ELEMENT avail (#PCDATA)>
+<!--Bold formatting.-->
+<!ELEMENT b (#PCDATA | i | o | u | smallcaps | sub | sup)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT background-art (heading*, p+)+>
+<!ATTLIST background-art
+	id ID #IMPLIED
+>
+<!--A non-PKI electronic signature.-->
+<!ELEMENT basic-signature (fax-image | text-string | click-wrap)>
+<!--(US: not used in publication.)-->
+<!ELEMENT best-mode (heading*, p+)+>
+<!ATTLIST best-mode
+	id ID #IMPLIED
+>
+<!--Biological accession number: the identification assigned to the biological material by the depository.-->
+<!ELEMENT bio-accno (#PCDATA)>
+<!--Biological deposit citation (US EFS: biological-deposit).-->
+<!ELEMENT bio-deposit (depositary, bio-accno, date?, term?, dtext?)>
+<!ATTLIST bio-deposit
+	id ID #IMPLIED
+	num CDATA #REQUIRED
+	url CDATA #IMPLIED
+	dnum CDATA #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT book (text | (author*, (book-title+ | conference), (subtitle?, subname*, edition?, imprint?, descrip?, series?, absno?, location*, isbn*, pubid?, vid?, bookno?, notes?, class*, keyword*, cpyrt?, refno*)))>
+<!--(US: not used in publication.)-->
+<!ELEMENT bookno (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT book-title (#PCDATA)>
+<!--(US: not used in publishing.) Line break within a paragraph.-->
+<!ELEMENT br EMPTY>
+<!--Building information in address, e.g., Hoffman building.-->
+<!ELEMENT building (#PCDATA)>
+<!--(US: used for different data types depending on context.)-->
+<!ELEMENT category (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT chapter (#PCDATA)>
+<!--
+      -->
+<!ELEMENT chem EMPTY>
+<!ATTLIST chem
+	id ID #IMPLIED
+	file CDATA #REQUIRED
+	chem-type CDATA #IMPLIED
+>
+<!--Chemical formulae, ring structures, Markush structures, etc. (US: see us-chemistry as well.)-->
+<!ELEMENT chemistry (img | (chem, img?))>
+<!ATTLIST chemistry
+	id ID #IMPLIED
+	num CDATA #REQUIRED
+>
+<!--Child Document. ST.32 equivalency = CDOC.-->
+<!ELEMENT child-doc (document-id)>
+<!--
+      -->
+<!ELEMENT us-citation ((patcit | nplcit), corresponding-docs*, rel-passage*, category*, rel-claims*, classification-ipc?, classifications-ipcr?, classification-cpc-text?, classification-national?)>
+<!ATTLIST us-citation
+	srep-phase CDATA #IMPLIED
+>
+<!--City or town name.-->
+<!ELEMENT city (#PCDATA)>
+<!--
+      -->
+<!ELEMENT claim (claim-text+)>
+<!ATTLIST claim
+	id ID #IMPLIED
+	num CDATA #REQUIRED
+	claim-type CDATA #IMPLIED
+>
+<!--Reference to a claim.-->
+<!ELEMENT claim-ref (#PCDATA)>
+<!ATTLIST claim-ref
+	idref IDREFS #REQUIRED
+>
+<!--
+      -->
+<!ELEMENT claims (doc-page+ | claim+)>
+<!ATTLIST claims
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+	claim-type CDATA #IMPLIED
+	status CDATA #IMPLIED
+>
+<!--The text of the claim; recursion of claim-text indicates claim step hierarchy and should be rendered accordingly.-->
+<!ELEMENT claim-text (#PCDATA | claim-text | claim-ref | b | i | o | u | sup | sub | smallcaps | br | pre | crossref | figref | img | chemistry | maths | tables)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT class (#PCDATA)>
+<!ATTLIST class
+	class-type CDATA #IMPLIED
+>
+<!-- The code that describes the source of the allocation of the symbol to the patent document. -->
+<!ELEMENT classification-data-source (#PCDATA)>
+<!--International Patent Classification (IPC) data. INID 51. ST.32 name = B510-->
+<!ELEMENT classification-ipc (edition, main-classification, further-classification*, (additional-info | linked-indexing-code-group | unlinked-indexing-code)*, text?)>
+<!ATTLIST classification-ipc
+	id ID #IMPLIED
+>
+<!--
+      -->
+<!ELEMENT classification-ipcr (ipc-version-indicator, classification-level?, section, class, subclass, main-group?, subgroup?, symbol-position?, classification-value?, action-date?, generating-office?, classification-status?, classification-data-source?)>
+<!ATTLIST classification-ipcr
+	id ID #IMPLIED
+	sequence CDATA #IMPLIED
+>
+<!ELEMENT main-cpc (classification-cpc)>
+<!ATTLIST main-cpc
+	id ID #IMPLIED
+>
+<!ELEMENT further-cpc (classification-cpc*, combination-set*)>
+<!ATTLIST further-cpc
+	id ID #IMPLIED
+>
+<!ELEMENT classifications-cpc (main-cpc, further-cpc?)>
+<!ATTLIST classifications-cpc
+	id ID #IMPLIED
+>
+<!-- Cooperative Patent Classification scheme -->
+<!ELEMENT classification-cpc (cpc-version-indicator, section, class, subclass, main-group, subgroup, symbol-position, classification-value, action-date, generating-office, classification-status?, classification-data-source?, scheme-origination-code?)>
+<!ATTLIST classification-cpc
+	id ID #IMPLIED
+	sequence CDATA #IMPLIED
+>
+<!-- The publication date of the CPC group assigned. -->
+<!ELEMENT cpc-version-indicator (date)>
+<!-- The value that denotes which patent classification scheme the symbol originates from. -->
+<!ELEMENT scheme-origination-code (#PCDATA)>
+<!-- A combination set is a group of CPC symbols that have one base class and one or more subsequent ranked symbols that are linked together to convey special classification information.-->
+<!ELEMENT combination-set (group-number, combination-rank+)>
+<!ATTLIST combination-set
+	id ID #IMPLIED
+>
+<!-- -->
+<!ELEMENT combination-rank (rank-number, classification-cpc)>
+<!ATTLIST combination-rank
+	id ID #IMPLIED
+>
+<!-- The sequential number that is used to identify the rank of a symbol within a combination set.  (Order of the symbols is important). -->
+<!ELEMENT rank-number (#PCDATA)>
+<!-- A number that is used to identify a group of symbols, when allocating a combination set of symbols to a patent document.-->
+<!ELEMENT group-number (#PCDATA)>
+<!-- Unstructured classification cpc data-->
+<!ELEMENT classification-cpc-text (#PCDATA)>
+<!ATTLIST classification-cpc-text
+	id ID #IMPLIED
+>
+
+
+<!-- Unstructured classification cpc combination data-->
+<!ELEMENT classification-cpc-combination-text (#PCDATA)>
+<!ATTLIST classification-cpc-combination-text
+	id ID #IMPLIED
+>
+
+<!-- The code that classifies the subject matter level.   C (Core), A (Advanced) , S (Subclass), blank (for CPC). -->
+<!ELEMENT classification-level (#PCDATA)>
+<!--For design patents only. Formerly inlcuded in IPC main classification. The Locarno Classification (LC) is formatted as fixed-length records as described here: Positions 1-2, "Class" (2 numeric, right justified, leading zeros); positions 3-4, "Subclass" (2 numeric, right justified, leading zeros). ST.32 name: B511-->
+<!ELEMENT classification-locarno (edition, main-classification, further-classification*, text?)>
+<!ATTLIST classification-locarno
+	id ID #IMPLIED
+>
+<!--Domestic or national classification. INID 52. ST.32 equivalency = B520-->
+<!ELEMENT classification-national (country, edition?, main-classification, further-classification*, (additional-info | linked-indexing-code-group | unlinked-indexing-code)*, text?)>
+<!ATTLIST classification-national
+	id ID #IMPLIED
+>
+<!--
+      -->
+<!ELEMENT classifications-ipcr (classification-ipcr+)>
+<!ATTLIST classifications-ipcr
+	id ID #IMPLIED
+>
+<!-- The code that describes the circumstances under which the symbol was allocated to the patent document. -->
+<!ELEMENT classification-status (#PCDATA)>
+<!-- The code that distinguishes between invention information (invention) and other information (non-invention/additional), when describing a classification symbol on a document. -->
+<!ELEMENT classification-value (#PCDATA)>
+<!--A simple 'signature', e.g., clicking a button labeled 'accept' or 'I agree'.-->
+<!ELEMENT click-wrap EMPTY>
+<!--Cited document column, first.-->
+<!ELEMENT colf (#PCDATA)>
+<!--Cited document column, last.-->
+<!ELEMENT coll (#PCDATA)>
+<!--Cited document column numbers.-->
+<!ELEMENT column (#PCDATA | colf | coll)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT conference (text | (conftitle, date?, confno?, confplace?, confsponsor*))>
+<!--(US: not used in publication.)-->
+<!ELEMENT confno (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT confplace (#PCDATA | address)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT confsponsor (#PCDATA | addressbook)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT conftitle (#PCDATA)>
+<!--Earlier application of which the present document is a continuation. ST.32 equivalency = B631.-->
+<!ELEMENT continuation (relation)>
+<!--Document of which this is a continuation-in-part. ST.32 equivalency = B632.-->
+<!ELEMENT continuation-in-part (relation)>
+<!--Document of which this is a continuing reissue. ST.32 equivalency = B633.-->
+<!ELEMENT continuing-reissue (relation)>
+<!--Correction information. ST.32 equivalency = B665.-->
+<!ELEMENT correction (document-corrected, type-of-correction?, gazette-reference?, text?)>
+<!--
+      -->
+<!ELEMENT corresponding-docs (document-id | nplcit)*>
+<!--Country: use ST.3 country code, e.g. DE, FR, GB, NL, etc. Also includes EP, WO, etc.-->
+<!ELEMENT country (#PCDATA)>
+<!--County, parish, department, etc.-->
+<!ELEMENT county (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT cpyrt (#PCDATA)>
+<!--Cross reference to any other element in the instance with an identifier (id).-->
+<!ELEMENT crossref (#PCDATA | b | i | o | u | sup | sub | smallcaps)*>
+<!ATTLIST crossref
+	idref IDREF #REQUIRED
+>
+<!--Customer number for agents.-->
+<!ELEMENT customer-number (#PCDATA)>
+<!--Components of a date. Format: YYYYMMDD.-->
+<!ELEMENT date (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT datecit (date)>
+<!--(US: not used in publication.)-->
+<!ELEMENT date-search-completed (date)>
+<!--(US: not used in publication.)-->
+<!ELEMENT date-search-report-mailed (date)>
+<!--Definition description.-->
+<!ELEMENT dd (#PCDATA | b | i | o | u | sup | sub | smallcaps | br | pre | patcit | nplcit | bio-deposit | crossref | figref | img | ul | ol | chemistry | maths)*>
+<!--Deceased inventor name.-->
+<!ELEMENT deceased-inventor (%name_group;)>
+<!ATTLIST deceased-inventor
+	sequence CDATA #IMPLIED
+	lang CDATA #IMPLIED
+>
+<!--Name of department, division, section, etc.-->
+<!ELEMENT department (#PCDATA)>
+<!--Information regarding the facility storing the biological deposit.-->
+<!ELEMENT depositary (#PCDATA | address)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT descrip (#PCDATA)>
+<!--Description. Specification of the invention.-->
+<!ELEMENT description (doc-page+ | (invention-title?, (technical-field | background-art | disclosure | description-of-drawings | best-mode | mode-for-invention | industrial-applicability | sequence-list-text | (heading*, p+)+)+))>
+<!ATTLIST description
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+	status CDATA #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT description-of-drawings (heading*, p+)+>
+<!ATTLIST description-of-drawings
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT designated-states (country*, (region, country+)*)>
+<!--(US: not used in publication.)-->
+<!ELEMENT designated-states-as-inventor (country*, (region, country+)*)>
+<!--Disclaimer date. ST.32 equivalency = B473-->
+<!ELEMENT disclaimer (date?, text?)>
+<!--(US: not used in publication.)-->
+<!ELEMENT disclosure ((tech-problem | tech-solution | advantageous-effects)* | (heading*, p+)+)>
+<!ATTLIST disclosure
+	id ID #IMPLIED
+>
+<!--Earlier application from which the present document has been divided out. INID 62. ST.32 equivalency = B620.-->
+<!ELEMENT division (relation)>
+<!--Definition list.-->
+<!ELEMENT dl (dt, dd)+>
+<!ATTLIST dl
+	tsize CDATA #IMPLIED
+	compact (compact) #IMPLIED
+	id ID #IMPLIED
+>
+<!--The number of the referenced document.-->
+<!ELEMENT doc-number (#PCDATA)>
+<!--(US: Not used in publishing) DOCument or PAGE. This is primarily to be used when data for the whole or major sections of an application are in image format OR other formats such as pdf. Page range attributes are given when required: pp - page range; ppf - first page; ppl - last page. The 'img' may also be used for complete pages, eg., in drawings. Recommended id = docp01, docp02, etc. -->
+<!ELEMENT doc-page EMPTY>
+<!ATTLIST doc-page
+	id ID #IMPLIED
+	he CDATA #REQUIRED
+	wi CDATA #REQUIRED
+	type (jpg | pdf | tif) #REQUIRED
+	alt CDATA #IMPLIED
+	pp CDATA #IMPLIED
+	ppf CDATA #IMPLIED
+	ppl CDATA #IMPLIED
+	file CDATA #REQUIRED
+	color (color | bw) #IMPLIED
+	orientation (portrait | landscape) "portrait"
+>
+<!--Document being corrected. ST.32 equivalent = B666.-->
+<!ELEMENT document-corrected (document-id)>
+<!--Document identification refers to patents and patent applications only. See WIPO ST.14.-->
+<!ELEMENT document-id (country, doc-number, kind?, name?, date?)>
+<!ATTLIST document-id
+	lang CDATA #IMPLIED
+>
+<!--The drawing pages.-->
+<!ELEMENT drawings (doc-page+ | figure+)>
+<!ATTLIST drawings
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+	status CDATA #IMPLIED
+>
+<!--Term to be defined.-->
+<!ELEMENT dt (#PCDATA | b | i | o | u | sup | sub | smallcaps)*>
+<!ATTLIST dt
+	id ID #IMPLIED
+>
+<!--Where structured data is not possible, enter text -->
+<!ELEMENT dtext (#PCDATA)>
+<!--Electronic address; use for other than email.-->
+<!ELEMENT ead (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT edate (#PCDATA)>
+<!--Edition statement. Indicates the edition of the classification schedule.-->
+<!ELEMENT edition (#PCDATA)>
+<!--A signature represented by electronic means.-->
+<!ELEMENT electronic-signature (basic-signature | enhanced-signature)>
+<!ATTLIST electronic-signature
+	date CDATA #REQUIRED
+	place-signed CDATA #IMPLIED
+>
+<!--Email address.-->
+<!ELEMENT email (#PCDATA)>
+<!--A PKI / PKCS #7 digital signature data type.-->
+<!ELEMENT enhanced-signature (pkcs7)>
+<!--Persons acting on the document. ST.32 equivalency = B745-->
+<!ELEMENT examiners (primary-examiner?, assistant-examiner?, authorized-officer?)>
+<!--
+      -->
+<!ELEMENT family-member (document-id)>
+<!--Fax number, format undefined.-->
+<!ELEMENT fax (#PCDATA)>
+<!--A TIFF image of a signature.-->
+<!ELEMENT fax-image EMPTY>
+<!ATTLIST fax-image
+	file CDATA #REQUIRED
+>
+<!--The number of the figure.-->
+<!ELEMENT fig-number (#PCDATA)>
+<!--A reference to a figure; e.g., "...as shown in figure 1..."-->
+<!ELEMENT figref (#PCDATA | b | i | o | u | sup | sub | smallcaps)*>
+<!ATTLIST figref
+	idref IDREFS #IMPLIED
+	num CDATA #IMPLIED
+>
+<!--A figure. (US: often equates to one drawing page that might contain multiple figures.)-->
+<!ELEMENT figure (img)>
+<!ATTLIST figure
+	id ID #IMPLIED
+	num CDATA #REQUIRED
+	figure-labels CDATA #IMPLIED
+>
+<!--Drawing pages with figures.  ST.32 name: B590-->
+<!ELEMENT figures (number-of-drawing-sheets?, number-of-figures?, figure-to-publish?)>
+<!--Figure(s) to be published on front page or in Offical Gazette.-->
+<!ELEMENT figure-to-publish (fig-number+)>
+<!--First or given name(s).-->
+<!ELEMENT first-name (#PCDATA)>
+<!--Further/secondary classification. ST.32 equivalency = B512/B522 (US: XR classification)-->
+<!ELEMENT further-classification (#PCDATA)>
+<!ATTLIST further-classification
+	id ID #IMPLIED
+	sequence CDATA #IMPLIED
+>
+<!--
+      -->
+<!ELEMENT gazette-num (#PCDATA)>
+<!--Patent bulletin / gazette information. ST.32 equivalency = B405-->
+<!ELEMENT gazette-reference (gazette-num, date, text?)>
+<!ATTLIST gazette-reference
+	id ID #IMPLIED
+	country CDATA #IMPLIED
+	lang CDATA #IMPLIED
+>
+<!--The IP Office that allocated the classification symbol to the patent document.  The code is based on WIPO Standard ST.3. -->
+<!ELEMENT generating-office (country)>
+<!--Heading.  Level attribute determines indentation and style.-->
+<!ELEMENT heading (#PCDATA | b | i | o | u | sup | sub | smallcaps)*>
+<!ATTLIST heading
+	level (1 | 2 | 3) #IMPLIED
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT history (text | (received | accepted | revised | misc))>
+<!--(US: not used in publication.)-->
+<!ELEMENT hostno (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT hosttitle (#PCDATA)>
+<!--Italic formatting.-->
+<!ELEMENT i (#PCDATA | b | o | u | smallcaps | sub | sup)*>
+<!--Individual id, format undefined.-->
+<!ELEMENT iid (#PCDATA)>
+<!--Image data is used for any kind of image: art work, figures, complex work units (math, tables, chemistry), etc.-->
+<!ELEMENT img EMPTY>
+<!ATTLIST img
+	id ID #IMPLIED
+	he CDATA #REQUIRED
+	wi CDATA #REQUIRED
+	file CDATA #REQUIRED
+	alt CDATA #IMPLIED
+	img-content (drawing | photograph | character | dna | undefined | chem | table | math | program-listing | flowchart) "drawing"
+	img-format (jpg | tif | st33 | st35) #REQUIRED
+	orientation (portrait | landscape) "portrait"
+	inline (yes | no) "no"
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT imprint (text | (address?, name, pubdate*))>
+<!--(US: not used in publication.)-->
+<!ELEMENT industrial-applicability (heading*, p+)+>
+<!ATTLIST industrial-applicability
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT ino (#PCDATA)>
+<!--Title of the Invention.-->
+<!ELEMENT invention-title (#PCDATA | b | i | o | u | sup | sub)*>
+<!ATTLIST invention-title
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+>
+<!--The individual or entity responsible for creating the matter that protection is sought for. (US: populated only when the inventor was unable to be the applicant.)-->
+<!ELEMENT inventor (addressbook+, designated-states?)>
+<!ATTLIST inventor
+	sequence CDATA #REQUIRED
+	designation (all | all-except-us | us-only | as-indicated) #IMPLIED
+>
+<!--Inventors information.-->
+<!ELEMENT inventors (inventor | deceased-inventor)+>
+<!--
+      -->
+<!ELEMENT ipc-version-indicator (date)>
+<!--
+      -->
+<!ELEMENT isbn (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT issn (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT issue (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT keyword (#PCDATA)>
+<!--Document kind code; e.g. A1.-->
+<!ELEMENT kind (#PCDATA)>
+<!--Lapse of patent. ST.32 equivalency = B475-->
+<!ELEMENT lapse-of-patent (document-id, text?)>
+<!--Last, family, surname.-->
+<!ELEMENT last-name (#PCDATA)>
+<!--The scientific name of the plant.-->
+<!ELEMENT latin-name (#PCDATA)>
+<!--Length of Grant. ST.32 equivalency = B474-->
+<!ELEMENT length-of-grant (#PCDATA)>
+<!--List item.-->
+<!ELEMENT li (#PCDATA | b | i | o | u | sup | sub | smallcaps | br | pre | patcit | nplcit | bio-deposit | crossref | figref | img | dl | ul | ol | chemistry | maths)*>
+<!ATTLIST li
+	id ID #IMPLIED
+	num CDATA #IMPLIED
+>
+<!--Referenced line within cited work.-->
+<!ELEMENT line (#PCDATA | linef | linel)*>
+<!--Cited document line, first.-->
+<!ELEMENT linef (#PCDATA)>
+<!--Cited document line, last.-->
+<!ELEMENT linel (#PCDATA)>
+<!--(US: not used for publishing.) Linked indexing code. ST.32 equivalency = B514/B524.-->
+<!ELEMENT linked-indexing-code-group (main-linked-indexing-code, sub-linked-indexing-code+)>
+<!--(US: not used in publication.)-->
+<!ELEMENT location (text | (serpart?, sersect?, chapter?, pp?, column?, para?, line?))>
+<!--Organizational mail code.-->
+<!ELEMENT mailcode (#PCDATA)>
+<!--Main classification. ST.32 equivalency = B511/B521 (US: OR classification)-->
+<!ELEMENT main-classification (#PCDATA)>
+<!-- The code denotes the fourth level subdivision of the classification scheme and as such is a further breakdown of the novel subject matter. -->
+<!ELEMENT main-group (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT main-linked-indexing-code (#PCDATA)>
+<!--This is image data or coded according to mathml, version 2.-->
+<!ELEMENT maths (img | (math, img?))>
+<!ATTLIST maths
+	id ID #IMPLIED
+	num CDATA #REQUIRED
+>
+<!--Middle name(s) or initial(s).-->
+<!ELEMENT middle-name (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT misc (#PCDATA | date)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT mode-for-invention (heading*, p+)+>
+<!ATTLIST mode-for-invention
+	id ID #IMPLIED
+	mode-num CDATA #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT msn (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT mst (#PCDATA)>
+<!--Name: if no distinction or detail can be given. Also to be used for: personal (natural person) and corporate (legal entity) names.-->
+<!ELEMENT name (#PCDATA)>
+<!ATTLIST name
+	name-type (legal | natural) #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT notes (#PCDATA)>
+<!--Non-Patent Literature (NPL) CITation; (US: use text option ONLY. No structured data will be published.)-->
+<!ELEMENT nplcit (text | article | book | online | othercit)>
+<!ATTLIST nplcit
+	id ID #IMPLIED
+	num CDATA #IMPLIED
+	lang CDATA #IMPLIED
+	file CDATA #IMPLIED
+	npl-type CDATA #IMPLIED
+	medium CDATA #IMPLIED
+	url CDATA #IMPLIED
+>
+<!--Total number of claims in the grant.-->
+<!ELEMENT number-of-claims (#PCDATA)>
+<!--Total number of drawing pages submitted. ST.32 name: B595-->
+<!ELEMENT number-of-drawing-sheets (#PCDATA)>
+<!--Number of figures. ST.32 equivalency = B596-->
+<!ELEMENT number-of-figures (#PCDATA)>
+<!--Overscore: style - single is default.-->
+<!ELEMENT o (#PCDATA | b | i | smallcaps | sub | sup)*>
+<!ATTLIST o
+	ostyle (single | double | dots | dash | leftarrow | rightarrow | leftrightarrow) "single"
+>
+<!--Where the earlier application is an ARIPO application,indicate at least one country party to the PARIS convention for the protection of industrial property or one member of the WTO for which that earlier application was filed.-->
+<!ELEMENT office-of-filing ((region, country?) | country)>
+<!--Ordered Lists: attribute 'ol-style' - recommded use: 1 arablic numbers 1, 2, 3, ... a lower alpha a, b, c, ... A upper alpha A, B, C, ... i lower roman i, ii, iii, ... I upper roman I, II, III, ...-->
+<!ELEMENT ol (li+)>
+<!ATTLIST ol
+	id ID #IMPLIED
+	compact (compact) #IMPLIED
+	ol-style CDATA #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT online (text | (author*, online-title*, hosttitle?, subname*, edition?, (serial | book)?, imprint?, pubdate?, history?, series?, hostno?, location?, notes?, avail, class*, keyword*, cpyrt?, issn?, isbn?, datecit?, srchterm*, srchdate?, refno*))>
+<!--(US: not used in publication.)-->
+<!ELEMENT online-title (#PCDATA)>
+<!--Organisation name or company name.-->
+<!ELEMENT orgname (#PCDATA)>
+<!--Other citations. Format not defined.-->
+<!ELEMENT othercit (#PCDATA | b | i | o | u | sup | sub)*>
+<!--Paragraph. Recommended id = p01, p02, etc. num = 001, 002, etc. (US: ID is unique in the instance. Num indicates sequence of paragraphs for display.)-->
+<!ELEMENT p (#PCDATA | b | i | o | u | sup | sub | smallcaps | br | pre | dl | ul | ol | crossref | figref | patcit | nplcit | bio-deposit | img | chemistry | maths | tables | table-external-doc)*>
+<!ATTLIST p
+	id ID #IMPLIED
+	num CDATA #REQUIRED
+>
+<!--Referenced paragraph within cited work.-->
+<!ELEMENT para (#PCDATA | paraf | paral)*>
+<!--Cited paragraph, first.-->
+<!ELEMENT paraf (#PCDATA)>
+<!--Cited paragraph, last.-->
+<!ELEMENT paral (#PCDATA)>
+<!--Describes parent document. ST.32 equivalency = PARENT.-->
+<!ELEMENT parent-doc (document-id, parent-status?, parent-grant-document?, parent-pct-document?)>
+<!--If the parent document was granted.-->
+<!ELEMENT parent-grant-document (document-id)>
+<!--
+      -->
+<!ELEMENT parent-pct-document (document-id)>
+<!--Status of the parent document.-->
+<!ELEMENT parent-status (#PCDATA)>
+<!--Parties to the application.-->
+<!ELEMENT us-parties (us-applicants, inventors, agents?)>
+<!--(US: not used in publication.)-->
+<!ELEMENT passage (#PCDATA)>
+<!--Patent Citation within abstract, description or claims.-->
+<!ELEMENT patcit (text | (document-id, rel-passage*))>
+<!ATTLIST patcit
+	id ID #IMPLIED
+	num CDATA #IMPLIED
+	dnum CDATA #IMPLIED
+	dnum-type CDATA #IMPLIED
+	file CDATA #IMPLIED
+	url CDATA #IMPLIED
+>
+<!--Patent family members.-->
+<!ELEMENT patent-family (priority-application, (family-member+ | text))>
+<!ATTLIST patent-family
+	id ID #IMPLIED
+>
+<!--PCT or regional filing information. INID 86; ST.32 equivalency = B860.-->
+<!ELEMENT pct-or-regional-filing-data (document-id, us-371c124-date?)>
+<!--PCT or regional publication information. INID 87; ST.32 equivalency = B870.-->
+<!ELEMENT pct-or-regional-publishing-data (document-id, gazette-reference?)>
+<!--Telephone number, format undefined.-->
+<!ELEMENT phone (#PCDATA)>
+<!--PKCS7 digital signature.-->
+<!ELEMENT pkcs7 EMPTY>
+<!--(US: not used in publication.)-->
+<!ELEMENT place-of-search (country)>
+<!--Post Office Box number.-->
+<!ELEMENT pobox (#PCDATA)>
+<!--Postal code or zip code.-->
+<!ELEMENT postcode (#PCDATA)>
+<!--Cited document page numbers.-->
+<!ELEMENT pp (#PCDATA | ppf | ppl)*>
+<!--Cited document page , first.-->
+<!ELEMENT ppf (#PCDATA)>
+<!--Cited document page, last.-->
+<!ELEMENT ppl (#PCDATA)>
+<!--Indicates that the white space of the text should be preserved at rendering. In all cases, a fixed-width font should be used.-->
+<!ELEMENT pre (#PCDATA)>
+<!ATTLIST pre
+	id ID #IMPLIED
+	xml:space (preserve) #FIXED "preserve"
+	listing-type (sequence | program-listing | other) #REQUIRED
+>
+<!--Title: e.g., Mr., Mrs., Dr. etc.-->
+<!ELEMENT prefix (#PCDATA)>
+<!--ST.32 name: B746-->
+<!ELEMENT primary-examiner (%name_group;, electronic-signature?)>
+<!ELEMENT prior-disclosure-affidavit-filed (#PCDATA)>
+<!--Priority application number. INID 31; ST.32 equivalency = B310.-->
+<!ELEMENT priority-application (document-id)>
+<!--Priority claim.-->
+<!ELEMENT priority-claim (country, doc-number?, date, office-of-filing?, (priority-doc-requested | priority-doc-attached)?)>
+<!ATTLIST priority-claim
+	id ID #IMPLIED
+	sequence CDATA #REQUIRED
+	kind (national | regional | international) #REQUIRED
+>
+<!--Applications in which priority is claimed.-->
+<!ELEMENT priority-claims (priority-claim+)>
+<!--(US: not used in publication.)-->
+<!ELEMENT priority-doc-attached EMPTY>
+<!--(US: not used in publication.)-->
+<!ELEMENT priority-doc-requested EMPTY>
+<!--(US: not used in publication.)-->
+<!ELEMENT pubdate (#PCDATA | sdate | edate | time)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT pubid (#PCDATA)>
+<!--Identification of a published patent document.-->
+<!ELEMENT publication-reference (document-id)>
+<!ATTLIST publication-reference
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT received (date)>
+<!--Document of which this is a reexamination. ST.32 equivalency = B645.-->
+<!ELEMENT reexamination (relation)>
+<!--
+      -->
+<!ELEMENT us-references-cited (text | (us-citation+, date-search-completed?, date-search-report-mailed?, place-of-search?, search-report-publication?, searcher?))>
+<!--(US: not used in publication.)-->
+<!ELEMENT refno (#PCDATA)>
+<!ATTLIST refno
+	id ID #IMPLIED
+>
+<!--The region for which protection or exclusion (depending upon context) is desired.-->
+<!ELEMENT region (country)>
+<!--Registered number, format undefined.-->
+<!ELEMENT registered-number (#PCDATA)>
+<!--Document being reissued. INID 64. ST.32 equivalency = B640.-->
+<!ELEMENT reissue (relation)>
+<!--Previously published document concerning same application. INID 65. ST.32 equivalency = B650.-->
+<!ELEMENT related-publication (#PCDATA | document-id)*>
+<!--
+      -->
+<!ELEMENT relation (parent-doc, child-doc)>
+<!--(US: used for different data types depending on context.)-->
+<!ELEMENT rel-claims (#PCDATA)>
+<!--Relevant passage within cited document.-->
+<!ELEMENT rel-passage (text | (passage+, category*, rel-claims*)+)>
+<!--Country of residence.-->
+<!ELEMENT residence (country)>
+<!--(US: not used in publication.)-->
+<!ELEMENT revised (date)>
+<!--Role, e.g. President, Chairman, etc.-->
+<!ELEMENT role (#PCDATA)>
+<!--Address room; e.g., Room 55B.-->
+<!ELEMENT room (#PCDATA)>
+<!--When present, signifies that the application was filed under Rule 47, indicating the applicant(s) refused to execute the application or could not be found.-->
+<!ELEMENT rule-47-flag EMPTY>
+<!--(US: not used in publication.)-->
+<!ELEMENT sdate (#PCDATA)>
+<!--
+      -->
+<!ELEMENT searcher (%name_group; | addressbook)>
+<!--(US: not used in publication.)-->
+<!ELEMENT search-report-publication (document-id+)>
+<!--  The highest hierarchical level within the classification scheme and as such it represents the whole body of knowledge which may be regarded as proper to the field of Classification. -->
+<!ELEMENT section (#PCDATA)>
+<!--Sequence listing that conforms to WIPO Standrad ST.25. (US: markup in XML as in ARB v2.5. See us-sequence-listing.dtd.)-->
+<!ELEMENT sequence-list EMPTY>
+<!ATTLIST sequence-list
+	id ID #IMPLIED
+	file CDATA #REQUIRED
+	lang CDATA #IMPLIED
+	carriers (internal-electronic | external-electronic | paper) #IMPLIED
+	seq-file-type CDATA #FIXED "ST.25"
+	status CDATA #IMPLIED
+>
+<!--Sequence listing free text WIPO ST.25: "36. Where the sequence listing part of the description contains free text, any such free text shall be repeated in the main part of the description in the language thereof. It is recommended that the free text in the language of the main part of the description be put in a specific section of the description called "Sequence Listing Free Text".-->
+<!ELEMENT sequence-list-text (heading*, p+)+>
+<!ATTLIST sequence-list-text
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.) -->
+<!ELEMENT serial (sertitle, alttitle?, subname*, issue?, imprint?, pubdate?, descrip?, notes?, issn?, isbn?, pubid?, vid?, ino?, cpyrt?)>
+<!--(US: not used in publication.)-->
+<!ELEMENT series (text | (mst, msn?, issn?))>
+<!--(US: not used in publication.)-->
+<!ELEMENT serpart (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT sersect (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT sertitle (#PCDATA)>
+<!--Small capitals.-->
+<!ELEMENT smallcaps (#PCDATA | b | i | o | u)*>
+<!--(US: not used in publication.)-->
+<!ELEMENT srchdate (date)>
+<!--(US: not used in publication.)-->
+<!ELEMENT srchterm (#PCDATA)>
+<!--Region of country eg. state, province, etc.-->
+<!ELEMENT state (#PCDATA)>
+<!--Street may contain house number or house name.-->
+<!ELEMENT street (#PCDATA)>
+<!--Subscripted text-->
+<!ELEMENT sub (#PCDATA | b | i | o | u | sup2 | sub2)*>
+<!--Second level subscripted text.-->
+<!ELEMENT sub2 (#PCDATA | b | i | o | u)*>
+<!--
+      -->
+<!ELEMENT subclass (#PCDATA)>
+<!-- The code denotes the fifth level subdivision of the classification scheme and as such is a further breakdown of the novel subject matter. -->
+<!ELEMENT subgroup (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT sub-linked-indexing-code (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT subname (%name_group; | addressbook)>
+<!ATTLIST subname
+	subname-type (editor | translator | other-subname-type) "editor"
+>
+<!--Document for which this is a substitute. INID 66. ST.32 equivalency = B660.-->
+<!ELEMENT substitution (relation)>
+<!--(US: not used in publication.)-->
+<!ELEMENT subtitle (#PCDATA)>
+<!--Name suffix (e.g., II, Jr., Dip., Ing., BA, etc.)-->
+<!ELEMENT suffix (#PCDATA)>
+<!--Superscripted text-->
+<!ELEMENT sup (#PCDATA | b | i | o | u | sup2 | sub2)*>
+<!--Superscripted text.-->
+<!ELEMENT sup2 (#PCDATA | b | i | o | u)*>
+<!-- The code that specifies the position of the classification symbol. -->
+<!ELEMENT symbol-position (#PCDATA)>
+<!--Synonym.-->
+<!ELEMENT synonym (#PCDATA)>
+<!ELEMENT table-external-doc (#PCDATA)>
+<!ATTLIST table-external-doc
+	id ID #IMPLIED
+	file CDATA #REQUIRED
+	lang CDATA #IMPLIED
+	carriers (internal-electronic | external-electronic | paper) #IMPLIED
+	external-type (math | chemistry | program-listing | other) #IMPLIED
+	status CDATA #IMPLIED
+>
+<!--This is image data or coded according to OASIS Exchange model with modified cell 'entry' content.-->
+<!ELEMENT tables (img | table)>
+<!ATTLIST tables
+	id ID #IMPLIED
+	num CDATA #REQUIRED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT technical-field (heading*, p+)+>
+<!ATTLIST technical-field
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT tech-problem (heading*, p+)+>
+<!ATTLIST tech-problem
+	id ID #IMPLIED
+>
+<!--(US: not used in publication.)-->
+<!ELEMENT tech-solution (heading*, p+)+>
+<!ATTLIST tech-solution
+	id ID #IMPLIED
+>
+<!--Identifies the period of time during which the depository must be able to furnish samples of the biological material.-->
+<!ELEMENT term (#PCDATA)>
+<!--If no structure is possible, enter content  verbatim.-->
+<!ELEMENT text (#PCDATA)>
+<!--A simple text string used as the basic electronic signature, e.g., John Doe /john doe/.-->
+<!ELEMENT text-string (#PCDATA)>
+<!--Time; format HHMM.-->
+<!ELEMENT time (#PCDATA)>
+<!--Type of correction. ST.32 equivalency = B667.-->
+<!ELEMENT type-of-correction (#PCDATA)>
+<!--Underscore: style - single is default.-->
+<!ELEMENT u (#PCDATA | b | i | o | smallcaps | sub | sup)*>
+<!ATTLIST u
+	style (single | double | dash | dots) "single"
+>
+<!--Unordered Lists list-style may be empty for lists with no bullet or other symbol default list-style is 'bullets'.-->
+<!ELEMENT ul (li+)>
+<!ATTLIST ul
+	id ID #IMPLIED
+	list-style (bullet | dash | none) "bullet"
+	compact (compact) #IMPLIED
+>
+<!--(US: not used for publishing.)-->
+<!ELEMENT unlinked-indexing-code (#PCDATA)>
+<!--Universal Resource Locator; e.g. www.wipo.int.-->
+<!ELEMENT url (#PCDATA)>
+<!--PCT Section 371(c)(1)(2)(4)date. ST.32 equivalency = B864US-->
+<!ELEMENT us-371c124-date (date)>
+<!--Patent applications in the U.S. are numbered consecutively from 1 through 999,999, after which the numbering restarts from 1. To distinguish between the different applications that would otherwise have the same number, a series code is prefixed to the serial number. Series codes can also be used to distinguish various application types. A series code consists of a two-digit number, left padded with zero where necessary, representing the following time periods and document types: 02 = through 1947-12-31; 03 = 1948-01-01 through 1959-12-31; 04 = 1960-01-01 through 1969-12-31; 05 = 1970-01-01 through 1978-12-31; 06 = 1979-01-01 through 1986-12-31; 07 = 1987-01-01 through 1992-12-31; 08 = 1993-01-01 through 1997-12-29; 09 = 1997-12-30 and after; 02 through 28 = Utility application; 29 = Design application; 60 = Provisional application; 90 = Reexamination request. ST.32 name: B211US.-->
+<!ELEMENT us-application-series-code (#PCDATA)>
+<!--Bibliographic information included on the front page of a patent. Contains document identification, domestic filing data, foreign priority data, public availability dates or term of protection, technical information, related patent or application information, parties concerned with the document, and data related to international conventions. ST.32 name: SDOBI-->
+<!ELEMENT us-bibliographic-data-grant (publication-reference, us-sir-flag?, application-reference, us-application-series-code, priority-claims?, us-issued-on-continued-prosecution-application?, rule-47-flag?, us-term-of-grant?, classifications-ipcr?, classifications-cpc?, classification-locarno?, classification-national?, invention-title, us-botanic?, us-references-cited?, number-of-claims?, us-exemplary-claim*, us-field-of-classification-search?, figures?, us-microform-quantity?, us-related-documents?, us-parties, assignees?, examiners?, pct-or-regional-filing-data?, pct-or-regional-publishing-data?, patent-family?, bio-deposit?, text*)>
+<!ATTLIST us-bibliographic-data-grant
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+	status CDATA #IMPLIED
+	country CDATA #IMPLIED
+>
+<!--Plant patent botanical information. ST.32 name: BOTANIC-->
+<!ELEMENT us-botanic (latin-name, variety)>
+<!--External files containing alternative formats of chemical structures.-->
+<!ELEMENT us-chemistry EMPTY>
+<!ATTLIST us-chemistry
+	idref IDREF #REQUIRED
+	cdx-file CDATA #REQUIRED
+	mol-file CDATA #REQUIRED
+>
+<!ELEMENT us-claim-statement (#PCDATA | b | i | o | u | sup | sub | smallcaps)*>
+<!ELEMENT us-classifications-ipcr (#PCDATA)>
+<!--Document (parent) of which the document in hand (child) is a divisional reissue. If there is more than one divisional reissue, siblings are indicated by multiple occurences of child. ST. 32 name: B641US.-->
+<!ELEMENT us-divisional-reissue (us-relation)>
+<!--Claim for publication in Official Gazette.  ST.32 name: B578US-->
+<!ELEMENT us-exemplary-claim (#PCDATA)>
+<!ELEMENT us-field-of-classification-search (us-classifications-ipcr | classification-national | classification-cpc-text | classification-cpc-combination-text)+>
+<!--Continued prosecution application flag.  If this element is present, the value of the cpa-text attribute shall be rendered on the front page of the patent grant publication.-->
+<!ELEMENT us-issued-on-continued-prosecution-application EMPTY>
+<!ATTLIST us-issued-on-continued-prosecution-application
+	grant-cpa-text CDATA #FIXED "This patent issued on a continued prosecution application (CPA) filed under 37 CFR 1.53(d), and is subject to the twenty year patent term provision of 35 U.S.C. 154(a)(2)."
+>
+<!--External files containing alternative formats of mathematical equations.-->
+<!ELEMENT us-math (img?)>
+<!ATTLIST us-math
+	idrefs IDREFS #REQUIRED
+	nb-file CDATA #REQUIRED
+>
+<!ELEMENT us-megatable-doc (p)>
+<!--If there is an optical-microform appendix (microfiche, microfilm, microcard, etc.), the number of microforms followed by the number of pages imaged thereon (separated by a comma) are placed in this element. ST.32 name: B594US-->
+<!ELEMENT us-microform-quantity (#PCDATA)>
+<!--Provisional application that is the basis of the document in hand. ST.32 name: B680US.-->
+<!ELEMENT us-provisional-application (document-id, us-provisional-application-status?)>
+<!--Status of the provisional application that is the basis of the document in hand.-->
+<!ELEMENT us-provisional-application-status (#PCDATA)>
+<!--Present when a reissue application was merged with a reexamination proceeding. The issuing document is a reissue patent which shows the following Reexamination results statement on the reissue patent front page, immediately following the abstract. NNNNN represents the Reexamination Request Number, and YYYYMMDD the filing date. "The questions raised in reexamination request No.90/NNNNN, filed YYYYMMDD, have been considered and the results thereof are reflected in this reissue patent which constitutes the reexamination certificate required by 35 USC 307 as provided in 37 CFR 1.570(e)." Document (parent) under rexeamination that merged with the reissue proceedings from which the document in hand (child) resulted. ST.32 name: B645US.-->
+<!ELEMENT us-reexamination-reissue-merger (relation)>
+<!--Various relationships between the patent in hand and other patent grants or applications. Contains either an additional application, a divisional application, continuations, reissues, divisional reissues, reexamination, merged reissues reexamination, substitute, or provisional application. ST.32 name: B600.-->
+<!ELEMENT us-related-documents (addition | division | continuation | continuation-in-part | continuing-reissue | reissue | us-divisional-reissue | reexamination | us-reexamination-reissue-merger | substitution | us-provisional-application | utility-model-basis | correction | related-publication)+>
+<!--If there is more than one divisional reissue, siblings are indicated by multiple occurences of child.-->
+<!ELEMENT us-relation (parent-doc, child-doc+)>
+<!--This person is successor to the rights of an inventor who is deceased, insane, or legally incapacitated.-->
+<!ELEMENT us-rights (#PCDATA)>
+<!ATTLIST us-rights
+	to-dead-inventor CDATA #REQUIRED
+	kind (heir | heiress | executor | executrix | estate | legal-representative | administrator | administratrix | legal-representatives | heirs | executors | legal-heirs) #REQUIRED
+>
+<!ELEMENT us-sequence-list-doc (p?, sequence-list)>
+<!ATTLIST us-sequence-list-doc
+	id ID #IMPLIED
+	lang CDATA #IMPLIED
+	status CDATA #IMPLIED
+>
+<!--Statutory Invention Registration (SIR) flag. If this tag is present, the value of the sir-text attribute shall be rendered on the front page of the patent grant publication. ST.32 name: B122US-->
+<!ELEMENT us-sir-flag EMPTY>
+<!ATTLIST us-sir-flag
+	sir-text CDATA #FIXED "A statutory invention registration is not a patent. It has the defensive attributes of a patent but does not have the enforceable attributes of a patent. No article or advertisement or the like may use the term patent, or any term suggestive of a patent, when referring to a statutory invention registration. For more specific information on the rights associated with a statutory invention registration see 35 U.S.C.157."
+>
+<!--Indicates that the term of the patent has been extended under 35 USC 154(b) by showing the length of the extension. The content of this tag must be literally either "5 years", or the number of days (as an integer) if the extension is less than five years. ST.32 name: B474US-->
+<!ELEMENT us-term-extension (#PCDATA)>
+<!--Term of the patent grant. ST.32 name: B472-->
+<!ELEMENT us-term-of-grant (text | length-of-grant | us-term-extension | disclaimer | lapse-of-patent | prior-disclosure-affidavit-filed)+>
+<!--Document on which utility model is based. INID 67. ST.32 equivalency = B670.-->
+<!ELEMENT utility-model-basis (relation)>
+<!--The plant variety name.-->
+<!ELEMENT variety (#PCDATA)>
+<!--(US: not used in publication.)-->
+<!ELEMENT vid (#PCDATA)>
