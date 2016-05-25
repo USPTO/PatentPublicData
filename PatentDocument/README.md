@@ -2,7 +2,7 @@
 
 All patent document formats parse into a single common Patent model.  Field validation is applied to many fields, where invalid values and their document fragment are logged.  Flexibility and completeness is stressed over efficiency.
 
-## Patent Document Formats
+## Formats
 
 | Format           | Years        | Revisions  |  Documentation |
 | :-------------- | ------------| :-------------------:| :-------------: |
@@ -13,7 +13,7 @@ All patent document formats parse into a single common Patent model.  Field vali
 
 ## Also Parses
 <ul>
-<li><a href=" http://www.uspto.gov/sites/default/files/products/AIA_CPC_XML_Documentation.pdf">CPC Patent Classification Definition XML<a/></li>
+<li><a href=" http://www.uspto.gov/sites/default/files/products/AIA_CPC_XML_Documentation.pdf">CPC Classification XML<a/></li>
 </ul>
 
 ## Validate and Normalize
@@ -25,3 +25,22 @@ All patent document formats parse into a single common Patent model.  Field vali
 | Classification  | parse and normalize Classification (USPC, IPC, CPC) |
 | Date            | date format yyyyMMdd |
 | Address         | must have a country |
+
+## Example Usage:
+<pre><code>   File inputFile = new File("ipa150101.zip");
+   // File inputFile = new File("ipa150101.xml");
+   DumpXmlReader dxml = new DumpXmlReader(inputFile, "us-patent");
+   dxml.open();
+   PatentXmlParser patentParser = new PatentXmlParser();
+   for (int i = 1; dxml.hasNext() && i <= limit; i++) {
+      String xmlDocStr = null;
+		try {
+		   xmlDocStr = dxml.next();
+		} catch (NoSuchElementException e) {
+		   break;
+		}
+		Patent patent = patentParser.parse(xmlDocStr);
+		...
+   }
+   dxml.close();
+</pre></code>
