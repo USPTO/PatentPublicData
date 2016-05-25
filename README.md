@@ -1,6 +1,6 @@
 # Patent Public Data
 
-Library for downloading and reading Public Patent Bulk Data
+Library to download and parse the public patent weekly bulk dumps from https://data.uspto.gov
 
 Note this source code has not been fully vetted for a production enviroment. It was mainly developed for prototyping and exploring of patent data.
 
