@@ -36,7 +36,8 @@ public enum BulkDataType {
 	}
 
 	public String getURL(String year) throws MalformedURLException{
-		return BASEURL + this.restPath + year;
+		StringBuilder stb = new StringBuilder();
+		return stb.append(BASEURL).append(this.restPath).append(year).append("/").toString();
 	}
 
 	public String getURL(Integer year) throws MalformedURLException{

@@ -61,13 +61,17 @@ public class DumpXmlReader implements DocumentIterator, Iterator<String> {
 		this.xmlStartTag = "<" + xmlBodyTag;
 		this.xmlEndTag = "</" + xmlBodyTag;
 	}
-
+	
 	public void open() throws IOException {
 		if (file.getName().endsWith("zip")) {
 			reader = openZip(file);
 		} else if (file.getName().endsWith("xml")) {
 			reader = new BufferedReader(new FileReader(file));
 		}
+	}
+
+	public File getFile(){
+		return file;
 	}
 
 	public BufferedReader getReader() {

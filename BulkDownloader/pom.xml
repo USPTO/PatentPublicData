@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>gov.uspto</groupId>
-		<artifactId>PatentPublicData</artifactId>
+		<groupId>PatentSimilaritySearch</groupId>
+		<artifactId>PatentSimilaritySearch</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
@@ -14,7 +14,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>gov.uspto</groupId>
+			<groupId>PatentSimilaritySearch</groupId>
 			<artifactId>PatentDocument</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.9.1</version>
+			<version>1.9.2</version>
 		</dependency>
 
 		<dependency>

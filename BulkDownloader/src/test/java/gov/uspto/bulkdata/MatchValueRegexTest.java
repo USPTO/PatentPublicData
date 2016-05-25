@@ -2,37 +2,47 @@ package gov.uspto.bulkdata;
 
 import static org.junit.Assert.assertEquals;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.junit.Test;
 
 public class MatchValueRegexTest {
 
 	@Test
-	public void matchPartialIdTrue() {
+	public void matchPartialIdTrue() throws XPathExpressionException {
 		String xmlString = "<xml><doc><id>US123456789</id></doc></xml>";
 
-		Match matcher = new MatchValueRegex("//doc/id", "^US1234.+");
+		PatternXpathValueRegex pattern = new PatternXpathValueRegex("//doc/id", "^US1234.+");
+		PatternMatcher matcher = new PatternMatcher();
+		matcher.add(pattern);
 		assertEquals(true, matcher.match(xmlString));
 	}
 
 	@Test
-	public void matchPartialIdAttributeTrue() {
+	public void matchPartialIdAttributeTrue() throws XPathExpressionException {
 		String xmlString = "<xml><doc id='US123456789'></doc></xml>";
 
-		Match matcher = new MatchValueRegex("//doc/@id", "^US1234.+");
+		PatternXpathValueRegex pattern = new PatternXpathValueRegex("//doc/@id", "^US1234.+");
+		PatternMatcher matcher = new PatternMatcher();
+		matcher.add(pattern);
 		assertEquals(true, matcher.match(xmlString));
 	}
 
-	public void matchPartialIdFalse() {
+	public void matchPartialIdFalse() throws XPathExpressionException {
 		String xmlString = "<xml><doc><id>US123456789</id></doc></xml>";
 
-		Match matcher = new MatchValueRegex("//doc/id", "^ABCBAD.+");
+		PatternXpathValueRegex pattern = new PatternXpathValueRegex("//doc/id", "^ABCBAD.+");
+		PatternMatcher matcher = new PatternMatcher();
+		matcher.add(pattern);
 		assertEquals(false, matcher.match(xmlString));
 	}
 
-	public void matchInvalidXPath() {
+	public void matchInvalidXPath() throws XPathExpressionException {
 		String xmlString = "<xml><doc><id>US123456789</id></doc></xml>";
 
-		Match matcher = new MatchValueRegex("//BAD/LOCATION", "^ABCBAD.+");
+		PatternXpathValueRegex pattern = new PatternXpathValueRegex("//BAD/LOCATION", "^ABCBAD.+");
+		PatternMatcher matcher = new PatternMatcher();
+		matcher.add(pattern);
 		assertEquals(false, matcher.match(xmlString));
 	}
 }

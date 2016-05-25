@@ -1,0 +1,9 @@
+package gov.uspto.bulkdata;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Document;
+
+public interface XPathMatch {
+	public boolean match(Document document)  throws XPathExpressionException;
+}

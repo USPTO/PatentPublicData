@@ -138,8 +138,8 @@ public class BulkData {
 
 	private List<HttpUrl> fetchLinks() throws IOException {
 		List<HttpUrl> urls = new LinkedList<HttpUrl>();
-		while(yearIterator.hasNext()){
-			urls.addAll( scrapper.fetchLinks(dataType.getURL(yearIterator.next()), dataType.getSuffix()) );
+		while (yearIterator.hasNext()) {
+			urls.addAll(scrapper.fetchLinks(dataType.getURL(yearIterator.next()), dataType.getSuffix()));
 		}
 		return urls;
 	}
@@ -164,16 +164,23 @@ public class BulkData {
 		return null;
 	}
 
+	public Path getDownloadDir() {
+		return downloadDir;
+	}
+
 	public static void main(String... args) throws IOException {
 		LOGGER.info("--- Start ---");
 
 		OptionParser parser = new OptionParser() {
 			{
+				accepts("type").withRequiredArg().ofType(String.class)
+						.describedAs("Patent Document Type [grant, application, gazette]").required();
 				accepts("years").withRequiredArg().ofType(String.class).describedAs("Year range separated by comma")
 						.required();
 				accepts("limit").withRequiredArg().ofType(Integer.class)
 						.describedAs("download file limit ; 0 is unlimited").required();
-				accepts("skip").withRequiredArg().ofType(Integer.class).describedAs("skip number of files");
+				accepts("skip").withRequiredArg().ofType(Integer.class).describedAs("skip number of files")
+						.defaultsTo(0);
 				accepts("async").withOptionalArg().ofType(Boolean.class).describedAs("async download")
 						.defaultsTo(false);
 				accepts("outdir").withOptionalArg().ofType(String.class).describedAs("directory")
@@ -189,38 +196,48 @@ public class BulkData {
 			System.exit(1);
 		}
 
-		int skip = 0;
-		if (options.has("skip")) {
-			skip = (Integer) options.valueOf("skip");
-		}
-
+		int skip = (Integer) options.valueOf("skip");
 		int downloadLimit = (Integer) options.valueOf("limit");
-
-		Path downloadDir = Paths.get("download");
-		if (options.has("outdir")) {
-			downloadDir = Paths.get((String) options.valueOf("outdir"));
-		}
-
-		boolean isAsync = false;
-		if (options.has("async")) {
-			isAsync = (boolean) options.valueOf("async");
-		}
+		Path downloadDir = Paths.get((String) options.valueOf("outdir"));
+		boolean isAsync = (boolean) options.valueOf("async");
+		String type = (String) options.valueOf("type");
 
 		String filename = null;
 		if (options.has("filename")) {
 			filename = (String) options.valueOf("filename");
 		}
 
+		BulkDataType dataType = null;
+		switch (type.toLowerCase()) {
+		case "grant":
+			dataType = BulkDataType.GRANT_REDBOOK_TEXT;
+			break;
+		case "application":
+			dataType = BulkDataType.APPLICATION_REDBOOK_TEXT;
+			break;
+		case "gazette":
+			dataType = BulkDataType.GAZETTE;
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown Download Source: " + type);
+		}
+
 		String range = (String) options.valueOf("years");
 		String[] rangeSplit = range.split("\\s*,\\s*");
-		Integer range1 = Integer.valueOf(rangeSplit[0]);
-		Integer range2 = Integer.valueOf(rangeSplit[1]);
-		ContiguousSet<Integer> years = ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers());
+		ContiguousSet<Integer> years = null;
+		if (rangeSplit.length == 2) {
+			Integer range1 = Integer.valueOf(rangeSplit[0]);
+			Integer range2 = Integer.valueOf(rangeSplit[1]);
+			years = ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers());
+		} else {
+			Integer range1 = Integer.valueOf(rangeSplit[0]);
+			years = ContiguousSet.create(Range.closed(range1, range1), DiscreteDomain.integers());
+		}
 
-		BulkData bulkData = new BulkData(downloadDir, BulkDataType.GRANT_REDBOOK_TEXT, years, isAsync);
+		BulkData bulkData = new BulkData(downloadDir, dataType, years, isAsync);
 
 		DownloadJob job;
-		if (filename != null){
+		if (filename != null) {
 			HttpUrl url = bulkData.findUrl(filename);
 			job = bulkData.download(url);
 		} else {
