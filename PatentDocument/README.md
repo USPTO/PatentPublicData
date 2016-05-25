@@ -32,6 +32,7 @@ All patent document formats parse into a single common Patent model.  Field vali
    DumpXmlReader dxml = new DumpXmlReader(inputFile, "us-patent");
    dxml.open();
    PatentXmlParser patentParser = new PatentXmlParser();
+   int limit = 10;
    for (int i = 1; dxml.hasNext() && i <= limit; i++) {
       String xmlDocStr = null;
 		try {
