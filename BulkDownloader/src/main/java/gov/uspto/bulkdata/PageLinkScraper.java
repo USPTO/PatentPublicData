@@ -17,90 +17,90 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class PageLinkScraper {
-	  private static final Logger LOGGER = LoggerFactory.getLogger(PageLinkScraper.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(PageLinkScraper.class.getName());
 
-	  private final OkHttpClient client;
+	private final OkHttpClient client;
 
-	  private final List<HttpUrl> list = new ArrayList<HttpUrl>();
+	public PageLinkScraper(OkHttpClient client) {
+		this.client = client;
+	}
 
-	  public PageLinkScraper(OkHttpClient client) {
-		this.client = client;  
-	  }
-	  
-	  /**
-	   * Fetch Links using Suffix.
-	   * 
-	   * @param url
-	   * @param suffix
-	   * @return
-	   * @throws IOException
-	   */
-	  public List<HttpUrl> fetchLinks(String url, String suffix) throws IOException {
-		  Preconditions.checkNotNull(url, "URL can not be Null");
+	/**
+	 * Fetch Links using Suffix.
+	 * 
+	 * @param url
+	 * @param suffix
+	 * @return
+	 * @throws IOException
+	 */
+	public List<HttpUrl> fetchLinks(String url, String suffix) throws IOException {
+		Preconditions.checkNotNull(url, "URL can not be Null");
 
-		  HttpUrl httpUrl = HttpUrl.parse(url);
+		HttpUrl httpUrl = HttpUrl.parse(url);
 
-		  return fetchLinks(httpUrl, null, suffix);
-	  }
+		return fetchLinks(httpUrl, null, suffix);
+	}
 
-	  /**
-	   * Fetch Links using Prefix and Suffix
-	   * 
-	   * @param url
-	   * @param linkPrefix
-	   * @param suffix
-	   * @return
-	   * @throws IOException
-	   */
-	  public List<HttpUrl> fetchLinks(String url, String linkPrefix, String suffix) throws IOException {
-		  Preconditions.checkNotNull(url, "URL can not be Null");
+	/**
+	 * Fetch Links using Prefix and Suffix
+	 * 
+	 * @param url
+	 * @param linkPrefix
+	 * @param suffix
+	 * @return
+	 * @throws IOException
+	 */
+	public List<HttpUrl> fetchLinks(String url, String linkPrefix, String suffix) throws IOException {
+		Preconditions.checkNotNull(url, "URL can not be Null");
 
-		  HttpUrl httpUrl = HttpUrl.parse(url);
+		HttpUrl httpUrl = HttpUrl.parse(url);
 
-		  return fetchLinks(httpUrl, linkPrefix, suffix);
-	  }
+		return fetchLinks(httpUrl, linkPrefix, suffix);
+	}
 
-	  /**
-	   * Fetch Links using Prefix and Suffix
-	   * 
-	   * @param url
-	   * @param linkPrefix
-	   * @param suffix without dot.
-	   * @return
-	   * @throws IOException
-	   */
-	  public List<HttpUrl> fetchLinks(HttpUrl url, String linkPrefix, String suffix) throws IOException {
-			String matchPrefix = "/" + linkPrefix;
+	/**
+	 * Fetch Links using Prefix and Suffix
+	 * 
+	 * @param url
+	 * @param linkPrefix
+	 * @param suffix without dot.
+	 * @return
+	 * @throws IOException
+	 */
+	public List<HttpUrl> fetchLinks(HttpUrl url, String linkPrefix, String suffix) throws IOException {
+		List<HttpUrl> list = new ArrayList<HttpUrl>();
 
-		    Request request = new Request.Builder().url(url).build();
-		    Response response = client.newCall(request).execute();
+		String matchPrefix = "/" + linkPrefix;
 
-		    String responseSource = response.networkResponse() != null
-		        ? ("network: " + response.networkResponse().code() + " over " + response.protocol()) : "cache";
+		Request request = new Request.Builder().url(url).build();
+		Response response = client.newCall(request).execute();
 
-		    int responseCode = response.code();
+		String responseSource = response.networkResponse() != null
+				? ("network: " + response.networkResponse().code() + " over " + response.protocol()) : "cache";
 
-		    LOGGER.info("{}: {} ({})", responseCode, url, responseSource);
+		int responseCode = response.code();
 
-		    String contentType = response.header("Content-Type");
-		    if (responseCode != 200 || contentType == null) {
-		      response.body().close();
-		      throw new IOException("Unexpected server response code " + responseCode);
-		    }
+		LOGGER.info("{}: {} ({})", responseCode, url, responseSource);
 
-		    Document document = Jsoup.parse(response.body().string(), url.toString());
-		    for (Element element : document.select("a[href$=."+suffix+"]")) {
-		      String href = element.attr("abs:href");
+		String contentType = response.header("Content-Type");
+		if (responseCode != 200 || contentType == null) {
+			response.body().close();
+			throw new IOException("Unexpected server response code " + responseCode);
+		}
 
-		      if (linkPrefix == null || href.contains(matchPrefix)) {
-			      HttpUrl link = HttpUrl.parse(href);
+		Document document = Jsoup.parse(response.body().string(), url.toString());
+		for (Element element : document.select("a[href$=." + suffix + "]")) {
+			String href = element.attr("abs:href");
 
-			      if (link != null){
-			    	  list.add(link);
-			      }
-		      }
-		    }
+			if (linkPrefix == null || href.contains(matchPrefix)) {
+				HttpUrl link = HttpUrl.parse(href);
 
-    	  return list;
-	  }
+				if (link != null) {
+					list.add(link);
+				}
+			}
+		}
+
+		return list;
+	}
 }

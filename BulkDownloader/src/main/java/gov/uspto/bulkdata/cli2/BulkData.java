@@ -30,7 +30,7 @@ import okhttp3.OkHttpClient;
  * 
  *<pre>
  * Usage
- * --limit=2 --years="2016, 2016" --outdir="../download"
+ * --limit=2 --type=application --years="2016, 2016" --outdir="../download"
  *</pre>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
@@ -139,7 +139,9 @@ public class BulkData {
 	private List<HttpUrl> fetchLinks() throws IOException {
 		List<HttpUrl> urls = new LinkedList<HttpUrl>();
 		while (yearIterator.hasNext()) {
-			urls.addAll(scrapper.fetchLinks(dataType.getURL(yearIterator.next()), dataType.getSuffix()));
+			Integer year = yearIterator.next();
+			List<HttpUrl> yearUrls = scrapper.fetchLinks(dataType.getURL(year), dataType.getSuffix());
+			urls.addAll(yearUrls);
 		}
 		return urls;
 	}
@@ -177,10 +179,8 @@ public class BulkData {
 						.describedAs("Patent Document Type [grant, application, gazette]").required();
 				accepts("years").withRequiredArg().ofType(String.class).describedAs("Year range separated by comma")
 						.required();
-				accepts("limit").withRequiredArg().ofType(Integer.class)
-						.describedAs("download file limit ; 0 is unlimited").required();
-				accepts("skip").withRequiredArg().ofType(Integer.class).describedAs("skip number of files")
-						.defaultsTo(0);
+				accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("download file limit").defaultsTo(0);
+				accepts("skip").withRequiredArg().ofType(Integer.class).describedAs("skip number of files").defaultsTo(0);
 				accepts("async").withOptionalArg().ofType(Boolean.class).describedAs("async download")
 						.defaultsTo(false);
 				accepts("outdir").withOptionalArg().ofType(String.class).describedAs("directory")
