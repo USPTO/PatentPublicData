@@ -39,12 +39,18 @@ public class PatternXpathValueRegex implements XPathMatch {
 	public boolean match(Document document) throws XPathExpressionException {
 		String value = (String) xPathExpression.evaluate(document, XPathConstants.STRING);
 		Matcher matcher = pattern.matcher(value);
-		for(Pattern regex: regexs){
+		for (Pattern regex : regexs) {
 			matcher.reset().usePattern(regex);
-			if (matcher.matches()){
+			if (matcher.matches()) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return "PatternXpathValueRegex [regexs=" + regexs + ", xPathExpression=" + xPathExpression + "]";
+	}
+
 }

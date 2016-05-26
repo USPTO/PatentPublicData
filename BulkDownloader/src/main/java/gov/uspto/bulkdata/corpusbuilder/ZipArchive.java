@@ -2,9 +2,12 @@ package gov.uspto.bulkdata.corpusbuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+
+import com.google.common.base.Preconditions;
 
 /**
  * Write Directly to ZipArchive
@@ -20,16 +23,16 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
  */
 public class ZipArchive implements Writer {
 
-	private final File file;
+	private final Path filePath;
 	private ZipArchiveOutputStream outputZip;
 
-	public ZipArchive(final File file) {
-		this.file = file;
+	public ZipArchive(final Path filePath) {
+		this.filePath = filePath;
 	}
 
 	@Override
 	public void open() throws IOException {
-		outputZip = new ZipArchiveOutputStream(file);
+		outputZip = new ZipArchiveOutputStream(filePath.toFile());
 		outputZip.setEncoding("UTF-8");
 		outputZip.setLevel(9);
 
@@ -39,17 +42,26 @@ public class ZipArchive implements Writer {
 
 	@Override
 	public void write(byte[] bytes) throws IOException {
+		Preconditions.checkState(isOpen(), "ZipArchive is not open!");
 		outputZip.write(bytes);
 		outputZip.flush();
 	}
 
 	@Override
 	public void close() throws IOException {
-		outputZip.closeArchiveEntry();
-		outputZip.close();
+		if (outputZip != null){
+			outputZip.closeArchiveEntry();
+			outputZip.close();
+		}
+		outputZip = null;
 	}
 
-	public File getFile() {
-		return file;
+	public Path getFilePath() {
+		return filePath;
+	}
+
+	@Override
+	public boolean isOpen() {
+		return (outputZip != null);
 	}
 }

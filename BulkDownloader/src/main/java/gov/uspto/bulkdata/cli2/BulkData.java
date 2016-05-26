@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -12,10 +13,11 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
-import com.google.common.collect.UnmodifiableIterator;
+import com.google.common.primitives.Ints;
 
 import gov.uspto.bulkdata.PageLinkScraper;
 import gov.uspto.bulkdata.downloader.DownloadJob;
@@ -47,15 +49,15 @@ public class BulkData {
 	private Path downloadDir;
 	private List<HttpUrl> urls;
 	private boolean isAsync = false;
-	private UnmodifiableIterator<Integer> yearIterator;
+	private Iterator<Integer> yearIterator;
 
-	public BulkData(Path downloadTo, BulkDataType dataType, ContiguousSet<Integer> years, boolean isAsync) {
+	public BulkData(Path downloadTo, BulkDataType dataType, Iterator<Integer> years, boolean isAsync) {
 		this.downloadDir = downloadTo;
 		this.dataType = dataType;
 		this.scrapper = new PageLinkScraper(client);
 		this.downloader = new Downloader(client);
 		this.isAsync = isAsync;
-		this.yearIterator = years.iterator();
+		this.yearIterator = years;
 	}
 
 	/**
@@ -201,6 +203,7 @@ public class BulkData {
 		Path downloadDir = Paths.get((String) options.valueOf("outdir"));
 		boolean isAsync = (boolean) options.valueOf("async");
 		String type = (String) options.valueOf("type");
+		String yearRangeStr = (String) options.valueOf("years");
 
 		String filename = null;
 		if (options.has("filename")) {
@@ -222,16 +225,12 @@ public class BulkData {
 			throw new IllegalArgumentException("Unknown Download Source: " + type);
 		}
 
-		String range = (String) options.valueOf("years");
-		String[] rangeSplit = range.split("\\s*,\\s*");
-		ContiguousSet<Integer> years = null;
-		if (rangeSplit.length == 2) {
-			Integer range1 = Integer.valueOf(rangeSplit[0]);
-			Integer range2 = Integer.valueOf(rangeSplit[1]);
-			years = ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers());
-		} else {
-			Integer range1 = Integer.valueOf(rangeSplit[0]);
-			years = ContiguousSet.create(Range.closed(range1, range1), DiscreteDomain.integers());
+		Iterator<Integer> years =  Ints.stringConverter().convertAll( Splitter.on(",").omitEmptyStrings().trimResults().splitToList(yearRangeStr) ).iterator();
+		List<String> yearsDash = Splitter.on("-").omitEmptyStrings().trimResults().splitToList(yearRangeStr);
+		if (yearsDash.size() == 2){
+			Integer range1 = Integer.valueOf(yearsDash.get(0));
+			Integer range2 = Integer.valueOf(yearsDash.get(1));
+			years = (Iterator<Integer>) ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers()).iterator();
 		}
 
 		BulkData bulkData = new BulkData(downloadDir, dataType, years, isAsync);
