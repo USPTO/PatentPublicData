@@ -24,6 +24,7 @@ public class PatternMatcher {
 
 	private List<XPathMatch> patterns = new ArrayList<XPathMatch>();
 	private DocumentBuilder docBuilder;
+	private XPathMatch lastMatchedPattern;
 
 	public PatternMatcher() {
 		DocumentBuilderFactory dbfact = DocumentBuilderFactory.newInstance();
@@ -56,6 +57,7 @@ public class PatternMatcher {
 
 			for (XPathMatch pattern : patterns) {
 				if (pattern.match(document)) {
+					lastMatchedPattern = pattern;
 					return true;
 				}
 			}
@@ -72,6 +74,10 @@ public class PatternMatcher {
 		}
 
 		return false;
+	}
+
+	public XPathMatch getLastMatchedPattern() {
+		return lastMatchedPattern;
 	}
 
 	@Override

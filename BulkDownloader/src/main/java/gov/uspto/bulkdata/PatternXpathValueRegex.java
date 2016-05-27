@@ -15,7 +15,7 @@ import org.w3c.dom.Document;
 
 import com.google.common.base.Preconditions;
 
-public class PatternXpathValueRegex implements XPathMatch {
+public class PatternXpathValueRegex extends MatchXPath {
 
 	private List<Pattern> regexs = new ArrayList<Pattern>();
 	private Pattern pattern = Pattern.compile("");
@@ -24,7 +24,10 @@ public class PatternXpathValueRegex implements XPathMatch {
 	public PatternXpathValueRegex(String xPathExpression, String... regexPattern) throws XPathExpressionException {
 		Preconditions.checkNotNull(xPathExpression, "xPathExpression can not be null");
 		Preconditions.checkNotNull(regexPattern, "Regex can not be null");
+		setup(xPathExpression, regexPattern);
+	}
 
+	private void setup(String xPathExpression, String[] regexPattern) throws XPathExpressionException{
 		XPathFactory fact = XPathFactory.newInstance();
 		XPath xpath = fact.newXPath();
 		this.xPathExpression = xpath.compile(xPathExpression);
@@ -36,7 +39,20 @@ public class PatternXpathValueRegex implements XPathMatch {
 	}
 
 	@Override
-	public boolean match(Document document) throws XPathExpressionException {
+	public boolean matchAll(Document document) throws XPathExpressionException {
+		String value = (String) xPathExpression.evaluate(document, XPathConstants.STRING);
+		Matcher matcher = pattern.matcher(value);
+		for (Pattern regex : regexs) {
+			matcher.reset().usePattern(regex);
+			if (!matcher.matches()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean matchAny(Document document) throws XPathExpressionException {
 		String value = (String) xPathExpression.evaluate(document, XPathConstants.STRING);
 		Matcher matcher = pattern.matcher(value);
 		for (Pattern regex : regexs) {
@@ -47,7 +63,7 @@ public class PatternXpathValueRegex implements XPathMatch {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "PatternXpathValueRegex [regexs=" + regexs + ", xPathExpression=" + xPathExpression + "]";

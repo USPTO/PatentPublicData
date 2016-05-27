@@ -235,7 +235,9 @@ public class DumpXmlReader implements DocumentIterator, Iterator<String> {
 	}
 
 	public void close() throws IOException {
+		if (zipFile != null){
+			zipFile.close();
+		}
 		reader.close();
-		zipFile.close();
 	}
 }

@@ -21,19 +21,15 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Range;
 import com.google.common.primitives.Ints;
-import com.google.common.primitives.Longs;
 
 import gov.uspto.bulkdata.DumpXmlReader;
-import gov.uspto.bulkdata.PatternMatcher;
-import gov.uspto.bulkdata.PatternXPath;
 import gov.uspto.bulkdata.cli2.BulkData;
 import gov.uspto.bulkdata.cli2.BulkDataType;
 import gov.uspto.bulkdata.downloader.DownloadJob;
+import gov.uspto.patent.PatentParserException;
 import gov.uspto.patent.model.classification.Classification;
-import gov.uspto.patent.model.classification.ClassificationType;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 import joptsimple.OptionParser;
@@ -54,80 +50,30 @@ import okhttp3.HttpUrl;
 public class Corpus {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Corpus.class);
 
-	private final List<Classification> wantedClasses;
+	private final CorpusMatch<?> corpusMatch;
 	private final Writer corpusWriter;
 	private final BulkData downloader;
 	private Queue<HttpUrl> bulkFileQueue = new ArrayDeque<HttpUrl>();
 	private HttpUrl currentbulkFileUrl;
 	private DumpXmlReader currentBulkFile;
 
-	private PatternMatcher matcher;
-	private int bulkFileCount = 0;
-	private int writeCount = 0;
+	private long bulkFileCount = 0;
+	private long writeCount = 0;
 
-	public Corpus(final Path downloadDir, final BulkDataType dataType, final Iterator<Integer> years,
-			final List<Classification> wantedClasses, final Writer corpusWriter) {
-		this.wantedClasses = wantedClasses;
-		this.downloader = new BulkData(downloadDir, dataType, years, false);
+	public Corpus(final BulkData downloader, final CorpusMatch<?> corpusMatch, final Writer corpusWriter) {
+		this.corpusMatch = corpusMatch;
+		this.downloader = downloader;
 		this.corpusWriter = corpusWriter;
 	}
 
 	public Corpus setup() throws IOException, XPathExpressionException {
-		matcher = new PatternMatcher();
+		corpusMatch.setup();
 
-		List<Classification> cpcClasses = Classification.getByType(wantedClasses, ClassificationType.CPC);
-		for (Classification cpcClass : cpcClasses) {
-			String CPCXpathStr = buildCPCxPathString((CpcClassification) cpcClass);
-			PatternXPath CPC = new PatternXPath(CPCXpathStr);
-			matcher.add(CPC);
-		}
-
-		List<Classification> uspcClasses = Classification.getByType(wantedClasses, ClassificationType.USPC);
-		for (Classification uspcClass : uspcClasses) {
-			String UspcXpathStr = buildUSPCxPathString((UspcClassification) uspcClass);
-			PatternXPath USPC = new PatternXPath(UspcXpathStr);
-			matcher.add(USPC);
-		}
-
-		if (!corpusWriter.isOpen()){
+		if (!corpusWriter.isOpen()) {
 			corpusWriter.open();
 		}
 
 		return this;
-	}
-
-	public String buildUSPCxPathString(UspcClassification uspcClass) throws XPathExpressionException {
-		StringBuilder stb = new StringBuilder();
-		stb.append("//classification-national/main-classification");
-		stb.append("[starts-with(.,'").append(uspcClass.getMainClass()).append("')]");
-		return stb.toString();
-	}
-
-	/**
-	 * 
-	 * Build XPath Expression for CPC Classification lookup.
-	 * 
-	 * "//classifications-cpc/main-cpc/classification-cpc[section/text()='H' and class/text()='04' and subclass/text()='N' and main-group[starts-with(.,'21')]]"
-	 * 
-	 * @param cpcClass
-	 * @return
-	 * @throws XPathExpressionException
-	 */
-	public String buildCPCxPathString(CpcClassification cpcClass) throws XPathExpressionException {
-
-		StringBuilder stb = new StringBuilder();
-		stb.append("//classifications-cpc/main-cpc/classification-cpc");
-		stb.append("[");
-		stb.append("section/text()='").append(cpcClass.getSection()).append("'");
-		stb.append(" and ");
-		stb.append("class/text()='").append(cpcClass.getMainClass()).append("'");
-		stb.append(" and ");
-		stb.append("subclass/text()='").append(cpcClass.getSubClass()).append("'");
-		stb.append(" and ");
-		stb.append("main-group[starts-with(.,'").append(cpcClass.getMainGroup()).append("')]");
-		stb.append("]");
-
-		return stb.toString();
 	}
 
 	public Corpus enqueue(Collection<HttpUrl> bulkFiles) {
@@ -148,14 +94,14 @@ public class Corpus {
 	 * @param filenames
 	 * @return
 	 */
-	public Corpus queueShrink(List<String> filenames){
-		Queue<HttpUrl> newQueue =  new ArrayDeque<HttpUrl>();		
+	public Corpus queueShrink(List<String> filenames) {
+		Queue<HttpUrl> newQueue = new ArrayDeque<HttpUrl>();
 		Iterator<HttpUrl> queueIt = bulkFileQueue.iterator();
-		while(queueIt.hasNext()){
+		while (queueIt.hasNext()) {
 			HttpUrl url = queueIt.next();
 			List<String> urlSegments = url.pathSegments();
-			String fileSegment = urlSegments.get(urlSegments.size()-1);
-			if (filenames.contains(fileSegment)){
+			String fileSegment = urlSegments.get(urlSegments.size() - 1);
+			if (filenames.contains(fileSegment)) {
 				newQueue.add(url);
 			}
 		}
@@ -211,47 +157,45 @@ public class Corpus {
 	}
 
 	public void readAndWrite() throws IOException {
-		String xmlDocStr;
+		try {
+			while (currentBulkFile.hasNext()) {
+				String xmlDocStr;
+				try {
+					xmlDocStr = currentBulkFile.next();
+				} catch (NoSuchElementException e) {
+					break;
+				}
 
-		while (currentBulkFile.hasNext()) {
-			try {
-				xmlDocStr = currentBulkFile.next();
-			} catch (NoSuchElementException e) {
-				break;
+				try {
+					if (corpusMatch.on(xmlDocStr).match()) {
+						LOGGER.info("Found matching:[{}] at {}:{} ; matched: {}", getWriteCount() + 1,
+								currentBulkFile.getFile().getName(), currentBulkFile.getCurrentRecCount(),
+								corpusMatch.getLastMatchPattern());
+						write(xmlDocStr);
+					}
+				} catch (PatentParserException e) {
+					LOGGER.error("Error reading Patent {}:{}", currentBulkFile.getFile().getName(), currentBulkFile.getCurrentRecCount(), e);
+				}
 			}
-
-			if (matcher.match(xmlDocStr)) {
-				write(xmlDocStr);
-			} else {
-				continue;
-			}
-
-			/*
-			try {
-				Patent patent = patentParser.parse(xmlDocStr);
-			} catch (PatentParserException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
+		} finally {
+			currentBulkFile.close();
 		}
 	}
 
 	public void write(String xmlDocStr) throws IOException {
-		writeCount++;
-		LOGGER.info("Found matching:[{}]", writeCount);
 		corpusWriter.write(xmlDocStr.getBytes());
+		writeCount++;
 	}
 
 	public void close() throws IOException {
 		corpusWriter.close();
 	}
 
-	public int getBulkFileCount() {
+	public long getBulkFileCount() {
 		return bulkFileCount;
 	}
 
-	public int getWriteCount() {
+	public long getWriteCount() {
 		return writeCount;
 	}
 
@@ -262,8 +206,8 @@ public class Corpus {
 			{
 				accepts("type").withRequiredArg().ofType(String.class)
 						.describedAs("Patent Document Type [grant, application]").required();
-				accepts("years").withRequiredArg().ofType(String.class).describedAs("Years; comma for individual years; dash for year range")
-						.required();
+				accepts("years").withRequiredArg().ofType(String.class)
+						.describedAs("Years; comma for individual years; dash for year range").required();
 				accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("Number of bulk files to skip")
 						.defaultsTo(0);
 				accepts("delete").withOptionalArg().ofType(Boolean.class)
@@ -273,8 +217,10 @@ public class Corpus {
 				accepts("cpc").withRequiredArg().ofType(String.class).describedAs("CPC Classification").required();
 				accepts("uspc").withRequiredArg().ofType(String.class).describedAs("USPC Classification").required();
 				accepts("files").withOptionalArg().ofType(String.class).describedAs("File names to download and parse");
-				accepts("out").withOptionalArg().ofType(String.class).describedAs("Output Type: xml or zip").defaultsTo("xml");
-				accepts("name").withOptionalArg().ofType(String.class).describedAs("Name to give output file").defaultsTo("corpus");
+				accepts("out").withOptionalArg().ofType(String.class).describedAs("Output Type: xml or zip")
+						.defaultsTo("xml");
+				accepts("name").withOptionalArg().ofType(String.class).describedAs("Name to give output file")
+						.defaultsTo("corpus");
 			}
 		};
 
@@ -316,12 +262,14 @@ public class Corpus {
 			throw new IllegalArgumentException("Unknown Download Source: " + type);
 		}
 
-		Iterator<Integer> years =  Ints.stringConverter().convertAll( Splitter.on(",").omitEmptyStrings().trimResults().splitToList(yearRangeStr) ).iterator();
+		Iterator<Integer> years = Ints.stringConverter()
+				.convertAll(Splitter.on(",").omitEmptyStrings().trimResults().splitToList(yearRangeStr)).iterator();
 		List<String> yearsDash = Splitter.on("-").omitEmptyStrings().trimResults().splitToList(yearRangeStr);
-		if (yearsDash.size() == 2){
+		if (yearsDash.size() == 2) {
 			Integer range1 = Integer.valueOf(yearsDash.get(0));
 			Integer range2 = Integer.valueOf(yearsDash.get(1));
-			years = (Iterator<Integer>) ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers()).iterator();
+			years = (Iterator<Integer>) ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers())
+					.iterator();
 		}
 
 		List<Classification> wantedClasses = new ArrayList<Classification>();
@@ -337,6 +285,11 @@ public class Corpus {
 			wantedClasses.add(usClass);
 		}
 
+		BulkData downloader = new BulkData(downloadDir, dataType, years, false);
+
+		CorpusMatch<?> corpusMatch = new MatchClassificationXPath(wantedClasses);
+		//CorpusMatch<?> corpusMatch = new MatchClassificationPatent(wantedClasses);
+
 		Writer writer;
 		if ("zip".equals(out.toLowerCase())) {
 			Path zipFilePath = downloadDir.resolve(name + ".zip");
@@ -346,10 +299,10 @@ public class Corpus {
 			writer = new SingleXml(xmlFilePath, true);
 		}
 
-		Corpus corpus = new Corpus(downloadDir, dataType, years, wantedClasses, writer);
+		Corpus corpus = new Corpus(downloader, corpusMatch, writer);
 		corpus.setup();
 
-		if (filenames != null){
+		if (filenames != null) {
 			corpus.enqueue();
 			corpus.queueShrink(filenames);
 		} else {
