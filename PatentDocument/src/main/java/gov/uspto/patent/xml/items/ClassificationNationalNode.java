@@ -31,14 +31,16 @@ public class ClassificationNationalNode extends ItemReader<Classification>{
 	public Classification read() {
 		//Node countryNode = parentNode.selectSingleNode("country");
 		Node mainClass = itemNode.selectSingleNode("main-classification");
-		if (mainClass == null){
+		if (mainClass == null || "none".equals(mainClass.getText().toLowerCase())){
 			return null;
 		}
 
 		UspcClassification classification;
 		try {
 			classification = UspcClassification.fromText(mainClass.getText());
-			classification.setIsMainClassification(true);
+			if (classification != null){
+				classification.setIsMainClassification(true);
+			}
 		} catch (ParseException e1) {
 			LOGGER.warn("Failed to parse USPC classification 'main-classification': {}", mainClass.asXML(), e1);
 			return null;

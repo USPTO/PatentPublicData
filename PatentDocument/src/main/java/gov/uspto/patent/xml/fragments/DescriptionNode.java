@@ -15,6 +15,15 @@ import gov.uspto.patent.model.DescriptionSection;
 import gov.uspto.patent.model.Figure;
 import gov.uspto.patent.xml.items.DescriptionFigures;
 
+/**
+ * Description Node 
+ *<p>
+ *Note: Design Patent's description field usually only contain the DRAWING_DESC subsection, Design Patent may also not have an Abstract field.
+ *</p>
+ * 
+ * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ *
+ */
 public class DescriptionNode extends DOMFragmentReader<Description> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionNode.class);
 
@@ -38,14 +47,14 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 		if (relAppDesc != null && relAppDesc.length() > 20) {
 			desc.addSection(new DescriptionSection(DescSection.REL_APP_DESC, relAppDesc, textProcessor));
 		} else {
-			LOGGER.debug("Patent Description, missing RELAPP subsection: {}", descN.asXML()); // if no related apps this section may not exist.
+			LOGGER.debug("Patent Description, missing RELAPP subsection."); // if no related apps this section may not exist.
 		}
 
 		String briefSummary = getSectionText(descN, new String[]{"summary-of-invention", "BRFSUM"});
 		if (briefSummary != null && briefSummary.length() > 20) {
 			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, briefSummary, textProcessor));
 		} else {
-			LOGGER.warn("Patent Description, missing BRFSUM subsection: {}", descN.asXML());
+			LOGGER.debug("Patent Description, missing BRFSUM subsection.");
 		}
 
 		String drawingDesc = getSectionText(descN, new String[]{"brief-description-of-drawings"});
@@ -55,14 +64,14 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 			List<Figure> figures = new DescriptionFigures(descN).read();
 			desc.addFigures(figures);
 		} else {
-			LOGGER.warn("Patent Description, missing DRAWING_DESC subsection: {}", descN.asXML());
+			LOGGER.debug("Patent Description, missing DRAWING_DESC subsection.");
 		}
 
 		String detailedDesc = getSectionText(descN, new String[]{"detailed-description", "DETDESC"});
 		if (detailedDesc != null) {
 			desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc, textProcessor));
 		} else {
-			LOGGER.warn("Patent Description, missing DETDESC subsection: {}", descN.asXML());
+			LOGGER.debug("Patent Description, missing DETDESC subsection.");
 		}
 
 		return desc;

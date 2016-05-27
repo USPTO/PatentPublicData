@@ -22,8 +22,8 @@ public class AbstractTextNode extends DOMFragmentReader<Abstract> {
 	public Abstract read() {
 		Node abstractN = document.selectSingleNode(FRAGMENT_PATH);
 		if (abstractN == null) {
-			LOGGER.warn("Patent does not have an Abstract.");
-			return null;
+			LOGGER.debug("Patent does not have an Abstract.");
+			return new Abstract("", textProcessor);
 		}
 
 		return new Abstract(abstractN.asXML(), textProcessor);
