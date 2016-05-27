@@ -27,9 +27,15 @@ public class UspcClassificationTest {
 		validFromTo.put("141 10", "141/010000");
 		validFromTo.put("141390", "141/390000");
 		validFromTo.put("PLT101", "PLT/101000");
-		
+
+		validFromTo.put("337  2 2902", "337/00202902");
+		validFromTo.put(" 47  101 R", "047/001010R");
+		validFromTo.put(" 24FOR 129 B", "024/FOR01290B");
+
+		validFromTo.put("2504931-504 R", "250/493100"); // range.
 		validFromTo.put("D11143-144", "D11/143000"); // range.
-		validFromTo.put("707  3-  5", "D11/143000"); // range.
+		validFromTo.put("707  3-  5", "707/003000"); // range.
+		validFromTo.put("280 87041- 87043", "280/087041"); // range.
 	}
 
 	@Test(expected = ParseException.class)

@@ -172,7 +172,11 @@ public class UspcClassification extends Classification {
 		    }
 		}
 
+		// Remove Range; TODO Handle Range
+		input = input.replaceFirst("-\\d{1,3}$", "");
+		
 		// Handling Range "D11143-144"  @FIXME update to return both items in range, currently only first.
+		/*
 		String[] classRange = classificationStr.split("-", 2);
 		if (classRange.length == 2){
 			int len2 = classRange[1].length();
@@ -185,7 +189,7 @@ public class UspcClassification extends Classification {
 		    	// String input2 = match.replaceFirst( match.group(2) );
 			}
 		}
-		
+		*/
 
 		Matcher matcher = REGEX.matcher(input);
 		if ( matcher.matches() ){
