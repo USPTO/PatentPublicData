@@ -44,7 +44,7 @@ import com.google.common.base.Strings;
 public class UspcClassification extends Classification {
 
 	// 074 89140
-	private final static Pattern REGEX = Pattern.compile("^([0-9DGP][0-9L][0-9BT])/?([0-9A-Z]{5,6})$");
+	private final static Pattern REGEX = Pattern.compile("^([0-9DGP][0-9L][0-9BT])/?([0-9A-Z]{3,9})$");
 
 	private String mainClass;
 	private String subClass;
@@ -161,6 +161,10 @@ public class UspcClassification extends Classification {
 		}
 
 		String input = classificationStr.replaceAll("\\s", "0");
+
+		// Removing Range, only returning first value in range.  FIXME handle Range to return all classifications within range.
+		input = input.replaceFirst("-\\d{1,6}[A-Z]?$", "");
+
 		input = Strings.padEnd(input, 9, '0');
 
 		// Handle Leading Space " D2907" --> "D02/907000"
@@ -171,25 +175,6 @@ public class UspcClassification extends Classification {
 		    	input = match.replaceFirst( match.group(1) + "0" + match.group(2));
 		    }
 		}
-
-		// Remove Range; TODO Handle Range
-		input = input.replaceFirst("-\\d{1,3}$", "");
-		
-		// Handling Range "D11143-144"  @FIXME update to return both items in range, currently only first.
-		/*
-		String[] classRange = classificationStr.split("-", 2);
-		if (classRange.length == 2){
-			int len2 = classRange[1].length();
-			Pattern pattern2 = Pattern.compile("(\\d{"+ len2 +"})-(\\d{"+ len2 + "})$");
-			Matcher match = pattern2.matcher(classificationStr);
-			if (match.find()){
-		    	input = match.replaceFirst( match.group(1) );
-		    	input = input.replaceAll("\\s", "0");
-		    	input = Strings.padEnd(input, 9, '0');
-		    	// String input2 = match.replaceFirst( match.group(2) );
-			}
-		}
-		*/
 
 		Matcher matcher = REGEX.matcher(input);
 		if ( matcher.matches() ){
