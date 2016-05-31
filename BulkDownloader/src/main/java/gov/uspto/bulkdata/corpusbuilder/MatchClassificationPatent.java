@@ -30,6 +30,7 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 	private List<Classification> wantedCPC;
 	private List<Classification> wantedUSPC;
 	private Patent patent;
+	private String lastPatternMatch;
 
 	public MatchClassificationPatent(List<Classification> wantedClasses) {
 		this.wantedClasses = wantedClasses;
@@ -44,8 +45,7 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 
 	@Override
 	public String getLastMatchPattern() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastPatternMatch;
 	}
 
 	@Override
@@ -65,10 +65,11 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 			CpcClassification wantedCpc = (CpcClassification) wantedCpcClass;
 
 			for (Classification cpcClass : patentCPC) {
-				CpcClassification cpc = (CpcClassification) wantedCpcClass;
+				CpcClassification cpc = (CpcClassification) cpcClass;
 				if (cpc.getSection() == wantedCpc.getSection() && cpc.getMainClass() == wantedCpc.getMainClass()
 						&& cpc.getSubClass() == wantedCpc.getSubClass()
 						&& cpc.getMainGroup() == wantedCpc.getMainGroup()) {
+					lastPatternMatch="cpc";
 					return true;
 				}
 			}
@@ -81,7 +82,8 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 			for (Classification usclass : patentUSPC) {
 				UspcClassification uspc = (UspcClassification) usclass;
 
-				if (uspc.getIsMainClassification().equals(wantedUspc.getIsMainClassification())) {
+				if (uspc.getMainClass().equals(wantedUspc.getMainClass())) {
+					lastPatternMatch="uspc";
 					return true;
 				}
 			}

@@ -221,6 +221,8 @@ public class Corpus {
 						.defaultsTo("xml");
 				accepts("name").withOptionalArg().ofType(String.class).describedAs("Name to give output file")
 						.defaultsTo("corpus");
+				accepts("eval").withOptionalArg().ofType(String.class).describedAs("Eval [xml, patent]: XML (Xpath XML lookup) or Patent to Instatiate Patent Object")
+				.defaultsTo("xml");
 			}
 		};
 
@@ -230,6 +232,7 @@ public class Corpus {
 			System.exit(1);
 		}
 
+		String eval = (String) options.valueOf("eval");
 		String type = (String) options.valueOf("type");
 		int skip = (Integer) options.valueOf("skip");
 		Boolean deleteDone = (Boolean) options.valueOf("delete");
@@ -287,8 +290,12 @@ public class Corpus {
 
 		BulkData downloader = new BulkData(downloadDir, dataType, years, false);
 
-		CorpusMatch<?> corpusMatch = new MatchClassificationXPath(wantedClasses);
-		//CorpusMatch<?> corpusMatch = new MatchClassificationPatent(wantedClasses);
+		CorpusMatch<?> corpusMatch;
+		if ("xml".equalsIgnoreCase(eval)){
+			corpusMatch = new MatchClassificationXPath(wantedClasses);
+		} else {
+			corpusMatch = new MatchClassificationPatent(wantedClasses);
+		}
 
 		Writer writer;
 		if ("zip".equals(out.toLowerCase())) {
