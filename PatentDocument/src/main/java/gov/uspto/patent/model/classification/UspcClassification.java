@@ -1,13 +1,21 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ContiguousSet;
+import com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Range;
 
 /**
  *<h3>USPC Classification</h3>
@@ -16,7 +24,7 @@ import com.google.common.base.Strings;
  *<li>identifies Class 417, Subclass 161.1A
  *<li>5-6 digits, with left padding zeros i.e: "002".
  *<li>Section I (Class) : first three digits:  002-987, D01-D99, G9B, PLT
- *<li>Section II (Subclass): Next 2-3 digits; may have trailing decimal and digits.
+ *<li>Section II (Subclass): Next 2-3 digits; may have trailing decimal and digits, may also be a range.
  *</p>
  *<p>
  * Parse classification string:
@@ -45,11 +53,12 @@ public class UspcClassification extends Classification {
 
 	// 074 89140
 	private final static Pattern REGEX = Pattern.compile("^([0-9DGP][0-9L][0-9BT])/?([0-9A-Z]{3,9})$");
+	private final static Pattern RANGE_REGEX = Pattern.compile("-([0-9A-Z]{1,6})$");
 
 	private String mainClass;
-	private String subClass;
+	private SortedSet<String> subClass = new TreeSet<String>();
 
-    public UspcClassification(String originalText) {
+	public UspcClassification(String originalText) {
 		super(ClassificationType.USPC, originalText.replaceAll("\\s+", ""));
 	}
 
@@ -61,16 +70,20 @@ public class UspcClassification extends Classification {
 		this.mainClass = mainClass;
 	}
 
-	public String getSubClass() {
+	public SortedSet<String> getSubClass() {
 		return subClass;
 	}
 
 	public void setSubClass(String subClass) {
+		this.subClass.add(subClass);
+	}
+
+	public void setSubClass(SortedSet<String> subClass) {
 		this.subClass = subClass;
 	}
 
-	public String toText(){
-		if (super.getText() != null && super.getText().length() > 3){
+	public String toText() {
+		if (super.getText() != null && super.getText().length() > 3) {
 			return super.getText();
 		} else {
 			return toTextNormalized();
@@ -82,11 +95,13 @@ public class UspcClassification extends Classification {
 	 * 
 	 * @return
 	 */
-	public String toTextNormalized(){
-			return new StringBuilder()
-				.append(mainClass)
-				.append("/")
-				.append(subClass).toString();
+	public String toTextNormalized() {
+		StringBuilder stb = new StringBuilder().append(mainClass).append('/');
+		for(String subRange: subClass){
+			stb.append(subRange).append(',');
+		}
+		stb.deleteCharAt(stb.length()-1);
+		return stb.toString();
 	}
 
 	/**
@@ -96,7 +111,13 @@ public class UspcClassification extends Classification {
 	 * 
 	 */
 	public List<String> toFacet() {
-		return Classification.partsToFacet(mainClass , subClass);
+		Set<String> facets = new HashSet<String>();
+		for (String subRange: subClass){
+			List<String> retFacet = Classification.partsToFacet(mainClass, subRange);
+			facets.addAll(retFacet);
+		}
+
+		return Lists.newLinkedList(facets);
 	}
 
 	/**
@@ -108,43 +129,38 @@ public class UspcClassification extends Classification {
 	 *  
 	 * @return
 	 */
-	public Set<String> toSet(){
+	public Set<String> toSet() {
 		Set<String> formats = new LinkedHashSet<String>();
 		formats.add(mainClass);
 
-		if (subClass.length() >= 3){
-			String format2 = new StringBuilder()
-					.append(mainClass)
-					.append("/")
-					.append(subClass.substring(0, 3)).toString();
-			formats.add(format2);
+		for(String subRange: subClass){
+			if (subRange.length() >= 3) {
+				String format2 = new StringBuilder().append(mainClass).append("/").append(subRange.substring(0, 3))
+						.toString();
+				formats.add(format2);
+			}
+
+			if (subRange.length() > 3) {
+				String format3 = new StringBuilder().append(mainClass).append("/").append(subRange.substring(0, 3))
+						.append(".").append(subRange.substring(3, subRange.length())).toString();
+
+				// Trim trailing Zeros.
+				format3 = format3.replaceFirst("\\.0*$|(\\.\\d*?)0+$", "$1");
+
+				formats.add(format3);
+			}
 		}
 
-		if (subClass.length() > 3){
-			String format3 = new StringBuilder()
-					.append(mainClass)
-					.append("/")
-					.append(subClass.substring(0, 3))
-					.append(".")
-					.append(subClass.substring(3, subClass.length()))
-					.toString();
-			
-			// Trim trailing Zeros.
-			format3 = format3.replaceFirst("\\.0*$|(\\.\\d*?)0+$", "$1");
-
-			formats.add(format3);
-		}
-		
 		return formats;
 	}
-	
+
+
 	@Override
 	public String toString() {
-		return "UspcClassification [mainClass=" + mainClass
-				+ ", subClass=" + subClass
-				+ ", toText()=" + toText()
-				+ ", toSet()=" + toSet()
+		return "UspcClassification [mainClass=" + mainClass + ", subClass=" + subClass + ", toText()=" + toText()
+				//+ ", toSet()=" + toSet()
 				+ ", originalText=" + super.getText()
+				//+ ", range=" + range
 				+ "]";
 	}
 
@@ -156,39 +172,75 @@ public class UspcClassification extends Classification {
 	 * @throws ParseException
 	 */
 	public static UspcClassification fromText(final String classificationStr) throws ParseException {
-		if (Strings.isNullOrEmpty(classificationStr)){
+		if (Strings.isNullOrEmpty(classificationStr)) {
 			return null;
 		}
 
-		String input = classificationStr.replaceAll("\\s", "0");
+		String input = classificationStr.replace(' ', '0');
 
-		// Removing Range, only returning first value in range.  FIXME handle Range to return all classifications within range.
-		input = input.replaceFirst("-\\d{1,6}[A-Z]?$", "");
-
-		input = Strings.padEnd(input, 9, '0');
+		// Match USPC Classification Range.
+		Matcher rangeMatcher = RANGE_REGEX.matcher(input);
+		String backRange = null;
+		if (rangeMatcher.find()) {
+			input = input.substring(0, rangeMatcher.start());
+			backRange = rangeMatcher.group(1);
+		}
 
 		// Handle Leading Space " D2907" --> "D02/907000"
-		if (classificationStr.startsWith(" ")){ 
-		    Pattern pattern = Pattern.compile("^0(\\D)(\\d)");
-		    Matcher match = pattern.matcher(input);
-		    if (match.find()){
-		    	input = match.replaceFirst( match.group(1) + "0" + match.group(2));
-		    }
+		if (classificationStr.startsWith(" ")) {
+			Pattern pattern = Pattern.compile("^0(\\D)(\\d)");
+			Matcher match = pattern.matcher(input);
+			if (match.find()) {
+				input = match.replaceFirst(match.group(1) + "0" + match.group(2));
+			}
 		}
 
 		Matcher matcher = REGEX.matcher(input);
-		if ( matcher.matches() ){
+		if (matcher.matches()) {
 			String mainClass = matcher.group(1);
 			String subClass = matcher.group(2);
 
-		    UspcClassification classification = new UspcClassification(classificationStr);
-		    classification.setMainClass(mainClass);
-		    classification.setSubClass(subClass);
+			UspcClassification classification = new UspcClassification(classificationStr);
+			classification.setMainClass(mainClass);
 
-		    return classification;
+			SortedSet<String> subClassRange = new TreeSet<String>();			
+			subClassRange.add(Strings.padEnd(subClass, 9, '0'));
+
+			if (backRange != null) {
+				String rangeSubclass;
+				String frontRange;
+
+				if (subClass.length() > backRange.length()) {
+					frontRange = subClass.substring(0, subClass.length()-backRange.length());
+					rangeSubclass = subClass.substring(0, subClass.length()-backRange.length()) + backRange;
+				} else {
+					frontRange = subClass;
+					rangeSubclass = backRange;
+				}
+
+				// Expansion of Numeric Range.
+				if (frontRange.matches("^\\d+$") && backRange.matches("^\\d+$") && Integer.valueOf(frontRange) - 100 < Integer.valueOf(backRange) && Integer.valueOf(frontRange) < Integer.valueOf(backRange)){
+						Integer range1 = Integer.valueOf(frontRange);
+						Integer range2 = Integer.valueOf(backRange);
+						Iterator<Integer> range = (Iterator<Integer>) ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers()).iterator();
+						while(range.hasNext()){
+							String subRange = Strings.padStart(String.valueOf(range.next()), 3, '0');
+							subRange = Strings.padEnd(subRange, 9, '0');
+							subClassRange.add(subRange);
+						}
+				} else {
+					subClassRange.add(Strings.padEnd(rangeSubclass, 9, '0'));
+				}
+			}
+
+			classification.setSubClass(subClassRange);
+
+			return classification;
 		}
 
-		throw new ParseException("Failed to regex parse USPC Classification: '" + classificationStr + "' transposed to: '" + input + "'", 0);
+		throw new ParseException(
+				"Failed to regex parse USPC Classification: '" + classificationStr + "' transposed to: '" + input + "'",
+				0);
 
 	}
 }
