@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.AgentRepType;
 import gov.uspto.patent.model.entity.RelationshipType;
@@ -52,7 +53,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 				}
 
 				agentList.add( agent );
-			} catch (InvalidAttributesException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Invalid Agent: {}", node.asXML(), e);
 			}
 

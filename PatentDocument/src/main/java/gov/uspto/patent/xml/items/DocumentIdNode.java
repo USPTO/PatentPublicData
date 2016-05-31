@@ -1,14 +1,11 @@
 package gov.uspto.patent.xml.items;
 
-import java.text.ParseException;
-
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
@@ -48,7 +45,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		String country = countryN != null ? countryN.getText() : null;
 		try {
 			countryCode = CountryCode.fromString(country);
-		} catch (InvalidAttributesException e2) {
+		} catch (InvalidDataException e2) {
 			LOGGER.warn("Invalid CountryCode '{}', from: {}", country, itemNode.asXML(), e2);
 		}
 
@@ -61,7 +58,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		if (dateN != null) {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));
-			} catch (ParseException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Failed to parse date from: {}", itemNode.asXML(), e);
 			}
 		}

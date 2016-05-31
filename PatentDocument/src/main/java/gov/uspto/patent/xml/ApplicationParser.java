@@ -3,16 +3,17 @@
  */
 package gov.uspto.patent.xml;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.parser.dom4j.Dom4jUtil;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
@@ -57,7 +58,10 @@ public class ApplicationParser extends Dom4JParser {
 		String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");
 
 		DocumentId publicationId = new PublicationIdNode(document).read();
-		DocumentId applicationId = new ApplicationIdNode(document).read();
+		MDC.put("DOCID", publicationId.toText());
+
+		DocumentId applicationId = new ApplicationIdNode(document).read();		
+		
 		DocumentId regionId = new RegionalIdNode(document).read();
 		DocumentId relatedId = new RelatedIdNode(document).read();
 		List<DocumentId> relationIds = new Relations(document).read();
@@ -104,7 +108,7 @@ public class ApplicationParser extends Dom4JParser {
 		if (dateProduced != null) {
 			try {
 				patent.setDateProduced(dateProduced);
-			} catch (ParseException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Invalid Date Produced: '{}'", dateProduced, e);
 			}
 		}
@@ -112,7 +116,7 @@ public class ApplicationParser extends Dom4JParser {
 		if (datePublished != null) {
 			try {
 				patent.setDatePublished(datePublished);
-			} catch (ParseException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Invalid Date Published: '{}'", datePublished, e);
 			}
 		}

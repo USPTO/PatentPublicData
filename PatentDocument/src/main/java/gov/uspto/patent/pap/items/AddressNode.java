@@ -1,12 +1,11 @@
 package gov.uspto.patent.pap.items;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 
@@ -46,7 +45,7 @@ public class AddressNode extends ItemReader<Address> {
 		return readAddress(itemNode);
 	}
 
-	public Address readAddress(Node node){
+	public Address readAddress(Node node) {
 		Node emailN = node.selectSingleNode("email");
 		String email = emailN != null ? emailN.getText() : null;
 
@@ -71,7 +70,7 @@ public class AddressNode extends ItemReader<Address> {
 		CountryCode countryCode = CountryCode.UNDEFINED;
 		try {
 			countryCode = CountryCode.fromString(country);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Invalid CountryCode: {} from: {}", country, node.asXML());
 		}
 
@@ -81,7 +80,7 @@ public class AddressNode extends ItemReader<Address> {
 			address.setEmail(email);
 			address.setPhoneNumber(phone);
 			address.setFaxNumber(fax);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Invalid Address: {}", node.asXML(), e);
 		}
 		return address;

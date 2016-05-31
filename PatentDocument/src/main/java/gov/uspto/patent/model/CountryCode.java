@@ -1,6 +1,6 @@
 package gov.uspto.patent.model;
 
-import javax.naming.directory.InvalidAttributesException;
+import gov.uspto.patent.InvalidDataException;
 
 /**
  * Country Codes, from WIPO standard ST.3. two-letter codes
@@ -275,14 +275,14 @@ public enum CountryCode {
 		return name;
 	}
 
-	public static CountryCode fromString(String strValue) throws InvalidAttributesException{
+	public static CountryCode fromString(String strValue) throws InvalidDataException {
 		try {
 			if (strValue != null){
 				return CountryCode.valueOf(strValue.trim().toUpperCase());
 			}
 			return CountryCode.UNDEFINED;
 		} catch(IllegalArgumentException e) {
-			throw new InvalidAttributesException("Invalid Code: " + strValue);
+			throw new InvalidDataException("Invalid Code: " + strValue);
 			//return CountryCode.UNKNOWN;
 		}
 	}

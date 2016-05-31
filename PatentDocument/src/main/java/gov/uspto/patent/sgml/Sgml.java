@@ -10,6 +10,7 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.patent.PatentParserException;
@@ -53,6 +54,8 @@ public class Sgml extends Dom4JParser {
 	public Patent parse(Document document) throws PatentParserException {
 
 		DocumentId documentId = new DocumentIdNode(document).read();
+		MDC.put("DOCID", documentId.toText());
+
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
 		Node titleN = document.selectSingleNode("/PATDOC/SDOBI/B500/B540/STEXT/PDAT");

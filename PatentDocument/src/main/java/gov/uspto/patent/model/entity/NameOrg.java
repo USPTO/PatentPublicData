@@ -1,6 +1,6 @@
 package gov.uspto.patent.model.entity;
 
-import javax.naming.directory.InvalidAttributesException;
+import gov.uspto.patent.InvalidDataException;
 
 /**
  * 
@@ -26,11 +26,11 @@ public class NameOrg extends Name {
 		 *  Premark Feg L.L.C.
 		 */
 
-	public NameOrg(String fullName) throws InvalidAttributesException{
+	public NameOrg(String fullName) throws InvalidDataException{
 		super(fullName);
 		
 		if (!validate()){
-			throw new InvalidAttributesException("Invalid OrgName, name is blank");
+			throw new InvalidDataException("Invalid OrgName, name is blank");
 		}
 	}
 	

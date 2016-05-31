@@ -1,12 +1,11 @@
 package gov.uspto.patent.sgml.items;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 
@@ -79,7 +78,7 @@ public class AddressNode extends ItemReader<Address> {
 		CountryCode countryCode = CountryCode.UNDEFINED;
 		try {
 			countryCode = CountryCode.fromString(country);
-		} catch (InvalidAttributesException e1) {
+		} catch (InvalidDataException e1) {
 			LOGGER.warn("Invalid Country Code: '{}'", country);
 		}
 
@@ -98,7 +97,7 @@ public class AddressNode extends ItemReader<Address> {
 			address.setEmail(email);
 			address.setPhoneNumber(tel);
 			address.setFaxNumber(fax);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Address Invalid", e);
 		}
 

@@ -3,14 +3,13 @@ package gov.uspto.patent.greenbook.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.greenbook.items.AddressNode;
 import gov.uspto.patent.greenbook.items.NameNode;
 import gov.uspto.patent.model.entity.Address;
@@ -50,7 +49,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		if (typeCodeN != null){
 			try {
 				assignee.setRole(typeCodeN.getText());
-			} catch (InvalidAttributesException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Invalid Assignee Role Type:", e);
 			}
 		}

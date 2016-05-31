@@ -9,6 +9,7 @@ import javax.naming.directory.InvalidAttributesException;
 import org.dom4j.Node;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Name;
@@ -49,9 +50,9 @@ public class AddressBookNode extends ItemReader<Name> {
 	 * PersonName can also have an associated Orgname, or Orgname can be by itself.
 	 * 
 	 * @return
-	 * @throws InvalidAttributesException
+	 * @throws InvalidDataException 
 	 */
-	public Name getPersonName() throws InvalidAttributesException {
+	public Name getPersonName() throws InvalidDataException {
 		Node prefixN = itemNode.selectSingleNode("prefix");
 		String prefix = prefixN != null ? prefixN.getText() : null;
 
@@ -85,7 +86,7 @@ public class AddressBookNode extends ItemReader<Name> {
 		return name;
 	}
 
-	public NameOrg getOrgName() throws InvalidAttributesException {
+	public NameOrg getOrgName() throws InvalidDataException {
 		Node orgnameN = itemNode.selectSingleNode("orgname");
 
 		@SuppressWarnings("unchecked")
@@ -104,7 +105,7 @@ public class AddressBookNode extends ItemReader<Name> {
 		return name;
 	}
 
-	public Address getAddress() throws InvalidAttributesException {
+	public Address getAddress() throws InvalidDataException {
 		Node addressN = itemNode.selectSingleNode("address");
 		if (addressN == null) {
 			return null;

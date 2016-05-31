@@ -3,7 +3,7 @@ package gov.uspto.patent.model.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.directory.InvalidAttributesException;
+import gov.uspto.patent.InvalidDataException;
 
 public class Assignee extends Entity {
 	
@@ -36,11 +36,11 @@ public class Assignee extends Entity {
 		return AssigneeRoleType.get(roleType);
 	}
 
-	public void setRole(String roleType) throws InvalidAttributesException {
+	public void setRole(String roleType) throws InvalidDataException {
 		if (AssigneeRoleType.containsKey(roleType)){
 			this.roleType = roleType;
 		} else {
-			throw new InvalidAttributesException("Invalid Assignee Role Type: "+ roleType);
+			throw new InvalidDataException("Invalid Assignee Role Type: "+ roleType);
 		}
 	}
 

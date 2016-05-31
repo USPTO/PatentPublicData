@@ -1,7 +1,9 @@
-package gov.uspto.patent.xml.fragments;
+package gov.uspto.patent.xml4ip.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.naming.directory.InvalidAttributesException;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -9,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Applicant;
 import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.xml.items.AddressBookNode;
@@ -17,9 +18,7 @@ import gov.uspto.patent.xml.items.AddressBookNode;
 public class ApplicantNode extends DOMFragmentReader<List<Applicant>>{
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicantNode.class);
 
-	private static final String FRAGMENT_PATH = "//us-parties/us-applicants/us-applicant"; // current.
-	
-	private static final String FRAGMENT_PATH2 = "//parties/applicants/applicant"; // pre 2012.
+	private static final String FRAGMENT_PATH = "//Applicant";
 
 	private List<Applicant> applicantList;
 	
@@ -34,10 +33,6 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>>{
 		@SuppressWarnings("unchecked")
 		List<Node> applicants = document.selectNodes(FRAGMENT_PATH);
 		readApplicants(applicants);
-
-		@SuppressWarnings("unchecked")
-		List<Node> applicants2 = document.selectNodes(FRAGMENT_PATH2);
-		readApplicants(applicants2);
 		
 		return applicantList;
 	}
@@ -56,7 +51,7 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>>{
 
 				Applicant applicant = new Applicant(applicantName, addressBook.getAddress());				
 				applicantList.add( applicant );
-			} catch (InvalidDataException e) {
+			} catch (InvalidAttributesException e) {
 				LOGGER.warn("Invalid Applicant: {}", node.asXML(), e);
 			}
 

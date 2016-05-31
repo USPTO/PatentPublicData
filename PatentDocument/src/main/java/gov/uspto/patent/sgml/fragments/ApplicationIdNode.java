@@ -1,13 +1,12 @@
 package gov.uspto.patent.sgml.fragments;
 
-import java.text.ParseException;
-
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
@@ -51,7 +50,7 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 		if (dateN != null) {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));
-			} catch (ParseException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Failed to parse date from: {}", patentNode.asXML(), e);
 			}
 		}

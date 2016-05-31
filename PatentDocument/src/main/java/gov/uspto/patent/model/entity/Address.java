@@ -3,10 +3,9 @@ package gov.uspto.patent.model.entity;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import com.google.common.base.Strings;
 
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 
 /**
@@ -25,11 +24,12 @@ public class Address {
 	private String faxNumber;
 	private String email;
 
-	public Address(String city, String state, CountryCode country) throws InvalidAttributesException{
+	public Address(String city, String state, CountryCode country) throws InvalidDataException {
 		this(null, city, state, null, country);
 	}
-	
-	public Address(String street, String city, String state, String zipcode, CountryCode country) throws InvalidAttributesException{
+
+	public Address(String street, String city, String state, String zipcode, CountryCode country)
+			throws InvalidDataException {
 		this.street = street;
 		this.city = city;
 		this.state = state;
@@ -39,7 +39,7 @@ public class Address {
 		validate();
 	}
 
-	public String getStreet(){
+	public String getStreet() {
 		return street;
 	}
 
@@ -51,7 +51,7 @@ public class Address {
 		return state;
 	}
 
-	public String getZipCode(){
+	public String getZipCode() {
 		return zipcode;
 	}
 
@@ -87,19 +87,19 @@ public class Address {
 		return zipcode;
 	}
 
-	public boolean validate() throws InvalidAttributesException{
-		if (country == null){
-			throw new InvalidAttributesException("Invalid Address: country is null");
+	public boolean validate() throws InvalidDataException {
+		if (country == null) {
+			throw new InvalidDataException("Invalid Address: country is null");
 		}
 
 		return true;
 	}
 
-	public String toText(){
+	public String toText() {
 		StringBuilder sb = new StringBuilder();
-		
-		for (String sub: new String[]{street, city, state, zipcode}){
-			if (! Strings.isNullOrEmpty(sub)){
+
+		for (String sub : new String[] { street, city, state, zipcode }) {
+			if (!Strings.isNullOrEmpty(sub)) {
 				sb.append(sub).append(", ");
 			}
 		}
@@ -115,17 +115,17 @@ public class Address {
 	 * 
 	 * @return
 	 */
-	public Set<String> getTokenSet(){
+	public Set<String> getTokenSet() {
 		Set<String> tokens = new LinkedHashSet<String>();
 
-		if (! Strings.isNullOrEmpty(city)){
+		if (!Strings.isNullOrEmpty(city)) {
 			tokens.add(city);
 		}
-		
-		if (! Strings.isNullOrEmpty(state)){
+
+		if (!Strings.isNullOrEmpty(state)) {
 			tokens.add(state);
 		}
-		
+
 		tokens.add(country.toString());
 		tokens.add(country.getName());
 

@@ -1,15 +1,12 @@
 package gov.uspto.patent.pap.fragments;
 
-import java.text.ParseException;
-
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
@@ -59,7 +56,7 @@ public class PublicationIdNode extends DOMFragmentReader<DocumentId> {
 		if (country != null) {
 			try {
 				countryCode = CountryCode.fromString(country);
-			} catch (InvalidAttributesException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.info("Invalid CountryCode: {}", country, e);
 			}
 		}
@@ -74,7 +71,7 @@ public class PublicationIdNode extends DOMFragmentReader<DocumentId> {
 		if (dateN != null) {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));
-			} catch (ParseException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.error("Failed to parse date from: {}", parentNode.asXML(), e);
 			}
 		}

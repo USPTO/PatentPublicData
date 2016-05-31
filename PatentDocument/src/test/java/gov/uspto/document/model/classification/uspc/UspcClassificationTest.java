@@ -8,18 +8,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.Test;
 
-import gov.uspto.patent.model.classification.UspcClassification;
+import com.google.common.collect.Sets;
 
+import gov.uspto.patent.model.classification.UspcClassification;
 
 public class UspcClassificationTest {
 
 	private static Map<String, String> validFromTo = new LinkedHashMap<String, String>();
+
 	static {
 		validFromTo.put("  2 52", "002/052000000");
-		validFromTo.put(" D2907",  "D02/907000000"); // leading space.
+		validFromTo.put(" D2907", "D02/907000000"); // leading space.
 		validFromTo.put(" 47 72", "047/072000000");
 		validFromTo.put("D 2908", "D02/908000000");
 		validFromTo.put("002227000", "002/227000000");
@@ -34,7 +37,7 @@ public class UspcClassificationTest {
 		validFromTo.put(" 24FOR 129 B", "024/FOR01290B");
 
 		validFromTo.put("257E2308-E23082", "257/E23080000,E23082000"); // range.
-		
+
 		validFromTo.put("2504931-504 R", "250/493100000,5040R0000"); // range.
 		validFromTo.put("235 61 R- 59 TP", "235/0590TP000,0610R0000"); // range.
 
@@ -45,14 +48,14 @@ public class UspcClassificationTest {
 
 	@Test(expected = ParseException.class)
 	public void failBlank() throws ParseException {
-		 UspcClassification.fromText("a");
+		UspcClassification.fromText("a");
 	}
 
 	@Test
 	public void validParseCheck() throws ParseException {
-		for (Entry<String,String> uspc: validFromTo.entrySet()){
+		for (Entry<String, String> uspc : validFromTo.entrySet()) {
 			UspcClassification uspcClass = UspcClassification.fromText(uspc.getKey());
-			assertEquals( uspc.getValue(), uspcClass.toTextNormalized());
+			assertEquals(uspc.getValue(), uspcClass.toTextNormalized());
 		}
 	}
 
@@ -60,6 +63,21 @@ public class UspcClassificationTest {
 	public void testFacet() throws ParseException {
 		UspcClassification uspcClass = UspcClassification.fromText("PLT101");
 		List<String> facets = uspcClass.toFacet();
-		assertTrue(facets.contains("1/PLT/PLT101000000"));
+		//System.out.println(facets);
+		
+		Set<String> expect = Sets.newHashSet("0/PLT", "1/PLT/PLT101000000");
+
+		assertTrue(facets.containsAll(expect));
+	}
+
+	@Test
+	public void testRangeFacet() throws ParseException {
+		UspcClassification uspcClass = UspcClassification.fromText("707  3-  5");
+		List<String> facets = uspcClass.toFacet();
+		//System.out.println(facets);
+
+		Set<String> expect = Sets.newHashSet("0/707", "1/707/707003000000", "1/707/707004000000", "1/707/707005000000");
+
+		assertTrue(facets.containsAll(expect));
 	}
 }

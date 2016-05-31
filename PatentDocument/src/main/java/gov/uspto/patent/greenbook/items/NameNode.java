@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Splitter;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
@@ -30,7 +31,7 @@ public class NameNode extends ItemReader<Name> {
 		Name name = null;
 		try {
 			name = createName(fullName);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Failed to parse Name: {}", fullName, e);
 		}
 
@@ -44,7 +45,7 @@ public class NameNode extends ItemReader<Name> {
 	 * @return
 	 * @throws InvalidAttributesException
 	 */
-	public Name createName(String fullName) throws InvalidAttributesException {
+	public Name createName(String fullName) throws InvalidDataException {
 		if (fullName == null){
 			return null;
 		}

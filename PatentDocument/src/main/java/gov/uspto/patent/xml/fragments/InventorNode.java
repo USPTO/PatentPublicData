@@ -3,14 +3,13 @@ package gov.uspto.patent.xml.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.model.entity.RelationshipType;
 import gov.uspto.patent.xml.items.AddressBookNode;
@@ -63,7 +62,7 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 				inventor.addRelationship(addressBook.getOrgName(), RelationshipType.EMPLOYEE);
 			}
 			return inventor;
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Invalid Inventor: {}", inventorNode.asXML(), e);
 		}
 		return null;

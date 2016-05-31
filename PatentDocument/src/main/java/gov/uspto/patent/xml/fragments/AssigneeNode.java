@@ -3,14 +3,13 @@ package gov.uspto.patent.xml.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
@@ -43,14 +42,14 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 				} else {
 					assigneeName = addressBook.getOrgName();
 				}
-			} catch (InvalidAttributesException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Invalid Assignee: {}", node.asXML(), e);
 			}
 
 			Address address = null;
 			try {
 				address = addressBook.getAddress();
-			} catch (InvalidAttributesException e1) {
+			} catch (InvalidDataException e1) {
 				LOGGER.warn("Invalid Assignee: {}", node.asXML(), e1);
 			}
 
@@ -62,7 +61,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 			try {
 				assignee.setRole(roleType);
-			} catch (InvalidAttributesException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Invalid Assignee: {}", node.asXML(), e);
 			}
 		}

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.CountryCodeHistoric;
 import gov.uspto.patent.model.entity.Address;
@@ -68,7 +69,7 @@ public class AddressNode extends ItemReader<Address> {
 
 		try {
 			address = new Address(street, city, state, zipcode, countryCode);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Invalid Address from: {}", itemNode.asXML(), e);
 		}
 
@@ -95,7 +96,7 @@ public class AddressNode extends ItemReader<Address> {
 		CountryCode countryCode = CountryCode.UNKNOWN;
 		try {
 			countryCode = CountryCode.fromString(country);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Invalid Country Code: '{}'", country);
 		}
 

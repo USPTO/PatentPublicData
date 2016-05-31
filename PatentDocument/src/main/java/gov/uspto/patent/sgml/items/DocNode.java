@@ -1,14 +1,11 @@
 package gov.uspto.patent.sgml.items;
 
-import java.text.ParseException;
-
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
@@ -75,12 +72,12 @@ public class DocNode extends ItemReader<DocumentId> {
 
 		CountryCode countryCode = fallbackCountryCode;
 		Node countryCodeN = docIdNode.selectSingleNode("CTRY/PDAT");
-		if (countryCodeN != null){
+		if (countryCodeN != null) {
 			String countryCodeStr = countryCodeN.getText();
 
 			try {
 				countryCode = CountryCode.fromString(countryCodeStr);
-			} catch (InvalidAttributesException e1) {
+			} catch (InvalidDataException e1) {
 				LOGGER.warn("Invalid Country Code: {} from: {}", countryCodeStr, docIdNode.asXML(), e1);
 			}
 		}
@@ -97,7 +94,7 @@ public class DocNode extends ItemReader<DocumentId> {
 		try {
 			docDate = new DocumentDate(date);
 			docId.setDate(docDate);
-		} catch (ParseException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Unable to parse date: {} from: {}", date, docIdNode.asXML(), e);
 		}
 

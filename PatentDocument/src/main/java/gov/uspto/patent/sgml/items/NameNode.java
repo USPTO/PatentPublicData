@@ -1,12 +1,11 @@
 package gov.uspto.patent.sgml.items;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
@@ -49,20 +48,19 @@ public class NameNode extends ItemReader<Name> {
 	@Override
 	public Name read() {
 		Name name = null;
-		
+
 		Node nameNode = itemNode.selectSingleNode("NAM");
 
 		Node orgNameN = nameNode.selectSingleNode("ONM/STEXT/PDAT");
-		if (orgNameN != null){
+		if (orgNameN != null) {
 			String orgName = orgNameN != null ? orgNameN.getText() : null;
 
 			try {
 				name = new NameOrg(orgName);
-			} catch (InvalidAttributesException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("NameOrg Invalid", e);
 			}
-		}
-		else {
+		} else {
 			Node firstNameN = nameNode.selectSingleNode("FNM/PDAT");
 			String firstName = firstNameN != null ? firstNameN.getText() : null;
 
@@ -71,7 +69,7 @@ public class NameNode extends ItemReader<Name> {
 
 			try {
 				name = new NamePerson(firstName, lastName);
-			} catch (InvalidAttributesException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("NamePerson Invalid", e);
 			}
 		}

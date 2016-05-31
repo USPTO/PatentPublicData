@@ -1,10 +1,7 @@
 package gov.uspto.patent.greenbook.fragments;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.naming.directory.InvalidAttributesException;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -12,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.greenbook.items.AddressNode;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
@@ -48,41 +46,41 @@ public class ReferencedId extends DOMFragmentReader<List<DocumentId>> {
 	@Override
 	public List<DocumentId> read() {
 		List<DocumentId> docIds = new ArrayList<DocumentId>();
-		
+
 		@SuppressWarnings("unchecked")
 		List<Node> usRels = document.selectNodes(US_RELATED);
-		for(Node usRelN: usRels){
+		for (Node usRelN : usRels) {
 			DocumentId docId = readDocumentId(usRelN, CountryCode.US);
-			if (docId != null){
+			if (docId != null) {
 				docIds.add(docId);
 			}
 		}
 
 		@SuppressWarnings("unchecked")
 		List<Node> foreignRels = document.selectNodes(FOREIGN_RELATED);
-		for(Node frelN: foreignRels){
+		for (Node frelN : foreignRels) {
 			CountryCode countryCode = readCountryCode(frelN);
 
 			DocumentId docId = readDocumentId(frelN, countryCode);
-			if (docId != null){
+			if (docId != null) {
 				docIds.add(docId);
 			}
 		}
 
 		return docIds;
 	}
-	
-	public CountryCode readCountryCode(Node itemNode){
+
+	public CountryCode readCountryCode(Node itemNode) {
 		Node countryN = itemNode.selectSingleNode("CNT");
 		String country = countryN != null ? countryN.getText() : null;
 		CountryCode countryCode = AddressNode.getCountryCode(country);
 		return countryCode;
 	}
 
-	public DocumentId readDocumentId(Node itemNode, CountryCode countryCode){
+	public DocumentId readDocumentId(Node itemNode, CountryCode countryCode) {
 
 		Node docNumN = itemNode.selectSingleNode("PNO");
-		if (docNumN == null){
+		if (docNumN == null) {
 			LOGGER.warn("DocNum not found, field 'PNO': {}", itemNode.asXML());
 			return null;
 		}
@@ -95,11 +93,11 @@ public class ReferencedId extends DOMFragmentReader<List<DocumentId>> {
 			String dateTxt = dateN.getText();
 			try {
 				documentId.setDate(new DocumentDate(dateTxt));
-			} catch (ParseException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.warn("Failed to parse date: {}", dateTxt, e);
 			}
 		}
-		
+
 		return documentId;
 	}
 

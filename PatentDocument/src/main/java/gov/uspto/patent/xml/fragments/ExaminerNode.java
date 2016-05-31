@@ -3,14 +3,13 @@ package gov.uspto.patent.xml.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.ExaminerType;
 import gov.uspto.patent.model.entity.Examiner;
 import gov.uspto.patent.model.entity.Name;
@@ -56,7 +55,7 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 		try {
 			name = new AddressBookNode(primaryN).getPersonName();
 			return new Examiner(name, department, ExaminerType.PRIMARY);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Invalid Examiner, primary: {}", primaryN.asXML(), e);
 		}
 
@@ -75,7 +74,7 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 		try {
 			Name name = new AddressBookNode(assistantN).getPersonName();
 			return new Examiner(name, department, ExaminerType.ASSISTANT);
-		} catch (InvalidAttributesException e) {
+		} catch (InvalidDataException e) {
 			LOGGER.warn("Invalid Examiner, assistant: {}", assistantN.asXML(), e);
 		}
 

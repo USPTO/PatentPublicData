@@ -6,6 +6,8 @@ import java.util.Date;
 import org.apache.commons.lang3.time.DateParser;
 import org.apache.commons.lang3.time.FastDateFormat;
 
+import gov.uspto.patent.InvalidDataException;
+
 public class DocumentDate {
 	/*
 	 * FastDateFormat is Thread-Safe version of SimpleDateFormat
@@ -16,20 +18,24 @@ public class DocumentDate {
 	private Date date;
 	private String rawDate;
 
-	public DocumentDate(String date) throws ParseException {
+	public DocumentDate(String date) throws InvalidDataException {
 		this.rawDate = date;
 		setDate(date);
 	}
 
-	public DocumentDate(Date date) throws ParseException {
+	public DocumentDate(Date date) throws InvalidDataException {
 		this.date = date;
 	}
 
-	public void setDate(String date) throws ParseException {
+	public void setDate(String date) throws InvalidDataException {
 		if (date != null && date.trim().length() == 8) {
-			this.date = DATE_PATENT_FORMAT.parse(date);
+			try {
+				this.date = DATE_PATENT_FORMAT.parse(date);
+			} catch (ParseException e) {
+				throw new InvalidDataException("Invalid Date: " + date, e);
+			}
 		} else {
-			throw new ParseException("Invalid Date: " + date, 8);
+			throw new InvalidDataException("Invalid Date: " + date);
 		}
 	}
 

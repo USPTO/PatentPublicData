@@ -1,11 +1,11 @@
 package gov.uspto.patent.model;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
@@ -44,7 +44,7 @@ public abstract class Patent {
 	private List<Examiner> examiners = new ArrayList<Examiner>();
 	private DocumentId applicationId;
 	private List<DocumentId> referenceIds;
-	
+
 	private List<ChemicalFormula> chemFomulas;
 
 	private List<MathFormula> mathFormulas;
@@ -161,7 +161,7 @@ public abstract class Patent {
 		this.datePublished = datePublished;
 	}
 
-	public void setDatePublished(String datePublished) throws ParseException {
+	public void setDatePublished(String datePublished) throws InvalidDataException {
 		this.datePublished = new DocumentDate(datePublished);
 	}
 
@@ -177,7 +177,7 @@ public abstract class Patent {
 		this.dateProduced = dateProduced;
 	}
 
-	public void setDateProduced(String dateProduced) throws ParseException {
+	public void setDateProduced(String dateProduced) throws InvalidDataException {
 		this.dateProduced = new DocumentDate(dateProduced);
 	}
 
@@ -296,10 +296,10 @@ public abstract class Patent {
 				+ otherIds + ",\n\t relationIds=" + relationIds + ",\n\t referenceIds=" + referenceIds
 				+ ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced + ",\n\t title=" + title
 				+ ",\n\t abstractText=" + abstractText.getRawText() + ",\n\t description=" + description.getSections()
-				+ ",\n\t figures=" + description.getFigures()
-				+ ",\n\t type=" + type + ",\n\t citations=" + citations + ",\n\t classifications=" + classifications
-				+ ",\n\t claims=" + claims + ",\n\t inventors=" + inventors + ",\n\t assignees=" + assignees
-				+ ",\n\t applicant=" + applicants + ",\n\t agent=" + agents + ",\n\t examiners=" + examiners
-				+",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas=" + mathFormulas + "\n\t]";
+				+ ",\n\t figures=" + description.getFigures() + ",\n\t type=" + type + ",\n\t citations=" + citations
+				+ ",\n\t classifications=" + classifications + ",\n\t claims=" + claims + ",\n\t inventors=" + inventors
+				+ ",\n\t assignees=" + assignees + ",\n\t applicant=" + applicants + ",\n\t agent=" + agents
+				+ ",\n\t examiners=" + examiners + ",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas="
+				+ mathFormulas + "\n\t]";
 	}
 }

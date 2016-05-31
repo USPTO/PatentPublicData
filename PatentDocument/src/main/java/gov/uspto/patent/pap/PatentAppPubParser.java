@@ -2,16 +2,17 @@ package gov.uspto.patent.pap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.parser.dom4j.Dom4jUtil;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.PatentParserException;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Claim;
@@ -25,13 +26,12 @@ import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.pap.fragments.AbstractTextNode;
 import gov.uspto.patent.pap.fragments.ApplicationIdNode;
 import gov.uspto.patent.pap.fragments.AssigneeNode;
-import gov.uspto.patent.pap.fragments.ClassificationNode;
 //import gov.uspto.patent.pap.fragments.RelatedIdNode;
 import gov.uspto.patent.pap.fragments.ClaimNode;
+import gov.uspto.patent.pap.fragments.ClassificationNode;
 import gov.uspto.patent.pap.fragments.DescriptionNode;
 import gov.uspto.patent.pap.fragments.InventorNode;
 import gov.uspto.patent.pap.fragments.PublicationIdNode;
-import gov.uspto.patent.sgml.Sgml;
 
 /**
  * 
@@ -58,6 +58,8 @@ public class PatentAppPubParser extends Dom4JParser {
 				XML_ROOT + "/subdoc-bibliographic-information/domestic-filing-data/filing-date");
 
 		DocumentId publicationId = new PublicationIdNode(document).read();
+		MDC.put("DOCID", publicationId.toText());
+
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 		//DocumentId relatedId = new RelatedIdNode(document).read();
 
@@ -102,13 +104,13 @@ public class PatentAppPubParser extends Dom4JParser {
 		if (dateProduced != null) {
 			try {
 				patent.setDateProduced(dateProduced);
-			} catch (ParseException e) {
+			} catch (InvalidDataException e) {
 				LOGGER.error("Invalid Date: {}", dateProduced, e);
 			}
 		}
 
 		LOGGER.trace(patent.toString());
-		
+
 		return patent;
 	}
 
