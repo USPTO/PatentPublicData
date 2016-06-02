@@ -52,7 +52,7 @@ import com.google.common.collect.Range;
 public class UspcClassification extends Classification {
 
 	// 074 89140
-	private final static Pattern REGEX = Pattern.compile("^([0-9DGP][0-9L][0-9BT])/?([0-9A-Z]{3,9})$");
+	private final static Pattern REGEX = Pattern.compile("^([0-9DGP][0-9L][0-9BT])/?([0-9A-Z]{1,9})$");
 	private final static Pattern RANGE_REGEX = Pattern.compile("-([0-9A-Z]{1,9})$");
 
 	private String mainClass;
@@ -194,6 +194,8 @@ public class UspcClassification extends Classification {
 				input = match.replaceFirst(match.group(1) + "0" + match.group(2));
 			}
 		}
+
+		input = input.replaceFirst("^0+D", "D");
 
 		Matcher matcher = REGEX.matcher(input);
 		if (matcher.matches()) {

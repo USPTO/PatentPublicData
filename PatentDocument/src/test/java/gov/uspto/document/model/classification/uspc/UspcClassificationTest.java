@@ -23,6 +23,7 @@ public class UspcClassificationTest {
 	static {
 		validFromTo.put("  2 52", "002/052000000");
 		validFromTo.put(" D2907", "D02/907000000"); // leading space.
+		validFromTo.put("  D 38", "D03/800000000"); // leading 2 spaces.
 		validFromTo.put(" 47 72", "047/072000000");
 		validFromTo.put("D 2908", "D02/908000000");
 		validFromTo.put("002227000", "002/227000000");
