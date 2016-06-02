@@ -1,9 +1,12 @@
 package gov.uspto.patent.xml.fragments;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,24 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 			AddressBookNode addressBook = new AddressBookNode(node);
 
+			/*
+			 * If Content is missing, then wrap content with addressbook and try again. 
+			 */
+			if (!addressBook.hasChildren()){
+				Element addressBookNode = DocumentHelper.createElement("addressbook");
+
+				Iterator<Element> it = ((Element) node).elementIterator();
+				while(it.hasNext()){
+					Element el = it.next();
+					el.detach();
+					addressBookNode.add(el);
+				}
+				((Element) node).add(addressBookNode);
+
+				LOGGER.warn("Fix assignee by wrapping content with addressbook: {}", addressBookNode.asXML());
+				addressBook = new AddressBookNode(addressBookNode);
+			}
+
 			Name assigneeName = null;
 			try {
 				if (addressBook.getPersonName() != null) {
@@ -43,14 +64,20 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 					assigneeName = addressBook.getOrgName();
 				}
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Assignee: {}", node.asXML(), e);
+				LOGGER.warn("Invalid Assignee Name: {}", node.asXML(), e);
+				continue;
+			}
+
+			if (assigneeName == null){
+				LOGGER.warn("Invalid Assignee Name: {}", node.asXML());
+				continue;
 			}
 
 			Address address = null;
 			try {
 				address = addressBook.getAddress();
 			} catch (InvalidDataException e1) {
-				LOGGER.warn("Invalid Assignee: {}", node.asXML(), e1);
+				LOGGER.warn("Invalid Assignee Address: {}", node.asXML(), e1);
 			}
 
 			Node roleTypeN = node.selectSingleNode("addressbook/role");
@@ -62,7 +89,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 			try {
 				assignee.setRole(roleType);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Assignee: {}", node.asXML(), e);
+				LOGGER.warn("Invalid Assignee RoleType: {}", node.asXML(), e);
 			}
 		}
 

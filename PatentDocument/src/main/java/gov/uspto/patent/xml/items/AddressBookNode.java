@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.directory.InvalidAttributesException;
-
 import org.dom4j.Node;
 
 import gov.uspto.parser.dom4j.ItemReader;

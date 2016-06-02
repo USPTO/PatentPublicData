@@ -1,6 +1,7 @@
 package gov.uspto.parser.dom4j;
 
 import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,10 @@ public abstract class ItemReader<T> implements Reader<T> {
 
 	public ItemReader(Node itemNode) {
 		this.itemNode = itemNode;
+	}
+
+	public boolean hasChildren(){
+		return ((Element) itemNode).nodeCount() > 0;
 	}
 
 	public ItemReader(Node itemNode, String expectedNodeName) {
