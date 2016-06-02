@@ -53,7 +53,7 @@ public class UspcClassification extends Classification {
 
 	// 074 89140
 	private final static Pattern REGEX = Pattern.compile("^([0-9DGP][0-9L][0-9BT])/?([0-9A-Z]{3,9})$");
-	private final static Pattern RANGE_REGEX = Pattern.compile("-([0-9A-Z]{1,6})$");
+	private final static Pattern RANGE_REGEX = Pattern.compile("-([0-9A-Z]{1,9})$");
 
 	private String mainClass;
 	private SortedSet<String> subClass = new TreeSet<String>();

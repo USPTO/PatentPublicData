@@ -44,6 +44,8 @@ public class UspcClassificationTest {
 		validFromTo.put("D11143-144", "D11/143000000,144000000"); // range.
 		validFromTo.put("707  3-  5", "707/003000000,004000000,005000000"); // range.
 		validFromTo.put("280 87041- 87043", "280/087041000,870410000,870420000,870430000"); // range.
+		validFromTo.put("438FOR 363-FOR 385", "438/FOR036300,FOR038500"); // range.
+		validFromTo.put("200 6145 R- 6145 M", "200/061450M00,061450R00"); // range.
 	}
 
 	@Test(expected = ParseException.class)
