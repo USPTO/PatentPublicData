@@ -35,6 +35,12 @@ public class ClassificationNationalNode extends ItemReader<Classification>{
 			return null;
 		}
 
+		String mainClassTxt = mainClass.getText();
+		if ("None".equalsIgnoreCase(mainClassTxt)){
+			LOGGER.warn("Invalid USPC classification 'main-classification': 'None'");
+			return null;
+		}
+
 		UspcClassification classification;
 		try {
 			classification = UspcClassification.fromText(mainClass.getText());
