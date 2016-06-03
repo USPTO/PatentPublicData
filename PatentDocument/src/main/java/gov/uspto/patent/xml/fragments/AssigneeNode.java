@@ -36,23 +36,21 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 		for (Node node : assignees) {
 
-			AddressBookNode addressBook = new AddressBookNode(node);
-
-			/*
-			 * If Content is missing, then wrap content with addressbook and try again. 
-			 */
-			if (!addressBook.hasChildren()){
+			AddressBookNode addressBook;
+			if (node.selectSingleNode("addressbook") != null) {
+				addressBook = new AddressBookNode(node);
+			} else {
+				// Wrap assignee child nodes with addressbook.
 				Element addressBookNode = DocumentHelper.createElement("addressbook");
 
 				Iterator<Element> it = ((Element) node).elementIterator();
-				while(it.hasNext()){
+				while (it.hasNext()) {
 					Element el = it.next();
 					el.detach();
 					addressBookNode.add(el);
 				}
 				((Element) node).add(addressBookNode);
 
-				LOGGER.warn("Fix assignee by wrapping content with addressbook: {}", addressBookNode.asXML());
 				addressBook = new AddressBookNode(addressBookNode);
 			}
 
@@ -68,7 +66,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 				continue;
 			}
 
-			if (assigneeName == null){
+			if (assigneeName == null) {
 				LOGGER.warn("Invalid Assignee Name: {}", node.asXML());
 				continue;
 			}
