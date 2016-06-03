@@ -37,7 +37,7 @@ public class ClassificationNationalNode extends ItemReader<Classification>{
 
 		String mainClassTxt = mainClass.getText();
 		if ("None".equalsIgnoreCase(mainClassTxt)){
-			LOGGER.warn("Invalid USPC classification 'main-classification': 'None'");
+			LOGGER.trace("Invalid USPC classification 'main-classification': 'None'");
 			return null;
 		}
 
