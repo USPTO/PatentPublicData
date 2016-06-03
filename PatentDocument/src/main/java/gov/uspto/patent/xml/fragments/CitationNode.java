@@ -8,18 +8,19 @@ import org.dom4j.Node;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.Citation;
-import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.DocumentId;
+import gov.uspto.patent.model.NplCitation;
+import gov.uspto.patent.model.PatCitation;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.xml.items.ClassificationNationalNode;
 import gov.uspto.patent.xml.items.DocumentIdNode;
 
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
-	private static final String FRAGMENT_PATH = "//us-references-cited/us-citation/patcit"; // current us-patent-grants. 
+	private static final String FRAGMENT_PATH = "//us-references-cited"; // current us-patent-grants. 
 
-	private final static String FRAGMENT_PATH2 = "//references-cited/citation/patcit"; // pre 2012 us-patent-grants.
+	private final static String FRAGMENT_PATH2 = "//references-cited"; // pre 2012 us-patent-grants.
 
-	private List<Citation> citations;
+	private Node citationNode;
 
 	public CitationNode(Document document) {
 		super(document);
@@ -27,40 +28,64 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 	@Override
 	public List<Citation> read() {
-		citations = new ArrayList<Citation>();
 
-		@SuppressWarnings("unchecked")
-		List<Node> patcitNodes = document.selectNodes(FRAGMENT_PATH);
-		readCitations(patcitNodes);
+		citationNode = document.selectSingleNode(FRAGMENT_PATH);
+		if (citationNode == null) {
+			citationNode = document.selectSingleNode(FRAGMENT_PATH2);
+		}
 
-		@SuppressWarnings("unchecked")
-		List<Node> patcitNodes2 = document.selectNodes(FRAGMENT_PATH2);
-		readCitations(patcitNodes2);
+		List<Citation> citations = new ArrayList<Citation>();
+		List<Citation> patCitations = readPatCitations();
+		List<Citation> nplCitations = readNplCitations();
+
+		citations.addAll(patCitations);
+		citations.addAll(nplCitations);
 
 		return citations;
 	}
 
-	private void readCitations(List<Node> patcitNodes) {
-		for (Node patcit : patcitNodes) {
-			Citation citation = readCitation(patcit);
-			citations.add(citation);
+	public List<Citation> readNplCitations() {
+		List<Citation> nplCitations = new ArrayList<Citation>();
+
+		@SuppressWarnings("unchecked")
+		List<Node> nlpcitNodes = citationNode.selectNodes("citation/nplcit");
+		for (Node nplcit : nlpcitNodes) {
+			String num = nplcit.selectSingleNode("@num").getText();
+			Node citeTxtN = nplcit.selectSingleNode("othercit");
+			String citeTxt = citeTxtN != null ? citeTxtN.getText() : "";
+
+			// <category>cited by examiner</category>
+			Node category = nplcit.getParent().selectSingleNode("category");
+			boolean examinerCited = (category.getText().equals("cited by examiner"));
+
+			Citation citation = new NplCitation(num, citeTxt, examinerCited);
+			nplCitations.add(citation);
 		}
+
+		return nplCitations;
 	}
 
-	public Citation readCitation(Node citeNode) {
-		String num = citeNode.selectSingleNode("@num").getText();
+	public List<Citation> readPatCitations() {
+		List<Citation> patCitations = new ArrayList<Citation>();
 
-		DocumentId documentId = new DocumentIdNode(citeNode).read();
+		@SuppressWarnings("unchecked")
+		List<Node> patcitNodes = citationNode.selectNodes("citation/patcit");
+		for (Node patcit : patcitNodes) {
+			String num = patcit.selectSingleNode("@num").getText();
 
-		// <category>cited by examiner</category>
-		Node category = citeNode.getParent().selectSingleNode("category");
-		boolean examinerCited = (category.getText().equals("cited by examiner"));
+			DocumentId documentId = new DocumentIdNode(patcit).read();
 
-		Citation citation = new Citation(num, CitationType.PATCIT, documentId, examinerCited);
+			// <category>cited by examiner</category>
+			Node category = patcit.getParent().selectSingleNode("category");
+			boolean examinerCited = (category.getText().equals("cited by examiner"));
 
-		Classification mainClassification = new ClassificationNationalNode(citeNode.getParent()).read();
-		citation.setClassification(mainClassification);
+			PatCitation citation = new PatCitation(num, documentId, examinerCited);
 
-		return citation;
+			Classification mainClassification = new ClassificationNationalNode(patcit.getParent()).read();
+			citation.setClassification(mainClassification);
+			patCitations.add(citation);
+		}
+
+		return patCitations;
 	}
 }

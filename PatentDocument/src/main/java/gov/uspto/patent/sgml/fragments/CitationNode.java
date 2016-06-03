@@ -8,8 +8,8 @@ import org.dom4j.Node;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.Citation;
-import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.DocumentId;
+import gov.uspto.patent.model.PatCitation;
 import gov.uspto.patent.sgml.items.DocNode;
 
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
@@ -36,7 +36,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 			DocumentId docId = new DocNode(citeDoc).read();
 
-			citations.add(new Citation(String.valueOf(i), CitationType.PATCIT, docId, examinerCited));
+			citations.add(new PatCitation(String.valueOf(i), docId, examinerCited));
 		}
 
 		return citations;
