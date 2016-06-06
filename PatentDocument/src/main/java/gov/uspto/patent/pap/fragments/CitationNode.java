@@ -8,10 +8,20 @@ import org.dom4j.Node;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.Citation;
-import gov.uspto.patent.model.Claim;
 
+/**
+ * 
+ *<pre><code>
+ * <!ELEMENT citation  ((cited-patent-literature | cited-non-patent-literature), relevant-section?) >
+ * <!ELEMENT cited-patent-literature  (document-id,party*,classification-ipc?, classification-us?) >
+ * <!ELEMENT cited-non-patent-literature  (#PCDATA | custom-character | highlight)* >
+ * <code><pre>
+ * 
+ * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ *
+ */
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
-	private static final String PATENT_PATH = "//subdoc-claims/claim";
+	private static final String PATENT_PATH = "//citation";
 
 	public CitationNode(Document document) {
 		super(document);
@@ -24,6 +34,9 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		@SuppressWarnings("unchecked")
 		List<Node> citeNodes = document.selectNodes(PATENT_PATH);
 		for (Node citeNode : citeNodes) {
+			Node patCiteN = citeNode.selectSingleNode("cited-patent-literature");
+			
+			Node nplCiteN = citeNode.selectSingleNode("cited-non-patent-literature");
 			
 		}
 

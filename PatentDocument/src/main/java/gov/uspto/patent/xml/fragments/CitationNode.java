@@ -52,6 +52,10 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		for (Node nplcit : nlpcitNodes) {
 			String num = nplcit.selectSingleNode("@num").getText();
 			Node citeTxtN = nplcit.selectSingleNode("othercit");
+			
+			// text | article | book | online | othercit
+			
+			
 			String citeTxt = citeTxtN != null ? citeTxtN.getText() : "";
 
 			// <category>cited by examiner</category>

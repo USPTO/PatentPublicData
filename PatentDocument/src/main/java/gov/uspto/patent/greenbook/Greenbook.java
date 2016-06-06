@@ -26,8 +26,10 @@ import gov.uspto.patent.greenbook.fragments.DescriptionNode;
 import gov.uspto.patent.greenbook.fragments.DocumentIdNode;
 import gov.uspto.patent.greenbook.fragments.ExaminerNode;
 import gov.uspto.patent.greenbook.fragments.InventorNode;
-import gov.uspto.patent.greenbook.fragments.ReferencedId;
+import gov.uspto.patent.greenbook.fragments.RelatedIdNode;
+import gov.uspto.patent.greenbook.fragments.CitationNode;
 import gov.uspto.patent.model.Abstract;
+import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
@@ -94,7 +96,9 @@ public class Greenbook extends KeyValueParser {
 		List<Agent> agents = new AgentNode(document).read();
 
 		Set<Classification> classifications = new ClassificationNode(document).read();
-		List<DocumentId> referencedIds = new ReferencedId(document).read();
+		
+		List<DocumentId> relatedIds = new RelatedIdNode(document).read();
+		List<Citation> citations = new CitationNode(document).read();
 
 		/*
 		 * Formatted Text.
@@ -123,8 +127,11 @@ public class Greenbook extends KeyValueParser {
 		patent.setAssignee(assignees);
 		patent.setExaminer(examiners);
 		patent.setAgent(agents);
+		patent.setRelationIds(relatedIds);
+		patent.setCitation(citations);
+		
+		//patent.setReferenceIds(referencedIds);
 
-		patent.setReferenceIds(referencedIds);
 		if (classifications != null) {
 			patent.addClassification(new ArrayList<Classification>(classifications));
 		}
