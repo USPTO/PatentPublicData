@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>PatentSimilaritySearch</groupId>
-		<artifactId>PatentSimilaritySearch</artifactId>
+		<groupId>gov.uspto</groupId>
+		<artifactId>PatentPublicData</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
@@ -14,8 +14,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>PatentSimilaritySearch</groupId>
-			<artifactId>PatentDocument</artifactId>
+			<groupId>gov.uspto</groupId>
+			<artifactId>PatentPublicData</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
