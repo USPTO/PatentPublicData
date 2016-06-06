@@ -16,9 +16,8 @@ import gov.uspto.patent.xml.items.ClassificationNationalNode;
 import gov.uspto.patent.xml.items.DocumentIdNode;
 
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
-	private static final String FRAGMENT_PATH = "//us-references-cited"; // current us-patent-grants. 
-
-	private final static String FRAGMENT_PATH2 = "//references-cited"; // pre 2012 us-patent-grants.
+	
+	private static final String FRAGMENT_PATH = "//us-references-cited|//references-cited"; // current us-patent-grants. 
 
 	private Node citationNode;
 
@@ -30,9 +29,6 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	public List<Citation> read() {
 
 		citationNode = document.selectSingleNode(FRAGMENT_PATH);
-		if (citationNode == null) {
-			citationNode = document.selectSingleNode(FRAGMENT_PATH2);
-		}
 
 		List<Citation> citations = new ArrayList<Citation>();
 		List<Citation> patCitations = readPatCitations();
@@ -48,13 +44,12 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Citation> nplCitations = new ArrayList<Citation>();
 
 		@SuppressWarnings("unchecked")
-		List<Node> nlpcitNodes = citationNode.selectNodes("citation/nplcit");
+		List<Node> nlpcitNodes =  citationNode.selectNodes("us-citation/nplcite|citation/nplcit");
+
 		for (Node nplcit : nlpcitNodes) {
+			
 			String num = nplcit.selectSingleNode("@num").getText();
 			Node citeTxtN = nplcit.selectSingleNode("othercit");
-			
-			// text | article | book | online | othercit
-			
 			
 			String citeTxt = citeTxtN != null ? citeTxtN.getText() : "";
 
@@ -73,7 +68,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Citation> patCitations = new ArrayList<Citation>();
 
 		@SuppressWarnings("unchecked")
-		List<Node> patcitNodes = citationNode.selectNodes("citation/patcit");
+		List<Node> patcitNodes = citationNode.selectNodes("citation/patcit|us-citation/patcit");
 		for (Node patcit : patcitNodes) {
 			String num = patcit.selectSingleNode("@num").getText();
 
