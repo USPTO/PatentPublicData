@@ -2,11 +2,17 @@ package gov.uspto.patent.greenbook;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 import gov.uspto.parser.dom4j.KeyValue2Dom4j;
 import gov.uspto.patent.PatentParserException;
@@ -48,6 +54,20 @@ public class Greenbook2GreenbookXml extends KeyValue2Dom4j {
 		super(SECTIONS);
 	}
 
+	public static void writeFile(Document document, Path outDir, String outFileName) throws IOException{
+	    OutputFormat format = OutputFormat.createPrettyPrint();
+        XMLWriter writer = new XMLWriter( new FileWriter( outDir.resolve(outFileName).toFile() ) );
+        writer.write( document );
+        writer.close();
+	}
+
+	public static void stdout(Document document) throws IOException{
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        //OutputFormat format = OutputFormat.createCompactFormat();
+        XMLWriter writer = new XMLWriter( System.out, format );
+        writer.write( document );
+	}
+	
 	public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException, PatentParserException {
 		String filename = args[0];
 		File file = new File(filename);
@@ -59,11 +79,22 @@ public class Greenbook2GreenbookXml extends KeyValue2Dom4j {
 			for (File subfile : file.listFiles()) {
 				System.out.println(count++ + " " + subfile.getAbsolutePath());
 				Document dom4jDoc = g2xml.parse(subfile);
-				System.out.println(dom4jDoc.asXML());
+				String outFileName = subfile.getName()+".xml";
+				Path outDir = Paths.get(".");
+				try {
+					Greenbook2GreenbookXml.writeFile(dom4jDoc, outDir, outFileName);
+				} catch (IOException e) {
+					System.err.println("Failed to write: "+ outFileName);
+					e.printStackTrace();
+				}
 			}
 		} else {
 			Document dom4jDoc = g2xml.parse(file);
-			System.out.println(dom4jDoc.asXML());
+			try {
+				Greenbook2GreenbookXml.stdout(dom4jDoc);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
