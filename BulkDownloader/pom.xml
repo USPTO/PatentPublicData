@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>gov.uspto</groupId>
-			<artifactId>PatentPublicData</artifactId>
+			<artifactId>PatentDocument</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
