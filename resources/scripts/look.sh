@@ -1,5 +1,9 @@
 #!/bin/bash
-
+#
+#
+# View a Patent Document contained within a Weekly Bulk Download File
+#
+#
 FILE=ipa150101.zip
 SKIP=0
 LIMIT=1

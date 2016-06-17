@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Download USPTO Weekly Bulk Patent Dumps
+#
 
 LIMIT=1
 
