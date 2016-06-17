@@ -6,6 +6,8 @@ Note this source code has not been fully vetted for a production enviroment. It 
 
 The Build process utilizes maven and the project is a multiple module maven project.  
 
+To build and package everything into single zip file including dependencies run: <b>mvn package</b>
+
 #### Documentation
 <ul><li><a href="https://github.com/USPTO/PatentPublicData/wiki/Project-Setup">Help with project setup</a></li></ul>
 
