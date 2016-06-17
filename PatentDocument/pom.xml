@@ -8,16 +8,9 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>PatentDocument</artifactId>
+    <artifactId>PatentDocument</artifactId>
 
 	<packaging>jar</packaging>
-
-	<repositories>
-		<repository>
-			<id>www2.ph.ed.ac.uk-releases</id>
-			<url>http://www2.ph.ed.ac.uk/maven2</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -35,7 +28,7 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
-			<version>1.9.1</version>
+			<version>1.9.2</version>
 		</dependency>
 
 		<dependency>
@@ -47,7 +40,7 @@
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.6</version>
 		</dependency>
 
 		<dependency>
