@@ -58,7 +58,9 @@ public class ApplicationParser extends Dom4JParser {
 		String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");
 
 		DocumentId publicationId = new PublicationIdNode(document).read();
-		MDC.put("DOCID", publicationId.toText());
+		if (publicationId != null){
+			MDC.put("DOCID", publicationId.toText());
+		}
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();		
 		

@@ -54,7 +54,9 @@ public class Sgml extends Dom4JParser {
 	public Patent parse(Document document) throws PatentParserException {
 
 		DocumentId documentId = new DocumentIdNode(document).read();
-		MDC.put("DOCID", documentId.toText());
+		if (documentId != null){
+			MDC.put("DOCID", documentId.toText());
+		}
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 

@@ -27,10 +27,14 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 	@Override
 	public List<Citation> read() {
+		List<Citation> citations = new ArrayList<Citation>();
 
 		citationNode = document.selectSingleNode(FRAGMENT_PATH);
+		
+		if (citationNode == null){
+			return citations;
+		}
 
-		List<Citation> citations = new ArrayList<Citation>();
 		List<Citation> patCitations = readPatCitations();
 		List<Citation> nplCitations = readNplCitations();
 

@@ -34,8 +34,14 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		Set<Classification> uspcClasses = readUSPC(uspcNode);
 
 		Set<Classification> classifications = new LinkedHashSet<Classification>();
-		classifications.addAll(ipcClasses);
-		classifications.addAll(uspcClasses);
+
+		if (ipcClasses != null) {
+			classifications.addAll(ipcClasses);
+		}
+
+		if (uspcClasses != null) {
+			classifications.addAll(uspcClasses);
+		}
 
 		return classifications;
 	}
@@ -47,7 +53,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 
 		Set<Classification> classifications = new LinkedHashSet<Classification>();
 
-		//Node ipcEditionN = ipcClassNode.selectSingleNode("B516/PDAT");
+		// Node ipcEditionN = ipcClassNode.selectSingleNode("B516/PDAT");
 
 		// Primary IPC classification.
 		@SuppressWarnings("unchecked")
@@ -112,7 +118,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 						uspcN.asXML());
 			}
 		}
-		
+
 		return classifications;
 	}
 

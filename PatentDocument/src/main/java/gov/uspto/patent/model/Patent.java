@@ -295,8 +295,10 @@ public abstract class Patent {
 		return "Patent [\n\tdocumentId=" + documentId + ",\n\t applicationId=" + applicationId + ",\n\t otherIds="
 				+ otherIds + ",\n\t relationIds=" + relationIds + ",\n\t referenceIds=" + referenceIds
 				+ ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced + ",\n\t title=" + title
-				+ ",\n\t abstractText=" + abstractText.getRawText() + ",\n\t description=" + description.getSections()
-				+ ",\n\t figures=" + description.getFigures() + ",\n\t type=" + type + ",\n\t citations=" + citations
+				+ ",\n\t abstractText=" + (abstractText != null ? abstractText.getRawText() : null)
+				+ ",\n\t description=" + (description != null ? description.getSections() : null)
+				+ ",\n\t figures=" + (description != null ? description.getFigures() : null)
+				+ ",\n\t type=" + type + ",\n\t citations=" + citations
 				+ ",\n\t classifications=" + classifications + ",\n\t claims=" + claims + ",\n\t inventors=" + inventors
 				+ ",\n\t assignees=" + assignees + ",\n\t applicant=" + applicants + ",\n\t agent=" + agents
 				+ ",\n\t examiners=" + examiners + ",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas="

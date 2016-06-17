@@ -58,7 +58,9 @@ public class PatentAppPubParser extends Dom4JParser {
 				XML_ROOT + "/subdoc-bibliographic-information/domestic-filing-data/filing-date");
 
 		DocumentId publicationId = new PublicationIdNode(document).read();
-		MDC.put("DOCID", publicationId.toText());
+		if (publicationId != null){
+			MDC.put("DOCID", publicationId.toText());
+		}
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 		//DocumentId relatedId = new RelatedIdNode(document).read();

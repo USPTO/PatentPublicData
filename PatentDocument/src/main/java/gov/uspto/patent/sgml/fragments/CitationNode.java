@@ -46,7 +46,10 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Citation> citations = new ArrayList<Citation>();
 
 		Node citationNode = document.selectSingleNode(FRAGMENT_PATH);
-		
+		if (citationNode == null){
+			return citations;
+		}
+
 		@SuppressWarnings("unchecked")
 		List<Node> patCiteNodes = citationNode.selectNodes("B561");
 		for (int i = 0; i < patCiteNodes.size(); i++) {
