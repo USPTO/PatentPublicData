@@ -1,5 +1,6 @@
 package gov.uspto.bulkdata.corpusbuilder;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import gov.uspto.bulkdata.PatternMatcher;
 import gov.uspto.bulkdata.PatternXPath;
+import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.PatentType;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.ClassificationType;
 import gov.uspto.patent.model.classification.CpcClassification;
@@ -26,6 +29,8 @@ public class MatchClassificationXPath implements CorpusMatch<MatchClassification
 	private final List<Classification> wantedClasses;
 	private PatternMatcher matcher;
 	private String xmlDocStr;
+
+	private PatentType patentType;
 
 	public MatchClassificationXPath(List<Classification> wantedClasses){
 		this.wantedClasses = wantedClasses;
@@ -53,8 +58,9 @@ public class MatchClassificationXPath implements CorpusMatch<MatchClassification
 	}
 
 	@Override
-	public MatchClassificationXPath on(String xmlDocStr) {
+	public MatchClassificationXPath on(String xmlDocStr, PatentType patentType) {
 		this.xmlDocStr = xmlDocStr;
+		this.patentType = patentType;
 		return this;
 	}
 

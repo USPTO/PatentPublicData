@@ -91,11 +91,11 @@ public class GrantParser extends Dom4JParser {
 		/*
 		 * Start Building Patent Object.
 		 */
-		if (patent == null) {
+		//if (patent == null) {
 			patent = new PatentGranted(publicationId);
-		} else {
-			patent.reset();
-		}
+		//} else {
+		//	patent.reset();
+		//}
 
 		patent.setDocumentId(publicationId);
 		patent.setApplicationId(applicationId);
@@ -113,7 +113,13 @@ public class GrantParser extends Dom4JParser {
 		patent.setInventor(inventors);
 		patent.setApplicant(applicants);
 		patent.setAgent(agents);
-		patent.setCitation(citations);
+
+		if (citations != null) {
+			patent.setCitation(citations);
+		} else {
+			LOGGER.warn("Patent Grant did not read any citations: {}", publicationId.toText());
+		}
+
 		patent.setClaim(claims);
 		patent.setClassification(classifications);
 

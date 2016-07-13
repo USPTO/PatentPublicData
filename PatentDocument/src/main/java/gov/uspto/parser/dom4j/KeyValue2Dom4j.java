@@ -3,11 +3,9 @@ package gov.uspto.parser.dom4j;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -22,7 +20,7 @@ import org.dom4j.Element;
 
 import com.google.common.base.Preconditions;
 
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 
 /**
  *<h3>Key Value to Dom4j Document</h3>
@@ -71,16 +69,17 @@ public class KeyValue2Dom4j {
 		this.sectionNames = sectionNames;
 	}
 
-	public Document parse(Path docPath)
-			throws UnsupportedEncodingException, FileNotFoundException, PatentParserException {
+	public Document parse(Path docPath)	throws PatentReaderException, IOException {
 		return parse(docPath.toFile());
 	}
 
-	public Document parse(File file) throws UnsupportedEncodingException, FileNotFoundException, PatentParserException {
-		return parse(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+	public Document parse(File file) throws PatentReaderException, IOException {
+		try (Reader reader = new InputStreamReader(new FileInputStream(file), "UTF-8")){
+			return parse(reader);
+		}
 	}
 
-	public Document parse(Reader reader) throws PatentParserException {
+	public Document parse(Reader reader) throws PatentReaderException {
 		Document document = DocumentHelper.createDocument();
 		Element rootNode = document.addElement("DOCUMENT");
 
@@ -144,7 +143,7 @@ public class KeyValue2Dom4j {
 								field.setText(lastLineValue.trim());
 								currentSection.add(field);
 							} else {
-								throw new PatentParserException("SECTION is not defined for: " + currentField);
+								throw new PatentReaderException("SECTION is not defined for: " + currentField);
 							}
 						}
 
@@ -164,7 +163,7 @@ public class KeyValue2Dom4j {
 				rootNode.add(currentSection);
 			}
 		} catch (IOException e) {
-			throw new PatentParserException(e);
+			throw new PatentReaderException(e);
 		}
 
 		return document;
@@ -185,8 +184,7 @@ public class KeyValue2Dom4j {
 		}
 	}
 
-	public static void main(String[] args)
-			throws UnsupportedEncodingException, FileNotFoundException, PatentParserException {
+	public static void main(String[] args) throws PatentReaderException, IOException {
 
 		/*
 		 * Greenbook Sections

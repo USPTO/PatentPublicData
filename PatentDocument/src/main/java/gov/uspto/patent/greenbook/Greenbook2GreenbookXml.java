@@ -1,10 +1,8 @@
 package gov.uspto.patent.greenbook;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -15,7 +13,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import gov.uspto.parser.dom4j.KeyValue2Dom4j;
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 
 /**
  * Convert Patent Greenbook to XML
@@ -68,7 +66,7 @@ public class Greenbook2GreenbookXml extends KeyValue2Dom4j {
         writer.write( document );
 	}
 	
-	public static void main(String[] args) throws UnsupportedEncodingException, FileNotFoundException, PatentParserException {
+	public static void main(String[] args) throws PatentReaderException, IOException {
 		String filename = args[0];
 		File file = new File(filename);
 

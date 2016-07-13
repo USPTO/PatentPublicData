@@ -42,7 +42,8 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
 			} else {
 				Node appNumN = relN.selectSingleNode("APN");
 				//Node appFilingDate = relN.selectSingleNode("APD");
-				docId = new DocumentId(CountryCode.US, appNumN.getText());
+				String docNumber = appNumN != null ? appNumN.getText()  : "" ;
+				docId = new DocumentId(CountryCode.US, docNumber);
 			}
 
 			familyDocIds.add(docId);

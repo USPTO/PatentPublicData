@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 
 public class CpcXmlParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CpcXmlParser.class);
@@ -28,28 +28,28 @@ public class CpcXmlParser {
 	 *  
 	 * @param xmlString
 	 * @return
-	 * @throws PatentParserException
+	 * @throws PatentReaderException
 	 */	
-	public ClassificationItem parse(CharSequence xmlString) throws PatentParserException {
+	public ClassificationItem parse(CharSequence xmlString) throws PatentReaderException {
 		StringReader reader = new StringReader(xmlString.toString());
 		return parse(reader);
 	}
 
-	public ClassificationItem parse(File file) throws PatentParserException, FileNotFoundException {
+	public ClassificationItem parse(File file) throws PatentReaderException, FileNotFoundException {
 		FileReader reader = new FileReader(file);
 		return parse(reader);
 	}
 
-	public ClassificationItem parse(Reader reader) throws PatentParserException {
+	public ClassificationItem parse(Reader reader) throws PatentReaderException {
 		try {
 			SAXReader sax = new SAXReader(false);
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 			Document document = sax.read(reader);
 			return parse(document);
 		} catch (SAXException e) {
-			throw new PatentParserException(e);
+			throw new PatentReaderException(e);
 		} catch (DocumentException e) {
-			throw new PatentParserException(e);
+			throw new PatentReaderException(e);
 		}
 	}
 

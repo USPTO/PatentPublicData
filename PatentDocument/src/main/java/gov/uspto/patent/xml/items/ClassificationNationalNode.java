@@ -11,13 +11,17 @@ import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
-/*
-	<classification-national>
-		<country>US</country>
-		<main-classification> 602031</main-classification>
-	</classification-national>
+/**
+*<pre><code>
+*	<classification-national>
+*		<country>US</country>
+*		<main-classification> 602031</main-classification>
+*	</classification-national>
+*</pre></code>
+*
+*<p>Notes: classification-national are sometimes missing from citations when cited by applicant.
+*</p>
 */
-
 public class ClassificationNationalNode extends ItemReader<Classification>{
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNationalNode.class);
 

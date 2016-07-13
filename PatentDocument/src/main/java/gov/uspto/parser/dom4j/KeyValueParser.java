@@ -2,16 +2,15 @@ package gov.uspto.parser.dom4j;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.Collection;
 
 import org.dom4j.Document;
 
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
 
 public abstract class KeyValueParser implements Dom4j {
@@ -22,16 +21,17 @@ public abstract class KeyValueParser implements Dom4j {
 		kvParser = new KeyValue2Dom4j(sectionNames);
 	}
 
-	public Patent parse(Path docPath)
-			throws UnsupportedEncodingException, FileNotFoundException, PatentParserException {
+	public Patent parse(Path docPath) throws PatentReaderException, IOException {
 		return parse(docPath.toFile());
 	}
 
-	public Patent parse(File file) throws UnsupportedEncodingException, FileNotFoundException, PatentParserException {
-		return parse(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+	public Patent parse(File file) throws PatentReaderException, IOException {
+		try(InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF-8")){
+			return parse(reader);
+		}
 	}
 
-	public Patent parse(Reader reader) throws PatentParserException {
+	public Patent parse(Reader reader) throws PatentReaderException {
 		Document document = kvParser.parse(reader);
 		return parse(document);
 	}

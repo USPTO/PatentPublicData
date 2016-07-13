@@ -17,7 +17,7 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Joiner;
 
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 
 /**
  * MathML - Parse to support Information Retrieval of Math Formulas
@@ -180,7 +180,7 @@ public class MathML {
 	}
 
 	public static void main(String[] args)
-			throws FileNotFoundException, PatentParserException, DocumentException, SAXException {
+			throws FileNotFoundException, PatentReaderException, DocumentException, SAXException {
 		String filename = args[0];
 
 		FileReader reader = new FileReader(new File(filename));

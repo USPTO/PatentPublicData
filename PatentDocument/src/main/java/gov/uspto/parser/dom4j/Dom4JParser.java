@@ -1,8 +1,8 @@
 package gov.uspto.parser.dom4j;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
 
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
 
 public abstract class Dom4JParser implements Dom4j {
@@ -24,13 +24,14 @@ public abstract class Dom4JParser implements Dom4j {
 	 *  
 	 * @param xmlString
 	 * @return
-	 * @throws PatentParserException
+	 * @throws PatentReaderException
 	 */
-	public Patent parse(CharSequence xmlString) throws PatentParserException {
+	public Patent parse(CharSequence xmlString) throws PatentReaderException {
 		Preconditions.checkNotNull(xmlString, "xmlString can not be Null");
 
-		StringReader reader = new StringReader(xmlString.toString());
-		return parse(reader);
+		try (StringReader reader = new StringReader(xmlString.toString())){
+			return parse(reader);
+		}
 	}
 
 	/**
@@ -38,14 +39,15 @@ public abstract class Dom4JParser implements Dom4j {
 	 * 
 	 * @param file
 	 * @return
-	 * @throws FileNotFoundException
-	 * @throws PatentParserException
+	 * @throws PatentReaderException
+	 * @throws IOException 
 	 */
-	public Patent parse(File file) throws FileNotFoundException, PatentParserException {
+	public Patent parse(File file) throws PatentReaderException, IOException {
 		Preconditions.checkNotNull(file, "File can not be Null");
 
-		FileReader reader = new FileReader(file);
-		return parse(reader);
+		try(FileReader reader = new FileReader(file)){
+			return parse(reader);
+		}
 	}
 
 	/**
@@ -53,16 +55,16 @@ public abstract class Dom4JParser implements Dom4j {
 	 * 
 	 * @param inputStream
 	 * @return
-	 * @throws PatentParserException
+	 * @throws PatentReaderException
 	 */
-	public Patent parse(InputStream inputStream) throws PatentParserException {
+	public Patent parse(InputStream inputStream) throws PatentReaderException {
 		try {
 			SAXReader sax = new SAXReader(false);
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 			Document document = sax.read(inputStream);
 			return parse(document);
 		} catch (DocumentException | SAXException e) {
-			throw new PatentParserException(e);
+			throw new PatentReaderException(e);
 		}
 	}
 
@@ -71,16 +73,18 @@ public abstract class Dom4JParser implements Dom4j {
 	 * 
 	 * @param reader
 	 * @return
-	 * @throws PatentParserException
+	 * @throws PatentReaderException
 	 */
-	public Patent parse(Reader reader) throws PatentParserException {
+	public Patent parse(Reader reader) throws PatentReaderException {
 		try {
 			SAXReader sax = new SAXReader(false);
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			//sax.setEntityResolver(new SystemEntityResolver());
 			Document document = sax.read(reader);
 			return parse(document);
 		} catch (DocumentException | SAXException e) {
-			throw new PatentParserException(e);
+		//} catch (DocumentException e){
+			throw new PatentReaderException(e);
 		}
 	}
 

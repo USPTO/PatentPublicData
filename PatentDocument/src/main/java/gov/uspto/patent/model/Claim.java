@@ -61,7 +61,14 @@ public class Claim {
 	public String getProcessedText(){
 		String text = formatedTextProcessor.getProcessText(claimText);
 		text = LEADING_NUM.matcher(text.trim()).replaceAll("");
-		return "<p>"+text+".\n</p>";
+
+		StringBuilder stb = new StringBuilder().append("<p>").append(text);
+		if (!text.endsWith(".")){
+			stb.append(".\n");
+		}
+		stb.append("</p>");
+		
+		return stb.toString();
 	}
 
 	@Override

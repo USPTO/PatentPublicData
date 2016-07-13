@@ -37,6 +37,14 @@ public class Assignee extends Entity {
 	}
 
 	public void setRole(String roleType) throws InvalidDataException {
+		if (roleType == null || roleType.trim().length() == 0){
+			return;
+		}
+
+		if (roleType.length() == 1){
+			roleType = "0" + roleType;
+		}
+
 		if (AssigneeRoleType.containsKey(roleType)){
 			this.roleType = roleType;
 		} else {

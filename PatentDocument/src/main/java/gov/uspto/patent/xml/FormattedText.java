@@ -84,6 +84,16 @@ public class FormattedText implements TextProcessor {
 		for (Element element : document.select("heading")) {
 			element.remove();
 		}
+		
+		/*
+		 * Table
+		 */
+		for (Element element : document.select("table")) {
+			element.remove();
+			for (Element tableHead: element.select("th")){
+				System.out.println(tableHead.toString());
+			}
+		}
 
 		/*
 		 * crossref tags, remove since not useful in index; which are internal links to another section.

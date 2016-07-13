@@ -15,7 +15,6 @@ import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
-import gov.uspto.patent.model.DocumentIdType;
 import gov.uspto.patent.model.NplCitation;
 import gov.uspto.patent.model.PatCitation;
 
@@ -105,7 +104,6 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		}
 
 		DocumentId documentId = new DocumentId(countryCode, docNumN.getText().trim());
-		documentId.setType(DocumentIdType.RELATED_PUBLICATION);
 
 		Node dateN = itemNode.selectSingleNode("ISD");
 		if (dateN != null) {

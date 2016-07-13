@@ -1,7 +1,7 @@
 package gov.uspto.patent.sgml;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.Dom4JParser;
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
@@ -51,7 +51,7 @@ public class Sgml extends Dom4JParser {
 	public static final String SGML_ROOT = "/PATDOC";
 
 	@Override
-	public Patent parse(Document document) throws PatentParserException {
+	public Patent parse(Document document) throws PatentReaderException {
 
 		DocumentId documentId = new DocumentIdNode(document).read();
 		if (documentId != null){
@@ -114,7 +114,7 @@ public class Sgml extends Dom4JParser {
 		return patent;
 	}
 
-	public static void main(String[] args) throws FileNotFoundException, PatentParserException {
+	public static void main(String[] args) throws PatentReaderException, IOException {
 
 		File file = new File(args[0]);
 

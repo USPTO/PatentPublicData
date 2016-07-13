@@ -53,7 +53,7 @@ public class StringUtil {
 			}
 		}
 
-		return (Joiner.on(" ").join(words));
+		return (Joiner.on(" ").skipNulls().join(words));
 	}
 
 	public static String[] capitalizeFirstLetter(String[] strArr) {

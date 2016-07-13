@@ -13,6 +13,7 @@ import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
+import gov.uspto.patent.pap.items.AddressNode;
 import gov.uspto.patent.pap.items.NameNode;
 import gov.uspto.patent.pap.items.ResidenceNode;
 
@@ -20,7 +21,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
 
 	private static final String FRAGMENT_PATH = "//assignee";
-	private static final String ADDRESS_PATH = "//correspondence-address";
+	//private static final String ADDRESS_PATH = "//correspondence-address";
 
 	public AssigneeNode(Document document) {
 		super(document);
@@ -42,17 +43,17 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 	public Assignee readAssignee(Node assigneeNode) {
 		Name name = new NameNode(assigneeNode).read();
+		Address address = new AddressNode(assigneeNode).read();
 
-		Node residenceN = assigneeNode.selectSingleNode(ADDRESS_PATH);
-		//Address address = new AddressNode(residenceN).read();
-		Address resident = new ResidenceNode(residenceN).read();
+		//Node residenceN = assigneeNode.selectSingleNode(ADDRESS_PATH);
+		//Address resident = new ResidenceNode(residenceN).read();
 
-		Assignee assignee = new Assignee(name, resident);
+		Assignee assignee = new Assignee(name, address);
 		String roleType = assigneeNode.selectSingleNode("assignee-type").getText();
 		try {
 			assignee.setRole(roleType);
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Assignee: {}", assigneeNode.asXML(), e);
+			LOGGER.warn("Invalid Assignee 'assignee-type': {}", assigneeNode.asXML(), e);
 		}
 		return assignee;
 	}

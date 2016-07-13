@@ -3,10 +3,12 @@ package gov.uspto.patent.model;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.naming.directory.InvalidAttributesException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
+
+import gov.uspto.patent.InvalidDataException;
 
 /**
  * Document ID for only Patents and Patent Applications. see WIPO ST.14.
@@ -19,6 +21,11 @@ public class DocumentId {
 	private String name; // name used in citation.
 	private String kindCode; // different patent offices have different kindcodes.
 	private DocumentDate date;
+	
+	/*
+	 * Parsing of Document Id into its parts, such as Citation PatentIds.
+	 */
+	private static Pattern PARSE_PATTERN = Pattern.compile("^(\\D\\D)(\\d{1,4}[/-])?(\\d+)(\\D\\d?)?$");
 
 	public DocumentId(CountryCode countryCode, String docNumber) throws IllegalArgumentException {
 		this(countryCode, docNumber, null);
@@ -120,6 +127,40 @@ public class DocumentId {
 	public String toString() {
 		return "DocumentId [docIdType=" + docIdType + ", countryCode=" + countryCode + ", docNumber=" + docNumber
 				+ ", name=" + name + ", kindCode=" + kindCode + ", date=" + date + ", getId()=" + getId() + "]";
+	}
+
+
+	/**
+	 * Parse Patent DocumentId into its parts. 
+	 * 
+	 * Note: this may not work for all variations from all countries, may countries may have a different numbering system, 
+	 * many also have multiple different numbering systems.
+	 * 
+	 * @see http://www.wipo.int/export/sites/www/standards/en/pdf/07-02-02.pdf
+	 * 
+	 * @param documentIdStr
+	 * @return
+	 * @throws InvalidDataException
+	 */
+	public static DocumentId fromText(final String documentIdStr) throws InvalidDataException{
+		String docIdStr = documentIdStr.replaceAll(" ", "");
+		Matcher matcher = PARSE_PATTERN.matcher(docIdStr);
+		if (matcher.matches()){
+			String country = matcher.group(1);
+			CountryCode cntyCode = CountryCode.fromString(country);
+			
+			String applicationYear = matcher.group(2); // applications ids sometimes has the year.
+			String id = matcher.group(3);
+			String kindCode = matcher.group(4);
+
+			DocumentId docId = new DocumentId(cntyCode, id, kindCode);
+			if (applicationYear != null && applicationYear.length() == 4){
+				docId.setDate(new DocumentDate(applicationYear.replace("/", "")));
+			}
+			return docId;
+		} else {
+			throw new InvalidDataException("Failed to parse DocumentId text: " + documentIdStr);
+		}
 	}
 
 	public static List<DocumentId> getByType(Collection<DocumentId> docIds, DocumentIdType type) {

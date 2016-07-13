@@ -17,9 +17,13 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import gov.uspto.bulkdata.DumpXmlReader;
-import gov.uspto.patent.PatentParserException;
-import gov.uspto.patent.PatentXmlParser;
+import gov.uspto.bulkdata.DumpFileAps;
+import gov.uspto.bulkdata.DumpFileXml;
+import gov.uspto.bulkdata.DumpReader;
+import gov.uspto.bulkdata.zip.FileFilter;
+import gov.uspto.bulkdata.zip.SuffixRule;
+import gov.uspto.patent.PatentReader;
+import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import joptsimple.OptionParser;
@@ -44,20 +48,14 @@ public class Look {
 
 	private String xmlDocStr;
 
-	public void look(File inputFile, int skip, int limit, String[] fields, Writer writer)
-			throws PatentParserException, IOException {
+	public void look(DumpReader dumpReader, int limit, Writer writer, String[] fields)
+			throws PatentReaderException, IOException {
 
-		DumpXmlReader dxml = new DumpXmlReader(inputFile, "us-patent");
-		dxml.open();
-		dxml.skip(skip);
-
-		PatentXmlParser patentParser = new PatentXmlParser();
-
-		for (int i = 1; dxml.hasNext() && i <= limit; i++) {
-			System.out.println(dxml.getCurrentRecCount() + 1 + " --------------------------");
+		for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
+			System.out.println(dumpReader.getCurrentRecCount() + 1 + " --------------------------");
 
 			try {
-				xmlDocStr = dxml.next();
+				xmlDocStr = dumpReader.next();
 			} catch (NoSuchElementException e) {
 				break;
 			}
@@ -71,35 +69,39 @@ public class Look {
 			 }
 			*/
 
-			Patent patent = patentParser.parse(xmlDocStr);
-			show(patent, fields, writer);
-
+			if (fields.length == 1 && "xml".equalsIgnoreCase(fields[0])) {
+				show(null, fields, writer);
+			} else {
+				try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentType())) {
+					Patent patent = patentReader.read();
+					show(patent, fields, writer);
+				}
+			}
 		}
 
-		dxml.close();
+		dumpReader.close();
 	}
 
-	public void look(File inputFile, String docId, String[] fields, Writer writer)
-			throws PatentParserException, IOException {
-		DumpXmlReader dxml = new DumpXmlReader(inputFile, "us-patent");
-		dxml.open();
+	public void look(DumpReader dumpReader, String docId,  Writer writer, String[] fields)
+			throws PatentReaderException, IOException {
 
-		while (dxml.hasNext()) {
+		while (dumpReader.hasNext()) {
 			try {
-				xmlDocStr = dxml.next();
+				xmlDocStr = dumpReader.next();
 			} catch (NoSuchElementException e) {
 				break;
 			}
 
-			PatentXmlParser patentParser = new PatentXmlParser();
-			Patent patent = patentParser.parse(xmlDocStr);
-			if (patent.getDocumentId().toText().equals(docId)) {
-				show(patent, fields, writer);
-				break;
+			try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentType())) {
+				Patent patent = patentReader.read();
+				if (patent.getDocumentId().toText().equals(docId)) {
+					show(patent, fields, writer);
+					break;
+				}
 			}
 		}
 
-		dxml.close();
+		dumpReader.close();
 	}
 
 	/**
@@ -114,9 +116,10 @@ public class Look {
 		for (String field : fields) {
 			switch (field) {
 			case "xml":
-				System.out.println("Patent XML:\n");
-				String prettyXml = prettyFormatXml(xmlDocStr);
-				writer.write(prettyXml + "\n");
+				writer.write("Patent XML:\n");
+				//String prettyXml = prettyFormatXml(xmlDocStr);
+				//writer.write(prettyXml + "\n");
+				writer.write(xmlDocStr);
 				writer.flush();
 				//System.out.println(prettyXml);
 				break;
@@ -150,10 +153,22 @@ public class Look {
 				writer.flush();
 				//System.out.println("CLAIMS:\t" + patent.getClaims());
 				break;
+			case "assignee":
+				writer.write("ASSIGNEE:\t" + patent.getAssignee() + "\n");
+				writer.flush();
+				break;
+			case "inventor":
+				writer.write("INVENTORS:\t" + patent.getInventors() + "\n");
+				writer.flush();
+				break;
 			case "classification":
 				writer.write("CLASSIFICATION:\t" + patent.getClassification() + "\n");
 				writer.flush();
 				//System.out.println("CLASSIFICATION:\t" + patent.getClassification());
+				break;
+			case "object":
+				writer.write(patent.toString());
+				writer.flush();
 				break;
 			case "family":
 				writer.write("FAMILY:\t\n");
@@ -176,6 +191,7 @@ public class Look {
 	private String prettyFormatXml(String xmlDocStr) {
 		String result = null;
 		try {
+
 			org.dom4j.Document doc = DocumentHelper.parseText(xmlDocStr);
 			StringWriter sw = new StringWriter();
 			OutputFormat format = OutputFormat.createPrettyPrint();
@@ -189,23 +205,30 @@ public class Look {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return result;
 	}
 
-	public static void main(String[] args) throws PatentParserException, IOException {
+	public static void main(String[] args) throws PatentReaderException, IOException {
 		System.out.println("--- Start ---");
 
 		OptionParser parser = new OptionParser() {
 			{
 				accepts("source").withRequiredArg().ofType(String.class).describedAs("zip file").required();
-				accepts("fields").withOptionalArg().ofType(String.class).describedAs("comma seperated list of fields")
-						.required();
+				accepts("fields").withOptionalArg().ofType(String.class)
+						.describedAs(
+								"comma seperated list of fields; options: [xml,object,id,title,abstract,description,citations,claims,assignee,inventor,classsification,family]")
+						.defaultsTo("object");
 				accepts("num").withOptionalArg().ofType(Integer.class).describedAs("Record Number to retrive");
 				accepts("id").withOptionalArg().ofType(String.class).describedAs("Patent Id");
-				accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("record limit");
-				accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("records to skip");
+				accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("record limit").defaultsTo(1);
+				accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("records to skip").defaultsTo(0);
 				accepts("out").withOptionalArg().ofType(String.class).describedAs("out file");
+				accepts("xmlBodyTag").withOptionalArg().ofType(String.class)
+						.describedAs("XML Body Tag which wrapps document: [us-patent, PATDOC, patent-application]")
+						.defaultsTo("us-patent");
+				accepts("out").withOptionalArg().ofType(String.class).describedAs("out file");
+				accepts("addHtmlEntities").withOptionalArg().ofType(Boolean.class).describedAs("Add Html Entities DTD to XML; Needed when reading Patents in PAP format.").defaultsTo(false);
+				accepts("aps").withOptionalArg().ofType(Boolean.class).describedAs("Read APS - Greenbook Patent Document Format").defaultsTo(false);
 			}
 		};
 
@@ -213,15 +236,11 @@ public class Look {
 		String inFileStr = (String) options.valueOf("source");
 		File inputFile = new File(inFileStr);
 
-		int skip = 0;
-		if (options.has("skip")) {
-			skip = (Integer) options.valueOf("skip");
-		}
-
-		int limit = 1;
-		if (options.has("limit")) {
-			limit = (Integer) options.valueOf("limit");
-		}
+		int skip = (Integer) options.valueOf("skip");
+		int limit = (Integer) options.valueOf("limit");
+		String xmlBodyTag = (String) options.valueOf("xmlBodyTag");
+		boolean addHtmlEntities = (Boolean) options.valueOf("addHtmlEntities");
+		boolean aps = (Boolean) options.valueOf("aps");
 
 		if (options.has("num")) {
 			skip = ((Integer) options.valueOf("num")) - 1;
@@ -230,6 +249,25 @@ public class Look {
 
 		String[] fields = ((String) options.valueOf("fields")).split(",");
 		Look look = new Look();
+
+		DumpReader dumpReader;
+		if (!aps){
+			DumpFileXml dumpXml = new DumpFileXml(inputFile);
+			if (addHtmlEntities){
+				dumpXml.addHTMLEntities();
+			}
+			dumpReader = dumpXml;
+		} else {
+			dumpReader = new DumpFileAps(inputFile);
+		}
+
+		FileFilter filter = new FileFilter();
+		//filter.addRule(new SuffixRule("xml"));
+		//filter.addRule(new SuffixRule("txt"));
+		dumpReader.setFileFilter(filter);
+
+		dumpReader.open();
+		dumpReader.skip(skip);
 
 		Writer writer = null;
 		if (options.has("out")) {
@@ -244,11 +282,12 @@ public class Look {
 		try {
 			if (options.has("id")) {
 				String docid = (String) options.valueOf("id");
-				look.look(inputFile, docid, fields, writer);
+				look.look(dumpReader, docid, writer, fields);
 			} else {
-				look.look(inputFile, skip, limit, fields, writer);
+				look.look(dumpReader, limit, writer, fields);
 			}
 		} finally {
+			dumpReader.close();
 			writer.close();
 		}
 

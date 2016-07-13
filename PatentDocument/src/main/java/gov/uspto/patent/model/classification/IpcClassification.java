@@ -7,6 +7,12 @@ import java.util.regex.Pattern;
 
 /**
  *<h3>International Patent Classification (IPC)</h3>
+ *
+ *<p>
+ * The effort to build an international classification system began in the 1970s.
+ * CPC and IPC classes and subclasses are historically related to United Nations HS, ISIC, and SITC classification schemes.  
+ *</p>
+ *
  *<p>
  *<h3>Structure Breakout: "H01S 3/00"</h3>
  *<li>H = Electricity section.
@@ -23,7 +29,7 @@ import java.util.regex.Pattern;
  */
 public class IpcClassification extends Classification {
 	
-	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$");
+	private final static Pattern REGEX = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
 
 	private String section;
 	private String mainClass;
@@ -161,9 +167,9 @@ public class IpcClassification extends Classification {
 			String section = matcher.group(1);
 			String mainClass = matcher.group(2);
 			String subClass = matcher.group(3);
-			String mainGroup = matcher.group(4);
+			String mainGroup = matcher.group(4).replace(' ', '0');
 			String subGroup = matcher.group(5);
-		    
+
 			IpcClassification classification = new IpcClassification(classificationStr);
 		    classification.setSection(section);
 		    classification.setMainClass(mainClass);

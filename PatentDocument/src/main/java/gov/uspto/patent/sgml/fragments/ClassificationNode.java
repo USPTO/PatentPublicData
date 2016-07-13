@@ -34,7 +34,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		Set<Classification> uspcClasses = readUSPC(uspcNode);
 
 		Set<Classification> classifications = new LinkedHashSet<Classification>();
-
 		if (ipcClasses != null) {
 			classifications.addAll(ipcClasses);
 		}
@@ -53,7 +52,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 
 		Set<Classification> classifications = new LinkedHashSet<Classification>();
 
-		// Node ipcEditionN = ipcClassNode.selectSingleNode("B516/PDAT");
+		//Node ipcEditionN = ipcClassNode.selectSingleNode("B516/PDAT");
 
 		// Primary IPC classification.
 		@SuppressWarnings("unchecked")
@@ -64,20 +63,20 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 				ipc.setIsMainClassification(true);
 				classifications.add(ipc);
 			} catch (ParseException e) {
-				LOGGER.warn("Failed to Parse Primary IPC Classification: '{}' from : {}", ipcPrimaryN.getText(),
+				LOGGER.debug("Failed to Parse Primary IPC Classification: '{}' from : {}", ipcPrimaryN.getText(),
 						ipcPrimaryN.asXML());
 			}
 		}
 
 		// Secondary IPC classifications.
 		@SuppressWarnings("unchecked")
-		List<Node> ipcSecondaryNodes = ipcNode.selectNodes("B522/PDAT");
+		List<Node> ipcSecondaryNodes = ipcNode.selectNodes("B516/PDAT");
 		for (Node ipcN : ipcSecondaryNodes) {
 			try {
 				IpcClassification ipc = IpcClassification.fromText(ipcN.getText());
 				classifications.add(ipc);
 			} catch (ParseException e) {
-				LOGGER.warn("Failed to Parse Secondary IPC Classification: '{}' from : {}", ipcN.getText(),
+				LOGGER.debug("Failed to Parse Secondary IPC Classification: '{}' from : {}", ipcN.getText(),
 						ipcN.asXML());
 			}
 		}
@@ -118,7 +117,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 						uspcN.asXML());
 			}
 		}
-
+		
 		return classifications;
 	}
 

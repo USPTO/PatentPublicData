@@ -24,11 +24,15 @@ import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.primitives.Ints;
 
-import gov.uspto.bulkdata.DumpXmlReader;
+import gov.uspto.bulkdata.DumpFileAps;
+import gov.uspto.bulkdata.DumpFileXml;
+import gov.uspto.bulkdata.DumpReader;
 import gov.uspto.bulkdata.cli2.BulkData;
 import gov.uspto.bulkdata.cli2.BulkDataType;
 import gov.uspto.bulkdata.downloader.DownloadJob;
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.PatentType;
+import gov.uspto.patent.PatentTypeDetect;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
@@ -55,7 +59,7 @@ public class Corpus {
 	private final BulkData downloader;
 	private Queue<HttpUrl> bulkFileQueue = new ArrayDeque<HttpUrl>();
 	private HttpUrl currentbulkFileUrl;
-	private DumpXmlReader currentBulkFile;
+	private DumpReader currentBulkFile;
 
 	private long bulkFileCount = 0;
 	private long writeCount = 0;
@@ -149,7 +153,17 @@ public class Corpus {
 
 		DownloadJob job = downloader.download(currentbulkFileUrl);
 		File currentFile = job.getDownloadTasks().get(0).getOutFile();
-		currentBulkFile = new DumpXmlReader(currentFile, "us-patent");
+
+		PatentType patentType = new PatentTypeDetect().fromFileName(currentFile);
+
+		switch(patentType){
+		case Greenbook:
+			currentBulkFile = new DumpFileAps(currentFile);
+			break;
+		default:
+			currentBulkFile = new DumpFileXml(currentFile);
+		}
+
 		currentBulkFile.open();
 
 		bulkFileCount++;
@@ -158,22 +172,23 @@ public class Corpus {
 
 	public void readAndWrite() throws IOException {
 		try {
+			int record = 0;
 			while (currentBulkFile.hasNext()) {
-				String xmlDocStr;
+				String docStr;
 				try {
-					xmlDocStr = currentBulkFile.next();
+					docStr = currentBulkFile.next();
 				} catch (NoSuchElementException e) {
 					break;
 				}
 
 				try {
-					if (corpusMatch.on(xmlDocStr).match()) {
+					if (corpusMatch.on(docStr, currentBulkFile.getPatentType()).match()) {
 						LOGGER.info("Found matching:[{}] at {}:{} ; matched: {}", getWriteCount() + 1,
 								currentBulkFile.getFile().getName(), currentBulkFile.getCurrentRecCount(),
 								corpusMatch.getLastMatchPattern());
-						write(xmlDocStr);
+						write(docStr);
 					}
-				} catch (PatentParserException e) {
+				} catch (PatentReaderException e) {
 					LOGGER.error("Error reading Patent {}:{}", currentBulkFile.getFile().getName(), currentBulkFile.getCurrentRecCount(), e);
 				}
 			}
@@ -223,6 +238,7 @@ public class Corpus {
 						.defaultsTo("corpus");
 				accepts("eval").withOptionalArg().ofType(String.class).describedAs("Eval [xml, patent]: XML (Xpath XML lookup) or Patent to Instatiate Patent Object")
 				.defaultsTo("xml");
+				accepts("xmlBodyTag").withOptionalArg().ofType(String.class).describedAs("XML Body Tag which wrapps document: [us-patent, PATDOC, patent-application-publication]").defaultsTo("us-patent");
 			}
 		};
 
@@ -293,17 +309,22 @@ public class Corpus {
 		CorpusMatch<?> corpusMatch;
 		if ("xml".equalsIgnoreCase(eval)){
 			corpusMatch = new MatchClassificationXPath(wantedClasses);
+			//corpusMatch = new MatchClassificationXPathSGML(wantedClasses);
 		} else {
 			corpusMatch = new MatchClassificationPatent(wantedClasses);
 		}
 
 		Writer writer;
-		if ("zip".equals(out.toLowerCase())) {
+		if ("zip".equalsIgnoreCase(out)) {
 			Path zipFilePath = downloadDir.resolve(name + ".zip");
-			writer = new ZipArchive(zipFilePath);
-		} else {
+			writer = new ZipArchiveWriter(zipFilePath);
+		}
+		else if ("dummy".equalsIgnoreCase(out)) {
+			writer = new DummyWriter();
+		}
+		else {
 			Path xmlFilePath = downloadDir.resolve(name + ".xml");
-			writer = new SingleXml(xmlFilePath, true);
+			writer = new SingleXmlWriter(xmlFilePath, true);
 		}
 
 		Corpus corpus = new Corpus(downloader, corpusMatch, writer);

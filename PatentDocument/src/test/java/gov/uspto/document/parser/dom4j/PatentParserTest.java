@@ -1,59 +1,67 @@
 package gov.uspto.document.parser.dom4j;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
-import gov.uspto.patent.PatentParser;
-import gov.uspto.patent.PatentParserException;
-import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.PatentReader;
+import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.PatentType;
 
 public class PatentParserTest {
 
-	@Test(expected = PatentParserException.class)
-	public void parseFailUnknownXMLType() throws PatentParserException {
+	@Test(expected = PatentReaderException.class)
+	public void parseFailUnknownXMLType() throws PatentReaderException, IOException {
 		String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><application></application>";
 
-		PatentParser parser = new PatentParser();
-		parser.parse(xmlString);
+		try(PatentReader patentReader = new PatentReader(xmlString, PatentType.Pap)){
+			patentReader.read();
+		}
 	}
 
 	@Test
-	public void parsePatentApplication() throws PatentParserException {
+	public void parsePatentApplication() throws PatentReaderException, IOException {
 		String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><us-patent-application><us-bibliographic-data-application></us-bibliographic-data-application></us-patent-application>";
 
-		PatentParser parser = new PatentParser();
-		parser.parse(xmlString);
+		try(PatentReader patentReader = new PatentReader(xmlString, PatentType.RedbookApplication)){
+			patentReader.read();
+		}
 	}
 
 	@Test
-	public void parsePatentGrant() throws PatentParserException {
+	public void parsePatentGrant() throws PatentReaderException, IOException {
 		String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><us-patent-grant></us-patent-grant>";
 
-		PatentParser parser = new PatentParser();
-		parser.parse(xmlString);
+		try(PatentReader patentReader = new PatentReader(xmlString, PatentType.RedbookGrant)){
+			patentReader.read();
+		}
 	}
 
 	@Test
-	public void parsePatentSGML() throws PatentParserException {
+	public void parsePatentSGML() throws PatentReaderException, IOException {
 		String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><PATDOC><SDOBI></SDOBI></PATDOC>";
 
-		PatentParser parser = new PatentParser();
-		parser.parse(xmlString);
+		try(PatentReader patentReader = new PatentReader(xmlString, PatentType.Sgml)){
+			patentReader.read();
+		}
 	}
 
 	@Test
-	public void parsePatentPAP() throws PatentParserException {
+	public void parsePatentPAP() throws PatentReaderException, IOException {
 		String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><patent-application-publication><subdoc-bibliographic-information></subdoc-bibliographic-information></patent-application-publication>";
 
-		PatentParser parser = new PatentParser();
-		parser.parse(xmlString);
+		try(PatentReader patentReader = new PatentReader(xmlString, PatentType.Pap)){
+			patentReader.read();
+		}
 	}
 
 	@Test
-	public void parsePatentGreenbook() throws PatentParserException {
+	public void parsePatentGreenbook() throws PatentReaderException, IOException {
 		String xmlString = "PATN\nWKU  039305848\n";
 
-		PatentParser parser = new PatentParser();
-		Patent patent = parser.parse(xmlString);
+		try(PatentReader patentReader = new PatentReader(xmlString, PatentType.Greenbook)){
+			patentReader.read();
+		}
 		//(patent.getDocumentId(), "039305848");
 	}
 }

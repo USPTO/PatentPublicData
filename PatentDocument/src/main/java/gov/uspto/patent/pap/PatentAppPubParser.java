@@ -1,7 +1,7 @@
 package gov.uspto.patent.pap;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +13,7 @@ import org.slf4j.MDC;
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.parser.dom4j.Dom4jUtil;
 import gov.uspto.patent.InvalidDataException;
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.Description;
@@ -111,12 +111,24 @@ public class PatentAppPubParser extends Dom4JParser {
 			}
 		}
 
+		if (dateProduced != null) {
+			try {
+				patent.setDateProduced(dateProduced);
+			} catch (InvalidDataException e) {
+				LOGGER.error("Invalid Date: {}", dateProduced, e);
+			}
+		}		
+
+		if (publicationId != null){
+			patent.setDatePublished(publicationId.getDate());
+		}
+		
 		LOGGER.trace(patent.toString());
 
 		return patent;
 	}
 
-	public static void main(String[] args) throws FileNotFoundException, PatentParserException {
+	public static void main(String[] args) throws PatentReaderException, IOException {
 
 		File file = new File(args[0]);
 

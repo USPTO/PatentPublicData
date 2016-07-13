@@ -1,8 +1,7 @@
 package gov.uspto.patent.greenbook;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,11 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.KeyValueParser;
-import gov.uspto.patent.PatentParserException;
+import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.greenbook.fragments.AbstractTextNode;
 import gov.uspto.patent.greenbook.fragments.AgentNode;
 import gov.uspto.patent.greenbook.fragments.ApplicationIdNode;
 import gov.uspto.patent.greenbook.fragments.AssigneeNode;
+import gov.uspto.patent.greenbook.fragments.CitationNode;
 import gov.uspto.patent.greenbook.fragments.ClaimNode;
 import gov.uspto.patent.greenbook.fragments.ClassificationNode;
 import gov.uspto.patent.greenbook.fragments.DescriptionNode;
@@ -27,7 +27,6 @@ import gov.uspto.patent.greenbook.fragments.DocumentIdNode;
 import gov.uspto.patent.greenbook.fragments.ExaminerNode;
 import gov.uspto.patent.greenbook.fragments.InventorNode;
 import gov.uspto.patent.greenbook.fragments.RelatedIdNode;
-import gov.uspto.patent.greenbook.fragments.CitationNode;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
@@ -80,7 +79,7 @@ public class Greenbook extends KeyValueParser {
 	}
 
 	@Override
-	public Patent parse(Document document) throws PatentParserException {
+	public Patent parse(Document document) throws PatentReaderException {
 
 		DocumentId documentId = new DocumentIdNode(document).read();
 		MDC.put("DOCID", documentId.toText());
@@ -145,8 +144,7 @@ public class Greenbook extends KeyValueParser {
 		return patent;
 	}
 
-	public static void main(String[] args)
-			throws FileNotFoundException, PatentParserException, UnsupportedEncodingException {
+	public static void main(String[] args)	throws PatentReaderException, IOException {
 
 		String filename = args[0];
 

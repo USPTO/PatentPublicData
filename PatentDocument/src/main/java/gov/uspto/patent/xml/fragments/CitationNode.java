@@ -15,8 +15,16 @@ import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.xml.items.ClassificationNationalNode;
 import gov.uspto.patent.xml.items.DocumentIdNode;
 
+/**
+ * 
+ * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ *
+ *<p>Note 1: Citations are only available to the public in Grants.</p>
+ *<p>Note 2: classification-national are sometimes missing from citations when cited by applicant.</p>
+ *
+ */
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
-	
+
 	private static final String FRAGMENT_PATH = "//us-references-cited|//references-cited"; // current us-patent-grants. 
 
 	private Node citationNode;
@@ -30,8 +38,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Citation> citations = new ArrayList<Citation>();
 
 		citationNode = document.selectSingleNode(FRAGMENT_PATH);
-		
-		if (citationNode == null){
+		if (citationNode == null) {
 			return citations;
 		}
 
@@ -48,13 +55,13 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Citation> nplCitations = new ArrayList<Citation>();
 
 		@SuppressWarnings("unchecked")
-		List<Node> nlpcitNodes =  citationNode.selectNodes("us-citation/nplcite|citation/nplcit");
+		List<Node> nlpcitNodes = citationNode.selectNodes("us-citation/nplcite|citation/nplcit");
 
 		for (Node nplcit : nlpcitNodes) {
-			
+
 			String num = nplcit.selectSingleNode("@num").getText();
 			Node citeTxtN = nplcit.selectSingleNode("othercit");
-			
+
 			String citeTxt = citeTxtN != null ? citeTxtN.getText() : "";
 
 			// <category>cited by examiner</category>
@@ -78,9 +85,23 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 			DocumentId documentId = new DocumentIdNode(patcit).read();
 
+			/*
+			 * Applications appear as US2004123455 CountryDate/Number
+			 *
+			String[] parts = documentId.getId().split("/");
+			String date;
+			if (parts.length == 2){
+				String country = parts[0].substring(0, 2);
+				date = parts[0].substring(1);
+				String id2 = country + parts[1];
+				
+				System.out.println("Application ID: " + documentId + " " + id2);
+			}
+			*/
+
 			// <category>cited by examiner</category>
 			Node category = patcit.getParent().selectSingleNode("category");
-			boolean examinerCited = (category.getText().equals("cited by examiner"));
+			boolean examinerCited = (category.getText().equals("cited by examiner")); // else "cited by applicant"
 
 			PatCitation citation = new PatCitation(num, documentId, examinerCited);
 
