@@ -27,21 +27,27 @@ All patent document formats parse into a single common Patent model.  Field vali
 | Address         | must have a country |
 
 ## Example Usage:
-<pre><code>   File inputFile = new File("ipa150101.zip");
-   // File inputFile = new File("ipa150101.xml");
-   DumpXmlReader dxml = new DumpXmlReader(inputFile, "us-patent");
-   dxml.open();
-   PatentXmlParser patentParser = new PatentXmlParser();
-   int limit = 10;
-   for (int i = 1; dxml.hasNext() && i <= limit; i++) {
-      String xmlDocStr = null;
-		try {
-		   xmlDocStr = dxml.next();
-		} catch (NoSuchElementException e) {
-		   break;
-		}
-		Patent patent = patentParser.parse(xmlDocStr);
-		...
-   }
-   dxml.close();
+<pre><code>   
+File inputFile = new File("ipa150101.zip");
+// File inputFile = new File("ipa150101.xml");
+
+DumpReader dumpReader = new DumpFileXml(inputFile);
+//DumpReader dumpReader = new DumpFileAps(inputFile);
+dumpReader.open();
+
+int limit = 10;
+for (int i = 1; dxml.hasNext() && i <= limit; i++) {
+    String rawDocStr = null;
+    try {
+        rawDocStr = dxml.next();
+    } catch (NoSuchElementException e) {
+       break;
+    }
+
+    try (PatentReader patentReader = new PatentReader(rawDocStr, dumpReader.getPatentType())) {
+        Patent patent = patentReader.read();
+        ...
+    }
+}
+dumpReader.close();
 </pre></code>
