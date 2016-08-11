@@ -21,13 +21,37 @@ Note this source code has not been fully vetted for a production enviroment. It 
 
 ### Example Usage
 
-## Bulk Patent XML Zip
+## Download Bulk Patent Zips 
+   Downloads from https://bulkdata.uspto.gov/
+      gov.uspto.bulkdata.cli2.BulkData
 
-#### Download Bulk Patent Zip, utilizing limit.
-     gov.uspto.bulkdata.cli.Download --source reedtech --type application --limit 1
+        options:
+          --type=application       options:[grant, application, gazette]
+          --years="2014-2016"
+          --limit=0
+          --skip=0
+          --outdir="../download"
+          --async=false
 
-#### Download Bulk Patent Zip, utilizing filename.     
-     gov.uspto.bulkdata.cli.Download --source reedtech --filename="ipa140109.zip"
+        Advanced Options:
+          Year List:   --years="2014, 2016"
+          Year Range:  --years="2014-2016"
+          Specific Bulk File: --filename="ipa140109.zip"
+
+## Old Downloader
+     gov.uspto.bulkdata.cli.Download
+
+        Options:
+          --source=reedtech        options:[reetech,google]
+          --type=application       options:[grant, application]
+          --limit=1
+          --skip=0
+          --outdir="../download"
+          --async=false
+          
+        Advanced Options:
+          Specific Bulk File: --filename="ipa140109.zip"
+            
 
 #### Extract Patent XML Documents, utilizing limit
      gov.uspto.bulkdata.cli.ExtractPatentXml --source="download/ipa150101.zip" --limit 5 --skip 0 --outDir="download"
