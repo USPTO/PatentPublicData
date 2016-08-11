@@ -22,8 +22,9 @@ Note this source code has not been fully vetted for a production enviroment. It 
 ### Example Usage
 
 ## Download Bulk Patent Zips 
-   Downloads from https://bulkdata.uspto.gov/
-      gov.uspto.bulkdata.cli2.BulkData
+Downloads from https://bulkdata.uspto.gov/
+
+     gov.uspto.bulkdata.cli2.BulkData
 
         options:
           --type=application       options:[grant, application, gazette]
