@@ -17,18 +17,37 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
 ### Example Usage
 
-## Bulk Patent XML Zip
+## Download Bulk Patent Zips 
+   Downloads from https://bulkdata.uspto.gov/
+      gov.uspto.bulkdata.cli2.BulkData
 
-#### Download Bulk Patent Zip from USPTO, utilizing limit.
-     # Downloads from https://bulkdata.uspto.gov/
-     gov.uspto.bulkdata.cli2.BulkData --limit=2 --years="2014, 2016" --outdir="../download"
+        options:
+          --type=application       options:[grant, application, gazette]
+          --years="2014-2016"
+          --limit=0
+          --skip=0
+          --outdir="../download"
+          --async=false
 
-#### Download Bulk Patent Zip from Reedtech, utilizing limit.
-     # Downloads from http://patents.reedtech.com/
-     gov.uspto.bulkdata.cli.Download --source reedtech --type application --limit 1
+        Advanced Options:
+          Year List:   --years="2014, 2016"
+          Year Range:  --years="2014-2016"
+          Specific Bulk File: --filename="ipa140109.zip"
 
-#### Download Bulk Patent Zip, utilizing filename.     
-     gov.uspto.bulkdata.cli.Download --source reedtech --filename="ipa140109.zip"
+## Old Downloader
+     gov.uspto.bulkdata.cli.Download
+
+        Options:
+          --source=reedtech        options:[reetech,google]
+          --type=application       options:[grant, application]
+          --limit=1
+          --skip=0
+          --outdir="../download"
+          --async=false
+          
+        Advanced Options:
+          Specific Bulk File: --filename="ipa140109.zip"
+            
 
 #### Extract Patent XML Documents, utilizing limit
      gov.uspto.bulkdata.cli.ExtractPatentXml --source="download/ipa150101.zip" --limit 5 --skip 0 --outDir="download"
@@ -45,9 +64,11 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
 ## CPC Classification Scheme
 #### Download CPC Clasification Scheme (which updates 1-2 times per month)
-     # Downloads from http://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/Bulk.html
      gov.uspto.bulkdata.cli.Download --source cpc --limit 1 --outdir="../download"
      
+## Other Datasources
+#### FDA National Drug Code Database (NDC)
+     gov.uspto.bulkdata.cli.Download --source fda --limit 1 --outdir="../download"
 
 ## Download Any File
      gov.uspto.bulkdata.cli.DownloadFile --url="http://opennlp.sourceforge.net/models-1.5/en-sent.bin" --dir="../download"
