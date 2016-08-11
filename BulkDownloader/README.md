@@ -19,6 +19,7 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
 ## Download Bulk Patent Zips 
    Downloads from https://bulkdata.uspto.gov/
+
       gov.uspto.bulkdata.cli2.BulkData
 
         options:
