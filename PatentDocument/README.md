@@ -27,27 +27,50 @@ All patent document formats parse into a single common Patent model.  Field vali
 | Address         | must have a country |
 
 ## Example Usage:
-<pre><code>   
-File inputFile = new File("ipa150101.zip");
-// File inputFile = new File("ipa150101.xml");
+```JAVA
+import java.io.File;
+import java.io.IOException;
 
-DumpReader dumpReader = new DumpFileXml(inputFile);
-//DumpReader dumpReader = new DumpFileAps(inputFile);
-dumpReader.open();
+import gov.uspto.bulkdata.DumpFileAps;
+import gov.uspto.bulkdata.DumpFileXml;
+import gov.uspto.bulkdata.DumpReader;
+import gov.uspto.patent.PatentReader;
+import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.PatentType;
+import gov.uspto.patent.PatentTypeDetect;
+import gov.uspto.patent.model.Patent;
 
-int limit = 10;
-for (int i = 1; dxml.hasNext() && i <= limit; i++) {
-    String rawDocStr = null;
-    try {
-        rawDocStr = dxml.next();
-    } catch (NoSuchElementException e) {
-       break;
-    }
+public class ReadBulkPatentZip {
 
-    try (PatentReader patentReader = new PatentReader(rawDocStr, dumpReader.getPatentType())) {
-        Patent patent = patentReader.read();
-        ...
-    }
+	public void main() throws IOException, PatentReaderException{
+		File inputFile = new File("ipa150101.zip");
+		// File inputFile = new File("ipa150101.xml");
+		int skip = 0;
+		int limit = 10;
+
+		PatentType patentType = new PatentTypeDetect().fromFileName(inputFile);
+
+		DumpReader dumpReader;
+		switch(patentType){
+		case Greenbook:
+			dumpReader = new DumpFileAps(inputFile);
+			break;
+		default:
+			dumpReader = new DumpFileXml(inputFile);
+		}
+
+		dumpReader.open();
+		if (skip > 0){
+			dumpReader.skip(skip);
+		}
+
+		for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
+		    String xmlDocStr = (String) dumpReader.next();
+		    try(PatentReader patentReader = new PatentReader(xmlDocStr, patentType)){
+		        Patent patent = patentReader.read();
+		        System.out.println(patent.getDocumentId().toText());
+		    }
+		}
+	}
 }
-dumpReader.close();
-</pre></code>
+```
