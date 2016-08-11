@@ -3,6 +3,8 @@ package gov.uspto.patent.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import gov.uspto.patent.TextField;
+
 /**
  * Referenced Figure
  *
@@ -14,23 +16,21 @@ import java.util.Set;
  *Since Figure Descriptions can contain an id range, the id is stored in a set of IDs.
  *</p>
  */
-public class Figure {
+public class Figure implements TextField {
 
 	private Set<String> ids = new HashSet<String>();
-	private String text;
+	private String rawText;
 
-	public Figure(String id, String text) {
-		this.ids.add(id);
-		this.text = text;
+	public Figure(String rawText, String... ids) {
+		for(String id: ids){
+			this.ids.add(id);
+		}
+		this.rawText = rawText;
 	}
 
-	public Figure(Set<String> ids, String text) {
+	public Figure(String rawText, Set<String> ids) {
 		this.ids = ids;
-		this.text = text;
-	}
-
-	public String getText() {
-		return text;
+		this.rawText = rawText;
 	}
 
 	public Set<String> getIds() {
@@ -42,7 +42,17 @@ public class Figure {
 	}
 
 	@Override
+	public void setRawText(String fieldRawText) {
+		rawText = fieldRawText;
+	}
+
+	@Override
+	public String getRawText() {
+		return rawText;
+	}
+
+	@Override
 	public String toString() {
-		return "Figure [ids=" + ids + ", text=" + text + "]";
+		return "Figure [ids=" + ids + ", rawText=" + rawText + "]";
 	}
 }

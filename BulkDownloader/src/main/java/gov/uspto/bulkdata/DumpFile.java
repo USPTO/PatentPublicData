@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-import gov.uspto.bulkdata.zip.FileFilter;
-import gov.uspto.bulkdata.zip.ZipReader;
+import gov.uspto.common.file.archive.ZipReader;
 import gov.uspto.patent.PatentType;
 import gov.uspto.patent.PatentTypeDetect;
 
@@ -29,7 +29,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	private ZipReader zipFile;
 	private BufferedReader reader;
 
-	private FileFilter fileFilter = new FileFilter();
+	private FileFilter fileFilter;
 	private String currentRawDoc = "";
 
 	public DumpFile(File file){
@@ -44,7 +44,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	}
 
 	public void setFileFilter(FileFilter filter){
-		this.fileFilter   = filter;
+		this.fileFilter = filter;
 	}
 
 	public void open() throws IOException {

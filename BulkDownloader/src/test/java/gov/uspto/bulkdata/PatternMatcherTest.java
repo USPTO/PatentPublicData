@@ -8,6 +8,10 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.junit.Test;
 
+import gov.uspto.bulkdata.find.PatternMatcher;
+import gov.uspto.bulkdata.find.PatternXPath;
+import gov.uspto.bulkdata.find.PatternXpathValueRegex;
+
 public class PatternMatcherTest {
 
 	

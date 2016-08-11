@@ -1,9 +1,9 @@
 package gov.uspto.patent.model.entity;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 import gov.uspto.patent.InvalidDataException;
-import gov.uspto.text.StringUtil;
 
 /*
 * TODO: need more research... name and entity disambiguation.
@@ -92,7 +92,7 @@ public class NamePerson extends Name {
 		}
 
 		if (!Strings.isNullOrEmpty(firstName)) {
-			sb.append(StringUtil.join(" ", firstName, middleName));
+			sb.append(Joiner.on(" ").skipNulls().join(firstName, middleName));
 		}
 
 		return sb.toString().trim();

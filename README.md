@@ -1,16 +1,51 @@
-# Patent Public Data
+# Bulk Download
 
-Library to download and parse the public patent weekly bulk dumps from https://data.uspto.gov
+This module provides the ability to download and work with weekly bulk Patent zip files, along with other external data resources.
 
-Note this source code has not been fully vetted for a production enviroment. It was mainly developed for prototyping and exploring of patent data.
+### Features
+<ul>
+<li>Async Downloads</li>
+<li>Automatic retry on failure</li>
+<li>Restartable (currently only syncronous downloads)</li>
+</ul>
 
-The Build process utilizes maven and the project is a multiple module maven project.  
+### Sources
+<ul>
+<li>USPTO Bulk Patent Download, grants and applications from Google or Reedtech</li>
+<li>Patent CPC Classification Scheme</li>
+<li>FDA "NDA" Drug Database</li>
+</ul>
 
-To build and package everything into single zip file including dependencies run: <b>mvn package</b>
+### Example Usage
 
-#### Documentation
-<ul><li><a href="https://github.com/USPTO/PatentPublicData/wiki/Project-Setup">Help with project setup</a></li></ul>
+## Bulk Patent XML Zip
 
-## Disclaimer
+#### Download Bulk Patent Zip, utilizing limit.
+     gov.uspto.bulkdata.cli.Download --source reedtech --type application --limit 1
 
-The United States Department of Commerce (DOC) GitHub project code is provided on an 'as is' basis and the user assumes responsibility for its use. DOC has relinquished control of the information and no longer has responsibility to protect the integrity, confidentiality, or availability of the information. Any claims against the Department of Commerce stemming from the use of its GitHub project will be governed by all applicable Federal law. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by the Department of Commerce. The Department of Commerce seal and logo, or the seal and logo of a DOC bureau, shall not be used in any manner to imply endorsement of any commercial product or activity by DOC or the United States Government.
+#### Download Bulk Patent Zip, utilizing filename.     
+     gov.uspto.bulkdata.cli.Download --source reedtech --filename="ipa140109.zip"
+
+#### Extract Patent XML Documents, utilizing limit
+     gov.uspto.bulkdata.cli.ExtractPatentXml --source="download/ipa150101.zip" --limit 5 --skip 0 --outDir="download"
+
+#### View single Patent XML Document.
+     gov.uspto.bulkdata.cli.Look --source="download/ipa150101.zip" --limit 5 --skip 5 --fields=id,title,family
+
+#### Dump a single Patent XML Document by location in zipfile; the 3rd document:
+     gov.uspto.bulkdata.cli.Look --source="download/ipa150305.zip" --num=3 --fields=xml --out=download/patent.xml
+
+#### Dump a single Patent XML Document by ID (note it may be slow as it parse each document to check its id):
+     gov.uspto.bulkdata.cli.Look --source="download/ipa150305.zip" --id=US3931903A1 --fields=xml --out=download/patent.xml
+     # id requirements: country code, patent id without leading zero, and kind code.
+
+## CPC Classification Scheme
+#### Download CPC Clasification Scheme (which updates 1-2 times per month)
+     gov.uspto.bulkdata.cli.Download --source cpc --limit 1 --outdir="../download"
+     
+## Other Datasources
+#### FDA National Drug Code Database (NDC)
+     gov.uspto.bulkdata.cli.Download --source fda --limit 1 --outdir="../download"
+
+## Download Any File
+     gov.uspto.bulkdata.cli.DownloadFile --url="http://opennlp.sourceforge.net/models-1.5/en-sent.bin" --dir="../download"

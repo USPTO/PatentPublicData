@@ -32,7 +32,6 @@ import gov.uspto.patent.xml.GrantParser;
 public class PatentReader implements Closeable {
 
 	private final Reader reader;
-	private Document document;
 	private PatentType patentType;
 
 	/**
@@ -43,6 +42,7 @@ public class PatentReader implements Closeable {
 	 */
 	public PatentReader(Reader reader, PatentType patentType) {
 		Preconditions.checkNotNull(reader, "reader can not be Null");
+		Preconditions.checkNotNull(patentType, "patentType can not be Null");
 		this.reader = reader;
 		this.patentType = patentType;
 	}
@@ -86,29 +86,12 @@ public class PatentReader implements Closeable {
 	 * 
 	 * @param document
 	 */
+	/*
 	public PatentReader(Document document) {
 		this.document = document;
 		this.reader = new StringReader(document.asXML());
 	}
-
-	/**
-	 * Load XML Document
-	 * 
-	 * @param reader
-	 * @return
-	 * @throws PatentReaderException
-	 */
-	public Document getJDOM() throws PatentReaderException {
-		try {
-			SAXReader sax = new SAXReader(false);
-			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-			this.document = sax.read(reader);
-		} catch (DocumentException | SAXException e) {
-			throw new PatentReaderException("Failed to load XML", e);
-		}
-
-		return this.document;
-	}
+	*/
 
 	/**
 	 * Parse Document and Return Patent Object.
@@ -123,13 +106,13 @@ public class PatentReader implements Closeable {
 		case Greenbook:
 			return new Greenbook().parse(reader);
 		case RedbookApplication:
-			return new ApplicationParser().parse(document);
+			return new ApplicationParser().parse(getJDOM(reader));
 		case RedbookGrant:
-			return new GrantParser().parse(document);
+			return new GrantParser().parse(getJDOM(reader));
 		case Sgml:
-			return new Sgml().parse(document);
+			return new Sgml().parse(getJDOM(reader));
 		case Pap:
-			return new PatentAppPubParser().parse(document);
+			return new PatentAppPubParser().parse(getJDOM(reader));
 		default:
 			throw new PatentReaderException("Invalid or Unknown Document Type");
 		}
@@ -142,4 +125,21 @@ public class PatentReader implements Closeable {
 		}
 	}
 
+	/**
+	 * Load XML Document
+	 * 
+	 * @param reader
+	 * @return
+	 * @throws PatentReaderException
+	 */
+	public static Document getJDOM(Reader reader) throws PatentReaderException {
+		try {	
+			SAXReader sax = new SAXReader(false);
+			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			return sax.read(reader);
+		} catch (DocumentException | SAXException e) {
+			throw new PatentReaderException("Failed to load XML", e);
+		}
+	}
+	
 }

@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="BulkDownloader/src/main/java"/>
-	<classpathentry kind="src" path="BulkDownloader/src/test/java"/>
-	<classpathentry kind="src" path="PatentDocument/src/main/java"/>
-	<classpathentry kind="src" path="PatentDocument/src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

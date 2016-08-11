@@ -22,9 +22,12 @@ public class DumpFileXml extends DumpFile {
 		super(file);
 	}
 
-	protected void init() {
-		this.xmlStartTag = "<" + super.getPatentType().getParentElement();
-		this.xmlEndTag = "</" + super.getPatentType().getParentElement();
+	@Override
+	public void open() throws IOException {
+		super.open();
+		String xmlTag = super.getPatentType().getParentElement();
+		this.xmlStartTag = "<" + xmlTag;
+		this.xmlEndTag = "</" + xmlTag;
 	}
 
 	@Override

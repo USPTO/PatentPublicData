@@ -1,33 +1,31 @@
 package gov.uspto.patent.model;
 
+import gov.uspto.patent.FreetextField;
 import gov.uspto.patent.TextProcessor;
 
-public class DescriptionSection {
+public class DescriptionSection extends FreetextField {
 
 	private final DescSection section;
-	private final String rawText;
-	private TextProcessor rawTextProcessor;
+	private String rawText;
 
 	public DescriptionSection(final DescSection section, final String rawText, TextProcessor rawTextProcessor) {
+		super(rawTextProcessor);
 		this.section = section;
 		this.rawText = rawText;
-		this.rawTextProcessor = rawTextProcessor;
 	}
 
 	public DescSection getSection() {
 		return section;
 	}
 
+	@Override
+	public void setRawText(String fieldRawText) {
+		this.rawText = fieldRawText;
+	}
+
+	@Override
 	public String getRawText() {
 		return rawText;
-	}
-
-	public String getProcessedText() {
-		return rawTextProcessor.getProcessText(rawText);
-	}
-
-	public TextProcessor getTextProcessor() {
-		return rawTextProcessor;
 	}
 
 	@Override

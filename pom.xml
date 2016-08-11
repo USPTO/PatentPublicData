@@ -10,6 +10,7 @@
 	<modules>
 		<module>BulkDownloader</module>
 		<module>PatentDocument</module>
+        <module>Common</module>
 	</modules>
 
 	<packaging>pom</packaging>

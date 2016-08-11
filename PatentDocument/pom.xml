@@ -1,6 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>gov.uspto</groupId>
@@ -8,15 +9,30 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-    <artifactId>PatentDocument</artifactId>
+	<artifactId>PatentDocument</artifactId>
 
 	<packaging>jar</packaging>
 
+	<repositories>
+	   <!-- 
+		<repository>
+			<id>www2.ph.ed.ac.uk-releases</id>
+			<url>http://www2.ph.ed.ac.uk/maven2</url>
+		</repository>
+		-->
+	</repositories>
+
 	<dependencies>
+         <dependency>
+            <groupId>gov.uspto</groupId>
+            <artifactId>Common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+         </dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.18</version>
+			<version>1.7.21</version>
 		</dependency>
 
 		<dependency>
@@ -36,12 +52,40 @@
 			<artifactId>dom4j</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+		<dependency>
+		    <groupId>xml-apis</groupId>
+		    <artifactId>xml-apis</artifactId>
+		    <version>1.4.01</version>
+		</dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+
+<!-- 
+		<dependency>
+			<groupId>org.jmathml</groupId>
+			<artifactId>jmathml</artifactId>
+			<version>2.2.1</version>
+		</dependency>
 
 		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>1.1.6</version>
+			<groupId>uk.ac.ed.ph.snuggletex</groupId>
+			<artifactId>snuggletex-core</artifactId>
+			<version>1.2.2</version>
 		</dependency>
+		<dependency>
+			<groupId>uk.ac.ed.ph.snuggletex</groupId>
+			<artifactId>snuggletex-upconversion</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.ac.ed.ph.snuggletex</groupId>
+			<artifactId>snuggletex-jeuclid</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+-->
 
 		<dependency>
 			<!-- DateParser and FastDateFormat -->

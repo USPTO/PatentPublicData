@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.dom4j.Node;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
@@ -13,7 +14,6 @@ import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
-import gov.uspto.text.StringUtil;
 
 /**
  * Addressbook
@@ -96,7 +96,7 @@ public class AddressBookNode extends ItemReader<Name> {
 
 		NameOrg name = null;
 		if (orgnameN != null) {
-			String orgName = StringUtil.toTitleCase(orgnameN.getText());
+			String orgName = StringCaseUtil.toTitleCase(orgnameN.getText());
 			name = new NameOrg(orgName);
 			name.setSynonyms(synonyms);
 		}
