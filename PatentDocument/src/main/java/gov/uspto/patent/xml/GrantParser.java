@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.parser.dom4j.Dom4jUtil;
 import gov.uspto.patent.InvalidDataException;
@@ -42,7 +43,6 @@ import gov.uspto.patent.xml.fragments.PublicationIdNode;
 import gov.uspto.patent.xml.fragments.RegionalIdNode;
 import gov.uspto.patent.xml.fragments.RelatedIdNode;
 import gov.uspto.patent.xml.fragments.Relations;
-import gov.uspto.text.StringUtil;
 
 public class GrantParser extends Dom4JParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GrantParser.class);
@@ -55,7 +55,7 @@ public class GrantParser extends Dom4JParser {
 	public Patent parse(Document document) {
 
 		String title = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-grant/invention-title");
-		title = StringUtil.toTitleCase(title);
+		title = StringCaseUtil.toTitleCase(title);
 
 		String dateProduced = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-produced");
 		String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");

@@ -20,8 +20,8 @@ import com.google.common.base.Preconditions;
 import gov.uspto.bulkdata.DumpFileAps;
 import gov.uspto.bulkdata.DumpFileXml;
 import gov.uspto.bulkdata.DumpReader;
-import gov.uspto.bulkdata.zip.FileFilter;
-import gov.uspto.bulkdata.zip.SuffixRule;
+import gov.uspto.common.file.filter.FileFilterChain;
+import gov.uspto.common.file.filter.SuffixFileFilter;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
@@ -157,8 +157,8 @@ public class ExtractPatent {
 			dumpReader = new DumpFileAps(inputFile);
 		}
 
-		FileFilter filter = new FileFilter();
-		//filter.addRule(new SuffixRule("xml"));
+		FileFilterChain filter = new FileFilterChain();
+		//filter.addRule(new SuffixFileFilter("xml"));
 		dumpReader.setFileFilter(filter);
 		
 		dumpReader.open();

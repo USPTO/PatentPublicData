@@ -1,0 +1,1669 @@
+\~      Program Name : Form.ap -- Form File for USAP Database
+\~	 Description : It contains all the tags to load USAPP documents.
+\~            Author : Kai Chang	03/23/2004
+\~            Modified: Jude Ikebudu - 04/28/2005 Finalized all tag additions and modifications for ICE production release
+\~            Modified: Jude Ikebudu - 05/05/2005  Added VALUES to APNR tag
+\~            Modified: Jude Ikebudu - 12/27/2005 Finalized for the ICE-XML/IPCR production deployment
+\~            Modified: Ben La       - 2/14/2011 for CSS 2.3.2
+\~	     Modified: Delbert Estey - 01/16/2013 to increase subpars for BRS 10.1 loader, and add CPC and Family ID indexes. 
+\~           Also added Supplemental Examination Certificate, BPAI Certificates, and Applicant indexes. 
+\~ 
+\~	Form File for Database USAP Database 
+\~
+              
+	      banner:	USAP Database
+
+        characterset:	ALTTBL
+
+	casesensitive: YES
+
+         inputindent:	1
+\~
+\~	Paragraph Entries
+\~
+
+\~
+
+           shortname: DOCN
+            longname:	BRS Assigned Accession Number
+           inputname:	..Document-Number:
+               flags:	NO-SEARCH VALUES NO-POSITION COMPR-F
+              verify:	ANYTHING MASK=999999999
+  
+\~
+
+           shortname: ABTX
+            longname:	Abstract Paragraph 
+           inputname:	ABTX
+               flags:	NO-STDSTOP ALTPOST ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-A
+             subpars:	1000
+             eoslist:   ". "
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PGNR
+            longname:	Publication Reference Document Number 
+           inputname:   PGNR	
+               flags:	NO-STDSTOP COMPR-F
+                 fli:	D
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: DUPK
+	    longname:   Publication Reference Document Number
+   	   inputname:   DUPK 
+   	       flags:   NO-DISPLAY COMPR-F
+   	         fli:   S
+	      verify:   ANYTHING LINELEN=80
+
+
+\~
+
+	     shortname: DID
+              longname:   Pre-Grant Publication Document Identifier 
+	     inputname:   DID
+                 flags:   NO-STDSTOP DOUBLPOST BINDING COMPR-F
+		   fli:   D
+                verify:   ANYTHING LINELEN=80
+
+\~
+
+           shortname: PGKC 
+            longname:	Publication Reference Document Kind Code	
+           inputname:	PGKC
+               flags:	NO-STDSTOP COMPR-F
+                 fli:	D
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PGPD
+            longname:   Publication Reference Document Date	
+           inputname:	PGPD
+               flags:	NO-STDSTOP VALUES COMPR-F
+          vparmnames:   PD
+              verify:	ANYTHING DATE-CHECK LINELEN=80
+
+\~
+
+           shortname: PGPY
+            longname:   Publication Reference Year 
+           inputname:	PGPY
+               flags:	NO-STDSTOP VALUES COMPR-F
+          vparmnames:   PY
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PGCO
+            longname:   Publication Reference Country Code	
+           inputname:	PGCO 
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+             default:   US
+
+\~
+
+           shortname: PGCD
+            longname:	Application Reference Filing Type
+           inputname:	PGCD
+               flags:	NO-STDSTOP  DOUBLPOST COMPR-F
+             eoslist:	"#%#"
+              verify:	ANYTHING LINELEN=80
+
+\~
+           
+           shortname: APN 
+            longname:	Application Reference Document Number
+           inputname:	APN
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+
+\~
+           shortname: APNR
+            longname:	Application Series and Number
+           inputname:	APSN
+               flags:	NO-STDSTOP VALUES  COMPR-F
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: APD
+            longname:	Application Reference Filing Date 
+           inputname:	APD
+               flags:	NO-STDSTOP VALUES COMPR-F
+          vparmnames:	AD
+              verify:	ANYTHING DATE-CHECK LINELEN=80
+\~
+           
+           shortname: SRC
+            longname:	US Application Series Code
+           inputname:	SRC
+               flags:	NO-STDSTOP COMPR-F 
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: APP
+            longname:	Series Code and Application Number
+           inputname:	APP
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: APY
+            longname:	Application Filing Year 
+           inputname:	APY
+               flags:	NO-STDSTOP VALUES COMPR-F
+          vparmnames:	AY
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: APCP
+            longname:	US Continued Prosecution Application Flag 
+           inputname:	APCP
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: INIR
+            longname:	Rule 47 flag 
+           inputname:	INIR 
+               flags:	NO-STDSTOP VALUES COMPR-F
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PRAN 
+            longname:   Priority Claim Number	
+           inputname:	PRAN 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   1000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   
+           shortname: PRAI
+            longname:	Priority Application ID(Document Number)
+           inputname:	PRAI
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   1000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PRAD
+            longname:	Priority Claim Date 
+           inputname:	PRAD
+               flags:	NO-STDSTOP VALUES COMPR-F
+             subpars:   100
+              verify:	ANYTHING DATE-CHECK LINELEN=80
+
+\~
+
+           shortname: PRAY
+            longname:	Priority Filing Year 
+           inputname:	PRAY
+               flags:	NO-STDSTOP VALUES COMPR-F
+             subpars:   1000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PRCO
+            longname:   Priority Claim Country Code 	
+           inputname:	PRCO 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   1000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+
+           shortname:   IPCG 
+            longname:   International Publication Classification Group	
+           inputname:   IPCG
+               flags:	NO-STDSTOP COMPR-F
+		 subpars:	500
+		  verify:	ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   IPCC 
+            longname:   International Publication Classification Class
+           inputname:   IPCC
+               flags:	NO-STDSTOP COMPR-F
+		 subpars:	500
+		  verify:	ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   IPCP 
+            longname:   International Publication Classification Primary	
+           inputname:   IPCP
+               flags:	NO-STDSTOP COMPR-F
+		 subpars:	200
+		  verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname:   IPCS 
+            longname:   International Publication Classification Secondary	
+           inputname:   IPCS
+               flags:	NO-STDSTOP COMPR-F
+		 subpars:	200
+		  verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname:   IPCN 
+	      longname:   International Publication Classification Non-Invention
+	     inputname:   IPCN
+	         flags:	NO-STDSTOP COMPR-F
+		 subpars:	100
+		  verify:	ANYTHING LINELEN=80
+
+\~
+
+          shortname:   CIPG
+	   longname:   Current International Patent Classification Group
+	  inputname:   CIPG
+	      flags: NO-STDSTOP COMPR-F
+            subpars: 300
+	        fli:   S  PARAS=300
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	      shortname:   CIPC
+	       longname:   Current International Patent Classification Class
+	      inputname:   CIPC
+	          flags:   NO-STDSTOP COMPR-F
+                subpars:   300
+	            fli: S  PARAS=300
+               verify:	ANYTHING LINELEN=80
+
+\~
+
+	      shortname:   CIPP 
+	       longname:   Current International Patent Classification Primary
+	      inputname:   CIPP
+	          flags:	NO-STDSTOP COMPR-F
+	        subpars:	200
+	            fli:   S PARAS=200
+               verify:	ANYTHING LINELEN=80
+
+\~
+
+	      shortname:   CIPS 
+	       longname:   Current International Patent Classification Secondary
+	      inputname:   CIPS
+	          flags:	NO-STDSTOP COMPR-F
+              subpars:	200
+	            fli:   S PARAS=200
+               verify:	ANYTHING LINELEN=80
+
+\~
+
+	      shortname:   CIPN 
+	       longname:   Current International Patent Classification Non-Invention
+	      inputname:   CIPN
+	          flags:	NO-STDSTOP COMPR-F
+              subpars:	200
+	            fli:   S  PARAS=200
+               verify:	ANYTHING LINELEN=80
+
+\~
+
+	      shortname: CIPR  
+            longname:   National Main Classification
+           inputname:	CIPR 
+               flags:	NO-STDSTOP COMPR-F
+	      subpars:   100
+              verify:	ANYTHING LINELEN=80
+
+\~           
+	   
+	   shortname: CISR   
+            longname:   National Further Classification
+           inputname:	CISR 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   500 
+              verify:	ANYTHING LINELEN=80
+	  
+\~
+	   
+	   shortname: CCPR   
+            longname:   Current US Classification, US Primary Class/Subclass
+           inputname:	CCPR 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   500
+	         fli:   S PARAS=500
+              verify:	ANYTHING LINELEN=80
+
+		
+\~
+	   shortname: CLSP   
+            longname:   Current US Classification, US Primary Class
+           inputname:	CLSP 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   500
+                 fli:   S PARAS=500
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: CCSR   
+            longname:   Current US Classification, US Secondary Class/Subclass
+           inputname:	CCSR 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   500 
+                 fli:   S PARAS=500
+              verify:	ANYTHING LINELEN=80
+
+ 
+ \~
+ 
+           shortname: CLSS   
+            longname:   Current US Classification, US Secondary Class
+           inputname:	CLSS 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   500
+                 fli:   S PARAS=500
+              verify:	ANYTHING LINELEN=80
+	  
+ \~
+          
+	  shortname: TTL
+            longname:	Invention Title 
+           inputname:	TTL
+               flags:	NO-STDSTOP ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-A
+             eoslist:	"#%#"
+              verify:	ANYTHING LINELEN=80
+
+\~		
+
+	   shortname: BLNM
+            longname:	US Botanic Latin Name 
+           inputname:	BLNM
+	      flags:	NO-STDSTOP DOUBLPOST BINDING COMPR-F
+	      verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: BVRF
+            longname:	US Botanic Variety 
+           inputname:	BVRF
+       	       flags:	NO-STDSTOP DOUBLPOST BINDING COMPR-F
+              verify:	ANYTHING LINELEN=80
+
+\~
+   
+	   shortname: RFPN 
+            longname:   Reference Cited Patent Document Number 
+           inputname:	RFPN 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   5000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RFKC 
+            longname:   Reference Cited Patent Document Kind Code    
+           inputname:	RFKC 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   5000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RFPD 
+            longname:   Reference Cited Patent Document Date 
+           inputname:	RFPD 
+               flags:	NO-STDSTOP VALUES COMPR-F
+             subpars:   5000
+              verify:	ANYTHING DATE-CHECK LINELEN=80
+
+\~
+	   
+	   shortname: RFCO 
+            longname:   Reference Cited Patent Document Country Code  
+           inputname:	RFCO 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   5000
+              verify:	ANYTHING LINELEN=80
+
+\~
+	   
+	   shortname: RFNM   
+            longname:   Reference Cited Patent Document Name
+           inputname:	RFNM  
+               flags:	NO-STDSTOP DOUBLPOST BINDING COMPR-F
+             subpars:   5000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RFNR
+	    longname:   Cited Patent Literature Reference Number
+	   inputname:   RFNR
+	       flags:   NO-STDSTOP COMPR-F
+	     subpars:   5000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RFON
+	    longname:   Cited Patent Literature Organization Name
+	   inputname:   RFON
+	       flags:   NO-STDSTOP DOUBLPOST BINDING COMPR-F
+	     subpars:   5000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RFAD
+	    longname:   Cited Patent Literature Address Information
+	   inputname:   RFAD
+	       flags:   NO-STDSTOP  COMPR-F
+	     subpars:   5000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RFIP
+	    longname:   Cited Patent Literature Classification IPC Primary
+	   inputname:   RFIP
+	       flags:   NO-STDSTOP COMPR-F
+	     subpars:   5000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+	
+	   shortname: RFRS
+            longname:   Reference Cited Patent Relevant Passage
+           inputname:	RFRS 
+               flags:	NO-STDSTOP COMPR-F
+             subpars:   5000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RFNP 
+            longname:   Reference Cited Others 
+           inputname:	RFNP 
+               flags:	NO-STDSTOP COMPR-F DOUBLPOST
+             subpars:   5000
+              verify:	ANYTHING LINELEN=80
+           
+\~
+	   
+	    
+	   shortname: RLAN
+	    longname:   US Related Document Number
+	   inputname:   RLAN
+               flags:   NO-STDSTOP COMPR-F
+             subpars:   2000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: COND
+	    longname:   Continuity Data 
+	   inputname:   COND
+               flags:   NO-STDSTOP COMPR-F
+             subpars:   2000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RLFD
+	    longname:   US Related Document Date 
+	   inputname:   RLFD
+               flags:   NO-STDSTOP VALUES COMPR-F
+             subpars:   2000
+          vparmnames:   RLAD
+	      verify:   ANYTHING DATE-CHECK LINELEN=80
+
+\~
+
+           shortname: RLPN
+            longname:	Related Application Patent Number
+           inputname:	RLPN
+               flags:	NO-STDSTOP COMPR-F VALUES
+             subpars:	2000
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RLKC
+	    longname:   US Related Document Kind Code
+	   inputname:   RLKC
+               flags:   NO-STDSTOP COMPR-F
+             subpars:   2000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RLAC
+	    longname:   US Related Document Country Code
+	   inputname:   RLAC
+               flags:   NO-STDSTOP COMPR-F
+             subpars:   2000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: RLPC
+	    longname:   US Related Document Parent Status
+	   inputname:   RLPC
+               flags:   NO-STDSTOP COMPR-F
+             subpars:   2000
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: PPNR
+            longname:   Prior Published Document Number
+	   inputname:   PPNR
+	       flags:   NO-STDSTOP COMPR-F
+	     subpars:   100
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: PPPD
+            longname:   Prior Published Document Date 
+	   inputname:   PPPD
+	       flags:   NO-STDSTOP COMPR-F VALUES
+	  vparmnames:   RLPD
+	     subpars:   100
+	      verify:   ANYTHING DATE-CHECK LINELEN=80
+
+\~
+
+	   shortname: PPKC
+            longname:   Prior Published Document Kind Code 
+	   inputname:   PPKC
+	       flags:   NO-STDSTOP COMPR-F
+	     subpars:   100
+	      verify:   ANYTHING LINELEN=80
+
+\~
+
+	   shortname: PPCC
+            longname:   Prior Published Document Country Code 
+	   inputname:   PPCC
+	       flags:   NO-STDSTOP COMPR-F
+	     subpars:   100
+	      verify:   ANYTHING LINELEN=80
+
+\~
+           shortname: PDID 
+            longname:   Prior Published Document Identifier 
+           inputname:	PDID 
+               flags:	NO-STDSTOP COMPR-F DOUBLPOST BINDING
+             subpars:   100
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: INNM
+            longname:	Inventor Name 
+           inputname:	INNM
+               flags:	NO-STDSTOP DOUBLPOST BINDING COMPR-F
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+
+\~
+        
+           shortname: INSA
+            longname:	Inventor Street Address
+           inputname:	INSA
+               flags:	NO-STDSTOP  COMPR-F
+             subpars:	100
+             default:   N/A
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: INCI
+            longname:   Inventor City 
+           inputname:	INCI
+               flags:	NO-STDSTOP COMPR-F DOUBLPOST BINDING
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+
+           shortname: INST
+            longname:   Inventor State 
+           inputname:	INST
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: INCO
+            longname:   Inventor Country 
+           inputname:	INCO
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: INIF
+            longname:   Inventor Information Group 
+           inputname:	INIF
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: APIF
+            longname:   Applicant Information Group 
+           inputname:	APIF
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+
+\~
+           shortname: INCS
+            longname:   Inventor Citizenship  
+           inputname:	INCS
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: INGP
+            longname:	Inventor Group
+           inputname:	INGP
+               flags:	NO-STDSTOP DOUBLPOST COMPR-F
+             subpars:	100
+              verify:	ANYTHING LINELEN=80
+\~
+
+           shortname: ASGP
+            longname:	Assignee Group
+           inputname:	ASGP
+               flags:	NO-STDSTOP DOUBLPOST COMPR-F
+             subpars:	50
+	     eoslist:	"#%#"
+              verify:	ANYTHING LINELEN=80
+\~
+
+           shortname: CORR
+            longname:	Correspondence Address
+	    inputname:	CORR
+               flags:	NO-STDSTOP COMPR-F 
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+        
+           shortname: ASNP
+            longname:	Assignee Name
+           inputname:	ASNP
+               flags:	NO-STDSTOP COMPR-F DOUBLPOST BINDING
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: ASNM
+            longname:	Assignee Organization Name
+           inputname:	ASNM
+               flags:	NO-STDSTOP COMPR-F DOUBLPOST BINDING
+             subpars:	50
+	     eoslist:   "#%#"
+              verify:	ANYTHING LINELEN=80
+
+
+\~ 
+
+           shortname: ASSA
+            longname:	Assignee Address
+           inputname:	ASSA
+               flags:	NO-STDSTOP COMPR-F 
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+
+\~ 
+	   shortname: ASCI
+            longname:	Assignee City
+           inputname:	ASCI
+               flags:	NO-STDSTOP BINDING COMPR-F DOUBLPOST
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: ASST
+            longname:	Assignee State
+           inputname:	ASST
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: ASCO
+            longname:	Assignee Country
+           inputname:	ASCO
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: ASPC
+            longname:	Assignee Postal Code
+           inputname:	ASPC
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+
+           shortname: ASTC
+            longname:	Assignee Type Code
+           inputname:	ASTC
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+           shortname: AAAT
+            longname:	Applicant Authority Type
+           inputname:	AAAT
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: AANM
+            longname: Applicant Name
+           inputname: AANM
+               flags: NO-STDSTOP COMPR-F DOUBLPOST BINDING
+             subpars: 50
+             eoslist: "#%#"
+              verify: ANYTHING LINELEN=80
+
+\~
+
+           shortname: AACI
+            longname:	Applicant City
+           inputname:	AACI
+               flags:	NO-STDSTOP BINDING COMPR-F DOUBLPOST
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: AAST
+            longname:	Applicant State
+           inputname:	AAST
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: AACO
+            longname:	Applicant Country
+           inputname:	AACO
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: AAZP
+	    longname:	Applicant Zip Code
+           inputname:	AAZP
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	50
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: AATX
+            longname:	Applicant Descriptive Text
+           inputname:	AATX
+               flags:	NO-STDSTOP ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-F
+             subpars:	50
+             eoslist:	". "
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: AAGP
+            longname:	Applicant Group
+           inputname:	AAGP
+               flags:	NO-STDSTOP DOUBLPOST COMPR-F
+             subpars:	50
+             eoslist:	"#%#"
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: DDEP
+            longname:   Biological Deposit Information 	
+           inputname:	DDEP
+               flags:	NO-STDSTOP COMPR-F 
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: DDAN
+            longname:	Deposit Accession Number 
+           inputname:	DDAN
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: DDDS 
+            longname:	Deposit Description
+           inputname:	DDDS 
+               flags:	NO-STDSTOP ALTSTOP2 ALTPOST COMPR-A DOUBLPOST NO-POSSESS 
+	       eoslist:   ". "
+              verify:	ANYTHING LINELEN=80
+
+\~
+           
+	   shortname: PCAN 
+            longname:	PCT Filing Document Number 
+           inputname:	PCAN 
+               flags:	NO-STDSTOP COMPR-F
+	      subpars:	5
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PCAC 
+            longname:   PCT Filing Document Country Code	
+           inputname:	PCAC 
+               flags:	NO-STDSTOP COMPR-F
+	      subpars:	5
+              verify:	ANYTHING LINELEN=80
+
+\~
+	  
+          shortname: PCAK 
+            longname:   PCT Filing Document Kind Code	
+           inputname:	PCAK 
+               flags:	NO-STDSTOP COMPR-F
+	      subpars:	5
+              verify:	ANYTHING LINELEN=80
+
+\~
+	  
+	   shortname: PCAD 
+            longname:   PCT Filing Document Date 
+           inputname:	PCAD 
+               flags:	NO-STDSTOP VALUES COMPR-F
+          vparmnames:   PTAD
+             subpars:	5
+              verify:	ANYTHING DATE-CHECK LINELEN=80
+
+\~
+
+           shortname: PCDV
+            longname:	PCT Filing 371 Date
+           inputname:	PCDV
+               flags:	NO-STDSTOP VALUES COMPR-F
+          vparmnames:	PT3D
+	      subpars:	5
+              verify:	ANYTHING DATE-CHECK LINELEN=80
+
+\~
+	   
+	   shortname: PCCO  
+            longname:	PCT Publication Country Code 
+           inputname:	POAC 
+               flags:	NO-STDSTOP COMPR-F
+	      subpars:	5
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: PCPN
+            longname:	PCT Publication Document  Number
+           inputname:	POAN
+               flags:	NO-STDSTOP COMPR-F
+	      subpars:	5
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: PCKC 
+            longname:	PCT Publication Kind Code 
+           inputname:	POAK 
+               flags:	NO-STDSTOP COMPR-F
+	      subpars:	5
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+            
+	   shortname: PCPD
+            longname:   PCT Document Publication Date 
+           inputname:	POAD 
+               flags:	NO-STDSTOP VALUES COMPR-F
+          vparmnames:   PTPD
+	      subpars:   5
+              verify:	ANYTHING DATE-CHECK LINELEN=80
+
+
+\~
+
+           shortname: TDID  
+            longname:	PCT Publication Document Identifier
+           inputname:	TDID 
+               flags:	NO-STDSTOP COMPR-F DOUBLPOST BINDING
+	     subpars:   10	
+              verify:	ANYTHING LINELEN=80
+
+\~
+	   
+           shortname: ADOI
+            longname:	Object ID 
+           inputname:	ADOI
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	10
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: ADOD
+            longname:	Object Description 
+           inputname:	ADOD
+               flags:	NO-STDSTOP ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-F
+             subpars:	10
+             eoslist:	". "
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: ADOC
+            longname:	Object Contents 
+           inputname:	ADOC
+               flags:	NO-STDSTOP ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-F
+             subpars:	10
+             eoslist:	". "
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: SQTX
+            longname:   Sequences List Text 
+           inputname:	SQTX
+               flags:	NO-STDSTOP ALTSTOP2 ALTPOST DOUBLPOST NO-POSSESS COMPR-F
+             subpars:	1350
+             eoslist:   ". "
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	     shortname: BSTX
+            longname:	Brief Summary Text 
+           inputname:	BSTX
+               flags:	NO-STDSTOP ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-A ALTPOST
+             subpars:	10000
+             eoslist:	". "
+              verify:	ANYTHING LINELEN=80
+
+\~ //SRP added for summary-of-invention
+
+
+	    shortname: CRTX
+            longname:	Cross Reference To Related Applications
+           inputname:	CRTX
+               flags:	NO-STDSTOP ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-F
+             subpars:	10000
+             eoslist:	". "
+              verify:	ANYTHING LINELEN=80
+
+
+\~ 
+	    shortname: GOTX
+            longname:	Federal Research Statement 
+           inputname:	GOTX
+               flags:	NO-STDSTOP ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-F ALTPOST
+             subpars:	200
+             eoslist:	". "
+              verify:	ANYTHING LINELEN=80
+
+
+\~ SRP DETX --20000 (NOW DETX-12000 BSTX-6000 CRTX-1000 GOTX-1000 )
+
+
+           shortname: DETX
+            longname:   Description of Disclosure
+           inputname:	DETX
+               flags:	NO-STDSTOP ALTPOST ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-A
+             subpars:	10000000
+             eoslist:   ". "
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	    shortname: CLTX
+            longname:  Claims Text 
+           inputname:	CLTX
+               flags:	NO-STDSTOP ALTPOST ALTSTOP2 DOUBLPOST NO-POSSESS COMPR-A
+             subpars:	10000
+             eoslist:   ". ","; "
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: CLST
+            longname:	Claim Statement
+           inputname:	CLST
+               flags:	NO-SEARCH COMPR-F
+             subpars:	2
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: SQNB
+	    longname:   Sequence CWU
+	   inputname:   SQNB
+               flags:   NO-STDSTOP COMPR-F
+	     subpars:   125
+	      verify:   ANYTHING  LINELEN=80
+\~
+
+
+           shortname: SQOR
+	    longname:   Sequence List Old Rules
+	   inputname:   SQOR
+	       flags:   NO-SEARCH COMPR-F
+             subpars:   100
+	      verify:   ANYTHING  LINELEN=80
+
+\~
+   
+           shortname: SQNR
+	    longname:   Sequence List New Rules
+	   inputname:   SQNR
+	       flags:   NO-SEARCH COMPR-F
+             subpars:   100
+	      verify:   ANYTHING DATE-CHECK LINELEN=80
+
+
+\~
+
+           shortname:   FMID
+	    longname:   Aux Family Identifier  Temporary place holder	
+	   inputname:   FMID
+	       flags:	NO-STDSTOP COMPR-F
+		 fli:   S 
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname:   FMBG
+	    longname:   Aux Family Members Group Temporary place holder	
+	   inputname:   FMBG
+	       flags:	NO-STDSTOP COMPR-F
+	     subpars:	20
+                 fli:	S PARAS=20		 
+              verify:	ANYTHING LINELEN=80                          
+          
+\~
+
+           shortname:   FMBI
+	    longname:   Aux Family Members Image Available Indicator Temp place holder	
+	   inputname:   FMBI
+	       flags:	NO-STDSTOP COMPR-F
+                 fli:	S	 
+              verify:	ANYTHING LINELEN=80
+\~           
+                           
+ 	   shortname:   SUPB
+	    longname:   Aux Subsequent Publication Indicator  Temporary place holder	
+	   inputname:   SUPB
+	       flags:	NO-STDSTOP COMPR-F
+                 fli:	S		 
+              verify:	ANYTHING LINELEN=80         
+\~           
+                           
+ 	   shortname:   CUAS
+	    longname:   Aux Current Assignee Temporary place holder	
+	   inputname:   CUAS
+	       flags:	NO-STDSTOP COMPR-F
+                 fli:	S		 
+              verify:	ANYTHING LINELEN=80        
+          
+\~
+
+           shortname: SIZE
+            longname:   Document Byte Size  
+           inputname:	SIZE
+               flags:	NO-STDSTOP VALUES COMPR-F
+              verify:	ANYTHING LINELEN=80
+	  
+\~
+
+           shortname: ICPG 
+            longname:   ICE XML Indicator  
+           inputname:   ICPG	
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+             default:   Y 
+\~
+
+           shortname: DSRC
+            longname:   Data Source  
+           inputname:	DSRC
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+             default:   PG
+
+\~
+	   
+	   shortname: DBNM
+            longname:   Database Name 
+           inputname:	DBNM
+               flags:	NO-STDSTOP COMPR-F
+              verify:	ANYTHING LINELEN=80
+             default:   PGPB
+
+\~
+\~
+\~
+
+          shortname: SEC
+            longname:   Supplemental Examination Flag
+           inputname:	SEC
+               flags:	NO-STDSTOP COMPR-F
+		 fli:	S
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+          shortname: PTC
+            longname:   PTAB Certificate Flag
+           inputname:	PTC
+               flags:	NO-STDSTOP COMPR-F
+		 fli:	S
+              verify:	ANYTHING LINELEN=80
+
+\~
+\~
+
+	   shortname:   CLOI 
+            longname:   CPC Original Inventive Class
+           inputname:   CLOI
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	400
+	      verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname:   CLOA 
+            longname:   CPC Original Additional Class
+           inputname:   CLOA
+               flags:	NO-STDSTOP COMPR-F
+             subpars:	400
+	      verify:	ANYTHING LINELEN=80
+
+\~
+
+	   shortname: CPOI
+            longname:	CPC Original Inventive Classification
+           inputname:	CPOI
+               flags:	NO-STDSTOP DOUBLPOST COMPR-F
+             subpars:	100
+		 fli:   D PARAS=100
+              verify:	ANYTHING LINELEN=80
+
+\~
+
+           shortname: CPOA
+            longname:	CPC Original Additional Classification
+           inputname:	CPOA
+               flags:	NO-STDSTOP DOUBLPOST COMPR-F
+             subpars:	300
+		 fli:   D PARAS=30
+              verify:	ANYTHING LINELEN=80
+\~
+
+           shortname:   CPOG 
+            longname:   CPC Original Classification Group	
+           inputname:   CPOG
+               flags:	NO-STDSTOP DOUBLPOST COMPR-F
+             subpars:	400
+	      verify:	ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   CPLI
+	      longname:   CPC Current Inventive Class
+	     inputname:   CPLI
+	         flags:	  NO-STDSTOP COMPR-F
+               subpars:	  300
+	           fli:   S  PARAS=300
+                verify:	  ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   CPLA
+	      longname:   CPC Current Additional Class
+	     inputname:   CPLA
+	         flags:	  NO-STDSTOP COMPR-F
+               subpars:	  500
+	           fli:   S  PARAS=500
+                verify:	  ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   CPCI 
+	      longname:   CPC Current Inventive Classification 
+	     inputname:   CPCI
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+	       subpars:	  500
+	           fli:   S PARAS=500 
+                verify:	  ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   CPCA 
+	      longname:   CPC Current Additional Classification 
+	     inputname:   CPCA
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  500 
+	           fli:   S PARAS=500
+                verify:	  ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   CPCG
+	      longname:   CPC Current Classification Group
+	     inputname:   CPCG
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  300
+	           fli:   S  PARAS=300
+                verify:	  ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   CCCO 
+	      longname:   CPC Combination Classification Original 
+	     inputname:   CCCO
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  500 
+	           fli:   S  PARAS=500 
+                verify:	  ANYTHING LINELEN=80
+
+\~
+
+	     shortname:   CCCC 
+	      longname:   CPC Combination Classification Current 
+	     inputname:   CCCC
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  500 
+	           fli:   S  PARAS=500 
+                verify:	  ANYTHING LINELEN=80
+
+\~
+	     shortname:   CISO 
+	      longname:   CPC CIS Classification Original 
+	     inputname:   CISO
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  100 
+	           fli:   S  PARAS=100 
+                verify:	  ANYTHING LINELEN=80
+
+\~
+	     shortname:   CISI 
+	      longname:   CPC CIS Classification Current 
+	     inputname:   CISI
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  100 
+	           fli:   S  PARAS=100 
+                verify:	  ANYTHING LINELEN=80
+
+\~
+\~
+	     shortname:   CPCC 
+	      longname:   CPC Combination Set Current 
+	     inputname:   CPCC
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  500 
+	           fli:   S  PARAS=500 
+                verify:	  ANYTHING LINELEN=80
+
+\~
+\~
+	     shortname:   CPCT 
+	      longname:   CPC Combination Tally Current 
+	     inputname:   CPCT
+	         flags:	  NO-STDSTOP DOUBLPOST COMPR-F
+               subpars:	  500 
+	           fli:   S  PARAS=500 
+                verify:	  ANYTHING LINELEN=80
+
+\~
+
+\~
+\~	Equivalences for US Pre-Grant Publication Database
+\~
+
+
+           shortname: AD
+         equivalence:	APD
+
+           shortname: PN
+         equivalence:	PGNR
+
+           shortname: AB
+         equivalence:	ABTX
+
+           shortname: BI
+         equivalence:	ABTX,CLTX,TTL,DETX,BSTX,CRTX,GOTX
+
+           shortname: BIC
+         equivalence:	TTL,ABTX,CLTX
+
+           shortname: BIS
+         equivalence:	DETX,BSTX
+
+           shortname: IPCR 
+         equivalence:	CIPN,CIPP,CIPS
+
+	shortname: BSUM
+        equivalence:	BSTX
+
+	 shortname: CICL
+	  equivalence: CIPC
+
+           shortname: CPA
+         equivalence:	APCP
+
+	    shortname: GI
+         equivalence:	GOTX
+
+
+           shortname: TI
+         equivalence:	TTL
+
+           shortname: PD
+         equivalence:	PGPD
+
+           shortname: PY
+         equivalence:	PGPY
+
+           shortname: AY
+         equivalence:	APY
+
+           shortname: FY
+         equivalence:	APY
+
+           shortname: FD
+         equivalence:	APD
+
+           shortname: CC
+         equivalence:	PGCO
+
+           shortname: PC
+         equivalence:	PGCO
+
+           shortname: INCC
+         equivalence:	INCO
+
+           shortname: ASCC
+         equivalence:	ASCO
+
+           shortname: ASN
+         equivalence:	ASNM,ASNP
+
+           shortname: AS
+         equivalence:	ASNM,ASNP
+
+           shortname: ASZP
+         equivalence:	ASPC
+
+           shortname: INV
+         equivalence:	INNM
+
+           shortname: IN
+         equivalence:	INNM 
+
+           shortname: R47X
+         equivalence:	INIR
+
+           shortname: RFN
+         equivalence:	RFNM,RFON
+
+           shortname: IPC   
+         equivalence:	IPCS,IPCP,IPCN
+
+           shortname: IPCO
+         equivalence:	IPCP
+
+           shortname: IPCX
+         equivalence:	IPCS
+
+           shortname: IOR
+         equivalence:	CIPR
+
+           shortname: CIOR
+         equivalence:	CIPR
+
+           shortname: CIXR
+         equivalence:	CISR
+
+           shortname: IXR
+         equivalence:	CISR
+
+           shortname: ICLS
+         equivalence:	CIPR, CISR
+
+           shortname: CCOR
+         equivalence:	CCPR
+
+           shortname: COR
+         equivalence:	CCPR
+
+           shortname: CCXR
+         equivalence:	CCSR
+
+           shortname: CXR
+         equivalence:	CCSR
+
+           shortname: CCLS
+         equivalence:	CCPR, CCSR
+
+           shortname: PRY
+         equivalence:	PRAY
+
+           shortname: PTAD
+         equivalence:   PCAD
+
+           shortname: PTFD
+         equivalence:   PCAD
+ 
+           shortname: PCFD
+         equivalence:   PCAD
+
+           shortname: PTPN
+         equivalence:   PCPN
+
+           shortname: PTAC
+         equivalence:   PCAC
+
+           shortname: PTAT
+         equivalence:   PCAK
+
+           shortname: PTPD
+         equivalence:    PCPD
+
+            shortname: PTKD
+          equivalence:    PCKC
+
+            shortname: PTCO
+          equivalence:    PCCO
+
+            shortname: PTCC
+          equivalence:    PCCO
+
+            shortname: PRC
+          equivalence:	PRCO
+
+	    shortname:  PRCC
+	    equivalence:   PRCO
+
+	    shortname: PARN
+          equivalence:   CRTX
+
+
+           shortname: PRD
+         equivalence:	PRAD
+
+           shortname: PRIR
+         equivalence:	PRAI
+
+           shortname: PRN
+         equivalence:	PRAN
+
+           shortname: PCT
+         equivalence:	PCAN
+
+           shortname: PTAN
+         equivalence:	PCAN
+
+           shortname: PT3D
+         equivalence:	PCDV
+
+           shortname: RLAT
+         equivalence:   RLKC
+
+           shortname: RLAD
+         equivalence:   RLFD
+
+       	   shortname: RLPD
+ 	 equivalence:   PPPD
+
+	   shortname: RLKD
+	 equivalence:   PPKC
+
+           shortname: RLCO
+	 equivalence:   PPCC
+
+           shortname: RLCC
+         equivalence:   PPCC
+
+           shortname: SEQ
+         equivalence:	SQTX
+
+           shortname: DETD
+         equivalence:	DETX
+
+           shortname: CLM
+         equivalence:	CLTX
+
+           shortname: AP
+         equivalence:	APN
+
+           shortname: BOTN
+         equivalence:	BLNM
+
+           shortname: BOTV
+         equivalence:	BVRF
+
+           shortname: KD
+         equivalence:	PGKC
+
+           shortname: AT
+         equivalence:	PGKC
+
+           shortname: RFKD
+         equivalence:	RFKC
+
+           shortname: RFCC
+         equivalence:	RFCO
+
+           shortname: INPC
+         equivalence:	INSA
+
+           shortname: INZP
+         equivalence:	INSA
+
+           shortname: CLAS
+	 equivalence:   CLSP,CLSS
+
+           shortname: CPCL
+	 equivalence:   CPLI,CPLA
+
+           shortname: CPC
+	 equivalence:   CPCI,CPCA,CPCT
+
+
+
+\~
+\~	List Entries
+\~
+
+noiselist:
+	","
+	"'"
+:end
+
+
+altstoplist1:
+N/A
+:end
+
+altstoplist2:
+	@PTOWORDS
+:end
+
+abbrevlist:
+	@ABBLISTZ
+:end
+
+
+\~
+\~	Compression Information
+\~
+
+
+charlevel1:	"\001\002\003\005\n \",-eorty\006Rbdhlnsux"
+
+charlevel2:	"\001\002\003\006 ,.aeinopt\n01279NScdfhlrsu"
+
+charlevel3:	"\001\002\005\n ()-./1bsu023CR[]aeilnoprt"
+
+charlevel4:	"\001\002\005\n-0123459JP ./678ABDEFGIRTU"
+
+charlevel5:	"\001\002\005\n/0123459AN-678"
+
+charlevel6:	"\001\002\005\n/ADEFJNPRX23BCGHIKLMOSTUWZ"
+
+charlevel7:	"\001\002\005\n/ACILMNOTYDEFGHJKPRSUVWXZ"
+
+charlevel8:	"\001\002\005\n ./1ANaert.RSdhilnos"
+
+charlevel9:	"\001\002\005\n 014578ASU2369DEHPR"
+
+wordlevel:	A
+:end

@@ -83,23 +83,48 @@ public class Description {
 		return stb.toString();
 	}
 
-	public String getAllProcessedText() {
+	public String getAllPlainText() {
 		StringBuilder stb = new StringBuilder();
 
 		for (DescriptionSection sec : sections) {
-			stb.append(sec.getProcessedText()).append("\n");
+			stb.append(sec.getPlainText()).append("\n");
 		}
 
 		return stb.toString();
 	}
 
-	public String getProcessedText(DescSection... descSections) {
+	public String getPlainText(DescSection... descSections) {
 		StringBuilder stb = new StringBuilder();
 
 		for (DescSection decSec : descSections) {
 			for (DescriptionSection sec : sections) {
 				if (sec.getSection().equals(decSec)) {
-					stb.append(sec.getProcessedText()).append("\n");
+					stb.append(sec.getPlainText()).append("\n");
+				}
+			}
+		}
+
+		return stb.toString();
+	}
+
+	public String getSimpleHtml() {
+		StringBuilder stb = new StringBuilder();
+
+		for (DescriptionSection sec : sections) {
+				stb.append(sec.getSimpleHtml()).append("\n");
+		}
+
+		return stb.toString();
+	}
+
+	
+	public String getSimpleHtml(DescSection... descSections) {
+		StringBuilder stb = new StringBuilder();
+
+		for (DescSection decSec : descSections) {
+			for (DescriptionSection sec : sections) {
+				if (sec.getSection().equals(decSec)) {
+					stb.append(sec.getSimpleHtml()).append("\n");
 				}
 			}
 		}

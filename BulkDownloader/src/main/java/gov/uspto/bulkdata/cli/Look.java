@@ -20,8 +20,8 @@ import org.dom4j.io.XMLWriter;
 import gov.uspto.bulkdata.DumpFileAps;
 import gov.uspto.bulkdata.DumpFileXml;
 import gov.uspto.bulkdata.DumpReader;
-import gov.uspto.bulkdata.zip.FileFilter;
-import gov.uspto.bulkdata.zip.SuffixRule;
+import gov.uspto.common.file.filter.FileFilterChain;
+import gov.uspto.common.file.filter.SuffixFileFilter;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.DocumentId;
@@ -139,7 +139,7 @@ public class Look {
 				//System.out.println("ABSTRACT:\t" + patent.getAbstract());
 				break;
 			case "description":
-				writer.write("DESCRIPTION:\t" + patent.getDescription().getAllProcessedText() + "\n");
+				writer.write("DESCRIPTION:\t" + patent.getDescription().getAllPlainText() + "\n");
 				writer.flush();
 				//System.out.println("DESCRIPTION:\t" + patent.getDescription().getPlainText());
 				break;
@@ -261,9 +261,9 @@ public class Look {
 			dumpReader = new DumpFileAps(inputFile);
 		}
 
-		FileFilter filter = new FileFilter();
-		//filter.addRule(new SuffixRule("xml"));
-		//filter.addRule(new SuffixRule("txt"));
+		FileFilterChain filter = new FileFilterChain();
+		//filter.addRule(new SuffixFileFilter("xml"));
+		//filter.addRule(new SuffixFileFilter("txt"));
 		dumpReader.setFileFilter(filter);
 
 		dumpReader.open();

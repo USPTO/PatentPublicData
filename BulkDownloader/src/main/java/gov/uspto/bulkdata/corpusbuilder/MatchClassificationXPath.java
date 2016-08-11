@@ -1,6 +1,5 @@
 package gov.uspto.bulkdata.corpusbuilder;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -8,9 +7,8 @@ import javax.xml.xpath.XPathExpressionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gov.uspto.bulkdata.PatternMatcher;
-import gov.uspto.bulkdata.PatternXPath;
-import gov.uspto.patent.PatentReaderException;
+import gov.uspto.bulkdata.find.PatternMatcher;
+import gov.uspto.bulkdata.find.PatternXPath;
 import gov.uspto.patent.PatentType;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.ClassificationType;

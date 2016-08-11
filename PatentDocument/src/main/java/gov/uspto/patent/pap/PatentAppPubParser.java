@@ -138,10 +138,10 @@ public class PatentAppPubParser extends Dom4JParser {
 				System.out.println(count++ + " " + subfile.getAbsolutePath());
 				PatentAppPubParser papXml = new PatentAppPubParser();
 				Patent patent = papXml.parse(subfile);
-				if (patent.getAbstract().getProcessedText().length() < 90) {
+				if (patent.getAbstract().getPlainText().length() < 90) {
 					System.err.println("Abstract too small.");
 				}
-				if (patent.getDescription().getAllProcessedText().length() < 400) {
+				if (patent.getDescription().getAllPlainText().length() < 400) {
 					System.err.println("Description to small.");
 				}
 				//System.out.println(patent.toString());
