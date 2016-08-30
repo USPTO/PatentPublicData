@@ -1,6 +1,6 @@
 # Patent Document Parser
 
-All patent document formats parse into a single common Patent model.  Field validation is applied to many fields, where invalid values and their document fragment are logged.  Flexibility and completeness is stressed over efficiency. 
+All patent document formats from 1976 to current parse into a single common Patent model.  Field validation is applied to many fields, where invalid values and their document fragment are logged.  Flexibility and completeness is stressed over efficiency. 
 
 ## Formats
 
