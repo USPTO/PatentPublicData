@@ -72,7 +72,7 @@ public class Look {
 			if (fields.length == 1 && "xml".equalsIgnoreCase(fields[0])) {
 				show(null, fields, writer);
 			} else {
-				try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentType())) {
+				try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentDocFormat())) {
 					Patent patent = patentReader.read();
 					show(patent, fields, writer);
 				}
@@ -92,7 +92,7 @@ public class Look {
 				break;
 			}
 
-			try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentType())) {
+			try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentDocFormat())) {
 				Patent patent = patentReader.read();
 				if (patent.getDocumentId().toText().equals(docId)) {
 					show(patent, fields, writer);

@@ -17,14 +17,14 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import gov.uspto.common.file.archive.ZipReader;
-import gov.uspto.patent.PatentType;
-import gov.uspto.patent.PatentTypeDetect;
+import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentDocFormatDetect;
 
 public abstract class DumpFile implements Iterator<String>, Closeable, DumpReader {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFile.class);
 
 	private final File file;
-	private PatentType patentType;
+	private PatentDocFormat patentDocFormat;
 
 	private ZipReader zipFile;
 	private BufferedReader reader;
@@ -39,8 +39,8 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 		this.file = file;
 	}
 
-	public void setPatentType(PatentType patentType){
-		this.patentType = patentType;
+	public void setPatentDocFormat(PatentDocFormat patentDocFormat){
+		this.patentDocFormat = patentDocFormat;
 	}
 
 	public void setFileFilter(FileFilter filter){
@@ -57,7 +57,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 			reader = new BufferedReader(new FileReader(file));
 		}
 
-		patentType = new PatentTypeDetect().fromContent(reader);
+		patentDocFormat = new PatentDocFormatDetect().fromContent(reader);
 	}
 	
 	@Override
@@ -90,8 +90,8 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	}
 
 	@Override
-	public PatentType getPatentType() {
-		return patentType;
+	public PatentDocFormat getPatentDocFormat() {
+		return patentDocFormat;
 	}
 
 	protected BufferedReader getReader(){

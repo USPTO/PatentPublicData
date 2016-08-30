@@ -24,7 +24,8 @@ import gov.uspto.patent.TextProcessor;
  */
 public class FormattedText implements TextProcessor {
 
-	private static final String[] HTML_WHITELIST = new String[] { "p", "table", "tr", "td" }; // "ul", "li"
+	private static final String[] HTML_WHITELIST = new String[] { "p", "table", "tr", "td", "span" }; // "ul", "li"
+    private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "text" };
 
 	@Override
 	public String getPlainText(String rawText) {
@@ -116,11 +117,21 @@ public class FormattedText implements TextProcessor {
 		}
 
 		for (Element element : jsoupDoc.select("cross-reference")) {
-			element.replaceWith(new TextNode("Patent-Figure", null));
+            element.tagName("span");
+            element.addClass("figref");
+            String text = element.text();
+            element.attr("text", text);
+            element.text("Patent-Figure");
+			//element.replaceWith(new TextNode("Patent-Figure", null));
 		}
 
 		for (Element element : jsoupDoc.select("dependent-claim-reference")) {
-			element.replaceWith(new TextNode("Patent-Claim", null));
+            element.addClass("claim");
+            String text = element.text();
+            element.attr("text", text);
+            element.text("Patent-Claim");
+            element.tagName("span");
+			//element.replaceWith(new TextNode("Patent-Claim", null));
 		}
 
 		// Remove Paragraph Numbers.
@@ -149,6 +160,7 @@ public class FormattedText implements TextProcessor {
 		// Whitelist whitelist = Whitelist.simpleText();
 		Whitelist whitelist = Whitelist.none();
 		whitelist.addTags(HTML_WHITELIST);
+        whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
 
 		OutputSettings outSettings = new Document.OutputSettings();
 		outSettings.charset(Charsets.UTF_8);

@@ -31,8 +31,8 @@ import gov.uspto.bulkdata.cli2.BulkData;
 import gov.uspto.bulkdata.cli2.BulkDataType;
 import gov.uspto.bulkdata.downloader.DownloadJob;
 import gov.uspto.patent.PatentReaderException;
-import gov.uspto.patent.PatentType;
-import gov.uspto.patent.PatentTypeDetect;
+import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
@@ -154,9 +154,9 @@ public class Corpus {
 		DownloadJob job = downloader.download(currentbulkFileUrl);
 		File currentFile = job.getDownloadTasks().get(0).getOutFile();
 
-		PatentType patentType = new PatentTypeDetect().fromFileName(currentFile);
+		PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(currentFile);
 
-		switch(patentType){
+		switch(patentDocFormat){
 		case Greenbook:
 			currentBulkFile = new DumpFileAps(currentFile);
 			break;
@@ -182,7 +182,7 @@ public class Corpus {
 				}
 
 				try {
-					if (corpusMatch.on(docStr, currentBulkFile.getPatentType()).match()) {
+					if (corpusMatch.on(docStr, currentBulkFile.getPatentDocFormat()).match()) {
 						LOGGER.info("Found matching:[{}] at {}:{} ; matched: {}", getWriteCount() + 1,
 								currentBulkFile.getFile().getName(), currentBulkFile.getCurrentRecCount(),
 								corpusMatch.getLastMatchPattern());

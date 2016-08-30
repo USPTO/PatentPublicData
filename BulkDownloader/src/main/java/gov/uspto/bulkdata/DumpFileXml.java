@@ -25,7 +25,7 @@ public class DumpFileXml extends DumpFile {
 	@Override
 	public void open() throws IOException {
 		super.open();
-		String xmlTag = super.getPatentType().getParentElement();
+		String xmlTag = super.getPatentDocFormat().getParentElement();
 		this.xmlStartTag = "<" + xmlTag;
 		this.xmlEndTag = "</" + xmlTag;
 	}

@@ -53,6 +53,8 @@ public class ZipReader implements Iterator<Reader>, Closeable {
 	public ZipReader(File zipfile, FileFilter filter) {
 		Preconditions.checkArgument(zipfile.isFile() || zipfile.getName().endsWith("zip"),
 				"Input file is not a zipfile: " + zipfile.getAbsolutePath());
+	      Preconditions.checkNotNull(filter, "FileFilter can not be null.");
+
 		this.file = zipfile;
 		this.filter = filter;
 	}

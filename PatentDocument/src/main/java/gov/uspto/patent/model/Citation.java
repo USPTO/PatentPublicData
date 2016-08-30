@@ -1,6 +1,12 @@
 package gov.uspto.patent.model;
 
 /**
+ * 
+ * 
+ * WIPO 3.14
+ * 
+ * 
+ * 
  * A reference to a document considered relevant to the examination of a patent application. 
  * Citations may be made by the inventor, applicant, but most tend to be made by the examiner.
  * Examiner citations are generally more limiting in scope.

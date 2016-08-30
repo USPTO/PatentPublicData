@@ -32,7 +32,7 @@ import gov.uspto.patent.xml.GrantParser;
 public class PatentReader implements Closeable {
 
 	private final Reader reader;
-	private PatentType patentType;
+	private PatentDocFormat patentDocFormat;
 
 	/**
 	 * Load Reader
@@ -40,11 +40,11 @@ public class PatentReader implements Closeable {
 	 * @param reader
 	 * @param PatentType
 	 */
-	public PatentReader(Reader reader, PatentType patentType) {
+	public PatentReader(Reader reader, PatentDocFormat patentDocFormat) {
 		Preconditions.checkNotNull(reader, "reader can not be Null");
-		Preconditions.checkNotNull(patentType, "patentType can not be Null");
+		Preconditions.checkNotNull(patentDocFormat, "patentType can not be Null");
 		this.reader = reader;
-		this.patentType = patentType;
+		this.patentDocFormat = patentDocFormat;
 	}
 
 	/**
@@ -53,8 +53,8 @@ public class PatentReader implements Closeable {
 	 * @param xmlString
  	 * @param PatentType
 	 */
-	public PatentReader(CharSequence rawDocString, PatentType patentType) {
-		this(new StringReader(rawDocString.toString()), patentType);
+	public PatentReader(CharSequence rawDocString, PatentDocFormat patentDocFormat) {
+		this(new StringReader(rawDocString.toString()), patentDocFormat);
 	}
 
 	/**
@@ -65,8 +65,8 @@ public class PatentReader implements Closeable {
 	 * @return
 	 * @throws IOException 
 	 */
-	public PatentReader(File file, PatentType patentType) throws IOException {
-		this(new FileReader(file), patentType);
+	public PatentReader(File file, PatentDocFormat patentDocFormat) throws IOException {
+		this(new FileReader(file), patentDocFormat);
 	}
 
 	/**
@@ -77,8 +77,8 @@ public class PatentReader implements Closeable {
 	 * @return
 	 * @throws IOException 
 	 */
-	public PatentReader(InputStream inputStream, PatentType patentType) throws IOException {
-		this(new InputStreamReader(inputStream), patentType);
+	public PatentReader(InputStream inputStream, PatentDocFormat patentDocFormat) throws IOException {
+		this(new InputStreamReader(inputStream), patentDocFormat);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class PatentReader implements Closeable {
 	 * @throws IOException 
 	 */
 	public Patent read() throws PatentReaderException, IOException {
-		switch (patentType) {
+		switch (patentDocFormat) {
 		case Greenbook:
 			return new Greenbook().parse(reader);
 		case RedbookApplication:
@@ -133,7 +133,7 @@ public class PatentReader implements Closeable {
 	 * @throws PatentReaderException
 	 */
 	public static Document getJDOM(Reader reader) throws PatentReaderException {
-		try {	
+		try {
 			SAXReader sax = new SAXReader(false);
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 			return sax.read(reader);

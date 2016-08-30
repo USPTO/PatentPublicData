@@ -1,15 +1,28 @@
 # Patent Document Parser
 
-All patent document formats parse into a single common Patent model.  Field validation is applied to many fields, where invalid values and their document fragment are logged.  Flexibility and completeness is stressed over efficiency.
+All patent document formats parse into a single common Patent model.  Field validation is applied to many fields, where invalid values and their document fragment are logged.  Flexibility and completeness is stressed over efficiency. 
 
 ## Formats
 
-| Format           | Years        | Revisions  |  Documentation |
-| :-------------- | ------------| :-------------------:| :-------------: |
-| Green Book <br> &nbsp; (freetext key values; multi-line indented values) | 1976-2001 | revisions until 1997 | <a href="http://www.uspto.gov/sites/default/files/products/PatentFullTextAPSGreenBook-Documentation.pdf"> Greenbook Documentation </a> |
-| Red Book SGML | 2001-2004 | ST32-US-Grant-025xml.dtd | <a href="http://www.uspto.gov/sites/default/files/products/PatentGrantSGMLv19-Documentation.pdf">Redbook SGML v1.9</a> <br> <a href="http://www.uspto.gov/sites/default/files/products/PatentGrantSGMLv24-Documentation.pdf">Redbook SGML v2.4</a> <br><br> <a href="http://www.wipo.int/export/sites/www/standards/en/pdf/03-32-01.pdf">WIPO ST. 32 - SGML Standard</a>|
-| Red Book PAP XML | 2002-2004 | Published Patent Applications (PAP) from 2002-2004 <li> pap-v15-2001-01-31.dtd <li> pap-v16-2002-01-01.dtd |
-| Red Book XML | 2004-Current | <B>Grants:</B></br></br> <li>us-patent-grant-v40-2004-12-02.dtd <li> us-patent-grant-v41-2005-08-25.dtd <li> us-patent-grant-v42-2006-08-23.dtd <li> us-patent-grant-v43-2012-12-04.dtd <li> us-patent-grant-v44-2013-05-16.dtd <li> us-patent-grant-v45-2014-04-03.dtd <hr><B>Applications:</B></br></br><li> us-patent-application-v40-2004-12-02.dtd <li> us-patent-application-v41-2005-08-25.dtd <li> us-patent-application-v42-2006-08-23.dtd <li> us-patent-application-v43-2012-12-04.dtd <li> us-patent-application-v44-2014-04-03.dtd|  <a href="http://www.uspto.gov/learning-and-resources/xml-resources">Redbook XML Documentation</a> <br><br> <a href="http://www.wipo.int/export/sites/www/standards/en/pdf/03-36-01.pdf">WIPO ST. 36 - XML Standard</a> |
+| Format    | Prefix | Years       | Revisions  |  Documentation |
+| :-------- | :-- | ------------| :-------------------:| :-------------: |
+| Green Book <br> &nbsp; (freetext key values; multi-line indented values) | pftaps | 1976-2001 | revisions until 1997 | <a href="http://www.uspto.gov/sites/default/files/products/PatentFullTextAPSGreenBook-Documentation.pdf"> Greenbook Documentation </a> |
+| Red Book SGML | pg | 2001-2004 | ST32-US-Grant-025xml.dtd | <a href="http://www.uspto.gov/sites/default/files/products/PatentGrantSGMLv19-Documentation.pdf">Redbook SGML v1.9</a> <br> <a href="http://www.uspto.gov/sites/default/files/products/PatentGrantSGMLv24-Documentation.pdf">Redbook SGML v2.4</a> <br><br> <a href="http://www.wipo.int/export/sites/www/standards/en/pdf/03-32-01.pdf">WIPO ST. 32 - SGML Standard</a>|
+| Red Book PAP XML | pa | 2002-2004 | Published Patent Applications (PAP) from 2002-2004 <li> pap-v15-2001-01-31.dtd <li> pap-v16-2002-01-01.dtd |
+| Red Book XML | ipg</br>ipa | 2004-Current | <B>Grants:</B></br></br> <li>us-patent-grant-v40-2004-12-02.dtd <li> us-patent-grant-v41-2005-08-25.dtd <li> us-patent-grant-v42-2006-08-23.dtd <li> us-patent-grant-v43-2012-12-04.dtd <li> us-patent-grant-v44-2013-05-16.dtd <li> us-patent-grant-v45-2014-04-03.dtd <hr><B>Applications:</B></br></br><li> us-patent-application-v40-2004-12-02.dtd <li> us-patent-application-v41-2005-08-25.dtd <li> us-patent-application-v42-2006-08-23.dtd <li> us-patent-application-v43-2012-12-04.dtd <li> us-patent-application-v44-2014-04-03.dtd|  <a href="http://www.uspto.gov/learning-and-resources/xml-resources">Redbook XML Documentation</a> <br><br> <a href="http://www.wipo.int/export/sites/www/standards/en/pdf/03-36-01.pdf">WIPO ST. 36 - XML Standard</a> |
+
+## Redbook XML variations/fixes:
+| Field           |  Fix Description       |
+| :-------------- | ---------------------------------- |
+| parties | renamed to: us-parties |
+| applicant | path renamed to: us-parties/us-applicants/us-applicant |
+| references-cited | renamed to: us-references-cited |
+| citation | renamed to: us-citation |
+| agent | if missing use "correspondence-address" field |
+| inventor | may be defined as Applicant, attribute "app-type" with value "applicant-inventor" |
+| description | break description into individual sections  by XML Processing Instructions |
+| address and name | not fixed but switched value errors occur in the data; name first-name/last-name switched; address country and state switched ; farther back in time more likely to see errors. |
+
 
 ## Also Parses
 <ul>
@@ -34,43 +47,59 @@ import java.io.IOException;
 import gov.uspto.bulkdata.DumpFileAps;
 import gov.uspto.bulkdata.DumpFileXml;
 import gov.uspto.bulkdata.DumpReader;
+import gov.uspto.common.file.filter.FileFilterChain;
+import gov.uspto.common.file.filter.PathFileFilter;
+import gov.uspto.common.file.filter.SuffixFileFilter;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
-import gov.uspto.patent.PatentType;
-import gov.uspto.patent.PatentTypeDetect;
+import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.serialize.JsonMapper;
 
 public class ReadBulkPatentZip {
 
-	public void main() throws IOException, PatentReaderException{
-		File inputFile = new File("ipa150101.zip");
-		// File inputFile = new File("ipa150101.xml");
-		int skip = 0;
-		int limit = 10;
+    public static void main(String... args) throws IOException, PatentReaderException {
+        
+        File inputFile = new File(args[0]);
+        int skip = 100;
+        int limit = 1;
 
-		PatentType patentType = new PatentTypeDetect().fromFileName(inputFile);
+        PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(inputFile);
 
-		DumpReader dumpReader;
-		switch(patentType){
-		case Greenbook:
-			dumpReader = new DumpFileAps(inputFile);
-			break;
-		default:
-			dumpReader = new DumpFileXml(inputFile);
-		}
+        DumpReader dumpReader;
+        switch (patentDocFormat) {
+        case Greenbook:
+            dumpReader = new DumpFileAps(inputFile);
+            break;
+        default:
+            dumpReader = new DumpFileXml(inputFile);
+            FileFilterChain filters = new FileFilterChain();
+            //filters.addRule(new PathFileFilter(""));
+            filters.addRule(new SuffixFileFilter("xml"));
+            dumpReader.setFileFilter(filters);
+        }
 
-		dumpReader.open();
-		if (skip > 0){
-			dumpReader.skip(skip);
-		}
+        dumpReader.open();
+        if (skip > 0) {
+            dumpReader.skip(skip);
+        }
 
-		for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
-		    String xmlDocStr = (String) dumpReader.next();
-		    try(PatentReader patentReader = new PatentReader(xmlDocStr, patentType)){
-		        Patent patent = patentReader.read();
-		        System.out.println(patent.getDocumentId().toText());
-		    }
-		}
-	}
+        for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
+            String xmlDocStr = (String) dumpReader.next();
+            try (PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)) {
+                Patent patent = patentReader.read();
+                System.out.println(patent.getDocumentId().toText());
+
+                //JsonMapper json = new JsonMapper();
+                //String jsonStr = json.buildJson(patent);
+                //System.out.println("JSON: " + jsonStr);
+                
+                //System.out.println("Patent: " + patent.toString());
+            }
+        }
+
+        dumpReader.close();
+    }
 }
 ```

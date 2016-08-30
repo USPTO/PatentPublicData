@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import gov.uspto.patent.PatentType;
+import gov.uspto.patent.PatentDocFormat;
 
 public interface DumpReader extends Iterator<String>, Closeable {
     /**
@@ -23,7 +23,7 @@ public interface DumpReader extends Iterator<String>, Closeable {
 	 */
 	boolean hasNext();
 
-	PatentType getPatentType();
+	PatentDocFormat getPatentDocFormat();
 	
 	void open() throws IOException;
 	

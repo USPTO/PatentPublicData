@@ -53,7 +53,7 @@ public class ExtractPatent {
 				break;
 			}
 
-			try(PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentType())){
+			try(PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentDocFormat())){
 				Patent patent = patentReader.read();
 				write(xmlDocStr, outdir, patent.getDocumentId().toText() + ".xml");
 			}
@@ -85,7 +85,7 @@ public class ExtractPatent {
 				break;
 			}
 
-			try(PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentType())){
+			try(PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentDocFormat())){
 				Patent patent = patentReader.read();
 				if (patent.getDocumentId().toText().equals(docId)) {
 					System.out.println("--- Found --- ");

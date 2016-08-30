@@ -20,7 +20,7 @@ public class StopWordTest {
 
 	@Before
 	public void setup() throws IOException {
-		Path stopWordFile = Paths.get("resources/lst/stopwords.txt");
+		Path stopWordFile = Paths.get("src/test/resources/stopwords.txt");
 		stopword = new StopWord(stopWordFile);
 		stopword.load();
 	}

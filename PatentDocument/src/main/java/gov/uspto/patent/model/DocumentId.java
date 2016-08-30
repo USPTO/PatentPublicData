@@ -15,163 +15,176 @@ import gov.uspto.patent.InvalidDataException;
  *
  */
 public class DocumentId {
-	private DocumentIdType docIdType;
-	private CountryCode countryCode;
-	private String docNumber;
-	private String name; // name used in citation.
-	private String kindCode; // different patent offices have different kindcodes.
-	private DocumentDate date;
-	
-	/*
-	 * Parsing of Document Id into its parts, such as Citation PatentIds.
-	 */
-	private static Pattern PARSE_PATTERN = Pattern.compile("^(\\D\\D)(\\d{1,4}[/-])?(\\d+)(\\D\\d?)?$");
+    private DocumentIdType docIdType;
+    private CountryCode countryCode;
+    private String docNumber;
+    private String name; // name used in citation.
+    private String kindCode; // different patent offices have different kindcodes.
+    private DocumentDate date;
+    private PatentType patentType; // defined with application id or derived from kindcode.
 
-	public DocumentId(CountryCode countryCode, String docNumber) throws IllegalArgumentException {
-		this(countryCode, docNumber, null);
-	}
+    /*
+     * Parsing of Document Id into its parts, such as Citation PatentIds.
+     */
+    private static final Pattern PARSE_PATTERN = Pattern.compile("^(\\D\\D)(\\d{1,4}[/-])?(\\d+)(\\D\\d?)?$");
 
-	public DocumentId(CountryCode countryCode, String docNumber, String kindCode){
-		Preconditions.checkNotNull(countryCode, "CountryCode can not be set to Null");
-		Preconditions.checkNotNull(docNumber, "DocNumber can not be set to Null");
+    public DocumentId(CountryCode countryCode, String docNumber) throws IllegalArgumentException {
+        this(countryCode, docNumber, null);
+    }
 
-		this.countryCode = countryCode;
-		setDocNumber(docNumber);
-		this.kindCode = kindCode;
-	}
+    public DocumentId(CountryCode countryCode, String docNumber, String kindCode) {
+        Preconditions.checkNotNull(countryCode, "CountryCode can not be set to Null");
+        Preconditions.checkNotNull(docNumber, "DocNumber can not be set to Null");
 
-	public void setType(DocumentIdType docIdType) {
-		Preconditions.checkNotNull(docIdType, "DocumentIdType can not be set to Null");
-		this.docIdType = docIdType;
-	}
+        this.countryCode = countryCode;
+        setDocNumber(docNumber);
+        this.kindCode = kindCode;
+    }
 
-	public DocumentIdType getType() {
-		return docIdType;
-	}
+    public void setPatentType(PatentType patentType) {
+        this.patentType = patentType;
+    }
 
-	private void setDocNumber(String publicationId) {
-		Preconditions.checkNotNull(publicationId, "DocNumber can not be set to Null!");
-		// Remove Leading Zeros.
-		this.docNumber = publicationId.replaceFirst("^0+(?!$)", "");
-	}
+    public PatentType getPatentType() {
+        return patentType;
+    }
 
-	public String getDocNumber() {
-		return docNumber;
-	}
+    public void setType(DocumentIdType docIdType) {
+        Preconditions.checkNotNull(docIdType, "DocumentIdType can not be set to Null");
+        this.docIdType = docIdType;
+    }
 
-	/**
-	 * Full String ID Representation, example: US12345A1
-	 * @return
-	 */
-	public String getId() {
-		StringBuilder strb = new StringBuilder().append(countryCode).append(docNumber);
+    public DocumentIdType getType() {
+        return docIdType;
+    }
 
-		if (kindCode != null) {
-			strb.append(kindCode);
-		}
+    private void setDocNumber(String publicationId) {
+        Preconditions.checkNotNull(publicationId, "DocNumber can not be set to Null!");
+        // Remove Leading Zeros.
+        this.docNumber = publicationId.replaceFirst("^0+(?!$)", "");
+    }
 
-		return strb.toString();
-	}
+    public String getDocNumber() {
+        return docNumber;
+    }
 
-	public CountryCode getCountryCode() {
-		return countryCode;
-	}
+    /**
+     * Full String ID Representation, example: US12345A1
+     * 
+     * @return
+     */
+    public String getId() {
+        StringBuilder strb = new StringBuilder().append(countryCode).append(docNumber);
 
-	public String getKindCode() {
-		return kindCode;
-	}
+        if (kindCode != null) {
+            strb.append(kindCode);
+        }
 
-	public String getName() {
-		return name;
-	}
+        return strb.toString();
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public CountryCode getCountryCode() {
+        return countryCode;
+    }
 
-	public DocumentDate getDate() {
-		return date;
-	}
+    public String getKindCode() {
+        return kindCode;
+    }
 
-	public void setDate(DocumentDate date) {
-		this.date = date;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == null) {
-			return false;
-		}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-		if (!(o instanceof DocumentId)) {
-			return false;
-		}
+    public DocumentDate getDate() {
+        return date;
+    }
 
-		DocumentId other = (DocumentId) o;
-		if (this.docNumber != null && this.docNumber != null) {
-			if (this.docNumber.equals(other.docNumber) && this.docNumber.equals(other.docNumber)) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
+    public void setDate(DocumentDate date) {
+        this.date = date;
+    }
 
-	public String toText() {
-		return getId();
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
 
-	@Override
-	public String toString() {
-		return "DocumentId [docIdType=" + docIdType + ", countryCode=" + countryCode + ", docNumber=" + docNumber
-				+ ", name=" + name + ", kindCode=" + kindCode + ", date=" + date + ", getId()=" + getId() + "]";
-	}
+        if (!(o instanceof DocumentId)) {
+            return false;
+        }
 
+        DocumentId other = (DocumentId) o;
+        if (this.docNumber != null && this.docNumber != null) {
+            if (this.docNumber.equals(other.docNumber) && this.docNumber.equals(other.docNumber)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Parse Patent DocumentId into its parts. 
-	 * 
-	 * Note: this may not work for all variations from all countries, may countries may have a different numbering system, 
-	 * many also have multiple different numbering systems.
-	 * 
-	 * @see http://www.wipo.int/export/sites/www/standards/en/pdf/07-02-02.pdf
-	 * 
-	 * @param documentIdStr
-	 * @return
-	 * @throws InvalidDataException
-	 */
-	public static DocumentId fromText(final String documentIdStr) throws InvalidDataException{
-		String docIdStr = documentIdStr.replaceAll(" ", "");
-		Matcher matcher = PARSE_PATTERN.matcher(docIdStr);
-		if (matcher.matches()){
-			String country = matcher.group(1);
-			CountryCode cntyCode = CountryCode.fromString(country);
-			
-			String applicationYear = matcher.group(2); // applications ids sometimes has the year.
-			String id = matcher.group(3);
-			String kindCode = matcher.group(4);
+    public String toText() {
+        return getId();
+    }
 
-			DocumentId docId = new DocumentId(cntyCode, id, kindCode);
-			if (applicationYear != null && applicationYear.length() == 4){
-				docId.setDate(new DocumentDate(applicationYear.replace("/", "")));
-			}
-			return docId;
-		} else {
-			throw new InvalidDataException("Failed to parse DocumentId text: " + documentIdStr);
-		}
-	}
+    /**
+     * Parse Patent DocumentId into its parts.
+     * 
+     * Note: this may not work for all variations from all countries, may
+     * countries may have a different numbering system, many also have multiple
+     * different numbering systems.
+     * 
+     * @see http://www.wipo.int/export/sites/www/standards/en/pdf/07-02-02.pdf
+     * 
+     * @param documentIdStr
+     * @return
+     * @throws InvalidDataException
+     */
+    public static DocumentId fromText(final String documentIdStr) throws InvalidDataException {
+        String docIdStr = documentIdStr.replaceAll(" ", "");
+        Matcher matcher = PARSE_PATTERN.matcher(docIdStr);
+        if (matcher.matches()) {
+            String country = matcher.group(1);
+            CountryCode cntyCode = CountryCode.fromString(country);
 
-	public static List<DocumentId> getByType(Collection<DocumentId> docIds, DocumentIdType type) {
-		List<DocumentId> redIds = new LinkedList<DocumentId>();
+            String applicationYear = matcher.group(2); // applications ids
+                                                       // sometimes has the
+                                                       // year.
+            String id = matcher.group(3);
+            String kindCode = matcher.group(4);
 
-		for (DocumentId docId : docIds) {
-			if (docId != null && docId.getType() == type) {
-				redIds.add(docId);
-			}
-		}
+            DocumentId docId = new DocumentId(cntyCode, id, kindCode);
+            if (applicationYear != null && applicationYear.length() == 4) {
+                docId.setDate(new DocumentDate(applicationYear.replace("/", "")));
+            }
+            return docId;
+        } else {
+            throw new InvalidDataException("Failed to parse DocumentId text: " + documentIdStr);
+        }
+    }
 
-		return redIds;
-	}
+    public static List<DocumentId> getByType(Collection<DocumentId> docIds, DocumentIdType type) {
+        List<DocumentId> redIds = new LinkedList<DocumentId>();
+
+        for (DocumentId docId : docIds) {
+            if (docId != null && docId.getType() == type) {
+                redIds.add(docId);
+            }
+        }
+
+        return redIds;
+    }
+
+    @Override
+    public String toString() {
+        return "DocumentId [docIdType=" + docIdType + ", countryCode=" + countryCode + ", docNumber=" + docNumber
+                + ", name=" + name + ", kindCode=" + kindCode + ", date=" + date + ", patentType=" + patentType
+                + ", getId()=" + getId() + "]";
+    }
 }

@@ -21,7 +21,7 @@ import gov.uspto.patent.model.entity.MathFormula;
  */
 public abstract class Patent {
 
-	private PatentType type;
+	private PatentCorpus patentCorpus;
 	private DocumentId documentId;
 	private List<DocumentId> otherIds = new ArrayList<DocumentId>(); // store regional filing id, or other ids referencing this unique Patent.
 	private List<DocumentId> relationIds = new ArrayList<DocumentId>(); // Cross Reference to related Applications or Publications.
@@ -49,13 +49,13 @@ public abstract class Patent {
 
 	private List<MathFormula> mathFormulas;
 
-	public Patent(PatentType type, DocumentId documentId) {
-		this.type = type;
+	public Patent(PatentCorpus patentCorpus, DocumentId documentId) {
+		this.patentCorpus = patentCorpus;
 		this.documentId = documentId;
 	}
 
 	public void reset() {
-		type = null;
+	    patentCorpus = null;
 		otherIds.clear();
 		relationIds.clear();
 		referenceIds = null;
@@ -149,12 +149,12 @@ public abstract class Patent {
 		classifications.add(classification);
 	}
 
-	public PatentType getType() {
-		return type;
+	public PatentCorpus getPatentCorpus() {
+		return patentCorpus;
 	}
 
-	public void setType(PatentType type) {
-		this.type = type;
+	public void setPatentCorpus(PatentCorpus patentCorpus) {
+		this.patentCorpus = patentCorpus;
 	}
 
 	public void setDatePublished(DocumentDate datePublished) {
@@ -218,7 +218,7 @@ public abstract class Patent {
 	 * @param agents
 	 * @return 
 	 */
-	public List<Agent> getAgent(List<Agent> agents) {
+	public List<Agent> getAgent() {
 		return agents;
 	}
 
@@ -297,7 +297,7 @@ public abstract class Patent {
 				+ ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced + ",\n\t title=" + title
 				+ ",\n\t abstractText=" + abstractText
 				+ ",\n\t description=" + description
-				+ ",\n\t type=" + type + ",\n\t citations=" + citations
+				+ ",\n\t patentCorpus=" + patentCorpus + ",\n\t citations=" + citations
 				+ ",\n\t classifications=" + classifications + ",\n\t claims=" + claims + ",\n\t inventors=" + inventors
 				+ ",\n\t assignees=" + assignees + ",\n\t applicant=" + applicants + ",\n\t agent=" + agents
 				+ ",\n\t examiners=" + examiners + ",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas="

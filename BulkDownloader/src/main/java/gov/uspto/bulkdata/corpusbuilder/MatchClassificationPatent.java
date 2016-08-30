@@ -8,9 +8,9 @@ import javax.xml.xpath.XPathExpressionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
-import gov.uspto.patent.PatentType;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.ClassificationType;
@@ -50,8 +50,8 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 	}
 
 	@Override
-	public MatchClassificationPatent on(String xmlDocStr, PatentType patentType) throws PatentReaderException, IOException {
-		try(PatentReader patentReader = new PatentReader(xmlDocStr, patentType)){
+	public MatchClassificationPatent on(String xmlDocStr, PatentDocFormat patentDocFormat) throws PatentReaderException, IOException {
+		try(PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)){
 			patent = patentReader.read();
 		}
 		return this;

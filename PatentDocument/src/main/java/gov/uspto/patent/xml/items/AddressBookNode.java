@@ -85,7 +85,8 @@ public class AddressBookNode extends ItemReader<Name> {
 	}
 
 	public NameOrg getOrgName() throws InvalidDataException {
-		Node orgnameN = itemNode.selectSingleNode("orgname");
+	    // @FIXME Note: for now, treat name as a org name. 
+		Node orgnameN = itemNode.selectSingleNode("orgname") != null ? itemNode.selectSingleNode("orgname") : itemNode.selectSingleNode("name");
 
 		@SuppressWarnings("unchecked")
 		List<Node> synonymNodes = itemNode.selectNodes("synonym");

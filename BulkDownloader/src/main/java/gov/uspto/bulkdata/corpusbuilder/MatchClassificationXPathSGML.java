@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import gov.uspto.bulkdata.find.PatternMatcher;
 import gov.uspto.bulkdata.find.PatternXPath;
-import gov.uspto.patent.PatentType;
+import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.ClassificationType;
 import gov.uspto.patent.model.classification.CpcClassification;
@@ -54,7 +54,7 @@ public class MatchClassificationXPathSGML implements CorpusMatch<MatchClassifica
 	}
 
 	@Override
-	public MatchClassificationXPathSGML on(String xmlDocStr, PatentType patentType) {
+	public MatchClassificationXPathSGML on(String xmlDocStr, PatentDocFormat patentDocFormat) {
 		this.xmlDocStr = xmlDocStr;
 		return this;
 	}
