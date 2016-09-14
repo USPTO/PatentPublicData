@@ -24,7 +24,9 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | agent | fix: if missing use "correspondence-address" field |
 | description | fix to corresponds with non-xml patent versions, improvement since individual sections are often searched on: break description into individual sections by XML Processing Instructions |
 | claim | improvement: identify independent and dependent claims; capture dependent claims |
-| address and name | not-fixed, lookout for switched value errors: within name the first-name and last-name switched; within address the country and state switched ; farther back in time more likely to see these data errors. |
+| classification | improvement: normalization of CPC, IPC and USPC patent classifications |
+| country | improvement: mapping of country codes to country name, current and historic codes used before 1978 or individual codes dropped or changed since |
+| address and name | not-fixed, lookout for switched value errors: within name the first-name and last-name or middle name switched; within address the country and state switched ; farther back in time more likely to see these data errors. Older Greenbook patents sometimes have first name and middle name, presented as an initial, switched making searching by a person's full name more difficult |
 
 
 ## Also Parses
