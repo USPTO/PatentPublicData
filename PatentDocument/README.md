@@ -11,18 +11,19 @@ All patent document formats from 1976 to current parse into a single common Pate
 | Red Book PAP XML | pa | 2002-2004 | Published Patent Applications (PAP) from 2002-2004 <li> pap-v15-2001-01-31.dtd <li> pap-v16-2002-01-01.dtd |
 | Red Book XML | ipg</br>ipa | 2004-Current | <B>Grants:</B></br></br> <li>us-patent-grant-v40-2004-12-02.dtd <li> us-patent-grant-v41-2005-08-25.dtd <li> us-patent-grant-v42-2006-08-23.dtd <li> us-patent-grant-v43-2012-12-04.dtd <li> us-patent-grant-v44-2013-05-16.dtd <li> us-patent-grant-v45-2014-04-03.dtd <hr><B>Applications:</B></br></br><li> us-patent-application-v40-2004-12-02.dtd <li> us-patent-application-v41-2005-08-25.dtd <li> us-patent-application-v42-2006-08-23.dtd <li> us-patent-application-v43-2012-12-04.dtd <li> us-patent-application-v44-2014-04-03.dtd|  <a href="http://www.uspto.gov/learning-and-resources/xml-resources">Redbook XML Documentation</a> <br><br> <a href="http://www.wipo.int/export/sites/www/standards/en/pdf/03-36-01.pdf">WIPO ST. 36 - XML Standard</a> |
 
-## Redbook XML variations/fixes
-Short list of some of the XML variations handled by the Patent Document Parser
+## Redbook XML variations/fixes/improvements
+Short list of some of the XML variations handled and improvements made by the Patent Document Parser
 
-| Field           |  Fix Description       |
+| Field           |  Description       |
 | :-------------- | ---------------------------------- |
-| parties | renamed to: us-parties |
-| applicant | path renamed to: us-parties/us-applicants/us-applicant |
-| references-cited | renamed to: us-references-cited |
-| citation | renamed to: us-citation |
+| parties | variation: us-parties |
+| applicant | variation: us-parties/us-applicants/us-applicant |
+| references-cited | variation: us-references-cited |
+| citation | variation: us-citation |
 | agent | if missing use "correspondence-address" field |
 | inventor | may be defined as Applicant, attribute "app-type" with value "applicant-inventor" |
 | description | break description into individual sections  by XML Processing Instructions |
+| claim | identify independent and dependent claims; capture dependent claims |
 | address and name | not fixed but switched value errors occur in the data; name first-name/last-name switched; address country and state switched ; farther back in time more likely to see errors. |
 
 
