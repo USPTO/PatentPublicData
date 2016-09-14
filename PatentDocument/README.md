@@ -20,11 +20,11 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | applicant | variation: us-parties/us-applicants/us-applicant |
 | references-cited | variation: us-references-cited |
 | citation | variation: us-citation |
-| agent | if missing use "correspondence-address" field |
-| inventor | may be defined as Applicant, attribute "app-type" with value "applicant-inventor" |
-| description | break description into individual sections  by XML Processing Instructions |
-| claim | identify independent and dependent claims; capture dependent claims |
-| address and name | not fixed but switched value errors occur in the data; name first-name/last-name switched; address country and state switched ; farther back in time more likely to see errors. |
+| inventor | variation: Applicant with attribute "app-type" value "applicant-inventor" |
+| agent | fix: if missing use "correspondence-address" field |
+| description | fix to corresponds with non-xml patent versions, improvement since individual sections are often searched on: break description into individual sections by XML Processing Instructions |
+| claim | improvement: identify independent and dependent claims; capture dependent claims |
+| address and name | not-fixed, lookout for switched value errors: within name the first-name and last-name switched; within address the country and state switched ; farther back in time more likely to see these data errors. |
 
 
 ## Also Parses
