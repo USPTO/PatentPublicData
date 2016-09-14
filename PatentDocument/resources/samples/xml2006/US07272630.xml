@@ -1,0 +1,2001 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE us-patent-grant SYSTEM "us-patent-grant-v42-2006-08-23.dtd" [ ]>
+<us-patent-grant lang="EN" dtd-version="v4.2 2006-08-23" file="US07272630-20070918.XML" status="PRODUCTION" id="us-patent-grant" country="US" date-produced="20070904" date-publ="20070918">
+<us-bibliographic-data-grant>
+<publication-reference>
+<document-id>
+<country>US</country>
+<doc-number>07272630</doc-number>
+<kind>B2</kind>
+<date>20070918</date>
+</document-id>
+</publication-reference>
+<application-reference appl-type="utility">
+<document-id>
+<country>US</country>
+<doc-number>10991571</doc-number>
+<date>20041118</date>
+</document-id>
+</application-reference>
+<us-application-series-code>10</us-application-series-code>
+<us-term-of-grant>
+<us-term-extension>36</us-term-extension>
+</us-term-of-grant>
+<classifications-ipcr>
+<classification-ipcr>
+<ipc-version-indicator><date>20060101</date></ipc-version-indicator>
+<classification-level>A</classification-level>
+<section>G</section>
+<class>06</class>
+<subclass>F</subclass>
+<main-group>15</main-group>
+<subgroup>13</subgroup>
+<symbol-position>F</symbol-position>
+<classification-value>I</classification-value>
+<action-date><date>20070918</date></action-date>
+<generating-office><country>US</country></generating-office>
+<classification-status>B</classification-status>
+<classification-data-source>H</classification-data-source>
+</classification-ipcr>
+</classifications-ipcr>
+<classification-national>
+<country>US</country>
+<main-classification>709203</main-classification>
+<further-classification>709201</further-classification>
+<further-classification>709219</further-classification>
+<further-classification>715739</further-classification>
+</classification-national>
+<invention-title id="d0e53">Locating potentially identical objects across multiple computers based on stochastic partitioning of workload</invention-title>
+<references-cited>
+<citation>
+<patcit num="00001">
+<document-id>
+<country>US</country>
+<doc-number>5202982</doc-number>
+<kind>A</kind>
+<name>Gramlich et al.</name>
+<date>19930400</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00002">
+<document-id>
+<country>US</country>
+<doc-number>5317728</doc-number>
+<kind>A</kind>
+<name>Tevis et al.</name>
+<date>19940500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00003">
+<document-id>
+<country>US</country>
+<doc-number>5371794</doc-number>
+<kind>A</kind>
+<name>Diffie et al.</name>
+<date>19941200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00004">
+<document-id>
+<country>US</country>
+<doc-number>5452447</doc-number>
+<kind>A</kind>
+<name>Nelson et al.</name>
+<date>19950900</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00005">
+<document-id>
+<country>US</country>
+<doc-number>5588147</doc-number>
+<kind>A</kind>
+<name>Neeman et al.</name>
+<date>19961200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00006">
+<document-id>
+<country>US</country>
+<doc-number>5680611</doc-number>
+<kind>A</kind>
+<name>Rail et al.</name>
+<date>19971000</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00007">
+<document-id>
+<country>US</country>
+<doc-number>5758359</doc-number>
+<kind>A</kind>
+<name>Saxon</name>
+<date>19980500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00008">
+<document-id>
+<country>US</country>
+<doc-number>5778395</doc-number>
+<kind>A</kind>
+<name>Whiting et al.</name>
+<date>19980700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00009">
+<document-id>
+<country>US</country>
+<doc-number>5794042</doc-number>
+<kind>A</kind>
+<name>Terada et al.</name>
+<date>19980800</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00010">
+<document-id>
+<country>US</country>
+<doc-number>5812776</doc-number>
+<kind>A</kind>
+<name>Gifford</name>
+<date>19980900</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00011">
+<document-id>
+<country>US</country>
+<doc-number>5873085</doc-number>
+<kind>A</kind>
+<name>Enoki et al.</name>
+<date>19990200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00012">
+<document-id>
+<country>US</country>
+<doc-number>5901227</doc-number>
+<kind>A</kind>
+<name>Perlman</name>
+<date>19990500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00013">
+<document-id>
+<country>US</country>
+<doc-number>5907673</doc-number>
+<kind>A</kind>
+<name>Hirayama et al.</name>
+<date>19990500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00014">
+<document-id>
+<country>US</country>
+<doc-number>5909540</doc-number>
+<kind>A</kind>
+<name>Carter et al.</name>
+<date>19990600</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00015">
+<document-id>
+<country>US</country>
+<doc-number>5913217</doc-number>
+<kind>A</kind>
+<name>Alger et al.</name>
+<date>19990600</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00016">
+<document-id>
+<country>US</country>
+<doc-number>5915096</doc-number>
+<kind>A</kind>
+<name>Rosenzweig et al.</name>
+<date>19990600</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00017">
+<document-id>
+<country>US</country>
+<doc-number>5950198</doc-number>
+<kind>A</kind>
+<name>Falls et al.</name>
+<date>19990900</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00018">
+<document-id>
+<country>US</country>
+<doc-number>5978805</doc-number>
+<kind>A</kind>
+<name>Carson</name>
+<date>19991100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00019">
+<document-id>
+<country>US</country>
+<doc-number>5991414</doc-number>
+<kind>A</kind>
+<name>Garay et al.</name>
+<date>19991100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00020">
+<document-id>
+<country>US</country>
+<doc-number>5991771</doc-number>
+<kind>A</kind>
+<name>Falls et al.</name>
+<date>19991100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00021">
+<document-id>
+<country>US</country>
+<doc-number>6026474</doc-number>
+<kind>A</kind>
+<name>Carter et al.</name>
+<date>20000200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00022">
+<document-id>
+<country>US</country>
+<doc-number>6029168</doc-number>
+<kind>A</kind>
+<name>Frey</name>
+<date>20000200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00023">
+<document-id>
+<country>US</country>
+<doc-number>6067545</doc-number>
+<kind>A</kind>
+<name>Wolff</name>
+<date>20000500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00024">
+<document-id>
+<country>US</country>
+<doc-number>6098079</doc-number>
+<kind>A</kind>
+<name>Howard</name>
+<date>20000800</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00025">
+<document-id>
+<country>US</country>
+<doc-number>6160552</doc-number>
+<kind>A</kind>
+<name>Wilsher et al.</name>
+<date>20001200</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>715739</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00026">
+<document-id>
+<country>US</country>
+<doc-number>6167449</doc-number>
+<kind>A</kind>
+<name>Arnold et al.</name>
+<date>20001200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00027">
+<document-id>
+<country>US</country>
+<doc-number>6185574</doc-number>
+<kind>B1</kind>
+<name>Howard et al.</name>
+<date>20010200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00028">
+<document-id>
+<country>US</country>
+<doc-number>6208659</doc-number>
+<kind>B1</kind>
+<name>Govindarajan et al.</name>
+<date>20010300</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00029">
+<document-id>
+<country>US</country>
+<doc-number>6233606</doc-number>
+<kind>B1</kind>
+<name>Dujari</name>
+<date>20010500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+<classification-national><country>US</country><main-classification>709213</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00030">
+<document-id>
+<country>US</country>
+<doc-number>6263348</doc-number>
+<kind>B1</kind>
+<name>Kathrow et al.</name>
+<date>20010700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00031">
+<document-id>
+<country>US</country>
+<doc-number>6269080</doc-number>
+<kind>B1</kind>
+<name>Kumar</name>
+<date>20010700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00032">
+<document-id>
+<country>US</country>
+<doc-number>6295538</doc-number>
+<kind>B1</kind>
+<name>Cooper et al.</name>
+<date>20010900</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00033">
+<document-id>
+<country>US</country>
+<doc-number>6324544</doc-number>
+<kind>B1</kind>
+<name>Alam et al.</name>
+<date>20011100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00034">
+<document-id>
+<country>US</country>
+<doc-number>6345288</doc-number>
+<kind>B1</kind>
+<name>Reed et al.</name>
+<date>20020200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00035">
+<document-id>
+<country>US</country>
+<doc-number>6370547</doc-number>
+<kind>B1</kind>
+<name>Eftink</name>
+<date>20020400</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00036">
+<document-id>
+<country>US</country>
+<doc-number>6389433</doc-number>
+<kind>B1</kind>
+<name>Bolosky et al.</name>
+<date>20020500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00037">
+<document-id>
+<country>US</country>
+<doc-number>6405315</doc-number>
+<kind>B1</kind>
+<name>Burns et al.</name>
+<date>20020600</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00038">
+<document-id>
+<country>US</country>
+<doc-number>6415372</doc-number>
+<kind>B1</kind>
+<name>Zakai et al.</name>
+<date>20020700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00039">
+<document-id>
+<country>US</country>
+<doc-number>6463535</doc-number>
+<kind>B1</kind>
+<name>Drews</name>
+<date>20021000</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00040">
+<document-id>
+<country>US</country>
+<doc-number>6466978</doc-number>
+<kind>B1</kind>
+<name>Mukherjee et al.</name>
+<date>20021000</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00041">
+<document-id>
+<country>US</country>
+<doc-number>6477544</doc-number>
+<kind>B1</kind>
+<name>Bolosky et al.</name>
+<date>20021100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00042">
+<document-id>
+<country>US</country>
+<doc-number>6484186</doc-number>
+<kind>B1</kind>
+<name>Rungta</name>
+<date>20021100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00043">
+<document-id>
+<country>US</country>
+<doc-number>6484204</doc-number>
+<kind>B1</kind>
+<name>Rabinovich</name>
+<date>20021100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00044">
+<document-id>
+<country>US</country>
+<doc-number>6493804</doc-number>
+<kind>B1</kind>
+<name>Soltis et al.</name>
+<date>20021200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00045">
+<document-id>
+<country>US</country>
+<doc-number>6510426</doc-number>
+<kind>B1</kind>
+<name>Cohen et al.</name>
+<date>20030100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00046">
+<document-id>
+<country>US</country>
+<doc-number>6516350</doc-number>
+<kind>B1</kind>
+<name>Lumelsky et al.</name>
+<date>20030200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00047">
+<document-id>
+<country>US</country>
+<doc-number>6522423</doc-number>
+<kind>B2</kind>
+<name>Cohen et al.</name>
+<date>20030200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00048">
+<document-id>
+<country>US</country>
+<doc-number>6535894</doc-number>
+<kind>B1</kind>
+<name>Schmidt et al.</name>
+<date>20030300</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00049">
+<document-id>
+<country>US</country>
+<doc-number>6556998</doc-number>
+<kind>B1</kind>
+<name>Mukherjee et al.</name>
+<date>20030400</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00050">
+<document-id>
+<country>US</country>
+<doc-number>6560706</doc-number>
+<kind>B1</kind>
+<name>Carbajal et al.</name>
+<date>20030500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00051">
+<document-id>
+<country>US</country>
+<doc-number>6577734</doc-number>
+<kind>B1</kind>
+<name>Etzel et al.</name>
+<date>20030600</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+<classification-national><country>US</country><main-classification>380277</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00052">
+<document-id>
+<country>US</country>
+<doc-number>6671821</doc-number>
+<kind>B1</kind>
+<name>Castro et al.</name>
+<date>20031200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00053">
+<document-id>
+<country>US</country>
+<doc-number>6704730</doc-number>
+<kind>B2</kind>
+<name>Moulton et al.</name>
+<date>20040300</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00054">
+<document-id>
+<country>US</country>
+<doc-number>6718360</doc-number>
+<kind>B1</kind>
+<name>Jones et al.</name>
+<date>20040400</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00055">
+<document-id>
+<country>US</country>
+<doc-number>6721880</doc-number>
+<kind>B1</kind>
+<name>Pike</name>
+<date>20040400</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00056">
+<document-id>
+<country>US</country>
+<doc-number>6725373</doc-number>
+<kind>B2</kind>
+<name>Carbajal et al.</name>
+<date>20040400</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00057">
+<document-id>
+<country>US</country>
+<doc-number>6738797</doc-number>
+<kind>B1</kind>
+<name>Martin</name>
+<date>20040500</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709201</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00058">
+<document-id>
+<country>US</country>
+<doc-number>6742114</doc-number>
+<kind>B1</kind>
+<name>Carter et al.</name>
+<date>20040500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00059">
+<document-id>
+<country>US</country>
+<doc-number>6748538</doc-number>
+<kind>B1</kind>
+<name>Chan et al.</name>
+<date>20040600</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00060">
+<document-id>
+<country>US</country>
+<doc-number>6766367</doc-number>
+<kind>B1</kind>
+<name>Stevenson et al.</name>
+<date>20040700</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709223</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00061">
+<document-id>
+<country>US</country>
+<doc-number>6788769</doc-number>
+<kind>B1</kind>
+<name>Waites</name>
+<date>20040900</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00062">
+<document-id>
+<country>US</country>
+<doc-number>6928426</doc-number>
+<kind>B2</kind>
+<name>Dake</name>
+<date>20050800</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00063">
+<document-id>
+<country>US</country>
+<doc-number>6952737</doc-number>
+<kind>B1</kind>
+<name>Coates et al.</name>
+<date>20051000</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00064">
+<document-id>
+<country>US</country>
+<doc-number>6990578</doc-number>
+<kind>B1</kind>
+<name>O'Brien et al.</name>
+<date>20060100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00065">
+<document-id>
+<country>US</country>
+<doc-number>7000141</doc-number>
+<kind>B1</kind>
+<name>Karlsson et al.</name>
+<date>20060200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00066">
+<document-id>
+<country>US</country>
+<doc-number>7051028</doc-number>
+<kind>B2</kind>
+<name>Shi et al.</name>
+<date>20060500</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00067">
+<document-id>
+<country>US</country>
+<doc-number>2001/0039548</doc-number>
+<kind>A1</kind>
+<name>Shinkai et al.</name>
+<date>20011100</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00068">
+<document-id>
+<country>US</country>
+<doc-number>2002/0016174</doc-number>
+<kind>A1</kind>
+<name>Gibson et al.</name>
+<date>20020200</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00069">
+<document-id>
+<country>US</country>
+<doc-number>2002/0073082</doc-number>
+<kind>A1</kind>
+<name>Duvillier et al.</name>
+<date>20020600</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00070">
+<document-id>
+<country>US</country>
+<doc-number>2002/0088011</doc-number>
+<kind>A1</kind>
+<name>Lamkin et al.</name>
+<date>20020700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+<classification-national><country>US</country><main-classification>725142</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00071">
+<document-id>
+<country>US</country>
+<doc-number>2002/0095590</doc-number>
+<kind>A1</kind>
+<name>Douceur et al.</name>
+<date>20020700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+<classification-national><country>US</country><main-classification>713190</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00072">
+<document-id>
+<country>US</country>
+<doc-number>2002/0099784</doc-number>
+<kind>A1</kind>
+<name>Tran</name>
+<date>20020700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00073">
+<document-id>
+<country>US</country>
+<doc-number>2002/0103818</doc-number>
+<kind>A1</kind>
+<name>Amberden</name>
+<date>20020800</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00074">
+<document-id>
+<country>US</country>
+<doc-number>2002/0111996</doc-number>
+<kind>A1</kind>
+<name>Jones et al.</name>
+<date>20020800</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709203</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00075">
+<document-id>
+<country>US</country>
+<doc-number>2003/0046533</doc-number>
+<kind>A1</kind>
+<name>Olkin et al.</name>
+<date>20030300</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+<classification-national><country>US</country><main-classification>713152</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00076">
+<document-id>
+<country>US</country>
+<doc-number>2003/0135586</doc-number>
+<kind>A1</kind>
+<name>Minborg et al.</name>
+<date>20030700</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709219</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00077">
+<document-id>
+<country>US</country>
+<doc-number>2004/0068652</doc-number>
+<kind>A1</kind>
+<name>Carpentier et al.</name>
+<date>20040400</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<patcit num="00078">
+<document-id>
+<country>EP</country>
+<doc-number>0663640</doc-number>
+<date>19950700</date>
+</document-id>
+</patcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00079">
+<othercit>ISU://www.isu.edu/departments/comcom/unix/workshop/shell.html, &#x201c;Section 4: The UNIX Shell&#x201d;, 3 pages, no date.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00080">
+<othercit>From the Internet://www.isu.edu/departments/comcom/unix.workshop/, retrieved Sep. 28, 2005.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00081">
+<othercit>Federal Information Processing Standards Publication 186: Digital Signature Standard (DSS). 1994, no date.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00082">
+<othercit>Borg, Digital Signatures Keep Cyberstreets Safe for Shoppers, Computer Technology Review, vol. 16, No. 2, Feb. 1996 p. 1.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00083">
+<othercit>Hu, Some Thoughts on Agent Trust and Delegation, Available at http://www.cs.nccu.edu.tw/jong, 2001, pp. 489-496.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00084">
+<othercit>E. Adar and B. Huberman, &#x201c;Free Riding on Gnutella,&#x201d; Xerox PARC Technical Report, pp. 1-22, Aug. 2000.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00085">
+<othercit>R. Anderson, &#x201c;The Eternity Service,&#x201d; PRAGO-CRYPT, pp. 242-252, Oct. 1996.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00086">
+<othercit>T. Anderson, M. Dahlin, J. Neefe, D. Patterson, D. Roselli, and R. Wang, &#x201c;Severless Network File Systems,&#x201d; 15th Symposium on Operating Systems Principles, pp. 109-126, Dec. 1995.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00087">
+<othercit>W. Bolosky, J. Douceur, D. Ely, M. Theimer, &#x201c;Feasibility of a Serverless Distributed File System Deployed on an Existing Set of Desktop PCs&#x201d;, Proceedings of the International Conference on Measurement and Modeling of Computer Systems, pp. 34-43, Jun. 17-21, 2000.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00088">
+<othercit>W. Bolosky, S. Corbin, D. Goebel, and J. Douceur, &#x201c;Single Instance Storage in Windows&#xae; 2000,&#x201d; Proceedings of the 4th USENIX Windows Systems Symposium, pp. 13-24, Aug. 2000.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00089">
+<othercit>G. Cabri, A. Corradi, F. Zambonelli, &#x201c;Experience of Adaptive Replication in Distributed File Systems&#x201d;, 22nd IEEE EUROMICRO, 10 pages, Sep. 1996.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00090">
+<othercit>M. Castro and B. Liskov, &#x201c;Practical Byzantine Fault Tolerance,&#x201d; Proceedings of the Third Symposium on Operating Systems Design and Implementation, 14 pages, Feb. 1999.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00091">
+<othercit>M. Castro and B. Liskov, &#x201c;Proactive Recovery in a Byzantine-Fault-Tolerant System,&#x201d; 4th Symposium on Operating Systems Design and Implementation, pp. 273-287, Oct. 2000.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00092">
+<othercit>I. Clarke, O. Sandberg, B. Wiley, and T. Hong, &#x201c;Freenet: A Distributed Anonymous Information Storage and Retrieval System,&#x201d; ICSI Workshop on Design Issues in Anonymity and Unobservability, 21 pages, Jul. 2000.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00093">
+<othercit>J. Douceur and W. Bolosky, &#x201c;A Large-Scale Study of File-System Contents,&#x201d; SIGMETRICS, pp. 59-70, May 1999.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00094">
+<othercit>L. Fan, P. Cao, J. Almeida, and A. Broder, &#x201c;Summary Cache: A Scalable Wide-Area Web Cache Sharing Protocol&#x201d;, ACM SIGCOMM, pp. 254-265, 1998.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00095">
+<othercit>A. Goldberg and P. Yianilos, &#x201c;Towards and Archival Intermemory,&#x201d; IEEE International Forum on Research and Technology Advances in Digital Libraries, pp. 147-156, Apr. 1998.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00096">
+<othercit>J. Howard, M. Kazar, S. Menees, D. Nichols, M. Satyanarayanan, R. Sidebotham, and M. West, &#x201c;Scale and Performance in a Distributed File System,&#x201d; ACM Transactions on Computer Systems, pp. 51-81, Feb. 1988.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00097">
+<othercit>J. Kistler and M. Satyanarayanan, &#x201c;Disconnected Operation in the Coda File System,&#x201d; ACM Transactions on Computer Systems, vol. 10, No. 1, pp. 3-25, Feb. 1992.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00098">
+<othercit>J. Kubiatowicz et al., &#x201c;OceanStore: An Architecture for Global-Scale Persistent Storage,&#x201d; Proceedings of the Ninth International Conference on Architectural Support for Porgramming Languages and Operating Systems, 12 pages, Nov. 2000.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00099">
+<othercit>E. Lee and C. Thekkath, &#x201c;Petal: Distributed Virtual Disks,&#x201d; Seventh International Conference on Architectural Support for Programming Languages and Operating Systems, pp. 84-92, Oct. 1996.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00100">
+<othercit>D. Mazi&#xe8;res, M. Kaminsky, M. F. Kaashoek, and E. Witchel, &#x201c;Seperating Key Management from File System Security&#x201d;, 17th ACM Symposium on Operating Systems Principles, pp. 124-139, Dec. 1999.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00101">
+<othercit>D.L. McCue, M.C. Little, &#x201c;Computing Replica Placement in Distributed Systems&#x201d;, IEEE Second Workshop on Replicated Data, pp. 58-61, Nov. 1992.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00102">
+<othercit>M. K. McKusick, W. N. Joy, S. J. Leffler, and R. S. Fabry, &#x201c;A Fast File System for Unix,&#x201d; ACM Transactions on Computer Systems, vol. 2, No. 3, pp. 181-197, Aug. 1984.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00103">
+<othercit>The OceanStore Project web pages, http://oceanstore.cs.berkeley.edu/info/overview.html, 2 pages, last modified Jul. 8, 2002.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00104">
+<othercit>C. Plaxton, R. Rajaraman, and A Richa, &#x201c;Accessing Nearby Copies of Replicated Objects in a Distributed Environment&#x201d;, Proceedings of the 9th Annual ACM Symposium on Parallel Algorithms and Architectures, pp. 311-320, 1997.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00105">
+<othercit>C. Plaxton, R. Rajaraman, and A Richa, &#x201c;Accessing Nearby Copies of Replicated Objects in a Distributed Environment&#x201d;, Theory of Computing Systems, pp. 32:241-280, 1999.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00106">
+<othercit>R. T. Reich and D. Albee, &#x201c;S.M.A.R.T. Phase-II,&#x201d; No. WP-9803-001, Maxtor Corporation, 3 pages, Feb. 1998.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00107">
+<othercit>J. D. Saltzer and M. D. Schroeder. &#x201c;The Protection of Information in Computer Systems,&#x201d; Proceedings of the IEEE 63(9), pp. 1278-1308, Sep. 1975.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00108">
+<othercit>R. Sandberg, D. Goldberg, S. Kleiman, D. Walsh, and B. Lyon, &#x201c;Design and Implementation of the Sun Network Filesystem,&#x201d; Summer USENIX Conference, pp. 119-130, Jun. 1985.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00109">
+<othercit>A. Sweeny, D. Doucette, W. Hu, C. Anderson, M. Nishimoto, and G. Peck, &#x201c;Scalability in the XFS File System,&#x201d; USENIX Annual Technical Conference, 15 pages, 1996.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00110">
+<othercit>C. Thekkath, T. Mann, and E. Lee, &#x201c;Frangipani: A Scalable Distributed File System,&#x201d; 16th ACM Symposium on Operating Systems Principles, pp. 224-237, 1997.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00111">
+<othercit>W. Vogels, &#x201c;File system usage in Windows NT 4.0,&#x201d; 17th ACM Symposium on Operating Systems Principles, pp. 93-109, Dec. 1999.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00112">
+<othercit>J. Wylie, M. Bigrigg, J. Strunk, G. Ganger, H. Kili&#xe7;&#xe7;&#xf6;te, and P. Khosla, &#x201c;Survivable Information Storage Systems,&#x201d; IEEE Computer, pp. 33(8):61-68, Aug. 2000.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00113">
+<othercit>Evans, Matt, &#x201c;FTFS: The Design of A Fault Tolerant Distributed File-System,&#x201d; May 2000, pp. 1-49.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00114">
+<othercit>Cheriton, David R. and Mann, Timothy P., &#x201c;Decentralizing a Global Naming Service for Improved Performance and Fault Tolerance,&#x201d; ACM Transactions on Computer Systems, vol. 7, No. 2, May 1989, pp. 147-183.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00115">
+<othercit>Miller et al, &#x201c;Strong Security for Distributed File Systems&#x201d;, 2001 IEEE, pp. 34-40.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+<citation>
+<nplcit num="00116">
+<othercit>Ferbrache, &#x201c;A Pathology of Computer Viruse&#x201d;, Springer-Verlag London Limited, 1992, pp. 1-6.</othercit>
+</nplcit>
+<category>cited by other</category>
+</citation>
+</references-cited>
+<number-of-claims>17</number-of-claims>
+<us-exemplary-claim>1</us-exemplary-claim>
+<us-field-of-classification-search>
+<classification-national>
+<country>US</country>
+<main-classification>709203</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>709201</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>709219</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>715739</main-classification>
+</classification-national>
+</us-field-of-classification-search>
+<figures>
+<number-of-drawing-sheets>15</number-of-drawing-sheets>
+<number-of-figures>15</number-of-figures>
+</figures>
+<us-related-documents>
+<division>
+<relation>
+<parent-doc>
+<document-id>
+<country>US</country>
+<doc-number>09876376</doc-number>
+<kind>00</kind>
+<date>20010606</date>
+</document-id>
+<parent-status>PENDING</parent-status>
+</parent-doc>
+<child-doc>
+<document-id>
+<country>US</country>
+<doc-number>10991571</doc-number>
+</document-id>
+</child-doc>
+</relation>
+</division>
+<related-publication>
+<document-id>
+<country>US</country>
+<doc-number>20050097148</doc-number>
+<kind>A1</kind>
+<date>20050505</date>
+</document-id>
+</related-publication>
+</us-related-documents>
+<parties>
+<applicants>
+<applicant sequence="001" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Douceur</last-name>
+<first-name>John R.</first-name>
+<address>
+<city>Bellevue</city>
+<state>WA</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>omitted</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="002" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Theimer</last-name>
+<first-name>Marvin M.</first-name>
+<address>
+<city>Bellevue</city>
+<state>WA</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>omitted</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="003" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Adya</last-name>
+<first-name>Atul</first-name>
+<address>
+<city>Bellevue</city>
+<state>WA</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>omitted</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="004" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Bolosky</last-name>
+<first-name>William J.</first-name>
+<address>
+<city>Issaquah</city>
+<state>WA</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>omitted</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+</applicants>
+<agents>
+<agent sequence="01" rep-type="attorney">
+<addressbook>
+<orgname>Lee &#x26; Hayes, PLLC</orgname>
+<address>
+<country>unknown</country>
+</address>
+</addressbook>
+</agent>
+</agents>
+</parties>
+<assignees>
+<assignee>
+<addressbook>
+<orgname>Microsoft Corporation</orgname>
+<role>02</role>
+<address>
+<city>Redmond</city>
+<state>WA</state>
+<country>US</country>
+</address>
+</addressbook>
+</assignee>
+</assignees>
+<examiners>
+<primary-examiner>
+<last-name>Hu</last-name>
+<first-name>Jinsong</first-name>
+<department>2154</department>
+</primary-examiner>
+</examiners>
+</us-bibliographic-data-grant>
+<abstract id="abstract">
+<p id="p-0001" num="0000">Potentially identical objects (e.g., files) are located across multiple computers based on stochastic partitioning of workload. For each of a plurality of objects stored on a plurality of computers in a network, a portion of object information corresponding to the object is selected. The object information can be generated in a variety of manners (e.g., based on hashing the object, based on characteristics of the object, and so forth). Any of a variety of portions of the object information can be used (e.g., the least significant bits of the object information). A stochastic partitioning process is then used to identify which of the plurality of computers to communicate the object information to for identification of potentially identical objects on the plurality of computers.</p>
+</abstract>
+<drawings id="DRAWINGS">
+<figure id="Fig-EMI-D00000" num="00000">
+<img id="EMI-D00000" he="218.86mm" wi="133.43mm" file="US07272630-20070918-D00000.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00001" num="00001">
+<img id="EMI-D00001" he="229.02mm" wi="188.04mm" file="US07272630-20070918-D00001.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00002" num="00002">
+<img id="EMI-D00002" he="169.08mm" wi="191.26mm" file="US07272630-20070918-D00002.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00003" num="00003">
+<img id="EMI-D00003" he="246.21mm" wi="136.31mm" file="US07272630-20070918-D00003.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00004" num="00004">
+<img id="EMI-D00004" he="242.65mm" wi="145.12mm" file="US07272630-20070918-D00004.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00005" num="00005">
+<img id="EMI-D00005" he="210.31mm" wi="198.46mm" file="US07272630-20070918-D00005.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00006" num="00006">
+<img id="EMI-D00006" he="223.77mm" wi="191.69mm" file="US07272630-20070918-D00006.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00007" num="00007">
+<img id="EMI-D00007" he="165.02mm" wi="108.71mm" file="US07272630-20070918-D00007.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00008" num="00008">
+<img id="EMI-D00008" he="153.67mm" wi="108.71mm" file="US07272630-20070918-D00008.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00009" num="00009">
+<img id="EMI-D00009" he="143.00mm" wi="128.61mm" file="US07272630-20070918-D00009.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00010" num="00010">
+<img id="EMI-D00010" he="244.35mm" wi="195.07mm" file="US07272630-20070918-D00010.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00011" num="00011">
+<img id="EMI-D00011" he="159.26mm" wi="125.81mm" file="US07272630-20070918-D00011.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00012" num="00012">
+<img id="EMI-D00012" he="250.44mm" wi="183.56mm" file="US07272630-20070918-D00012.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00013" num="00013">
+<img id="EMI-D00013" he="252.90mm" wi="209.97mm" file="US07272630-20070918-D00013.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00014" num="00014">
+<img id="EMI-D00014" he="246.89mm" wi="191.60mm" file="US07272630-20070918-D00014.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00015" num="00015">
+<img id="EMI-D00015" he="251.54mm" wi="208.20mm" file="US07272630-20070918-D00015.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+</drawings>
+<description id="description">
+<?RELAPP description="Other Patent Relations" end="lead"?>
+<heading id="h-0001" level="1">RELATED APPLICATIONS</heading>
+<p id="p-0002" num="0001">This application is a divisional application of U.S. patent application Ser. No. 09/876,376, filed Jun. 6, 2001, entitled &#x201c;Locating Potentially Identical Objects Across Multiple Computers Based On Stochastic Partitioning Of Workload&#x201d;, which is hereby incorporated by reference herein.</p>
+<?RELAPP description="Other Patent Relations" end="tail"?>
+<?BRFSUM description="Brief Summary" end="lead"?>
+<heading id="h-0002" level="1">TECHNICAL FIELD</heading>
+<p id="p-0003" num="0002">This invention relates to computer networks and file systems, and more particularly to locating potentially identical files across multiple computers based on stochastic partitioning of workload.</p>
+<heading id="h-0003" level="1">BACKGROUND OF THE INVENTION</heading>
+<p id="p-0004" num="0003">File systems manage files and other data objects stored on computer systems. File systems were originally built into the computer operating system to facilitate access to files stored locally on resident storage media. As personal computers became networked, some file storage capabilities were offloaded from individual user machines to special storage servers that stored large numbers of files on behalf of the user machines. When a file was needed, the user machine simply requested the file from the server. In this server-based architecture, the file system is extended to facilitate management of and access to files stored remotely at the storage server over a network.</p>
+<p id="p-0005" num="0004">One problem that arises in distributed file systems concerns storage of identical files on the servers. While some file duplication normally occurs on an individual user's personal computer, duplication unfortunately tends to be quite prevalent on networks where servers centrally store the contents of multiple personal computers. For example, with a remote boot facility on a computer network, each user boots from that user's private directory on a file server. Each private directory thus ordinarily includes a number of files that are identical to files on other users' directories. Storing the private directories on traditional file systems consumes a great amount of disk and server file buffer cache space. From a storage management perspective, it is desirable to reduce file duplication to reduce the amount of wasted storage space used to store redundant files. However, any such efforts need to be reconciled with the file system that tracks the multiple duplicated files on behalf of the associated users.</p>
+<p id="p-0006" num="0005">To address the problems associated with storing multiple identical files on a computer, Microsoft developed a single instance store (SIS) system that is packaged as part of the Windows 2000 operating system. The SIS system reduces file duplication by automatically identifying common identical files of a file system, and then merging the files into a single instance of the data. One or more logically separate links are then attached to the single instance to represent the original files to the user machines. In this way, the storage impact of duplicate files on a computer system is greatly reduced.</p>
+<p id="p-0007" num="0006">Today, file storage is migrating toward a model in which files are stored on various networked computers, rather than on a central storage server. However, the problem of duplicate identical files remains, except that the duplicate files are spread out over the various networked computers. Given the large number of computers that can currently be networked together (easily into the thousands or hundreds of thousands), and the large number of files that can exist spread out over this large number of computers (easily into the millions or billions), detecting duplicate files in such an environment can be very difficult. Limitations on the bandwidth available to transfer information among the computers, as well as limitations on the computational capacity of the computers themselves, makes such detections very difficult.</p>
+<p id="p-0008" num="0007">The invention addresses these problems, allowing locating of potentially identical objects, such as files, across multiple computers.</p>
+<heading id="h-0004" level="1">SUMMARY OF THE INVENTION</heading>
+<p id="p-0009" num="0008">Locating potentially identical objects across multiple computers based on stochastic partitioning of workload is described herein.</p>
+<p id="p-0010" num="0009">In accordance with one aspect, identical objects (e.g., files) are located across multiple computers by selecting, for each of a plurality of objects stored on a plurality of computers in a network, a portion of object information corresponding to the object. The object information can be generated in a variety of manners (e.g., based on hashing the object, based on characteristics of the object, and so forth). Any of a variety of portions of the object information can be used (e.g., the least significant bits of the object information). A stochastic partitioning process is then used to identify which of the plurality of computers to communicate the object information to for identification of potentially identical objects on the plurality of computers.</p>
+<p id="p-0011" num="0010">According to another aspect, the stochastic partitioning process comprises a fully distributed stochastic partitioning process including in which, for each of a plurality of computers, the selected portion of the object information is compared to a portion of a computer identifier associated with the computer. An identification is then made as to which of the computer identifiers have portions matching the selected portion of the object information, and the object information is communicated to each of the computers associated with a computer identifier having a portion matching the selected portion of the object information.</p>
+<p id="p-0012" num="0011">According to another aspect, the stochastic partitioning process comprises a group-based system using directory services process in which an object information portion to computer mapping is accessed on a remote computer. Based on the selected portion of the object information and the remotely accessed mapping, one or more computers are identified to receive the object information.</p>
+<p id="p-0013" num="0012">According to another aspect, the stochastic partitioning process comprises a stochastic partitioning process comprises a multi-level stochastic partitioning process in which selected ones of the plurality of computers in the network are grouped into a plurality of groups based at least in part on the number of the plurality of computers in the network that the computer using the stochastic partitioning process is aware of. Which of the selected ones of the plurality of computers to communicate the object information to is then identified, wherein the identifying is based at least in part on comparing the selected portion of the object information to a portion of a computer identifier of one or more of the selected ones of the plurality of computers.</p>
+<?BRFSUM description="Brief Summary" end="tail"?>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="lead"?>
+<description-of-drawings>
+<heading id="h-0005" level="1">BRIEF DESCRIPTION OF THE DRAWINGS</heading>
+<p id="p-0014" num="0013">The present invention is illustrated by way of example and not limitation in the figures of the accompanying drawings. The same numbers are used throughout the figures to reference like components and/or features.</p>
+<p id="p-0015" num="0014"><figref idref="DRAWINGS">FIG. 1</figref> illustrates an exemplary network environment that supports a serverless distributed file system.</p>
+<p id="p-0016" num="0015"><figref idref="DRAWINGS">FIG. 2</figref> illustrates logical components of an exemplary computing device that is representative of any one of the devices of <figref idref="DRAWINGS">FIG. 1</figref> that participate in the distributed file system.</p>
+<p id="p-0017" num="0016"><figref idref="DRAWINGS">FIG. 3</figref> is a flowchart illustrating an exemplary process followed to inform database servers of the file information in accordance with certain embodiments of the invention.</p>
+<p id="p-0018" num="0017"><figref idref="DRAWINGS">FIG. 4</figref> is a flowchart illustrating an exemplary process followed by a database server in accordance with certain embodiments of the invention.</p>
+<p id="p-0019" num="0018"><figref idref="DRAWINGS">FIG. 5</figref> illustrates an exemplary centralized database implementation in accordance with certain embodiments of the invention.</p>
+<p id="p-0020" num="0019"><figref idref="DRAWINGS">FIG. 6</figref> illustrates an exemplary network environment in which responsibility for managing the file information database is shared among multiple database servers in each group.</p>
+<p id="p-0021" num="0020"><figref idref="DRAWINGS">FIG. 7</figref> illustrates a localized pair-wise checking implementation in additional detail.</p>
+<p id="p-0022" num="0021"><figref idref="DRAWINGS">FIG. 8</figref> illustrates the special situation when the number of client computers in a group is equal to all of the computers in the network in additional detail.</p>
+<p id="p-0023" num="0022"><figref idref="DRAWINGS">FIG. 9</figref> is a flowchart illustrating an exemplary process followed by each computer for the fully distributed stochastically partitioned database implementation in accordance with certain embodiments of the invention.</p>
+<p id="p-0024" num="0023"><figref idref="DRAWINGS">FIG. 10</figref> illustrates an exemplary network in which a fully distributed stochastically partitioned database implementation is employed.</p>
+<p id="p-0025" num="0024"><figref idref="DRAWINGS">FIG. 11</figref> is a flowchart illustrating an exemplary process followed by each computer for the group-based system using directory services implementation in accordance with certain embodiments of the invention.</p>
+<p id="p-0026" num="0025"><figref idref="DRAWINGS">FIG. 12</figref> illustrates an exemplary network in which the group-based system using directory services implementation is employed.</p>
+<p id="p-0027" num="0026"><figref idref="DRAWINGS">FIG. 13</figref> is a flowchart illustrating an exemplary process followed by each computer for a multi-level stochastically partitioned database implementation in accordance with certain embodiments of the invention.</p>
+<p id="p-0028" num="0027"><figref idref="DRAWINGS">FIG. 14</figref> illustrates an exemplary network in which a multi-level stochastically partitioned database implementation is employed.</p>
+<p id="p-0029" num="0028"><figref idref="DRAWINGS">FIG. 15</figref> illustrates a more general exemplary computer environment which can be used in various embodiments of the invention.</p>
+</description-of-drawings>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="tail"?>
+<?DETDESC description="Detailed Description" end="lead"?>
+<heading id="h-0006" level="1">DETAILED DESCRIPTION</heading>
+<p id="p-0030" num="0029">The discussions herein assume a basic understanding of cryptography by the reader. For a basic introduction of cryptography, the reader is directed to a text written by Bruce Schneier and entitled &#x201c;Applied Cryptography: Protocols, Algorithms, and Source Code in C,&#x201d; published by John Wiley &#x26; Sons with copyright 1994 (or second edition with copyright 1996).</p>
+<p id="h-0007" num="0000">Operating Environment</p>
+<p id="p-0031" num="0030">The following discussion is directed primarily to locating identical files across multiple computers in a distributed file system. The file system is described in the context of a symbiotic, serverless, distributed file system that runs on multiple networked computers and stores files across the computers rather than on a central server or cluster of servers. The symbiotic nature implies that the machines cooperate but do not completely trust one another. The file system does not manage the storage disk directly, but rather relies on existing file systems on local machines, such as those file systems integrated into operating systems (e.g., the Windows NT&#xae; file system).</p>
+<p id="p-0032" num="0031">While the file system is described in the context of storing &#x201c;files&#x201d;, it should be noted that other types of storable data can be stored in the file system. The term &#x201c;file&#x201d; is used for discussion purposes and is intended to include data objects or essentially any other storage subject matter that may not be commonly characterized as a &#x201c;file&#x201d;.</p>
+<p id="p-0033" num="0032">Additionally, the systems and methods described herein are also applicable to data in other types of systems other than file systems, such as database systems or object systems. The methods and systems described herein operate on objects containing bytes (these objects being predominately described herein as files), and can be used to identify potentially duplicate objects including any object data or meta data. Furthermore, the methods and systems described herein may also operate on object-defined methods rather than acting upon the objects at the byte level, including methods defined on objects for obtaining the bytes (e.g., file information) described herein.</p>
+<p id="p-0034" num="0033"><figref idref="DRAWINGS">FIG. 1</figref> illustrates an exemplary network environment <b>100</b> that supports a serverless distributed file system. Four client computing devices <b>102</b>, <b>104</b>, <b>106</b>, and <b>108</b> are coupled together via a data communications network <b>110</b>. Although four computing devices are illustrated, different numbers (either greater or fewer than four) may be included in network environment <b>100</b>.</p>
+<p id="p-0035" num="0034">Network <b>110</b> represents any of a wide variety of data communications networks. Network <b>110</b> may include public portions (e.g., the Internet) as well as private portions (e.g., an internal corporate Local Area Network (LAN)), as well as combinations of public and private portions. Network <b>110</b> may be implemented using any one or more of a wide variety of conventional communications media including both wired and wireless media. Any of a wide variety of communications protocols can be used to communicate data via network <b>110</b>, including both public and proprietary protocols. Examples of such protocols include TCP/IP, IPX/SPX, NetBEUI, etc.</p>
+<p id="p-0036" num="0035">Computing devices <b>102</b>-<b>108</b> represent any of a wide range of computing devices, and each device may be the same or different. By way of example, devices <b>102</b>-<b>108</b> may be desktop computers, laptop computers, handheld or pocket computers, personal digital assistants (PDAs), cellular phones, Internet appliances, consumer electronics devices, gaming consoles, and so forth.</p>
+<p id="p-0037" num="0036">Two or more of devices <b>102</b>-<b>108</b> operate to implement a serverless distributed file system (although some of them may not be operational (e.g., failed or powered-down) at any given time). The actual devices included in the serverless distributed file system can change over time, allowing new devices to be added to the system and other devices to be removed from the system. Each device <b>102</b>-<b>108</b> that is part of the distributed file system has different portions of its mass storage device(s) (e.g., hard disk drive) allocated for use as either local storage or distributed storage. The local storage is used for data that the user desires to store on his or her local machine and not in the distributed file system structure. The distributed storage portion is used for data that the user of the device (or another device) desires to store within the distributed file system structure.</p>
+<p id="p-0038" num="0037">In the illustrated example of <figref idref="DRAWINGS">FIG. 1</figref>, certain devices connected to network <b>110</b> have one or more mass storage devices that include both a portion used by the local machine and a portion used by the distributed file system. The amount allocated to distributed or local storage varies among the devices and can vary over time. For example, device <b>102</b> has a larger percentage allocated for a distributed system portion <b>120</b> in comparison to the local portion <b>122</b>; device <b>104</b> includes a distributed system portion <b>124</b> that is approximately the same size as the local portion <b>126</b>; and device <b>106</b> has a smaller percentage allocated for a distributed system portion <b>128</b> in comparison to the local portion <b>130</b>. The storage separation into multiple portions may occur on a per storage device basis (e.g., one hard drive is designated for use in the distributed system while another is designated solely for local use), and/or within a single storage device (e.g., part of one hard drive may be designated for use in the distributed system while another part is designated for local use). Other devices connected to network <b>110</b>, such as computing device <b>108</b>, may not be part of the distributed file system and thus such devices do not have any of their mass storage device(s) allocated for use by the distributed system. Hence, device <b>108</b> has only a local portion <b>132</b>.</p>
+<p id="p-0039" num="0038">A distributed file system <b>150</b> operates to store one or more copies of files on different computing devices <b>102</b>-<b>106</b>. When a new file is created by the user of a computer, he or she has the option of storing the file on the local portion of his or her computing device, or alternatively in the distributed file system. If the file is stored in the distributed file system <b>150</b>, the file will be stored in the distributed system portion of the mass storage device(s) of one or more of devices <b>102</b>-<b>106</b>. The user creating the file typically has no ability to control which device <b>102</b>-<b>106</b> the file is stored on, nor any knowledge of which device <b>102</b>-<b>106</b> the file is stored on. Additionally, replicated copies of the file will typically be saved, allowing the user to subsequently retrieve the file even if one of the computing devices <b>102</b>-<b>106</b> on which the file is saved is unavailable (e.g., is powered-down, is malfunctioning, etc.).</p>
+<p id="p-0040" num="0039">The distributed file system <b>150</b> is implemented by one or more components on each of the devices <b>102</b>-<b>106</b>, thereby obviating the need for any centralized server to coordinate the file system. These components operate to determine where particular files are stored, how many copies of the files are created for storage on different devices, and so forth. Exactly which device will store which files depends on numerous factors, including the number of devices in the distributed file system, the storage space allocated to the file system from each of the devices, how many copies of the file are to be saved, the number of files already stored on the devices, and so on. Thus, the distributed file system allows the user to create and access files (as well as folders or directories) without any knowledge of exactly which other computing device(s) the file is being stored on.</p>
+<p id="p-0041" num="0040">The files stored by the file system are distributed among the various devices <b>102</b>-<b>106</b> and stored in encrypted form. When a new file is created, the device on which the file is being created encrypts the file prior to communicating the file to other device(s) for storage. The directory entry (e.g., the file name) for a new file is also communicated to the other device(s) for storage. Additionally, if a new folder or directory is created, the directory entry (e.g., folder name or directory name) is also communicated to the other device(s) for storage. As used herein, a directory entry refers to any entry that can be added to a file system directory, including both file names and directory (or folder) names.</p>
+<p id="p-0042" num="0041">The distributed file system <b>150</b> is designed to prevent unauthorized users from reading data stored on one of the devices <b>102</b>-<b>106</b>. Thus, a file created by device <b>102</b> and stored on device <b>104</b> is not readable by the user of device <b>104</b> (unless he or she is authorized to do so). In order to implement such security, the contents of files as well as all directory entries are encrypted, and only authorized users are given the decryption key. Thus, although device <b>104</b> may store a file created by device <b>102</b>, if the user of device <b>104</b> is not an authorized user of the file, the user of device <b>104</b> cannot decrypt (and thus cannot read) either the contents of the file or its directory entry (e.g., filename).</p>
+<p id="p-0043" num="0042"><figref idref="DRAWINGS">FIG. 2</figref> illustrates logical components of an exemplary computing device <b>200</b> (also referred to herein as a computer or machine) that is representative of any one of the devices <b>102</b>-<b>106</b> of <figref idref="DRAWINGS">FIG. 1</figref> that participate in the distributed file system <b>150</b>. Computing device <b>200</b> includes a mass storage device <b>208</b>, a distributed file system interface <b>210</b>, and various additional modules providing client and/or server functionality. Computing device <b>200</b> also typically includes additional components (e.g., a processor), however these additional components have not been shown in <figref idref="DRAWINGS">FIG. 2</figref> so as not to clutter the drawings. A more general description of a computer architecture with various hardware and software components is described below with reference to <figref idref="DRAWINGS">FIG. 15</figref>.</p>
+<p id="p-0044" num="0043">Mass storage device <b>208</b> can be any of a wide variety of conventional nonvolatile storage devices, such as a magnetic disk, optical disk, Flash memory, and so forth. Mass storage device <b>208</b> is separated into a distributed system portion and a local portion; this separation may change over time.</p>
+<p id="p-0045" num="0044">Computing device <b>200</b> is intended to be used in a serverless distributed file system, and as such includes modules oriented towards both server functionality and client functionality. The server functionality comes into play when device <b>200</b> is responding to a request involving a file or directory entry stored (or to be stored) in storage device <b>208</b>, as well as when identifying potentially identical or duplicate files. The client functionality, on the other hand, comes into play when issuing requests by device <b>200</b> for files stored (or to be stored) in the distributed file system, as well as generating and forwarding file information for file duplication identification as necessary. The client and server functionality operate independent of one another. Thus, situations can arise where the serverless distributed file system <b>150</b> causes files being stored by modules operating in a client capacity to be stored in mass storage device <b>208</b> by other modules operating in a server capacity.</p>
+<p id="p-0046" num="0045">Computing device <b>200</b> includes a file information generation module <b>220</b>, a forwarding location determination module <b>222</b>, and a file information comparison module <b>242</b>. It should be noted, however, that not all components are necessarily needed on each computing device <b>200</b>. For example, a computing device operating as a client-only machine might not include file information comparison module <b>242</b>, or a computing device operating as a server-only machine might not include file information generation module <b>220</b>.</p>
+<p id="p-0047" num="0046">File information generation module <b>220</b> generates file information for one or more of encrypted files <b>240</b> in storage device <b>208</b>. Forwarding location determination module <b>222</b> determines the location (e.g., one or more other computing devices <b>200</b>) where the file information generated by module <b>222</b> is to be communicated. These components and their operation are described in more detail below.</p>
+<p id="p-0048" num="0047">Although illustrated on a single computing device in <figref idref="DRAWINGS">FIG. 2</figref>, file information generation module <b>220</b> and forwarding location determination module <b>222</b> may also be implemented across multiple computing devices. For example, in the distributed file system environment illustrated in <figref idref="DRAWINGS">FIG. 1</figref>, a computing device may create or update a file for storage in distributed file system <b>150</b>, and then communicate the file to another device(s) in distributed file system <b>150</b> acting as a directory server. The directory server then stores the file on an appropriate computing device (based on the rules followed by distributed file system <b>150</b>) and maintains a record of where the file is stored. In this example, the computing device creating or updating the file generates the file information (via its file information generation module <b>220</b>), while the computing device acting as the directory server (and thus which knows what other computing device the file is stored at) determines the location where the generated file information is to be communicated (via its forwarding location determination module <b>222</b>).</p>
+<p id="p-0049" num="0048">File information generation module <b>220</b> generates file information for one or more encrypted files <b>240</b>. The file information for each file is a semi-unique value based on the data in the file itself (the data may be program instructions, program data, etc.) and/or other characteristics of the file. The value is a semi-unique value because it is based on the data in the file but is not completely representative of the file. For example, the file information may be a hash value that is based on the data in the file, but it is possible for two different files having different data to have the same hash value. Different characteristics of the file can also be incorporated into the file information, such as the file size, the file type, the file name, and so forth. The file information can be generated in any of a wide variety of manners, so long as each of the computing devices generates its file information in the same manner. Two files that have different file information are not duplicate files. Two files that have the same file information, however, may or may not be duplicate files.</p>
+<p id="p-0050" num="0049">In one implementation, the file information is a hash value generated based on the file. The hash value may be generated using a one-way hashing function (e.g., SHA, MD5, etc.), or any of a variety of other public or proprietary hashing functions. The hash value may be based on the entire file, or alternatively only a portion of the file (e.g., the beginning of the file, the end of the file, the middle of the file, and so forth). In another implementation, the file information is referred to as a file signature, which is a combination of a hash value based on the file (the hash value represents 64 bits of the file signature) and the file size (which represents another 64 bits of the file signature). The file size is used because two files with differing file sizes cannot be identical.</p>
+<p id="p-0051" num="0050">In certain embodiments, the file information is based on a hash value corresponding to the file. This hash value is based on both block-by-block encryption and convergent encryption (as described below), and is generated by the file system for secure storage of files in the distributed computing environment. Thus, in these embodiments, file information generation module <b>220</b> need only access the hash value already generated for a file for secure storage in order to generate the file information.</p>
+<p id="p-0052" num="0051">Generally, according to convergent encryption, a file F (or any other type of encryptable object) is initially hashed using a one-way hashing function h (e.g., SHA, MD5, etc.) to produce a hash value h(F). The file F is then encrypted using a symmetric cipher (e.g., RC4, RC2, etc.) with the hash value as the key, or E<sub>h(F)</sub>(F). Next, read access control entries are created for each authorized user who is granted read access to the encrypted file. The access control entries are formed by encrypting the file's hash value h(F) with any number of keys K<sub>1</sub>, K<sub>2</sub>, . . . , K<sub>m</sub>, to yield E<sub>K1</sub>(h(F)), E<sub>K2</sub>(h(F)), . . . , E<sub>Km</sub>(h(F)). The keys K are randomly generated and uniquely assigned to individual users. In one implementation, each key K is the user's public key of a public/private key pair. In the illustrated example, write access control is governed by the directory server that stores the directory entry for the file and it is thus not addressed by the file format (so references to &#x201c;access&#x201d; within this document refer to read access unless specifically identified as another type of access). Alternatively, write access control could be implemented via access control entries in a manner analogous to the read access control discussed herein.</p>
+<p id="p-0053" num="0052">With convergent encryption, one encrypted version of the file is stored and replicated among the serverless distributed file system <b>150</b>. Along with the encrypted version of the file is stored one or more access control entries depending upon the number of authorized users who have access. Thus, a file in the distributed file system <b>150</b> has the following structure:
+<br/>
+<?in-line-formulae description="In-line Formulae" end="lead"?>[E<sub>h(F)</sub>(F), &#x3c;E<sub>K1</sub>(h(F))&#x3e;, &#x3c;E<sub>K2</sub>(h(F))&#x3e;, . . . , &#x3c;E<sub>Km</sub>(h(F))&#x3e;]<?in-line-formulae description="In-line Formulae" end="tail"?>
+</p>
+<p id="p-0054" num="0053">One advantage of convergent encryption is that the encrypted file can be evaluated by the file system to determine whether it is identical to another file without resorting to any decryption (and hence, without knowledge of any encryption keys). Unwanted duplicative files can be removed by adding the authorized user(s) access control entries to the remaining file. Another advantage is that the access control entries are very small in size, on the order of bytes as compared to possibly gigabytes for the encrypted file. As a result, the amount of overhead information that is stored in each file is reduced. This enables the property that the total space used to store the file is proportional to the space that is required to store a single encrypted file, plus a constant amount of storage for each additional authorized reader of the file.</p>
+<p id="p-0055" num="0054">For more information on convergent encryption, the reader is directed to co-pending U.S. patent application Ser. No. 09/565,821, entitled &#x201c;Encryption Systems and Methods for Identifying and Coalescing Identical Objects Encrypted with Different Keys&#x201d;, which was filed May 5, 2000, in the names of Douceur et al., and is commonly assigned to Microsoft Corporation. This application is hereby incorporated by reference.</p>
+<p id="p-0056" num="0055">For small files, the entire file is hashed and encrypted using convergent encryption, and the resulting hash value is used as the encryption key. The encrypted file can be verified without knowledge of the key or any need to decrypt the file first. For large files, the file contents are broken into smaller blocks and then convergent encryption is applied separately to each block. For example, the file F may be segmented into &#x201c;n&#x201d; pages F<sup>0</sup>-F<sup>n-1</sup>, where each page is a fixed size is (e.g., a 4 Kbyte size). Convergent encryption is then applied to the file at the block level. That is, each block F<sup>i </sup>is separately hashed using a one-way hash function (e.g., SHA, MD5, etc.) to produce a hash value h(F<sup>i</sup>). Each block F<sup>i </sup>is then encrypted using a symmetric cipher (e.g., RC4, RC2, etc.) with the hash value h(F<sup>i</sup>) as the key, or E<sub>h(Fi)</sub>(F<sup>i</sup>), resulting in an array of encrypted blocks which form the contents of the file. For more information on block-by-block encryption, the reader is directed to co-pending U.S. patent application Ser. No. 09/814,259 entitled &#x201c;On-Disk File Format for Serverless Distributed File System&#x201d;, to inventors William J. Bolosky, Gerald Cermak, Atul Adya, and John R. Douceur. This application is hereby incorporated by reference.</p>
+<p id="p-0057" num="0056">File information generation module <b>220</b> can generate the file information at any of a wide variety of times. In one implementation, module <b>220</b> is designed to operate as a background process. When files are created or modified, the file names are added to a queue to be acted on by module <b>220</b>. When computing device <b>200</b> is not busy (e.g., the processor has free cycles, or has been idle for a period of time), module <b>220</b> operates to generate file information for one of the files in the queue. Alternatively, module <b>220</b> may be designed to run at times of anticipated low usage (e.g., at night or early morning), or module <b>220</b> may generate the file information for a file whenever that file is created or modified.</p>
+<p id="p-0058" num="0057">Module <b>220</b> may generate file information for each encrypted file <b>240</b>, or alternatively only for selected files <b>240</b>. In one implementation, module <b>220</b> generates file information only for files greater than a threshold size (e.g., files that are at least 16 k bytes). This threshold size is implemented to account for the situation where the overhead necessary to identify and coalesce duplicate files that are very small is deemed to be too great in light of the small amount of storage space (due to the small file size) that could be recovered.</p>
+<p id="p-0059" num="0058">The file duplication identification described herein is described primarily with reference to files <b>240</b> stored in the distributed system portion(s) of storage device <b>208</b>. Alternatively, the file duplication identification could also be applied to files stored in the local portion(s) of storage device <b>208</b>.</p>
+<p id="p-0060" num="0059">Forwarding location determination module <b>222</b> receives the file information from file information generation module <b>220</b> and forwards the file information to one or more other computing devices <b>200</b>. Which other computing devices the file information is forwarded to can vary, and is discussed in more detail below with respect to the various implementations.</p>
+<p id="p-0061" num="0060">Additionally, it is not uncommon for files to be deleted from computing device <b>200</b>. For example, the user may decide he or she no longer desires to run any programs that use a particular file (and uninstalls the program from the computing device), or the user no longer desires to keep a document file he or she created, etc. In these situations, a component of computing device <b>200</b> (e.g., distributed system file interface <b>210</b>) forwards an indication to one or more other computing devices <b>200</b> that the file has been deleted from computing device <b>200</b>. The other computing devices <b>200</b> that this indication is communicated to include the same computing devices that file information generation module <b>220</b> previously determined the file identifier should be sent to, thereby allowing those devices to remove the file information entry from their respective databases.</p>
+<p id="p-0062" num="0061">The file information generated by a computing device is communicated to one or more computing devices referred to herein as database servers. Each database server maintains a database of file information that it receives and compares the received file information to identify any file information for two files that is the same (and thus indicative of potentially identical files). The database servers may be dedicated database servers (e.g., storing only file information), or alternatively may be other computing devices <b>200</b> in the network, storing both received file information as well as other files <b>240</b> in the distributed system portion(s) of their storage devices <b>208</b>.</p>
+<p id="p-0063" num="0062">In a database server, file identification comparison module <b>242</b> receives file information and a corresponding file identifier (e.g., filename) from one or more other computing devices <b>200</b>. Module <b>242</b> manages a database <b>244</b> (e.g., stored on device <b>208</b>) of the file information it receives. Database <b>244</b> maintains a mapping of the file information to the file identifier. Database <b>244</b> may also maintain an indication of the computing device on which the file corresponding to the received file information is stored (or alternatively this may be inherent in the file identifier, which may include a filename as well as directory path to locate the file). Alternatively, the file identifier may not be stored (so long as the computer at which the file corresponding to the file information is stored is maintained in the database or otherwise known, the file information can be returned to that computer as an identification of the file). As discussed herein, the transferring of file information from one computing device to another also typically encompasses transferring the file identifier as well.</p>
+<p id="p-0064" num="0063">Module <b>242</b> also compares the received file information to determine whether any of the previously received file information matches (e.g., whether two or more are the same). In one implementation, each time file information is received at the database server, module <b>242</b> compares the received file information to the database of file information <b>244</b> to determine whether a match exists.</p>
+<p id="p-0065" num="0064">If module <b>242</b> detects a file information match, then appropriate action is taken to move one or more of the files corresponding to the matching file information to the same computing device. Once the files corresponding to the matching file information are on the same computing device, the SIS component on that computing device is invoked to determine whether in fact the two files are identical, and if so then to delete one of the files and set up a pointer to the other file in its place. Module <b>242</b> can be responsible for moving files as necessary so that they are located on the same device, or alternatively this responsibility may be carried by the computing devices on which the potentially identical files are stored.</p>
+<p id="p-0066" num="0065">The copying of files to the same computer can be carried out in any of a wide variety of manners. In one implementation, module <b>242</b> forwards a command to one of the computers storing one of the files corresponding to the matching file information to relocate its file to the computer on which the other file corresponding to the matching file information is located. In another implementation, module <b>242</b> forwards the matching file information to the computing devices from which the matching file information were received, along with an indication that the match was identified. The individual computing devices then coordinate with one another to transfer one of the files to the other computing device.</p>
+<p id="p-0067" num="0066"><figref idref="DRAWINGS">FIG. 3</figref> is a flowchart illustrating an exemplary process followed to inform database servers of the file information in accordance with certain embodiments of the invention. The process of <figref idref="DRAWINGS">FIG. 3</figref> is carried out by a computing device <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref>, and may be implemented in software.</p>
+<p id="p-0068" num="0067">Initially, the process waits until it is time to generate new file information for a file (act <b>250</b>). Once it is time to generate new file information, the file for which the file information is to be generated is identified (act <b>252</b>), and the file information is generated for that file (act <b>254</b>). Optionally, the computing device may then store the generated file information and wait for additional file information to be generated (act <b>256</b>), and then return to act <b>250</b> to generate more file information. The optional waiting period allows file information for multiple files to be forwarded to the identified database server(s) as a set rather than one-by-one. After the waiting period is over, or if the optional waiting is not performed, one or more database servers to receive the generated file information are identified (act <b>258</b>). Which one or more database servers are to receive the file information can vary, as discussed in more detail below. The generated file information(s) is then transmitted to the identified database servers (act <b>260</b>). It should also be noted that, based on different implementations as discussed below, the database server(s) to which the file information is to be transferred may not be readily identifiable (e.g., the computing device may not be aware of them yet).</p>
+<p id="p-0069" num="0068"><figref idref="DRAWINGS">FIG. 4</figref> is a flowchart illustrating an exemplary process followed by a database server in accordance with certain embodiments of the invention. The process of <figref idref="DRAWINGS">FIG. 4</figref> is carried out by a computing device <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref>, or alternatively a dedicated server (e.g., a device <b>200</b> without file information generation module <b>220</b>) and may be implemented in software.</p>
+<p id="p-0070" num="0069">Initially, file information is received (act <b>280</b>). The manner in which the file information for various files is received (e.g., individually or in sets), as well as which computers the file information is received from, can vary and is discussed in more detail below. The received file information is optionally forwarded to one or more other database servers (act <b>282</b>). Whether the file information is forwarded to another database server(s), as well as to what server(s) the file information is forwarded, varies by implementation as discussed in more detail below. Regardless of whether the file information is forwarded to other database servers, a check is made as to whether the file information should be added to the database of the database server that received the file information (act <b>284</b>). Whether the file information should be added to the database is based on certain criteria that vary by implementation, as discussed in more detail below. In some implementations, there is no checking in act <b>284</b> and all received file information is added to the database. If the received file information is not to be added to the database, then the process returns to act <b>280</b> where additional file information is eventually received.</p>
+<p id="p-0071" num="0070">However, if the file information is to be added to the database, then the received file information is added to the database maintained by the database server (act <b>286</b>), and is compared to other file information in the database (act <b>288</b>). The database server also checks whether the newly received file information matches (is the same as) any of the file information already in the database (act <b>290</b>). If the received file information does match file information(s) in the database, then the computers storing the files corresponding to the matching file information are notified of the match (act <b>292</b>) so that they can take appropriate action. The process then returns to act <b>280</b> where additional file information is eventually received.</p>
+<p id="p-0072" num="0071">Additionally, in some situations copies of files may be replicated and stored in multiple locations (e.g., different computers) in the network for fault tolerance purposes. For example, in a serverless distributed file system, where the user has no guarantee that his or her file will be stored on a particular computer, the file may be replicated and stored on multiple computers so that the user can still access his or her file even if one or more of the computers is unavailable. When such replicated files exist in the network, care should be taken to ensure that they are not identified as duplicate copies and combined into a single file, and thus subvert the fault tolerance created by the replicated copies.</p>
+<p id="p-0073" num="0072">In one embodiment, the management of replicated file copies is handled by computing devices acting as directory servers (e.g., in distributed file system <b>150</b> of <figref idref="DRAWINGS">FIG. 1</figref>). In this embodiment, the directory servers are responsible for both replicating files as well as identifying duplicate files, and thus know whether a particular file is a replica they created of another file. In one implementation, the duplicate identification is performed at a higher level than the replicated storage (e.g., duplicate identification is performed prior to replicating a file), thereby avoiding identification of a replicated file as a potentially duplicate file.</p>
+<p id="p-0074" num="0073">In certain embodiments discussed herein, various decisions are made by the computers based on a number of computers that exist in the network. Computers can determine an approximate number of computers that are coupled together in the network in a variety of conventional manners (note, however, that in some situations it is difficult to obtain an exact number of computers that are coupled together in a network if the number of computers is very high, because computers can be continually joining and leaving the network). In one implementation, each time a computer logs into (or is otherwise coupled to) a network its presence is advertised to the network and propagated by the computers throughout the network. Additionally, each time a computer logs off (or is otherwise de-coupled from) a network, its retirement is advertised to the network and propagated by the computers throughout the network. Additional monitoring computers may also be established to monitor computers coupled to the network and detect (e.g., due to inactivity) their retirement from the network. Alternatively, any of a variety of other conventional processes may be used for identifying the topology and/or number of computers in the network.</p>
+<p id="p-0075" num="0074">Various different implementations for forwarding the file information to a database server(s), as well as communication among multiple database servers, exist. These various implementations will now be discussed. It should be noted that, in the discussions herein, reference is made to client computers and database server computers. These references are for the purposes of communicating and managing file information as described herein. In the distributed serverless environment, computers can be both client computers as well as database server computers.</p>
+<p id="h-0008" num="0000">Centralized Database Implementation</p>
+<p id="p-0076" num="0075">In the centralized database implementation, the client computers in the network are categorized into one or more groups, and each group includes one or more database servers. For each group, each client computer in that group forwards the file information it generates to one or more of the database servers in that group. Each database server can then identify potentially identical files based on the file information it receives from client computers in that group. Additionally, the servers may optionally forward the file information they receive to other servers in other groups, thereby allowing potentially identical files located on client computers that have been categorized into different groups to be identified.</p>
+<p id="p-0077" num="0076"><figref idref="DRAWINGS">FIG. 5</figref> illustrates an exemplary centralized database implementation in accordance with certain embodiments of the invention. In the illustrated example, a network <b>300</b> of multiple client computers (C) are categorized into multiple (n) groups <b>302</b>, <b>304</b>, and <b>306</b>. Each group may include the same number of client computers (C), or alternatively different numbers. Furthermore, each client computer (C) belongs to one group, and may optionally belong to multiple groups (resulting in the client computer forwarding its file information to database servers for multiple groups).</p>
+<p id="p-0078" num="0077">Each group <b>302</b>, <b>304</b>, and <b>306</b> also includes one or more database servers (S). Although only one database server is illustrated in each group of <figref idref="DRAWINGS">FIG. 5</figref>, multiple database servers may be included in any one or more of the groups <b>302</b>, <b>304</b>, and <b>306</b>. Each group <b>302</b>, <b>304</b>, and <b>306</b> may include the same number of database servers, or alternatively varying numbers of database servers. The database servers in the groups <b>302</b>, <b>304</b>, and <b>306</b> communicate with each other, with each database server transferring the file information it receives to the database servers of the other groups. This communication among the database servers allows the file information to be shared, so that potentially identical files stored on client computers (C) in different groups can be identified.</p>
+<p id="p-0079" num="0078">The manner in which client computers are categorized or separated into groups can vary. In one embodiment, the categorization is based on the naming convention used in naming the client computers and servers in network <b>300</b>. The naming convention used in network <b>300</b> establishes multiple namespace roots which are assigned to selected client computers or servers in network <b>300</b>, and then multiple lower-level names that are &#x201c;under&#x201d; the corresponding namespace root computers. One or more of these namespace root client computers or servers, as well as all of the lower-level names under those roots, belong to the same group.</p>
+<p id="p-0080" num="0079">Alternatively, client computers can be categorized into different groups in different manners, such as randomly, by client computer type, based on the date and/or time that they were coupled to network <b>300</b>, based on geographic location, based on network connection type, and so forth.</p>
+<p id="p-0081" num="0080">Each client computer (C) knows the server (S) to which it is to transfer the file information it generates. In one embodiment, each client computer (C) transfers the file information it generates to the system at its namespace root, which is a database server (S). Alternatively, each client computer (C) may be programmed in another manner with an indication of the server (S) to which it is to transfer the file information it generates. The client computer (C) may receive a communication from a namespace server (S) identifying where the client computer should transfer its file information, or alternatively the client computer (C) may locate the database server (S) itself. For example, the group with the namespace root corresponding to a client computer (C) may keep information (e.g., addresses) identifying the database servers (S) for the group the computer (C) is in. The namespace root computer may identify all of these database servers (S) to the requesting client computer (C), or alternatively may assign the client computer (C) to communicate with a particular one of the database servers (S). Additionally, a client computer (C) may communicate with one or more other client computers (C) to identify the root (or other) computer that it needs to access to determine the database server (S) to which it is to transfer the file information it generates.</p>
+<p id="p-0082" num="0081">When multiple database servers (S) exist within a group, responsibility for managing the database can be shared by the servers in any of a variety of manners. For example, particular servers may be assigned to receive file information from client computers (C) in particular address ranges, or file information for files in particular size ranges or creation date ranges, and so forth. This allows load and storage requirements to be partitioned among multiple database servers.</p>
+<p id="p-0083" num="0082">Additionally, multiple database servers may be employed for fault tolerance. In this situation, multiple servers are assigned to the same file information range so that if one or more of the servers fails (or is otherwise inaccessible) another is still available to do the processing. When employing multiple database servers for fault tolerance, care should be taken so that all of the servers handling a particular file information range are coordinated so as to generate only a single message to the client machines informing them about the detection of a potentially duplicate file. Alternatively, clients may only send file information to a single server assigned to a file information range and then rely on the servers to notify each other of new file information that any one of them has received. If a client cannot reach one server then it tries another assigned to the range.</p>
+<p id="p-0084" num="0083"><figref idref="DRAWINGS">FIG. 6</figref> illustrates an exemplary network environment <b>300</b> in which responsibility for managing the file information database is shared among multiple database servers in each group. Although one or more client computers (C) exist in each group <b>302</b>, <b>304</b>, and <b>306</b>, for ease of explanation and to avoid cluttering the drawings the client computers (C) have not been shown. Rather, only the database servers (S) are illustrated in the groups <b>302</b>, <b>304</b>, and <b>306</b>.</p>
+<p id="p-0085" num="0084">In the illustrated example of <figref idref="DRAWINGS">FIG. 6</figref>, each group <b>302</b>, <b>304</b>, and <b>306</b> includes the same number (k) of database servers (S). Alternatively, each group need not include the same number of database servers (S). For example, a set of rules or an algorithm could be defined that tells each database server (S) in a group which one or more database servers (S) in the other groups to communicate with (e.g., group <b>302</b> might have twice as many database servers (S) as group <b>304</b>, with the file information space being divided up so that the piece that a database server (S) in group <b>304</b> handles is equivalent to two pieces handled by two different database servers (S) in group <b>302</b>). By way of another example, if communication between database servers (S) in different groups is not needed, then each group need not include the same number of database servers (S). For purposes of discussion, however, it is assumed that each group <b>302</b>, <b>304</b>, and <b>306</b> includes the same number of database servers.</p>
+<p id="p-0086" num="0085">The file information generated by a client computer (C) is used to determine which database server (S) to transmit the file information to. After generating the file information, the client computer (C) calculates the following value:
+<br/>
+<?in-line-formulae description="In-line Formulae" end="lead"?>v=info mod k<?in-line-formulae description="In-line Formulae" end="tail"?>
+<br/>
+where info is the generated file information and k is the number of database servers (S) in the group. The resultant value v is a value ranging from zero to (k&#x2212;1). Each of the k database servers is associated with one of the values in the range from zero to (k&#x2212;1), and the client computer (C) forwards the file information to the database server associated with the resultant value v.
+</p>
+<p id="p-0087" num="0086">Each of the database servers (S) also communicates with the corresponding database servers (S) in the other groups. By identifying the database server (S) that is to handle particular file information based on the file information itself, the number of database servers (S) in the other groups that need to be communicated with in order to identify potential duplicate files across different groups is reduced (basically, each server need only communicate with one other server in each other group). So, for example, if a client computer (C) in group <b>304</b> generates file information that results in a value v of zero, the client computer communicates the file information to server <b>310</b>. Server <b>310</b> is then able to compare the received file information to other file information it stores and identify any potential duplicate files within group <b>304</b>. Additionally, database server <b>310</b> communicates the generated file information to servers <b>312</b> and <b>314</b> to identify any potential duplicate files in groups <b>306</b> and <b>302</b>, respectively.</p>
+<p id="p-0088" num="0087">When database servers (S) communicate with database servers (S) in other groups, the file information sent between groups is not stored by the servers in the other groups (because it does not represent information about files in their groups). Rather, the file information is used to identify any matches with file information stored by the receiving database server, and then dropped after the match checking is completed. Alternatively, the file information could be stored by the servers in other groups (optionally with an indication of from which other group the file information was received).</p>
+<p id="p-0089" num="0088">In the centralized database implementation, two special situations arise. One situation is when the number of client computers in each group is equal to one, and the other is when the number of client computers in a group is equal to all of the computers in the network. These special situations will now be discussed.</p>
+<p id="p-0090" num="0089">If the number of computers in each group is equal to one, then the centralized database implementation becomes a &#x201c;localized pair-wise checking&#x201d; implementation in which each of the client computers is its own group and each client computer maintains its own file information mappings. Thus, each client computer also acts as a database server. Whenever one client computer becomes aware of another client computer in the network, the client computer communicates all of the file information it has generated for its files to the other client computer, allowing the other client computer to check for potentially duplicate files. The communication may occur immediately after the client computer becomes aware of the other client computer, or alternatively after a period of time (e.g., a delay may be incurred while the computer is performing other functions, while the computer waits for a period of low use on the network, and so forth). The client also subsequently sends incremental file information updates to the other client computer as new file information is generated.</p>
+<p id="p-0091" num="0090"><figref idref="DRAWINGS">FIG. 7</figref> illustrates the localized pair-wise checking implementation in additional detail. For ease of explanation, network <b>350</b> is illustrated including only nine computers (C). In network <b>350</b>, computers C<sub>1 </sub>and C<sub>2 </sub>are aware of each other and have communicated their file information between them. Similarly, computers C<sub>2 </sub>and C<sub>3 </sub>are aware of each other and have communicated their file information between them. Note, however, that the computers C<sub>1 </sub>and C<sub>3 </sub>are not aware of each other and thus have not communicated their file information between them. Additionally, computers C<sub>1 </sub>and C<sub>4 </sub>are aware of each other, as are computers C<sub>1 </sub>and C<sub>5</sub>, and computers C<sub>4 </sub>and C<sub>5</sub>. Thus, for computers C<sub>1 </sub>through C<sub>5</sub>, each of the computers is aware of some of the other computers C<sub>1 </sub>through C<sub>5</sub>, but not all.</p>
+<p id="p-0092" num="0091">For computers C<sub>6</sub>, C<sub>7</sub>, C<sub>8</sub>, and C<sub>9</sub>, each of these four computers is aware of each of the others, and thus each has communicated its file information to the others. Note, however, that none of the computers C<sub>1 </sub>through C<sub>5 </sub>is aware of any of the computers C<sub>6 </sub>through C<sub>9</sub>, nor are any of the computers C<sub>6 </sub>through C<sub>9 </sub>aware of any of the computers C<sub>1 </sub>through C<sub>5</sub>.</p>
+<p id="p-0093" num="0092">A client computer can become aware of another client computer in any of a wide variety of conventional manners. In one implementation, any of a variety of well-known network mapping processes can be used by a client computer to identify other client computers on the network it is coupled to. Alternatively, a computer may broadcast its presence when added to a network.</p>
+<p id="p-0094" num="0093">Alternatively, rather than forwarding its file information to any other client computer that a client computer becomes aware of, additional restrictions on what client computers the file information will be forwarded to may be imposed. For example, a client computer may forward its file information only to client computers that are within a particular range (e.g., geographically close, within a particular number of links or routers on the network, and so on).</p>
+<p id="p-0095" num="0094">In addition to transmitting its own file information to other client computers of which a particular client computer is aware, the client computer may also forward file information that it has received from other computers as well. For example, in network <b>350</b>, client computer C<sub>2 </sub>may initially become aware of client computer C<sub>3</sub>, and receive all of the file information of client computer C<sub>3</sub>. When client computer C<sub>2 </sub>subsequently becomes aware of client computer C<sub>1</sub>, client computer C<sub>2 </sub>communicates all of its file information, as well as all of the file information received from client computer C<sub>3</sub>, to client computer C<sub>1</sub>.</p>
+<p id="p-0096" num="0095">In one implementation, file information for each file is also associated with a &#x201c;time to live&#x201d; component that identifies how many client computers the file information can be communicated to. Each time the file information is communicated to another client computer, the time to live component is decremented by one. Once the time to live component reaches zero, the file information is not communicated to any more client computers. Various alternatives may be implemented for the time to live component, such as different threshold values could be used for different computers or different files (e.g., a file with an indicated or perceived greater importance could be assigned a larger value for its time to live component), the count could be decremented by more or less than one, the count could be incremented and compared to an upper bound rather than decremented and compared to zero, and so forth. For example, following the previous example, assume that the file information for each file from client computer C<sub>3 </sub>has a time to live component with a value of two. When the file information is communicated to client computer C<sub>2 </sub>the associated time to live component(s) for the file information of client computer C<sub>3 </sub>on client computer C<sub>2 </sub>are decremented to the value of one. Then, when the file information of client computer C<sub>3 </sub>are communicated to client computer C<sub>1 </sub>the associated time to live component(s) for the file information of client computer C<sub>3 </sub>on client computer C<sub>1 </sub>are decremented to the value of zero. Thus, even though client computer C<sub>1 </sub>may be aware of, or may subsequently become aware of, client computers C<sub>4 </sub>and C<sub>5</sub>, client computer C<sub>1 </sub>does not communicate the file information of client computer C<sub>3 </sub>to either of computers C<sub>4 </sub>or C<sub>5</sub>. However, if client computer C<sub>3 </sub>were to subsequently become aware of either client computer C<sub>4 </sub>or C<sub>5</sub>, then client computer C<sub>3 </sub>would communicate its file information to the appropriate one of client computer C<sub>4 </sub>and C<sub>5 </sub>and the associated time to live component(s) for the file information of client computer C<sub>3 </sub>on client computer C<sub>4 </sub>or C<sub>5 </sub>would be decremented to the value of one.</p>
+<p id="p-0097" num="0096">File information for each file may be associated with its own &#x201c;personal&#x201d; time to live component, or alternatively file information for multiple files from the same client computer may be grouped together (e.g., into a single set for the client computer) and have an associated time to live component. File information for different files and/or different computers can optionally have different time to live components. For example, file information for larger files may have longer time to live components than shorter files (e.g., assuming that the potential space savings of finding a duplicate of the larger file is worth the extra burden of communicating the file information to additional client computers).</p>
+<p id="p-0098" num="0097">Additionally, in the localized pair-wise checking implementation, file information can optionally be communicated among the computers in a compressed form. Any of a variety of conventional techniques can be used to communicate the information in a compressed form, such as the use of well-known Bloom filters. For additional information on Bloom filters, the reader is directed to L. Fan, P. Cao, J. Almeida, and A. Broder, &#x201c;Summary Cache: A Scalable Wide-Area Web Cache Sharing Protocol&#x201d;, ACM SIGCOMM, 1998.</p>
+<p id="p-0099" num="0098">The other special situation that can arise in the centralized database implementation is when the number of client computers in a group is equal to all of the computers in the network. In this situation, the centralized database implementation reduces to a single group and the one or more database servers in the network receive the file information from all the client computers. Each database server may receive file information from all of the computers, or alternatively only for select client computers (e.g., based on the file signature itself analogous to the discussion above regarding <figref idref="DRAWINGS">FIG. 6</figref>).</p>
+<p id="p-0100" num="0099"><figref idref="DRAWINGS">FIG. 8</figref> illustrates the special situation when the number of client computers in a group is equal to all of the computers in the network in additional detail. In network <b>360</b>, multiple (a) client computers (C) are illustrated along with multiple (b) servers (S). All of the client computers (C) are part of the same group, communicating their file information to one or more of the servers (S).</p>
+<p id="h-0009" num="0000">Fully Distributed Stochastically Partitioned Database Implementation</p>
+<p id="p-0101" num="0100">In the fully distributed stochastically partitioned database implementation, each computer in the network operates as both a client computer and a database server. Alternatively, some machines might function only as clients and not as database servers, while other might function only as database servers and not as clients. Each computer generates file information for files stored at its computer, and forwards that generated file information to one or more other computers. To which computers particular file information is forwarded is based on both the generated file information as well as identifiers (ID's) for each computer in the network, as discussed in more detail below. Each computer, then, is responsible for comparing the file information it receives from computers in the network and determining whether any of the received file information matches each other.</p>
+<p id="p-0102" num="0101">In the fully distributed stochastically partitioned database implementation, each computer in the network is assigned a computer ID. The computer ID's can be assigned in any of a variety of manners. However, in order to spread out the file information processing relatively evenly among all of the computers, the computer ID's should be assigned such that the computer ID's are fairly evenly distributed throughout the Hamming space of possible computer ID's. More specifically, this even distribution is important for a particular subset of W bits of the computer ID, as described below.</p>
+<p id="p-0103" num="0102">In one embodiment, each computer in the network includes a public/private key pair used in public key cryptography. The computer ID for a particular computer is generated based on the public key of this key pair, such as by applying a one-way hashing function (e.g., SHA, MD5, etc.) to the public key and using the resultant hash value as the computer ID. Alternatively, different processes can be used to create the computer ID for a computer, such as use of a conventional random number generator (or pseudo-random number generator) by a central authority that assigns computer ID's, use of an identification number assigned to the CPU in the computer, and so forth.</p>
+<p id="p-0104" num="0103"><figref idref="DRAWINGS">FIG. 9</figref> is a flowchart illustrating an exemplary process followed by each computer for the fully distributed stochastically partitioned database implementation in accordance with certain embodiments of the invention. The process of <figref idref="DRAWINGS">FIG. 9</figref> is carried out by a computing device <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref>, and may be implemented in software.</p>
+<p id="p-0105" num="0104">For each file stored at the computer for which file information is generated, an imprint for the file is identified using W bits of the file information (act <b>380</b>). Which W bits of the file information to use can vary, but should be consistent across all the files in the system. In one implementation, the W least significant bits of the file information are used as the imprint. The choice of which W bits to use should try to result in a fairly uniform mapping of imprint to file information so that unwanted clustering effects do not arise.</p>
+<p id="p-0106" num="0105">The computer also identifies each known computer in the network that has a computer ID that has the same W bits as the imprint (act <b>382</b>). Which W bits of the computer ID to use can vary, but should be consistent across all the computers in the network. In one implementation, the W least significant bits of the computer ID are used. The choice of which W bits to use should try to result in a fairly is uniform mapping of W bits to computer ID so that unwanted clustering effects do not arise. Alternatively other bits may be used (the selected bits of the file information used may be the same as the bits used for the imprint of the file information, or alternatively different bits may be selected). Once these computers are identified, the computer that generated the file information sends the file information to each of the computers identified in act <b>382</b> (act <b>384</b>).</p>
+<p id="p-0107" num="0106">Each computer calculates its own value of W as follows:</p>
+<p id="p-0108" num="0107">
+<maths id="MATH-US-00001" num="00001">
+<math overflow="scroll">
+<mrow>
+  <mi>W</mi>
+  <mo>=</mo>
+  <mrow>
+    <mo>&#x230a;</mo>
+    <mrow>
+      <mn>1</mn>
+      <mo>&#x2062;</mo>
+      <mi>g</mi>
+      <mo>&#x2062;</mo>
+      <mfrac>
+        <mi>M</mi>
+        <mi>R</mi>
+      </mfrac>
+    </mrow>
+    <mo>&#x230b;</mo>
+  </mrow>
+</mrow>
+</math>
+</maths>
+<br/>
+where the value M is the total number of computers in the network that the computer knows about (possibly including itself), R is a system configuration parameter, 1 g indicates a binary (base 2) logarithm, and the floor brackets indicate the largest integer that is no greater than the enclosed value. The value M represents the number of computers that function as database servers; if some machines act solely as clients and not as database servers, then they will not be included in this number. The value M can vary by computer, which means that the value W can vary by computer. However, despite these variations, potentially identical files can still be identified. Each computer can identify the value M in any of a wide variety of conventional manners, such as using any of a variety of conventional network topology identification processes to determine the location and number of computers in the network.
+</p>
+<p id="p-0109" num="0108">The value R is a system configuration parameter that imposes a bound on the average number of computers to which particular file information is communicated. The bound imposed by R is as follows:
+<br/>
+<?in-line-formulae description="In-line Formulae" end="lead"?>R&#x2266;&#x3bb;&#x3c;2R<?in-line-formulae description="In-line Formulae" end="tail"?>
+<br/>
+where &#x3bb; is the average number of computers to which particular file information is communicated. The value of R can vary by implementation. In one implementation, typical values for R range from 3 to 6.
+</p>
+<p id="p-0110" num="0109"><figref idref="DRAWINGS">FIG. 10</figref> illustrates an exemplary network <b>400</b> in which the fully distributed stochastically partitioned database implementation is employed. Although network <b>400</b> includes many computers, only five computers are illustrated in <figref idref="DRAWINGS">FIG. 10</figref> for ease of explanation and to avoid cluttering the drawings. Network <b>400</b> includes computers <b>402</b>, <b>404</b>, <b>406</b>, <b>408</b>, and <b>410</b>. The communication of file information for two files from each of computers <b>402</b> and <b>404</b> is illustrated in <figref idref="DRAWINGS">FIG. 10</figref>.</p>
+<p id="p-0111" num="0110">In the example of <figref idref="DRAWINGS">FIG. 10</figref>, assume that computers <b>402</b> and <b>404</b> each believe a different number of computers exist in network <b>400</b>, and that computer <b>402</b> has calculated a value of W=2, while computer <b>404</b> has calculated a value of W=3. Further assume that the location of the W bits being used for both the file information and the computer ID's are the W least significant bits. Each of the computers <b>402</b>-<b>410</b> is assigned a computer ID. Only the three least significant bits of the computer ID is shown for each computer <b>402</b>-<b>410</b>; the more significant bits of the computer ID are not shown. As illustrated, the least significant bits of the computer ID for computers <b>402</b> and <b>406</b> are &#x201c;000&#x201d;, while the least significant bits of the computer ID for computer <b>404</b> are &#x201c;010&#x201d;, the least significant bits of the computer ID for computer <b>408</b> are &#x201c;100&#x201d;, and the least significant bits of the computer ID for computer <b>410</b> are &#x201c;101 &#x201d;.</p>
+<p id="p-0112" num="0111">Two files <b>412</b> and <b>414</b> are illustrated as stored at computer <b>404</b>, having file information with least significant bits of &#x201c;000&#x201d; and &#x201c;100&#x201d;, respectively. Computer <b>404</b> has calculated a value of W=3, so computer <b>404</b> generates an imprint for file <b>412</b> that is the three least significant bits of the file information for file <b>412</b>. The imprint of file <b>412</b> is thus &#x201c;000&#x201d;. Computer <b>404</b> then transfers the file information for file <b>412</b> to all other computers in network <b>400</b> that have a computer ID with the three least significant bits equal to &#x201c;000&#x201d;. Thus, computer <b>404</b> transfers the file information for file <b>412</b> to computer <b>402</b> and computer <b>406</b>. Similarly, the imprint of file <b>414</b> is &#x201c;100&#x201d;, so computer <b>404</b> transfers the file information for file <b>414</b> to computer <b>408</b>.</p>
+<p id="p-0113" num="0112">Two additional files <b>416</b> and <b>418</b> are illustrated as stored at computer <b>402</b>, having file information with least significant bits of &#x201c;100&#x201d; and &#x201c;000&#x201d;, respectively. Computer <b>402</b> has calculated a value of W=2, so computer <b>402</b> generates an imprint for file <b>416</b> that is the two least significant bits of the file information for file <b>416</b>. The imprint of file <b>416</b> is thus &#x201c;00&#x201d;. Computer <b>402</b> then transfers the file information for file <b>416</b> to all other computers in network <b>400</b> that have a computer ID with the two least significant bits equal to &#x201c;00&#x201d;. Thus, computer <b>402</b> transfers the file information for file <b>416</b> to computer <b>406</b>, computer <b>408</b>, and computer <b>402</b> (back to itself). Similarly, the imprint of file <b>418</b> is also &#x201c;00&#x201d;, so computer <b>402</b> also transfers the file information for file <b>418</b> to computers <b>406</b>, <b>408</b>, and <b>402</b>.</p>
+<p id="p-0114" num="0113">It should be noted that in the example of <figref idref="DRAWINGS">FIG. 10</figref>, computers <b>402</b> and <b>404</b> have calculated different values of W. This results in computers <b>402</b> and <b>404</b> identifying different imprints for their file information and sending them to different sets of computers (e.g., even though the least significant bits of both files <b>412</b> and <b>418</b> are &#x201c;000&#x201d;, the file information for file <b>412</b> (having an imprint of &#x201c;000&#x201d;) is not sent to computer <b>408</b>, while the file information for file <b>418</b> (having an imprint of &#x201c;00&#x201d;) is sent to computer <b>408</b>). Essentially, computer <b>402</b> ends up typically sending its file information to more computers than computer <b>404</b>. However, potentially identical files on computers <b>404</b> and <b>402</b> can still be identified because the set of computers derived from a smaller value of W is a superset of those derived from a larger value of W (so the file information from both computers is sent to some of the same computers (e.g., computers <b>402</b> and <b>406</b>)).</p>
+<p id="p-0115" num="0114">It should also be noted that situations can arise where there is no computer with a computer ID that has the W bits matching the imprint of the file information. For example, if W=3, and the imprint is &#x201c;001&#x201d;, situations can arise where there are no computers having a computer ID with the corresponding bit values of &#x201c;001&#x201d;. In one implementation, this situation is resolved by simply not forwarding the file information to any computer. However, note that in the example of <figref idref="DRAWINGS">FIG. 10</figref>, computer <b>402</b> has calculated a value of W=2, so it would send any file information that ends with &#x201c;001&#x201d; to computer <b>410</b>, since the two least significant bits match. Thus, although calculating a lower value of W increases the work that a computer does (as described above), it also increases the probability that duplicate files will be found. Alternatively, other solutions may be used when there is no identified computer for some values of file information, such as assigning a particular computer to be the recipient of any such file information, or changing one or more bits of the imprint (so long as all the computers agree to use the same algorithm for changing the bits of the imprint).</p>
+<p id="h-0010" num="0000">Group-Based System Using Directory Services Implementation</p>
+<p id="p-0116" num="0115">The group-based system using directory services implementation is similar to the fully distributed stochastically partitioned database implementation. Imprints are generated based on file information as discussed above, however, a database of imprint to computer ID mappings is accessed to determine which computers the file information is to be communicated to, thereby requiring the file information to potentially be sent to fewer computers than in the fully distributed stochastically partitioned database implementation.</p>
+<p id="p-0117" num="0116"><figref idref="DRAWINGS">FIG. 11</figref> is a flowchart illustrating an exemplary process followed by each computer for the group-based system using directory services implementation in accordance with certain embodiments of the invention. The process of <figref idref="DRAWINGS">FIG. 11</figref> is carried out by a computing device <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref>, and may be implemented in software.</p>
+<p id="p-0118" num="0117">For each file stored at the computer for which file information is generated, an imprint for the file is identified using W bits of the file information (act <b>440</b>), analogous to act <b>380</b> of <figref idref="DRAWINGS">FIG. 9</figref> above. An imprint to computer mapping is then accessed (act <b>442</b>). The imprint to computer mapping is initially retrieved from one or more computers in the network that are designated mapping servers. The mapping may optionally be subsequently cached at the computer so that subsequent requests can be handled by the computer locally rather than requiring a network access. Based on this mapping, one or more computers in the network to which the file information is to be transferred are identified (act <b>444</b>), and the computer sends the file information to those other computers (act <b>446</b>). The imprint to computer mapping may map the imprint to a computer ID, or alternatively some other name or identification of the computer.</p>
+<p id="p-0119" num="0118">The imprint to computer ID mappings are stored on the designated mapping servers and are accessible to other computers in the network. The designated mapping servers may be dedicated mapping servers, or alternatively may be computing devices such as device <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref> that include both server and client functionality. Analogous to the database servers discussed above, multiple computers may be designated mapping servers, and each computer knows one or more mapping servers (or can ascertain the identity of one or more mapping servers) from which it can retrieve mappings. Also analogous to the database servers discussed above, if multiple designated mapping servers are employed, they may share mapping information (for fault tolerance purposes, such as one being a backup for another), or alternatively different servers may be designated to handle requests for different imprints (for load sharing purposes).</p>
+<p id="p-0120" num="0119">The imprint to computer mapping maps the imprint to one or more computers in the network. The imprint to computer mapping may map the imprint to a computer(s) having a computer ID that has the same W bits as the imprint, or alternatively a computer having a computer ID with W bits that are not the same as the imprint. In other words, there may be, but need not be, any correlation between the imprint and the W bits of the computer ID's in the mapping. By not tying the mapping to the W bits of the computer ID, the mapping server(s) need not store information about the W bits of all computer ID's in the network. Rather, the mapping server(s) can store only the computer ID's of the set of computers that they have designated to be file information processing servers.</p>
+<p id="p-0121" num="0120">In one implementation, the computer sends the file information to each other computer identified in the imprint to computer mappings (act <b>446</b> of <figref idref="DRAWINGS">FIG. 11</figref>). Alternatively, the computer may send the file information to only one of the computers identified in the imprint to computer mappings. According to this alternative, computers that receive the file information know which other computers are responsible for checking for file information matches for particular imprints (e.g., by accessing a designated mapping server and obtaining the imprint to computer mappings for that mapping). Any file information received by one of the computers is then forwarded to the other computer(s) responsible for checking for file information matches for that particular imprint.</p>
+<p id="p-0122" num="0121"><figref idref="DRAWINGS">FIG. 12</figref> illustrates an exemplary network <b>460</b> in which the group-based system using directory services implementation is employed. Although network <b>460</b> includes many computers, only five computers are illustrated in <figref idref="DRAWINGS">FIG. 12</figref> for ease of explanation and to avoid cluttering the drawings. Network <b>460</b> includes computers <b>462</b>, <b>464</b>, <b>466</b>, <b>468</b>, and <b>470</b>. The communication of file information for two files <b>472</b> and <b>474</b> from computer <b>470</b> is illustrated in <figref idref="DRAWINGS">FIG. 12</figref>.</p>
+<p id="p-0123" num="0122">In the example of <figref idref="DRAWINGS">FIG. 12</figref>, assume that computer <b>470</b> has calculated a value of W=3, and that the location of the W bits being used for both the file information and the computer ID's are the W least significant bits. Each of the computers <b>462</b>-<b>470</b> is assigned a computer ID. Only the three least significant bits of the computer ID is shown for each computer <b>462</b>-<b>470</b>; the more significant bits of the computer ID are not shown. As illustrated, the least significant bits of the computer ID for computers <b>462</b>, <b>464</b>, <b>466</b>, and <b>470</b> are &#x201c;000&#x201d;, while the least significant bits of the computer ID for computer <b>468</b> is &#x201c;010&#x201d;. Computer <b>468</b> is designated as the mapping server.</p>
+<p id="p-0124" num="0123">When computer <b>470</b> generates the file information for file <b>472</b>, it uses the W least significant bits of the file information as the imprint, which is &#x201c;000&#x201d;. Assuming computer <b>470</b> does not have a locally stored computer mapping for imprint &#x201c;000&#x201d;, computer <b>470</b> sends a request <b>476</b> to mapping server <b>468</b> for the imprint to computer mapping for imprint &#x201c;000&#x201d;. The mapping <b>478</b> is returned by mapping server <b>468</b>, and stored in mappings <b>480</b> of computer <b>470</b>. All computers identified by mapping <b>478</b> may be stored in mappings <b>480</b>, or alternatively only a subset of the computers (e.g., one or two computers). For purposes of discussion, assume that mapping <b>478</b> indicates that computers <b>466</b> and <b>462</b> are to receive file information with imprints of &#x201c;000&#x201d;. Computer <b>470</b> then forwards the file information <b>482</b> for the file <b>472</b> to computer <b>466</b>, which in turn receives the file information <b>482</b> and communicates it to computer <b>462</b>. Alternatively, computer <b>470</b> may forward the file information <b>482</b> to both computer <b>462</b> and <b>466</b>.</p>
+<p id="p-0125" num="0124">Subsequently, computer <b>470</b> generates the file information for file <b>474</b> and identifies the imprint of the file information as &#x201c;000&#x201d;. Rather than accessing mapping server <b>468</b>, local mapping <b>480</b> is accessed to identify that the file information is to be communicated to computer <b>466</b> (and/or computer <b>462</b>). computer <b>470</b> then forwards the file information <b>484</b> to computer <b>466</b> (and/or computer <b>462</b>). If the computer identified in mapping <b>480</b> is not available (e.g., computer <b>462</b> is identified in mapping <b>480</b> but it has failed or is otherwise inaccessible), computer <b>470</b> sends another request to mapping server <b>468</b> requesting identification of another computer(s) that is mapped to the imprint &#x201c;000&#x201d;.</p>
+<p id="p-0126" num="0125">It should be noted that, by having more than one computer in the mapping for a given W, improved fault tolerance is achieved because there are multiple computers that can process the file information. However, if fault tolerance is less of a concern, then fewer (including only one) computers may be included in the mapping for a given W.</p>
+<p id="h-0011" num="0000">Multi-Level Stochastically Partitioned Database Implementation</p>
+<p id="p-0127" num="0126">The multi-level stochastically partitioned database implementation is similar to the fully distributed stochastically partitioned database implementation. Imprints are generated based on file information as discussed above, however, similar to the group-based system using directory services implementation, the number of computers to which the file information are communicated to is reduced.</p>
+<p id="p-0128" num="0127">The multi-level stochastically partitioned database implementation can be employed using any number of levels, and is described herein primarily with reference to a two-level implementation. In a two-level implementation, the number of other computers that each computer has to contact to forward its file information to is proportional to the square root of the system size, while in a three-level implementation the number of computers that each computer has to contact to forward its file information to is proportional to the cube root of the system size. Alternative embodiments may also be used, with the number of computers that each computer has to contact to forward its file information to grows non-polynomially proportionally to the system size (e.g., based on logarithmic growth).</p>
+<p id="p-0129" num="0128"><figref idref="DRAWINGS">FIG. 13</figref> is a flowchart illustrating an exemplary process followed by each computer for the multi-level stochastically partitioned database implementation in accordance with certain embodiments of the invention. The process of <figref idref="DRAWINGS">FIG. 13</figref> is carried out by a computing device <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref>, and may be implemented in software. The process of <figref idref="DRAWINGS">FIG. 13</figref> is carried out by each computer in the network, and is discussed with reference to a current computer (the computer, as discussed, that is determining to what computer to forward file information).</p>
+<p id="p-0130" num="0129">Initially, a value of W is identified based on the number of computers in the network (act <b>500</b>), analogous to the discussions above regarding the fully distributed stochastically partitioned database implementation. A first group of computers, referred to as the group S<sub>B </sub>is identified as the computers having the same W bits as the current computer ID (act <b>502</b>). This group S<sub>B </sub>thus includes the current computer. A second group of computers, referred to as the group S<sub>0 </sub>is identified as the computers having a first subset of the W bits the same as the current computer ID (act <b>504</b>). In one implementation, the first subset of the W bits are the even bits of the W bits. This first subset can vary (e.g., it may be the odd bits, or in a three-level implementation two out of every three bits starting with bit zero, etc.). A third group of computers, referred to as the group S<sub>1 </sub>is identified as the computers having a second subset of the W bits the same as the current computer ID (act <b>506</b>). This second subset can also vary, but is different than the first subset (e.g., it may be the even bits, or in a three-level implementation two out of every three bits starting with bit one, etc.). Although only three groups are illustrated as being identified in <figref idref="DRAWINGS">FIG. 13</figref>, additional groups are created for each additional level in the implementation, and the computers in those groups identified in an analogous manner. For example, in a three-level implementation a fourth level is identified based on a third subset of the W bits (e.g., the computers having two out of every three bits of the W bits starting with bit two the same as the current computer ID).</p>
+<p id="p-0131" num="0130">These identified groups are then used in determining, for each file information being analyzed by the current computer, to which computers to send the file information. Each file information being analyzed by the current computer may have been generated at the current computer, or alternatively may have been generated at another computer and transferred to the current computer. The computer then waits for new file information that needs to be analyzed (act <b>508</b>). The groups identified in acts <b>502</b>-<b>506</b> may take on new members as new machines are added to the system, or they may lose members as machines are removed from the system, but otherwise they remain the same until the number of computers in the network changes sufficiently to alter the value of W. When this occurs, acts <b>502</b>-<b>506</b> are repeated to re-identify the groups.</p>
+<p id="p-0132" num="0131">Eventually, new file information is received, and an imprint for the file is identified (act <b>510</b>), analogous to the discussions above regarding the fully distributed stochastically partitioned database implementation. The current computer then checks whether all the bits of the imprint match (are the same as) the W bits of the current computer ID (act <b>512</b>). If all the bits do match, then the file information is transferred to each computer in the first group, group S<sub>B</sub>, (act <b>514</b>). However, if all the bits do not match, then a check is made as to whether the second subset of bits of the imprint match (are the same as) the second subset of bits of the current computer ID (act <b>516</b>). If the second subsets do match then the file information is transferred to each computer in the third group, group S<sub>1</sub>, having computer ID's with their W bits matching (the same as) the imprint (act <b>518</b>). However, if the second subsets do not match, then the file information is transferred to each computer in the second group, group So, having computer ID's with the second subset of their W bits matching (the same as) the imprint (act <b>520</b>).</p>
+<p id="p-0133" num="0132">Although the decision of to which group of computers to send the file information is based on two subsets of bits in acts <b>512</b>-<b>520</b>, alternatively an additional subset of bits is analyzed for each additional level in the implementation. For example, in a three-level implementation a third subset of bits is analyzed if the second subsets of bits of the imprint do not match the second subset of bits of the current computer ID in act <b>516</b>. Based on this third set of bits, then, the file information is either sent to selected computers in the fourth group, or to selected computers in the second group.</p>
+<p id="p-0134" num="0133">An exemplary process carried out by the current computer in determining to which computer(s) to forward its file information is described in more detail as follows. Initially, the value of W is calculated as discussed above:</p>
+<p id="p-0135" num="0134">
+<maths id="MATH-US-00002" num="00002">
+<math overflow="scroll">
+<mrow>
+  <mi>W</mi>
+  <mo>=</mo>
+  <mrow>
+    <mo>&#x230a;</mo>
+    <mrow>
+      <mn>1</mn>
+      <mo>&#x2062;</mo>
+      <mi>g</mi>
+      <mo>&#x2062;</mo>
+      <mfrac>
+        <mi>M</mi>
+        <mi>R</mi>
+      </mfrac>
+    </mrow>
+    <mo>&#x230b;</mo>
+  </mrow>
+</mrow>
+</math>
+</maths>
+<br/>
+Two additional values, W<sub>0 </sub>and W<sub>1 </sub>are then calculated based on W as follows:
+</p>
+<p id="p-0136" num="0135">
+<maths id="MATH-US-00003" num="00003">
+<math overflow="scroll">
+<mrow>
+  <msub>
+    <mi>W</mi>
+    <mn>0</mn>
+  </msub>
+  <mo>=</mo>
+  <mrow>
+    <mrow>
+      <mrow>
+        <mo>&#x2308;</mo>
+        <mfrac>
+          <mi>W</mi>
+          <mn>2</mn>
+        </mfrac>
+        <mo>&#x2309;</mo>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mstyle>
+        <mspace width="0.8em" height="0.8ex"/>
+      </mstyle>
+      <mo>&#x2062;</mo>
+      <msub>
+        <mi>W</mi>
+        <mn>1</mn>
+      </msub>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <mo>&#x230a;</mo>
+      <mfrac>
+        <mi>W</mi>
+        <mn>2</mn>
+      </mfrac>
+      <mo>&#x230b;</mo>
+    </mrow>
+  </mrow>
+</mrow>
+</math>
+</maths>
+<br/>
+The ceiling brackets indicate that W<sub>0 </sub>is set to the smallest integer that is no less than W/2, and the floor brackets indicate that W<sub>1 </sub>is set to the largest integer that is no greater than W/2. The current computer then calculates two bit masks: &#x3a8;<sub>0 </sub>which is a sequence of W<sub>0 </sub>copies of the bit string &#x201c;01&#x201d;, and &#x3a8;<sub>1 </sub>which is a sequence of W<sub>1 </sub>copies of the bit string &#x201c;10&#x201d;. These can be illustrated as follows:
+</p>
+<p id="p-0137" num="0136">
+<maths id="MATH-US-00004" num="00004">
+<math overflow="scroll">
+<mrow>
+  <msub>
+    <mi>&#x3c8;</mi>
+    <mn>0</mn>
+  </msub>
+  <mo>=</mo>
+  <mrow>
+    <mrow>
+      <munderover>
+        <mo>&#x2211;</mo>
+        <mrow>
+          <mi>k</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mrow>
+        <mrow>
+          <msub>
+            <mi>W</mi>
+            <mn>0</mn>
+          </msub>
+          <mo>-</mo>
+          <mn>1</mn>
+        </mrow>
+      </munderover>
+      <mo>&#x2062;</mo>
+      <mstyle>
+        <mspace width="0.3em" height="0.3ex"/>
+      </mstyle>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <msup>
+          <mn>2</mn>
+          <mrow>
+            <mn>2</mn>
+            <mo>&#x2062;</mo>
+            <mi>k</mi>
+          </mrow>
+        </msup>
+        <mo>&#x2062;</mo>
+        <mstyle>
+          <mspace width="2.2em" height="2.2ex"/>
+        </mstyle>
+        <mo>&#x2062;</mo>
+        <msub>
+          <mi>&#x3c8;</mi>
+          <mn>1</mn>
+        </msub>
+      </mrow>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <munderover>
+        <mo>&#x2211;</mo>
+        <mrow>
+          <mi>k</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mrow>
+        <mrow>
+          <msub>
+            <mi>W</mi>
+            <mn>1</mn>
+          </msub>
+          <mo>-</mo>
+          <mn>1</mn>
+        </mrow>
+      </munderover>
+      <mo>&#x2062;</mo>
+      <mstyle>
+        <mspace width="0.3em" height="0.3ex"/>
+      </mstyle>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mn>2</mn>
+        <mrow>
+          <mrow>
+            <mn>2</mn>
+            <mo>&#x2062;</mo>
+            <mi>k</mi>
+          </mrow>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+    </mrow>
+  </mrow>
+</mrow>
+</math>
+</maths>
+</p>
+<p id="p-0138" num="0137">When the current computer becomes aware of a new computer in the network, the current computer may or may not remember the new computer's ID. If the current computer does decide to remember the new computer's ID, it assigns the new computer into a particular group. Whether to remember the new computer's ID, as well as to which group to assign the new computer, is determined according to the following pseudocode (where &#x201c;&#x26;&#x201d; refers to bitwise conjunction, &#x201c;==&#x201d; refers to &#x201c;is equal to&#x201d;, CID<sub>new </sub>refers to the W bits of the computer ID of the new computer, and CID<sub>me </sub>refers to the W bits of the computer ID of the current computer).
+<ul id="ul0001" list-style="none">
+    <li id="ul0001-0001" num="0000">
+    <ul id="ul0002" list-style="none">
+        <li id="ul0002-0001" num="0138">if (CID<sub>new </sub>&#x26; &#x3a8;<sub>0</sub>)==(CID<sub>me</sub>&#x26; &#x3a8;<sub>0</sub>) and (CID<sub>new</sub>&#x26; &#x3a8;<sub>1</sub>)==(CID<sub>me</sub>&#x26; &#x3a8;<sub>1</sub>) add new computer to set S<sub>B</sub>;</li>
+        <li id="ul0002-0002" num="0139">else if (CID<sub>new </sub>&#x26; &#x3a8;<sub>0</sub>)==(CID<sub>me</sub>&#x26; &#x3a8;<sub>0</sub>) add new computer to set S<sub>0</sub>;</li>
+        <li id="ul0002-0003" num="0140">else if (CID<sub>new </sub>&#x26; &#x3a8;<sub>1</sub>)==(CID<sub>me</sub>&#x26; &#x3a8;<sub>1</sub>) add new computer to set S<sub>1</sub>;</li>
+        <li id="ul0002-0004" num="0141">else forget new computer;</li>
+    </ul>
+    </li>
+</ul>
+</p>
+<p id="p-0139" num="0142">When new file information is identified (based on either a file stored at the current computer or file information received from another computer in the network), the current computer determines what to do with the file information based on the following pseudocode. In the following pseudocode, &#x201c;==&#x201d; refers to &#x201c;is equal to&#x201d;, &#x201c;!=&#x201d; refers to &#x201c;is not equal to&#x201d;, &#x201c;&#x26;&#x201d; refers to bitwise conjunction, &#x201c;information&#x201d; refers to the new file information, CID<sub>recipient </sub>refers to the W bits of the computer ID of a computer that is a potential recipient of the new file information, and CID<sub>me </sub>refers to the W bits of the computer ID of the current computer.</p>
+<p id="p-0140" num="0143">
+<tables id="TABLE-US-00001" num="00001">
+<table frame="none" colsep="0" rowsep="0">
+<tgroup align="left" colsep="0" rowsep="0" cols="2">
+<colspec colname="offset" colwidth="21pt" align="left"/>
+<colspec colname="1" colwidth="196pt" align="left"/>
+<thead>
+<row>
+<entry/>
+<entry namest="offset" nameend="1" align="center" rowsep="1"/>
+</row>
+</thead>
+<tbody valign="top">
+<row>
+<entry/>
+<entry>if (information &#x26; &#x3c8;<sub>1</sub>) != (CID<sub>me </sub>&#x26; &#x3c8;<sub>1</sub>)</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;send information to every computer in S<sub>0 </sub>for which</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;&#x2003;(information &#x26; &#x3c8;<sub>1</sub>) == (CID<sub>recipient </sub>&#x26; &#x3c8;<sub>1</sub>);</entry>
+</row>
+<row>
+<entry/>
+<entry>else if (information &#x26; &#x3c8;<sub>0</sub>) != (CID<sub>me </sub>&#x26; &#x3c8;<sub>0</sub>)</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;send information to every computer in S<sub>1 </sub>for which</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;&#x2003;(information &#x26; &#x3c8;<sub>0</sub>) == (CID<sub>recipient </sub>&#x26; &#x3c8;<sub>0</sub>);</entry>
+</row>
+<row>
+<entry/>
+<entry>else {</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;if information originated from current computer</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;&#x2003;send information to every computer in S<sub>B;</sub></entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;store information in database of current computer;</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;check database for matching information;</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;notify pairs of computers with matching information;</entry>
+</row>
+<row>
+<entry/>
+<entry>&#x2003;}</entry>
+</row>
+<row>
+<entry/>
+<entry namest="offset" nameend="1" align="center" rowsep="1"/>
+</row>
+</tbody>
+</tgroup>
+</table>
+</tables>
+</p>
+<p id="p-0141" num="0144"><figref idref="DRAWINGS">FIG. 14</figref> illustrates an exemplary network <b>530</b> in which the multi-level stochastically partitioned database implementation is employed. The example network <b>530</b> includes only 32 computers for ease of explanation and to avoid cluttering the drawings. Additionally, only the five least significant bits of the computer ID (CID) for each computer is illustrated in <figref idref="DRAWINGS">FIG. 14</figref>.</p>
+<p id="p-0142" num="0145"><figref idref="DRAWINGS">FIG. 14</figref> illustrates a two-level stochastically partitioned database described from the point of view of computer CID 11001. Assume, for the purposes of discussion of <figref idref="DRAWINGS">FIG. 14</figref>, that R=2 and the following values have been computed: W=4, W<sub>0</sub>=2, W<sub>1</sub>=2, &#x3a8;<sub>0</sub>=0101, and &#x3a8;<sub>1</sub>=1010. Based on these values, and the computer ID's illustrated in <figref idref="DRAWINGS">FIG. 14</figref>, computer CID 11001 groups selected machines into three groups as follows. Group S<sub>B </sub>includes computer CID 01001. Group S<sub>0 </sub>includes the following computers: CID 00001, CID 00011, CID 01011, CID 10001, CID 10011, and CID 11011. Group S<sub>1 </sub>includes the following computers: CID 01000, CID 01100, CID 01101, CID 11000, CID 11100, and CID 11101.</p>
+<p id="p-0143" num="0146">When new file information is identified, computer CID 11001 identifies the W (4 in this example) least significant bits of the file information. If the four least significant bits of the file information are &#x201c;1001&#x201d;, then the file information is stored in the database of computer CID 11001. The file information is also forwarded to other computers in group S<sub>B </sub>(computer CID 01001), which also store the file information in their databases. The transfers to computers in group S<sub>B </sub>are referred to as &#x201c;zero-hop&#x201d; transfers, and are illustrated by the dashed line from computer CID 11001 to computer CID 01001.</p>
+<p id="p-0144" num="0147">If the four least significant bits of the file information are &#x201c;1x0y&#x201d; for any single-bit values of x and y other than (x,y)=(0,1), then the file information is sent to computers in group S<sub>1 </sub>having CID's that are &#x201c;01x0y&#x201d; or &#x201c;&#x201c;11x0y&#x201d;. Upon receipt of the file information, these computers in group S<sub>1 </sub>will have the same four least significant bits of their CIDs matching the four least significant bits of the file information, so these computers will store the received file information in their respective databases. The transfers to computers in group S<sub>1 </sub>are referred to as &#x201c;single-hop&#x201d; transfers, and are illustrated by the single solid lines from computer CID 11001 to the computers in S<sub>1</sub>.</p>
+<p id="p-0145" num="0148">If the four least significant bits of the file information are &#x201c;wxyz&#x201d; for any single-bit values of w, x, y and z other than (w,y)=(1,0), then the file information is sent to computers in group S<sub>o </sub>having CID's that are &#x201c;0w0y1&#x201d; and &#x201c;1w0y1&#x201d;. Upon receipt of the file information, these computers in group S<sub>0 </sub>will either store the file information in their respective databases, or forward the file information on to another computer. If (x,z)=(0,1) then the four least significant bits of computers having CIDs &#x201c;0w0y1&#x201d; and &#x201c;1w0y1&#x201d; will match the four least significant bits of the file information, so these computers will store the file information in their respective databases. However, if (x,z)&#x2260;(0,1) then the computers with CIDs &#x201c;0w0y1&#x201d; and &#x201c;1w0y1&#x201d; will forward the file information to computers &#x201c;0wxyz&#x201d; and &#x201c;1wxyz&#x201d;, which will in turn store the file information in their respective databases. The transfer to computers in group S<sub>0 </sub>are referred to as &#x201c;double-hop&#x201d; transfers because they may require a second transfer before reaching an appropriate database. These transfers are illustrated by the double solid lines from computer CID 11001 to the computers in S<sub>0</sub>.</p>
+<p id="h-0012" num="0000">Example Computer System</p>
+<p id="p-0146" num="0149"><figref idref="DRAWINGS">FIG. 15</figref> illustrates a more general exemplary computer environment <b>600</b>, which can be used in various embodiments of the invention. The computer environment <b>600</b> is only one example of a computing environment and is not intended to suggest any limitation as to the scope of use or functionality of the computer and network architectures. Neither should the computer environment <b>600</b> be interpreted as having any dependency or requirement relating to any one or combination of components illustrated in the exemplary computer environment <b>600</b>.</p>
+<p id="p-0147" num="0150">Computer environment <b>600</b> includes a general-purpose computing device in the form of a computer <b>602</b>. Computer <b>602</b> can be, for example, any of computing devices <b>102</b>-<b>108</b> of <figref idref="DRAWINGS">FIG. 1</figref>, or a computing device <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref>. The components of computer <b>602</b> can include, but are not limited to, one or more processors or processing units <b>604</b>, a system memory <b>606</b>, and a system bus <b>608</b> that couples various system components including the processor <b>604</b> to the system memory <b>606</b>.</p>
+<p id="p-0148" num="0151">The system bus <b>608</b> represents one or more of any of several types of bus structures, including a memory bus or memory controller, a peripheral bus, an accelerated graphics port, and a processor or local bus using any of a variety of bus architectures. By way of example, such architectures can include an Industry Standard Architecture (ISA) bus, a Micro Channel Architecture (MCA) bus, an Enhanced ISA (EISA) bus, a Video Electronics Standards Association (VESA) local bus, and a Peripheral Component Interconnects (PCI) bus also known as a Mezzanine bus.</p>
+<p id="p-0149" num="0152">Computer <b>602</b> typically includes a variety of computer readable media. Such media can be any available media that is accessible by computer <b>602</b> and includes both volatile and non-volatile media, removable and non-removable media.</p>
+<p id="p-0150" num="0153">The system memory <b>606</b> includes computer readable media in the form of volatile memory, such as random access memory (RAM) <b>610</b>, and/or non-volatile memory, such as read only memory (ROM) <b>612</b>. A basic input/output system (BIOS) <b>614</b>, containing the basic routines that help to transfer information between elements within computer <b>602</b>, such as during start-up, is stored in ROM <b>612</b>. RAM <b>610</b> typically contains data and/or program modules that are immediately accessible to and/or presently operated on by the processing unit <b>604</b>.</p>
+<p id="p-0151" num="0154">Computer <b>602</b> may also include other removable/non-removable, volatile/non-volatile computer storage media. By way of example, <figref idref="DRAWINGS">FIG. 15</figref> illustrates a hard disk drive <b>616</b> for reading from and writing to a non-removable, non-volatile magnetic media (not shown), a magnetic disk drive <b>618</b> for reading from and writing to a removable, non-volatile magnetic disk <b>620</b> (e.g., a &#x201c;floppy disk&#x201d;), and an optical disk drive <b>622</b> for reading from and/or writing to a removable, non-volatile optical disk <b>624</b> such as a CD-ROM, DVD-ROM, or other optical media. The hard disk drive <b>616</b>, magnetic disk drive <b>618</b>, and optical disk drive <b>622</b> are each connected to the system bus <b>608</b> by one or more data media interfaces <b>626</b>. Alternatively, the hard disk drive <b>616</b>, magnetic disk drive <b>618</b>, and optical disk drive <b>622</b> can be connected to the system bus <b>608</b> by one or more interfaces (not shown).</p>
+<p id="p-0152" num="0155">The disk drives and their associated computer-readable media provide non-volatile storage of computer readable instructions, data structures, program modules, and other data for computer <b>602</b>. Although the example illustrates a hard disk <b>616</b>, a removable magnetic disk <b>620</b>, and a removable optical disk <b>624</b>, it is to be appreciated that other types of computer readable media which can store data that is accessible by a computer, such as magnetic cassettes or other magnetic storage devices, flash memory cards, CD-ROM, digital versatile disks (DVD) or other optical storage, random access memories (RAM), read only memories (ROM), electrically erasable programmable read-only memory (EEPROM), and the like, can also be utilized to implement the exemplary computing system and environment.</p>
+<p id="p-0153" num="0156">Any number of program modules can be stored on the hard disk <b>616</b>, magnetic disk <b>620</b>, optical disk <b>624</b>, ROM <b>612</b>, and/or RAM <b>610</b>, including by way of example, an operating system <b>626</b>, one or more application programs <b>628</b>, other program modules <b>630</b>, and program data <b>632</b>. Each of such operating system <b>626</b>, one or more application programs <b>628</b>, other program modules <b>630</b>, and program data <b>632</b> (or some combination thereof) may implement all or part of the resident components that support the distributed file system.</p>
+<p id="p-0154" num="0157">A user can enter commands and information into computer <b>602</b> via input devices such as a keyboard <b>634</b> and a pointing device <b>636</b> (e.g., a &#x201c;mouse&#x201d;). Other input devices <b>638</b> (not shown specifically) may include a microphone, joystick, game pad, satellite dish, serial port, scanner, and/or the like. These and other input devices are connected to the processing unit <b>604</b> via input/output interfaces <b>640</b> that are coupled to the system bus <b>608</b>, but may be connected by other interface and bus structures, such as a parallel port, game port, or a universal serial bus (USB).</p>
+<p id="p-0155" num="0158">A monitor <b>642</b> or other type of display device can also be connected to the system bus <b>608</b> via an interface, such as a video adapter <b>644</b>. In addition to the monitor <b>642</b>, other output peripheral devices can include components such as speakers (not shown) and a printer <b>646</b> which can be connected to computer <b>602</b> via the input/output interfaces <b>640</b>.</p>
+<p id="p-0156" num="0159">Computer <b>602</b> can operate in a networked environment using logical connections to one or more remote computers, such as a remote computing device <b>648</b>. By way of example, the remote computing device <b>648</b> can be a personal computer, portable computer, a server, a router, a network computer, a peer device or other common network node, and the like. The remote computing device <b>648</b> is illustrated as a portable computer that can include many or all of the elements and features described herein relative to computer <b>602</b>.</p>
+<p id="p-0157" num="0160">Logical connections between computer <b>602</b> and the remote computer <b>648</b> are depicted as a local area network (LAN) <b>650</b> and a general wide area network (WAN) <b>652</b>. Such networking environments are commonplace in offices, enterprise-wide computer networks, intranets, and the Internet.</p>
+<p id="p-0158" num="0161">When implemented in a LAN networking environment, the computer <b>602</b> is connected to a local network <b>650</b> via a network interface or adapter <b>654</b>. When implemented in a WAN networking environment, the computer <b>602</b> typically includes a modem <b>656</b> or other means for establishing communications over the wide network <b>652</b>. The modem <b>656</b>, which can be internal or external to computer <b>602</b>, can be connected to the system bus <b>608</b> via the input/output interfaces <b>640</b> or other appropriate mechanisms. It is to be appreciated that the illustrated network connections are exemplary and that other means of establishing communication link(s) between the computers <b>602</b> and <b>648</b> can be employed.</p>
+<p id="p-0159" num="0162">In a networked environment, such as that illustrated with computing environment <b>600</b>, program modules depicted relative to the computer <b>602</b>, or portions thereof, may be stored in a remote memory storage device. By way of example, remote application programs <b>658</b> reside on a memory device of remote computer <b>648</b>. For purposes of illustration, application programs and other executable program components such as the operating system are illustrated herein as discrete blocks, although it is recognized that such programs and components reside at various times in different storage components of the computing device <b>602</b>, and are executed by the data processor(s) of the computer.</p>
+<p id="p-0160" num="0163">Computer <b>602</b> typically includes at least some form of computer readable media. Computer readable media can be any available media that can be accessed by computer <b>602</b>. By way of example, and not limitation, computer readable media may comprise computer storage media and communication media. Computer storage media includes volatile and nonvolatile, removable and non-removable media implemented in any method or technology for storage of information such as computer readable instructions, data structures, program modules or other data. Computer storage media includes, but is not limited to, RAM, ROM, EEPROM, flash memory or other memory technology, CD-ROM, digital versatile disks (DVD) or other optical storage, magnetic cassettes, magnetic tape, magnetic disk storage or other magnetic storage devices, or any other media which can be used to store the desired information and which can be accessed by computer <b>602</b>. Communication media typically embodies computer readable instructions, data structures, program modules or other data in a modulated data signal such as a carrier wave or other transport mechanism and includes any information delivery media. The term &#x201c;modulated data signal&#x201d; means a signal that has one or more of its characteristics set or changed in such a manner as to encode information in the signal. By way of example, and not limitation, communication media includes wired media such as wired network or direct-wired connection, and wireless media such as acoustic, RF, infrared and other wireless media. Combinations of any of the above should also be included within the scope of computer readable media.</p>
+<p id="p-0161" num="0164">The invention has been described herein in part in the general context of computer-executable instructions, such as program modules, executed by one or more computers or other devices. Generally, program modules include routines, programs, objects, components, data structures, etc. that perform particular tasks or implement particular abstract data types. Typically the functionality of the program modules may be combined or distributed as desired in various embodiments.</p>
+<p id="p-0162" num="0165">For purposes of illustration, programs and other executable program components such as the operating system are illustrated herein as discrete blocks, although it is recognized that such programs and components reside at various times in different storage components of the computer, and are executed by the data processor(s) of the computer.</p>
+<p id="p-0163" num="0166">Alternatively, the invention may be implemented in hardware or a combination of hardware, software, and/or firmware. For example, one or more application specific integrated circuits (ASICs) could be designed or programmed to carry out the invention.</p>
+<p id="p-0164" num="0167">It should be noted that, although discussed primarily herein with reference to a serverless distributed file system, the invention can be used in any file system in which it is desired to identify identical files across multiple computers. Thus, the invention can be used in other embodiments, such as, for example, those with one or more centralized file servers.</p>
+<p id="h-0013" num="0000">Conclusion</p>
+<p id="p-0165" num="0168">Although the description above uses language that is specific to structural features and/or methodological acts, it is to be understood that the invention defined in the appended claims is not limited to the specific features or acts described. Rather, the specific features and acts are disclosed as exemplary forms of implementing the invention.</p>
+<?DETDESC description="Detailed Description" end="tail"?>
+</description>
+<us-math idrefs="MATH-US-00001" nb-file="US07272630-20070918-M00001.NB">
+<img id="EMI-M00001" he="6.01mm" wi="76.20mm" file="US07272630-20070918-M00001.TIF" alt="embedded image " img-content="math" img-format="tif"/>
+</us-math>
+<us-math idrefs="MATH-US-00002" nb-file="US07272630-20070918-M00002.NB">
+<img id="EMI-M00002" he="6.01mm" wi="76.20mm" file="US07272630-20070918-M00002.TIF" alt="embedded image " img-content="math" img-format="tif"/>
+</us-math>
+<us-math idrefs="MATH-US-00003" nb-file="US07272630-20070918-M00003.NB">
+<img id="EMI-M00003" he="6.01mm" wi="76.20mm" file="US07272630-20070918-M00003.TIF" alt="embedded image " img-content="math" img-format="tif"/>
+</us-math>
+<us-math idrefs="MATH-US-00004" nb-file="US07272630-20070918-M00004.NB">
+<img id="EMI-M00004" he="9.14mm" wi="76.20mm" file="US07272630-20070918-M00004.TIF" alt="embedded image " img-content="math" img-format="tif"/>
+</us-math>
+<us-claim-statement>The invention claimed is:</us-claim-statement>
+<claims id="claims">
+<claim id="CLM-00001" num="00001">
+<claim-text>1. A method implemented in a computer, the method comprising:
+<claim-text>generating an imprint identification code for an object stored at the computer, wherein the imprint identification code comprises a first set of bits of object information corresponding to the object, and wherein the number of bits in the first set of bits is based at least in part on a count of computers that the computer is aware of in the network;</claim-text>
+<claim-text>identifying one or more additional computers each having a computer identifier that includes a second set of bits that match the imprint identification code; and</claim-text>
+<claim-text>sending the object information to each of the identified one or more additional computers.</claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00002" num="00002">
+<claim-text>2. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the object comprises a file and the object information comprises file information.</claim-text>
+</claim>
+<claim id="CLM-00003" num="00003">
+<claim-text>3. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the first set of bits comprises the least significant bits of the object information, and wherein the second set of bits comprises the least significant bits of the computer identifier.</claim-text>
+</claim>
+<claim id="CLM-00004" num="00004">
+<claim-text>4. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the object information is a semi-unique value based at least in part on the data in the object.</claim-text>
+</claim>
+<claim id="CLM-00005" num="00005">
+<claim-text>5. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the sending further comprises sending an object identifier corresponding to the object along with the object information.</claim-text>
+</claim>
+<claim id="CLM-00006" num="00006">
+<claim-text>6. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, further comprising storing the object information in an object information database stored at the computer.</claim-text>
+</claim>
+<claim id="CLM-00007" num="00007">
+<claim-text>7. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, further comprising:
+<claim-text>receiving object information corresponding to an object stored on another computer;</claim-text>
+<claim-text>comparing the received object information to an object information database;</claim-text>
+<claim-text>checking whether the received object information matches any of the object information in the database; and</claim-text>
+<claim-text>determining that two potentially identical objects exist if the received object information matches any of the object information in the database.</claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00008" num="00008">
+<claim-text>8. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the locations of the first set of bits correspond to the locations of the second set of bits.</claim-text>
+</claim>
+<claim id="CLM-00009" num="00009">
+<claim-text>9. A method as recited in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the number of bits in the first set of bits is based at least in part on an average number of computers that a particular object identifier should be communicated to.</claim-text>
+</claim>
+<claim id="CLM-00010" num="00010">
+<claim-text>10. One or more computer storage media having stored thereon a plurality of instructions that, when executed by one or more processors of a computer that is one of a plurality of computers in a network, causes the one or more processors to perform the following acts:
+<claim-text>generating an imprint identification code for an object stored at the computer, wherein the imprint identification code comprises a first set of bits of object information corresponding to the object, and wherein the number of bits in the first set of bits is based at least in part on a count of computers of the plurality of computers that the computer is aware of in the network;</claim-text>
+<claim-text>identifying one or more additional computers of the plurality of computers each having a computer identifier that includes a second set of bits that match the imprint identification code; and</claim-text>
+<claim-text>sending the object information to each of the identified one or more additional computers.</claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00011" num="00011">
+<claim-text>11. One or more computer storage media as recited in <claim-ref idref="CLM-00010">claim 10</claim-ref>, wherein the object comprises a file and the object information comprises file information.</claim-text>
+</claim>
+<claim id="CLM-00012" num="00012">
+<claim-text>12. One or more computer storage media as recited in <claim-ref idref="CLM-00010">claim 10</claim-ref>, the plurality of instructions further causing the one or more processors to perform the following acts:
+<claim-text>receiving object information corresponding to an object stored on another computer of the plurality of computers;</claim-text>
+<claim-text>comparing the received object information to an object information database;</claim-text>
+<claim-text>checking whether the received object information matches any of the object information in the database; and</claim-text>
+<claim-text>determining that two potentially identical objects exist if the received object information matches any of the object information in the database.</claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00013" num="00013">
+<claim-text>13. One or more computer storage media as recited in <claim-ref idref="CLM-00010">claim 10</claim-ref>, wherein the number of bits in the first set of bits is based at least in part on an average number of computers of the plurality of computers that a particular object identifier should be communicated to.</claim-text>
+</claim>
+<claim id="CLM-00014" num="00014">
+<claim-text>14. A computing device comprising:
+<claim-text>a processor;</claim-text>
+<claim-text>a storage device, coupled to the processor, to store instructions that, when executed by the processor, cause the processor to:
+<claim-text>generate an imprint identification code for an object stored at the computing device, wherein the imprint identification code comprises a first set of bits of object information corresponding to the object, and wherein the number of bits in the first set of bits is based at least in part on an average number of computing devices of the plurality of computing devices that a particular object identifier should be communicated to;</claim-text>
+<claim-text>identify one or more additional computing devices each having a computing device identifier that includes a second set of bits that match the imprint identification code; and</claim-text>
+<claim-text>send the object information to each of the identified one or more additional computing devices.</claim-text>
+</claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00015" num="00015">
+<claim-text>15. A computing device as recited in <claim-ref idref="CLM-00014">claim 14</claim-ref>, wherein the object comprises a file and the object information comprises file information.</claim-text>
+</claim>
+<claim id="CLM-00016" num="00016">
+<claim-text>16. A computing device as recited in <claim-ref idref="CLM-00014">claim 14</claim-ref>, wherein the instructions further cause the processor to:
+<claim-text>receive object information corresponding to an object stored on another computing device;</claim-text>
+<claim-text>compare the received object information to an object information database;</claim-text>
+<claim-text>check whether the received object information matches any of the object information in the database; and</claim-text>
+<claim-text>determine that two potentially identical objects exist if the received object information matches any of the object information in the database.</claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00017" num="00017">
+<claim-text>17. A computing device as recited in <claim-ref idref="CLM-00014">claim 14</claim-ref>, wherein the number of bits in the first set of bits is based at least in part on an average number of computing devices of the plurality of computing devices that a particular object identifier should be communicated to.</claim-text>
+</claim>
+</claims>
+</us-patent-grant>
+

@@ -65,6 +65,11 @@ public class NamePerson extends Name {
 		return true;
 	}
 
+	/**
+	 * Get abbreviated version of name.
+	 * 
+	 * @return Last Name, first initial.
+	 */
 	public String getAbbreviatedName() {
 		if (Strings.isNullOrEmpty(firstName)) {
 			return lastName + ", " + firstName.substring(0, 1) + '.';

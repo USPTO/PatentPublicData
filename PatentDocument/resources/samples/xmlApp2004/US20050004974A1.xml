@@ -1,0 +1,1215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE us-patent-application SYSTEM "us-patent-application-v40-2004-12-02.dtd" [ ]>
+<us-patent-application lang="EN" dtd-version="v4.0 2004-12-02" file="US20050004974A1-20050106.XML" status="PARALLEL-RUN" id="us-patent-application" country="US" date-produced="20041222" date-publ="20050106">
+<us-bibliographic-data-application lang="EN" country="US">
+<publication-reference>
+<document-id>
+<country>US</country>
+<doc-number>20050004974</doc-number>
+<kind>A1</kind>
+<date>20050106</date>
+</document-id>
+</publication-reference>
+<application-reference appl-type="utility">
+<document-id>
+<country>US</country>
+<doc-number>10687244</doc-number>
+<date>20031016</date>
+</document-id>
+</application-reference>
+<us-application-series-code>10</us-application-series-code>
+<us-publication-filing-type>
+<us-original-publication-voluntary/>
+</us-publication-filing-type>
+<classification-ipc>
+<edition>07</edition>
+<main-classification>G06F015/16</main-classification>
+</classification-ipc>
+<classification-national>
+<country>US</country>
+<main-classification>709202000</main-classification>
+</classification-national>
+<invention-title id="d0e64">Device model agent</invention-title>
+<us-related-documents>
+<us-provisional-application>
+<document-id>
+<country>US</country>
+<doc-number>60319622</doc-number>
+<date>20021016</date>
+</document-id>
+</us-provisional-application>
+<us-provisional-application>
+<document-id>
+<country>US</country>
+<doc-number>60319623</doc-number>
+<date>20021017</date>
+</document-id>
+</us-provisional-application>
+<us-provisional-application>
+<document-id>
+<country>US</country>
+<doc-number>60319624</doc-number>
+<date>20021017</date>
+</document-id>
+</us-provisional-application>
+<us-provisional-application>
+<document-id>
+<country>US</country>
+<doc-number>60319625</doc-number>
+<date>20021017</date>
+</document-id>
+</us-provisional-application>
+</us-related-documents>
+<parties>
+<applicants>
+<applicant sequence="00" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Sharma</last-name>
+<first-name>Naveen</first-name>
+<address>
+<city>Perinton</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="01" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Furst</last-name>
+<first-name>Michael</first-name>
+<middle-name>R.</middle-name>
+<address>
+<city>Rochester</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="02" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Fillion</last-name>
+<first-name>Claude</first-name>
+<middle-name>S.</middle-name>
+<address>
+<city>Rochester</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="03" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Huang</last-name>
+<first-name>Weixia</first-name>
+<address>
+<city>Rochester</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="04" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Kehoe</last-name>
+<first-name>Michael</first-name>
+<middle-name>P.</middle-name>
+<address>
+<city>Rochester</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="05" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Lorenzo</last-name>
+<first-name>Arturo</first-name>
+<middle-name>M.</middle-name>
+<address>
+<city>Fairport</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="06" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>McCorkindale</last-name>
+<first-name>Mary</first-name>
+<middle-name>C.</middle-name>
+<address>
+<city>Fairport</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="07" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>St. Jacques</last-name>
+<first-name>Robert</first-name>
+<middle-name>J.</middle-name>
+<address>
+<city>Fairport</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="08" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Thieret</last-name>
+<first-name>Tracy</first-name>
+<middle-name>E.</middle-name>
+<address>
+<city>Webster</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="09" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Austin</last-name>
+<first-name>John</first-name>
+<middle-name>C.</middle-name>
+<address>
+<city>Philadelphia</city>
+<state>PA</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="10" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Daniels</last-name>
+<first-name>Marc</first-name>
+<middle-name>D.</middle-name>
+<address>
+<city>Pittsford</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+<applicant sequence="11" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Cavanaugh</last-name>
+<first-name>Michael</first-name>
+<middle-name>F.</middle-name>
+<address>
+<city>Webster</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>US</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+</applicants>
+<correspondence-address>
+<addressbook>
+<name>PATENT DOCUMENTATION CENTER</name>
+<address>
+<address-1>XEROX CORPORATION</address-1>
+<address-2>100 CLINTON AVE., SOUTH, XEROX SQUARE, 20TH FLOOR</address-2>
+<city>ROCHESTER</city>
+<state>NY</state>
+<postcode>14644</postcode>
+<country>US</country>
+</address>
+</addressbook>
+</correspondence-address>
+</parties>
+<assignees>
+<assignee>
+<orgname>Xerox Corporation</orgname>
+<role>02</role>
+</assignee>
+</assignees>
+</us-bibliographic-data-application>
+<abstract id="abstract">
+<p id="A-0001" num="none">The Device Model Agent (DMA), the device side technology module in Device Centric Services (DCS) system, is the main focus of this invention. DMA is a thin, efficient applications/services execution environment. DMA provides an embedded services platform for enabling system management applications and services. This allows a flexible, extensible, dynamic services management module allowing networked services to be designed, added, and managed within the system without modifications to devices, DCS system, or DMA itself. While this invention specifically describes the integration of benefits from DMA into document system devices, the concepts are equally applicable in other domains. The DMA runtime environment is a thin software interface layer that resides on a document system device between the Java runtime environment and embedded web server. </p>
+</abstract>
+<drawings id="DRAWINGS">
+<figure id="figure-D00000" num="00000">
+<img id="EMI-D00000" he="109.92mm" wi="169.16mm" file="US20050004974A1-20050106-D00000.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00001" num="00001">
+<img id="EMI-D00001" he="241.89mm" wi="174.67mm" file="US20050004974A1-20050106-D00001.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00002" num="00002">
+<img id="EMI-D00002" he="260.35mm" wi="191.35mm" file="US20050004974A1-20050106-D00002.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00003" num="00003">
+<img id="EMI-D00003" he="209.63mm" wi="166.88mm" file="US20050004974A1-20050106-D00003.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00004" num="00004">
+<img id="EMI-D00004" he="254.68mm" wi="188.64mm" file="US20050004974A1-20050106-D00004.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00005" num="00005">
+<img id="EMI-D00005" he="257.81mm" wi="185.59mm" file="US20050004974A1-20050106-D00005.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00006" num="00006">
+<img id="EMI-D00006" he="130.30mm" wi="180.09mm" file="US20050004974A1-20050106-D00006.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00007" num="00007">
+<img id="EMI-D00007" he="241.89mm" wi="183.56mm" file="US20050004974A1-20050106-D00007.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00008" num="00008">
+<img id="EMI-D00008" he="223.69mm" wi="174.24mm" file="US20050004974A1-20050106-D00008.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00009" num="00009">
+<img id="EMI-D00009" he="220.56mm" wi="199.90mm" file="US20050004974A1-20050106-D00009.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00010" num="00010">
+<img id="EMI-D00010" he="227.58mm" wi="183.56mm" file="US20050004974A1-20050106-D00010.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00011" num="00011">
+<img id="EMI-D00011" he="142.41mm" wi="177.38mm" file="US20050004974A1-20050106-D00011.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00012" num="00012">
+<img id="EMI-D00012" he="193.29mm" wi="171.20mm" file="US20050004974A1-20050106-D00012.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00013" num="00013">
+<img id="EMI-D00013" he="219.71mm" wi="167.22mm" file="US20050004974A1-20050106-D00013.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00014" num="00014">
+<img id="EMI-D00014" he="199.14mm" wi="132.25mm" file="US20050004974A1-20050106-D00014.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00015" num="00015">
+<img id="EMI-D00015" he="201.85mm" wi="147.83mm" file="US20050004974A1-20050106-D00015.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00016" num="00016">
+<img id="EMI-D00016" he="226.74mm" wi="178.90mm" file="US20050004974A1-20050106-D00016.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00017" num="00017">
+<img id="EMI-D00017" he="212.43mm" wi="184.74mm" file="US20050004974A1-20050106-D00017.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00018" num="00018">
+<img id="EMI-D00018" he="228.35mm" wi="175.43mm" file="US20050004974A1-20050106-D00018.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00019" num="00019">
+<img id="EMI-D00019" he="205.74mm" wi="177.38mm" file="US20050004974A1-20050106-D00019.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+</drawings>
+<description id="description">
+<?cross-reference-to-related-applications description="Cross Reference To Related Applications" end="lead"?>
+<heading level="2" id="d0e576">PRIORITY CLAIM </heading>
+<p id="P-0001" num="0001"> This application claims priority to U.S. Provisional Patent Application No. 60/319,622, filed Oct. 16, 2002, and U.S. Provisional Patent Applications Nos. 60/319,623, 60/319,624, and 60/319,625, filed Oct. 17, 2002. </p>
+<heading level="2" id="d0e584">CROSS-REFERENCE TO RELATED APPLICATIONS </heading>
+<p id="P-0002" num="0002"> This application is related to U.S. Provisional Patent Application No. 60/319,622, filed Oct. 16, 2002, now U.S. patent application Ser. No. 10/______, filed herewith, by Tracey E. Thieret, et al (Attorney Docket No. D/A2484); U.S. patent application Ser. No. 10/______, filed herewith, by Naveen Sharma, et al (Attorney Docket No. D/A2485Q); U.S. Provisional Patent Application No. 60/319,624, filed Oct. 17, 2002, now U.S. patent application Ser. No. 10/______, filed herewith, by Michael R. Furst, et al (Attorney Docket No. D/A2486); U.S. patent application Ser. No. 10/______, filed herewith, by Michael R. Furst, et al (Attorney Docket No. D/A2486Q); U.S. Provisional Patent Application No. 60/319,625, filed Oct. 17, 2002, now U.S. patent application Ser. No. 10/______, filed herewith, by Ronald M. Rockwell (Attorney Docket No. D/A2487); and U.S. patent application Ser. No. 10/______, filed herewith, by Ronald M. Rockwell (Attorney Docket D/A2487Q); the subject matter of which are incorporated by reference.</p>
+<?cross-reference-to-related-applications description="Cross Reference To Related Applications" end="tail"?>
+<?summary-of-invention description="Summary of Invention" end="lead"?>
+<heading level="2" id="d0e597">FIELD OF THE INVENTION </heading>
+<p id="P-0003" num="0003"> Embodiments relate to electroreprographic marking machines, facsimile machines, scanning devices, multifunction devices, and the like. Particularly, embodiments relate to the implementation and distribution of services such devices can offer users. </p>
+<heading level="2" id="d0e608">BACKGROUND AND SUMMARY </heading>
+<p id="P-0004" num="0004"> Installation of a marking machine or other business device is only the first step in the majority of its lifecycle. Most devices are involved in ongoing business processes between the product owners (users), the manufacturer of the product, and/or third party suppliers. Companies that manufacture marking devices typically include products and services in support of users' documents and hope the users will use and live with the offerings for quite a while. This post-sale period presents an opportunity for building a strong and mutually beneficial, long-term relationship between the manufacturer and the users. The post-sale relationship can be defined not only by what the devices do for users, but how they do it, how manufacturers support them, how manufacturers treats the users, and how easy it is to own and use the devices overall. Understanding this, embodiments addresses users' complementary needs to receive services in support of the devices they use: post-sale lifecycles, break-fix needs, and integrated business processes are addressed in various embodiments. These processes range from break-fix service (repairs), to ongoing supply of consumables and supplies, to product upgrades, enhancements, and integration into solutions and other offerings. Traditionally, these post-sale processes were manual in nature and required the device owner/user to play an active role in relaying limited information to manufacturers and suppliers at the time of need. </p>
+<p id="P-0005" num="0005"> Many electroreprographic marking machines, facsimile machines, scanning devices, multifunction devices, and the like provide services to assist with such processes that users must learn how to use or to avoid. Some devices also require meter reads and other types of maintenance that tend to irritate users. In the case of meter reads, users may have to read the meter on a monthly basis and communicate the results to a supplier via, for example, fax or phone. Additionally, users must manually check supplies of paper, toner, and other materials and place orders for new materials. Sometimes the number of services offered by a device can bewilder a user, leading the user to believe that the device is too complex to learn. Further, to avoid down time and other inconveniences, users often would rather make their own small repairs than call for a repair and wait for service to arrive and repair their device. </p>
+<p id="P-0006" num="0006"> With the advent of modems, high-end products in user or user sites were connected back to manufacturers via phone lines changing this interaction model. The arrival of ubiquitous Internet connectivity and the proliferation of network connected products presents new opportunities to bring a more flexible and powerful approach to the integration of devices with post sale business processes. While network connectivity removes some of the drawbacks of phone line connectivity, systems described to date still carry many of the limitations that were associated with the interaction models developed for these early systems. </p>
+<p id="P-0007" num="0007"> Disadvantages of current systems include tight coupling of communication method and system architecture, one-size fits all deployment and integration strategies, and typically no support for devices already deployed. Systems that do offer support for devices already deployed typically are inconsistent between how already deployed devices and new devices are handled. Additionally, systems typically do not include an ability for rapid upgrade, extension, customization, and evolution of features, processes, and workflows and are often limited to basic business processes, failing to provide external services and solutions APIs in a consistent fashion. Generally, and almost across the board, systems treat the device as a simple repository of information, rather than an active participant in the services enabled. Devices must continue to have their mainline feature sets enhanced to stay competitive. In document systems, for example, speeds, feeds, image quality, and document workflows are typically characteristics that are enhanced to render devices competitive. However, increased post-sale interaction between devices, users, and suppliers, and the ability to integrate products into solutions and services and vice versa are becoming points of distinction between devices in the marketplace. In the near future, devices' success and value will likely be measured by the ability of devices to actively participate in their post-sale lifecycles, their ability to seamlessly integrate with solutions offerings, and their capacity for customization and extension based on user needs and requirements. The results of such device abilities are improved ease of use for the user, more effective support from manufacturers, and better overall user satisfaction </p>
+<p id="P-0008" num="0008"> A general industry trend for several years has been to take advantage of the increasing embedded computation and connectivity found in marking devices by offering remote services to increase user satisfaction and reduce operating expenses. This trend towards connected intelligent products started with remote services implementations on servers and other mission critical information technology (IT) related hardware and has become increasing prevalent in a variety of other industries, including marking devices. These remote services provide a win-win value proposition for both manufacturers and users. When implemented properly, these services allow for large cost reductions for the manufacturer, as well as a richer post sale experience for the user. </p>
+<p id="P-0009" num="0009"> This transition will be driven by several coincident factors and needs. Competitive pressures and the need for improved internal business processes will require new ways of interacting with products in the field, as well as a shift in where responsibility for service and support resides. Manufacturers and users alike will prefer to be able to configure and add new features/services to products rapidly to solve immediate problems and to rapidly deploy new features. Simplifying and speeding this process will prolong the lives and enhance the value of deployed devices and will help keep users happy and productive. Manufacturers need to be able to provide these capabilities for new devices and those already deployed, but manufacturers cannot afford to be best in breed to everyone; devices must be able to easily incorporate third party or competitive elements. One size does not fit all, and multiple deployment configurations are necessary that give the manufacturer the ability to configure an appropriate solution for an individual user's needs. The manufacturer must also be able to make solutions behave consistently across multiple configurations so that they are manageable and supportable, and so the user remains in control. </p>
+<p id="P-0010" num="0010"> Studies centered on determining user preference and need for these types of services conclusively point toward the need for new capabilities in offerings that will enhance the way users live with marking devices, billing systems, and supply chain. The studies also indicate that users desire these services and are willing to work with manufacturers to overcome security hurdles to implement them. In particular, the studies found that for nearly one third of users, these remote services would be likely to make users more loyal to a given machine brand at the time of next purchase. Most users would be willing to pay to acquire remote services capabilities on their machines are very or somewhat comfortable with sending data to services providers via the Internet, as long as they had some level of control over the data shared, and showed particular interest in directed self-repair, automated downloading of software, and remote supplies/services analyses and predictions. </p>
+<p id="P-0011" num="0011"> In addition, an analysis of remote solutions state of the art shows that all major players in the marking device manufacture and remote solutions market offer some degree of remote service functionality and are placing increased emphasis on expanding these capabilities. In the offset printing market, integrating remote services into presses and peripherals is considered a cost of doing business. </p>
+<p id="P-0012" num="0012"> Services offered to users prior to the instant system were assembled and managed end-to-end within specific product families. This required -product teams to invest in developing, not only the product itself, but also the infrastructure, services, and back-office, connections necessary to get the job done. This effort was often very difficult to sustain long-term and was often duplicated across product families. </p>
+<p id="P-0013" num="0013"> Users' experiences can be greatly enhanced by simplifying the users' relationships with devices, such as, for example, marking devices. Embodiments can automate current, manually-performed and/or non-uniform business processes, as well as providing new workflows to address evolving user requirements. This will be accomplished by, for example, employing embodiments to enable devices to be active participants in their life cycles and value added services while keeping the users in control. Embodiments do this using standards architecture, such as Distributed Management Task Force and Common Information Model (CIM) based standards, to allow services to be written once for all devices employing and/or compatible with embodiments and to enable easy modular additions of new services on a product by product basis. </p>
+<p id="P-0014" num="0014"> To achieve these ends, embodiments provide a common service model, services that work with a multitude of disparate devices, and flexibility in physical, logical, and operational configurations. Devices take on an active role in providing users with enhanced post sale experiences. Embodiments can enjoy seamless integration into back-office processes of both users and manufacturers. </p>
+<p id="P-0015" num="0015"> More particularly, embodiments comprise a flexible end-to-end system for connecting devices to solutions offerings. Many deployment options in various physical locations and configurations are possible to allow broadest device coverage and rapid deployment of capability for both machines in field and new products, while insulating device changes from back-office changes. </p>
+<p id="P-0016" num="0016"> The system of embodiments can be reused across all compatible platforms, freeing individual platforms from the need to reinvent all back-office systems. Each platform team need only enable their product through one of the ways mentioned above and contemplated by embodiments, such as by embedding the DMA of embodiments and/or by complying with specific services transactions protocols. </p>
+<p id="P-0017" num="0017"> An agent software component embedded into devices, add-on modules, and device proxies provides a common device model, common information management (CIM) application programming interface (API), and an environment in which device services can run. A common abstraction of a communication mechanism allows the system to be independent of the physical transport linking nodes. A service model supports services that run close to the device and their lifecycle, which includes the methods and processes for effective management and customization of services and solutions. As a result, services that are once written to the agent are capable of running on any device, add-on module, or proxy that includes the agent. This yields a system that enables devices and device proxies to be deployed and work together seamlessly from the point of view of the services, as well as policy-based provisioning for device-based services with both user and supplier inputs. The embedded service agent takes an active roll in solutions offerings and works in coordination with distributed solutions and/or a network-accessible server to provide required functionality. The server provides a clearing house for messages that must traverse the system and provides management functionality necessary to connect and customize distributed services at multiple levels of granularity. </p>
+<p id="P-0018" num="0018"> In addition to increased user satisfaction and loyalty, embodiments can create financial benefits. Embodiments can provide cost savings from reduced service engineer usage through increased user self-help, remote diagnostics, and prognostics. In embodiments including automated meter reads, reduced collection process infrastructure, better contract enforcement, and reduced reserves against inaccuracies can provide additional cost savings. Further, embodiments participating in automated supplies ordering can enable decreased inventories through increased accuracy of tracking consumables at user sites, in part due to more timely, accurate, and applicable measures. Additional cost savings could be realized in terms of eliminated phone time due to fewer call-in orders and disputes. Finally, embodiments can contribute to an increase in revenue from new services since so many users would be willing to pay a fee for the services offered by embodiments. </p>
+<p id="P-0019" num="0019"> Embodiments respond to user need and interest by including, for example, a new class of remote services. These services will capitalize on the increased connectivity of devices in the user environment, and utilize embedded computations within the devices themselves to make devices active participants in simplifying user work processes. The platform enables a standards-based solution that can be used to modularly implement remote service offerings in a cross-platform manner that all use a common back-office integration and work processes. Specific examples of the types of services that can be offered in embodiments include: automated meter reads, automated supplies ordering, productivity reporting, software download, assisted user self-help, remote diagnostics, and prognostics. </p>
+<p id="P-0020" num="0020"> Embodiments include a class of services that exist in support of the devices (printers, scanners, repositories, and even other services and solutions) and their lifecycles making them easier to own, use, support, purchase, and upgrade. Market research has shown that these services increase the value of devices to users and can potentially also increase their user satisfaction over the life of the product. This in turn should translate into higher user loyalty and consideration from our users when making new purchases. </p>
+<p id="P-0021" num="0021"> These services, in embodiments, make use of new device capabilities including embedded device intelligence, take advantage of the increasing networked population, and exploit information technology advances enabling devices to take a more active role in their post-sale life cycles enabling automated and expanded feature sets. </p>
+<p id="P-0022" num="0022"> Embodiments provide the underlying set of components and their interconnections that enable suppliers to deliver these types of post sale services to users in an effective and efficient manner. The high-level goals defined for the platform have been used to drive the architecture and development of initial components and services. The detailed attributes of each support the four major goals for the platform. The major components of this system all work together behind the scenes to make the services offered behave seamlessly for users. </p>
+<p id="P-0023" num="0023"> Embodiments provide for automated reporting of meter reads via phone, fax, or computer network. Additionally, embodiments automatically monitor supplies, warning users when supplies are low and allowing automated ordering of supplies then and in subsequent similar situations. Additionally, the services a device offers can be tailored to the users' particular needs, but can later be augmented or reduced as required by the user via automated service subscription, downloading, and installation offered by embodiments. Further, embodiments walk users through any operation they wish to perform, including small repairs and replacements of user replaceable units. An additional advantage of embodiments is the ability to manage assets of multiple devices from a central application. </p>
+<p id="P-0024" num="0024"> Embodiments specifically relate to the Device Model Agent (DMA), the device side technology module in the Device Centric Services (DCS) system of embodiments. The DMA is a thin, efficient applications/services execution environment that provides an embedded services platform for enabling system management applications and services. This allows a flexible, extensible, dynamic services management module allowing networked services to be designed, added, and managed within the system without modifications to devices, DCS system, or DMA itself While this invention specifically describes the integration of benefits from DMA into document system devices, the concepts are equally applicable in other domains. The DMA runtime environment is a thin software interface layer that resides on a document system device between the Java runtime environment and embedded web server.</p>
+<?summary-of-invention description="Summary of Invention" end="tail"?>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="lead"?>
+<heading level="2" id="d0e722">BRIEF DESCRIPTION OF THE DRAWINGS </heading>
+<p id="P-0025" num="0025"> <figref idref="DRAWINGS">FIG. 1</figref> is a schematic illustration of the overall architecture of embodiments. </p>
+<p id="P-0026" num="0026"> <figref idref="DRAWINGS">FIG. 2</figref> is an another schematic illustration of the overall architecture of embodiments. </p>
+<p id="P-0027" num="0027"> <figref idref="DRAWINGS">FIG. 3</figref> is a schematic illustration of a method of service subscription and deployment according to embodiments. </p>
+<p id="P-0028" num="0028"> <figref idref="DRAWINGS">FIG. 4</figref> is a schematic illustration of a deployment option according to embodiments. </p>
+<p id="P-0029" num="0029"> <figref idref="DRAWINGS">FIG. 5</figref> is a schematic illustration of an additional deployment option according to embodiments. </p>
+<p id="P-0030" num="0030"> <figref idref="DRAWINGS">FIG. 6</figref> is a schematic illustration of an additional deployment option according to embodiments. </p>
+<p id="P-0031" num="0031"> <figref idref="DRAWINGS">FIG. 7</figref> is a schematic illustration of an additional deployment option according to embodiments. </p>
+<p id="P-0032" num="0032"> <figref idref="DRAWINGS">FIG. 8</figref> is a schematic illustration of an additional deployment option according to embodiments. </p>
+<p id="P-0033" num="0033"> <figref idref="DRAWINGS">FIG. 9</figref> is a schematic illustration of an additional deployment option according to embodiments. </p>
+<p id="P-0034" num="0034"> <figref idref="DRAWINGS">FIG. 10</figref> is a more detailed schematic illustration of the device model agent according to embodiments more detailed schematic illustration of the interaction between devices, the device model agent, services proxies, and the services host according to embodiments. </p>
+<p id="P-0035" num="0035"> <figref idref="DRAWINGS">FIG. 11</figref> is a more detailed schematic illustration of the interaction between devices, the device model agent, services proxies, and the services host according to embodiments. </p>
+<p id="P-0036" num="0036"> <figref idref="DRAWINGS">FIG. 12</figref> is a schematic illustration of an additional deployment option according to embodiments. </p>
+<p id="P-0037" num="0037"> <figref idref="DRAWINGS">FIG. 13</figref> is a schematic illustration of an additional deployment option according to embodiments with more emphasis on the Device Model Agent and its relationship to a device. </p>
+<p id="P-0038" num="0038"> <figref idref="DRAWINGS">FIG. 14</figref> is a schematic illustration of an additional deployment option according to embodiments with more emphasis on the Device Model Agent and its relationship to a device from another perspective. </p>
+<p id="P-0039" num="0039"> <figref idref="DRAWINGS">FIG. 15</figref> is a schematic flow chart of a method of operation of a service manager of the Device Model Agent according to embodiments. </p>
+<p id="P-0040" num="0040"> <figref idref="DRAWINGS">FIG. 16</figref> is a schematic illustration of a CS Platform add-on component according to embodiments. </p>
+<p id="P-0041" num="0041"> <figref idref="DRAWINGS">FIG. 17</figref> is another schematic illustration of a CS Platform add-on component according to embodiments. </p>
+<p id="P-0042" num="0042"> <figref idref="DRAWINGS">FIG. 18</figref> is a schematic illustration of a wireless deployment scheme of a CS Platform add-on component according to embodiments. </p>
+<p id="P-0043" num="0043"> <figref idref="DRAWINGS">FIG. 19</figref> is a schematic illustration of a method of setting up a CS Platform add-on component according to embodiments. </p>
+<p id="P-0044" num="0044"> <figref idref="DRAWINGS">FIG. 20</figref> is a schematic illustration of a provisioning server according to embodiments. </p>
+<p id="P-0045" num="0045"> <figref idref="DRAWINGS">FIG. 21</figref> is a more schematic illustration of a CS Platform add-on component according to embodiments. </p>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="tail"?>
+<?detailed-description description="Detailed Description" end="lead"?>
+<heading level="2" id="d0e899">DETAILED DESCRIPTION </heading>
+<p id="P-0046" num="0046"> For a general understanding of the present invention, reference is made to the drawings. In the drawings, like reference numerals have been used throughout to designate identical elements. </p>
+<p id="P-0047" num="0047"> Embodiments provide a system <b>1</b> composed of several types of distributed software and hardware components that ensure physical and logical system design flexibility and responsibility of the components. Embodiments employ an architecture including, for example, devices <b>110</b> in the user/user environment <b>100</b>, an asset management system <b>200</b> that can be in the user's network or environment <b>100</b>, and a services host <b>310</b> that provides services <b>320</b> to which devices can subscribe. System management and services are provided in a system where devices are active participants in both their own services and lifecycle needs as well as those services and lifecycles in which they are only a part. </p>
+<p id="P-0048" num="0048"> Using the Device Model Task Force (DMTF) Common Information Model (CIM) as a base, service management is added to the active behavior of a Common Device Model Agent (CDMA) <b>120</b>. See particularly, for example, <figref idref="DRAWINGS">FIGS. 1 and 10</figref>. Each device <b>110</b> is preferably represented to the services host <b>310</b> by a CDMA <b>120</b> that communicates the status and configuration (part of <b>111</b>) of its device <b>110</b>, services <b>140</b> offered, and other information (additional parts of <b>111</b>, for example) to the services host <b>310</b> using a common transaction language, such as DMTF CIM, for example. The DMA also provides a services environment <b>124</b> that is a runtime environment for services <b>140</b> on the device in which it resides, providing device-independence for the services offered by the services host <b>310</b>. Thus, a particular service <b>140</b> can be written once and run on a wide variety of devices <b>110</b>. This allows One to Many configurations, which can be enabled, required, and utilized as necessary. For example, embodiments can include device proxies, including simple proxies that include only behavior, and proxied device models, as will be expanded upon below. Also, embodiments can include devices that communicate directly with the services host. </p>
+<p id="P-0049" num="0049"> The CDMA <b>120</b> includes the services environment <b>124</b>, a CIM API <b>123</b>, a CIMOM <b>125</b> and service manager <b>126</b> in the core DMA <b>122</b>, and a common provider API <b>121</b>. The common provider API <b>121</b> communicates with device-specific provider APIs <b>112</b> of the device <b>110</b> and retrieves information <b>111</b> about the device, including, for example, its configuration, status, and supplies levels. The common provider API <b>121</b> then makes such information available to the CIMOM <b>125</b> and service manager <b>126</b> in the core DMA <b>122</b>, and services <b>140</b> running in the services environment <b>124</b>. Thus, in embodiments, the DMA <b>120</b> can reside between a services layer <b>141</b> (the collection of running services <b>140</b>) and device-specific APIs <b>112</b> and can communicate directly with the services host <b>310</b>. In such a case, the DMA <b>120</b> must be connected to a communications medium, such as a telephone line or computer network, to enable communications with the services host <b>310</b>. </p>
+<p id="P-0050" num="0050"> Partly as a result of the use of the DMA <b>120</b>, the system <b>1</b> in embodiments achieves substantial communication medium independence. Devices <b>110</b> can communicate with the services host <b>310</b> and or service proxy via network, land phone line, cellular communication, packet radio, pager based, Bluetooth&#x2122;, IEEE 802.11, or any other suitable communications scheme. Such communications can be device initiated, host initiated, can be monitored and/or audited, and can use user preference, service offerings, and overall quality of service to determine which selections are appropriate for a particular scenario. The services <b>140</b> can be independent of device configuration; specifics of service content can be provided by the back-office or supplier <b>300</b>, with service subscriptions being issued and validated by back-office business processes, allowing rapid introduction of new services. </p>
+<p id="P-0051" num="0051"> Embodiments thus include an end-to-end system <b>1</b> assembled from many components using a unique combination of modularity, distributed computation, service models, and transactions. Embodiments employ an overall system architecture that supports rapid and flexible deployment of services in a modular fashion. Advantageously, this architecture employs abstraction of functionality and identification of system elements, common interfaces, and messaging models for communication between them. For device services, there are four main entities that can work together in a consistent and flexible manner: the devices themselves; management and service applications in the user's environment; back-office servers specializing in service management and service configuration; and business process integration servers and the business processes surrounding those services. </p>
+<p id="P-0052" num="0052"> <figref idref="DRAWINGS">FIG. 1</figref> shows a schematic representation of major components that can comprise the platform represented by embodiments. A small footprint embedded service platform <b>140</b> and intelligent agents <b>122</b> combined into the DMA <b>120</b> can be deployed and integrated with devices <b>110</b>. Intelligent proxies for devices <b>110</b>, enabling group management and participation in services, can be included in the platform, either as standalone applications or as part of other applications. In addition, such intelligent proxies can enable legacy devices that are not themselves already enabled to interface with aspects of embodiments. A medium independent communications and applications infrastructure connected to a computer network or other communications network, such as the Internet and supplier Intranet, is employed that can securely and robustly connect fielded devices and products to the supplier and its internal systems. Additionally, embodiments include a set of industry standard web services technologies integrated with value-added extensions to enable those services. Embodiments thus provide set of services that run in and on an end-to-end system that support devices. </p>
+<p id="P-0053" num="0053"> Devices <b>110</b> are typically physically located in user sites <b>100</b>, though embodiments can accommodate devices <b>110</b> on other sites as well, and can be distributed around the world. A variety of devices <b>110</b> ranging from low-end products to high-end systems can be included. Embodiments use devices <b>110</b> that provide, for example, three main enablers in this system. Devices <b>110</b> provide a Common Device Interface (CDI) and a Common Information Model (CIM) <b>123</b> to enable easier integration with services by hiding device specific differences behind the interface. The CDI can be implemented in the CDMA <b>120</b> as the Common Provider API <b>121</b>. This enables service reuse and greatly reduces the complexity of the system <b>1</b>. The CDI is specified via a Distributed Management Task Force (DMTF) CIM with service-provider and/or manufacturer specific extensions for services and service management. The CIM <b>123</b> can also be based on the DMTF CIM with specific extensions better suited to devices with services, including diagnostics extensions, that can be provided by service-providers and/or manufacturers. </p>
+<p id="P-0054" num="0054"> Devices <b>110</b> in embodiments of the inventive system <b>1</b> provide, for example, an embedded service platform <b>124</b> allowing services <b>140</b> to be delivered and run close to the device <b>110</b>. The embedded service platform <b>140</b> also provides for local management of services, via service manager <b>126</b>, and the ability to accept newly deployed services <b>140</b> asynchronously with software releases for the hosting platform. This reduces system complexity and speeds deployment of new or refined services to the field. Preferably, in embodiments the DMA <b>120</b> provides the embedded services platform <b>124</b>, though other systems could provide the platform. The DMA is preferably a software module that enables the embedded computational power, data, and functions of the device to be accessed and used in services that are deployed in a common fashion. </p>
+<p id="P-0055" num="0055"> These components will typically be distributed across the user's environment <b>100</b> as well as at the supplier <b>300</b>. Together, they provide a flexible end-to-end system <b>1</b> for connecting products (such as devices <b>110</b> and services <b>140</b>) to post-sale solutions offerings (additional services <b>140</b>). The system <b>1</b>, in embodiments, is designed to provide an architecture in support of a series of deployment options in various physical locations and configurations. Preferably, embodiments provide the broadest device coverage and most rapid deployment of capability for machines in the field and new products in such a way that isolates changes at the device <b>110</b> from changes at the back-office <b>300</b>. Embodiments further provide a unique, value-added, agent software component, the DMA <b>120</b>, embedded into devices <b>110</b>, add-on modules <b>115</b>, and/or device proxies <b>210</b> that provide the common device model <b>122</b>, DMTF CIM API <b>123</b>, and new device services environment <b>124</b>. Additionally, embodiments can provide a common abstraction of the communication mechanism(s) that allows the system to be independent of any physical transport linking the nodes (devices to supplier systems, etc.), providing greater flexibility and deployment customization based on user requirements. The service model of embodiments supports services that run &#x201c;close to the device&#x201d; and their lifecycle, which includes methods and processes for effective management and customization of services and solutions. Services in embodiments once written for the DMA <b>120</b> can run on any such enabled device <b>110</b> or proxy <b>220</b>, and devices and device proxies can be deployed and work together seamlessly from the point of view of the services. Provisioning in embodiments can be accomplished on a policy basis for device based services based on both user and supplier supplied information, and services can be made available with rapidity. </p>
+<p id="P-0056" num="0056"> The DMA <b>120</b> in embodiments takes an active roll in solutions offerings and works in coordination with the distributed solutions. These distributed device agents <b>120</b> work together with a server <b>310</b> at the supplier <b>300</b> accessible over a network, such as the Internet or a telephone system. The server's role is to provide a clearinghouse for messages that must traverse the solution and to provide management functionality necessary to connect and customize the distributed services at multiple levels of granularity. </p>
+<p id="P-0057" num="0057"> For devices <b>110</b> already deployed that do not include this functionality, an option to add a physical system component <b>115</b> to the device <b>110</b>, internally or externally, that enables this functionality is provided by embodiments. To the inventive system <b>1</b>, a device <b>110</b> enabled in this fashion will look no different than a device <b>110</b> with the capabilities embedded, as long as the add-on component <b>115</b> has a rich interface to the device <b>110</b>. For example, embodiments including such an add-on component <b>115</b> can have the component mounted on the input-output terminal (IOT) of a marking machine, connected to the IOT via EPSV, PWS, and potentially CAN Bus interfaces, and connected to a network. This configuration gives the IOT the capability to participate in device services <b>140</b>. These add-on components <b>115</b> can then be found in a one to one mapping with the device because of the need to access non-standard, or non-network accessible APIs and interfaces in order to offer the full range of device capabilities to the DMA and services platform. </p>
+<p id="P-0058" num="0058"> In order to accommodate the fact that the input output terminal (IOT) may come from another manufacturer and that a user can choose from many digital front ends (DFEs), embodiments feature an add-on system component. This add-on component can be, for example, a low-cost, embedded personal computer platform running an operating system, such as Linux or Darwin, and a Java Virtual Machine, such as, for example, Insignia's Jeode&#x2122; Embedded Virtual Machine, within which runs the DMA services platform. This add-on component can connect directly to the IOT through an interface, such as EPSV and PWS. The device is then also connected the user's internal network. </p>
+<p id="P-0059" num="0059"> The devices management and service applications <b>220</b> in the user's environment back-office servers specializing in service management and service configuration business process integration servers and the business processes surrounding those services. The schematic representation of these system level components and their interconnections are shown in <figref idref="DRAWINGS">FIG. 1</figref>. </p>
+<p id="P-0060" num="0060"> Embodiments specifically relate to the role of devices in end-to-end system management and post sale application architecture and in offering services to users. The Device Model Agent (DMA) <b>120</b>, the device side technology module in Device Centric Services (DCS) platform, is the main focus of this invention. DMA is a thin, efficient applications/services execution environment. The DMA provides a flexible, extensible, dynamic services management system allowing e-services to be designed, added, and managed within system without modifying the platform itself. While this invention specifically describes the integration of benefits from DMA into document system devices, the concepts are equally applicable in other domains. The DMA runtime environment is a thin software interface layer that resides on a document system device between the Java runtime environment and embedded web server. </p>
+<p id="P-0061" num="0061"> The device model agent as described herein adds the following capabilities to document system devices. The unique combination of these capabilities enables several benefits related to system management application development, deployment, and maintenance. </p>
+<p id="P-0062" num="0062"> The DMA <b>120</b> enables active participation in applications and services offerings, such as, for example, post-sale, system management, and other services. The devices <b>110</b> that embed DMA <b>120</b> can perform several computational tasks required in system management applications and services. In this architecture, an application server <b>200</b> installed, for example, in the user environment <b>100</b> or supplier <b>300</b> back office server <b>310</b>, and the target device <b>110</b> collaborate to complete system management offerings. As shown, for example, in <figref idref="DRAWINGS">FIGS. 10, 13</figref>, and <b>14</b>, the DMA <b>120</b> provides a service execution environment <b>124</b> where a service <b>140</b> may run as a whole or be part of a system management application or host system <b>320</b> running on an application server or host system <b>310</b> of a services supplier <b>300</b>. </p>
+<p id="P-0063" num="0063"> The DMA services preferably can monitor device events and take prescribed actions. The DMA <b>120</b> can preferably publish data to subscribers/users upon occurrence of an event of interest and can preferably invoke methods, such as diagnostic routines, on the device <b>110</b> as directed by internal or external clients or users. This moves device specific processing closer to the device <b>110</b> from a centralized application server <b>320</b>. The role of the applications server <b>320</b> transforms from a compute platform for execution of applications/services to the management and configuration of applications/services <b>140</b>. Thus, devices <b>110</b> become active participants in the process, as opposed to being passive data repositories in strict client/server architectures. </p>
+<p id="P-0064" num="0064"> The DMA <b>120</b> according to embodiments can also perform dynamic updates of services <b>140</b> and support components operating within the end-to-end DCS platform <b>1</b>. Devices <b>110</b> that employ the DMA <b>120</b> can add new service components <b>140</b> dynamically. It allows a user or application component already on the device <b>110</b> to request such additions to support services <b>140</b>. It can also allow the addition or deletion of components as needed and without system or DMA recompilation or restart. In embodiments, the target device <b>110</b> itself initiates the additions of a new or upgraded service as a whole or supporting components for existing services. Thus, in the system <b>1</b> described herein, the device <b>110</b> can now be responsible for initiating the activity to maintain itself and system management services running on it. </p>
+<p id="P-0065" num="0065"> Embodiments additionally recognize the need for an application/services execution environment <b>124</b> to enable developers to work with consistent and standards-based tool set. The DMA <b>120</b> enables the development of device independent post-sale applications <b>140</b>. Applications <b>140</b> written using DMA <b>120</b> interfaces do not have to change to accommodate new or upgraded DMA enabled devices. While the DMA <b>120</b> implements a model-based approach espoused by DMTF for achieving device independence for applications/services, it adds to this implementation a new component called the service manager <b>126</b>. The service manager <b>126</b> is primarily responsible for controlling service <b>140</b> lifecycle of each service <b>140</b> activated for the device. In addition, the service manager <b>126</b> preferably manages the services <b>140</b> and provides a programmatic interface (an API) for system management clients, local or remote, for control and management of services <b>140</b>. </p>
+<p id="P-0066" num="0066"> Operating within the end-to-end DCS platform <b>1</b>, DMA-enabled devices and DCS application servers allow services provisioning and management by a application server or hosted systems <b>320</b> on a services host <b>310</b> of the supplier <b>300</b> or by a third-party service provider. The DMA-enabled devices <b>110</b> and application servers <b>320</b> collaborate to provide dynamic provisioning. Using this system, users can review a set of applications, select or customize one or more applications to fit their needs, and order the selected set. Subsequently, the applications can be installed, enabled, turned on, monitored, and/or managed. </p>
+<p id="P-0067" num="0067"> In order to cover new and existing device base, the architecture of the DMA <b>120</b> in embodiments allows its deployment in several ways: For example, according to embodiments as shown, for example, in <figref idref="DRAWINGS">FIGS. 4, 9</figref>, and <b>11</b>, the DMA <b>120</b> can be embedded in a networked device <b>110</b>, such as a printer or multifunction device. In this embodiment, the DMA <b>120</b> becomes a web server side component. The DMA <b>120</b> can, for example, use Java Servlets, a standard method for hosting service-components behind a web server. </p>
+<p id="P-0068" num="0068"> Alternatively, the DMA <b>120</b> can be embedded in a specialized hardware device or add-on component <b>115</b> to devices <b>110</b> that are standalone, such as copiers, or for existing devices in field that are not able to run the DMA <b>120</b>. Such add-on components <b>115</b> are shown schematically in <figref idref="DRAWINGS">FIGS. 12, 16</figref>, and <b>17</b>, and will be discussed in more detail below. </p>
+<p id="P-0069" num="0069"> Another alternative configuration is for the DMA <b>120</b> to be embedded in a network application <b>220</b>, either as a single device proxy or multiple device proxy configurations. Such proxy configurations are illustrated, for example, in <figref idref="DRAWINGS">FIGS. 7, 8</figref>, and <b>11</b>. </p>
+<p id="P-0070" num="0070"> For any device manufacturer, post-sale applications can be important for continuing user loyalty. In case of the supplier of marking and/or multifunction devices, sale of a document system device is just the beginning of the user relationship. Continued service, support, supplies replenishment, and on-going maintenance become the main considerations that determine user retention rate. However, as mentioned earlier, the development, deployment, and management of post sale applications in a cost effective fashion itself poses several challenges. The complexity is driven by the presence of multiple stakeholders, including developers, device manufactures, service owners, and customers/users. As a platform, the DMA <b>120</b> is preferably designed, according to embodiments, to bring all major stakeholders together and address the requirements of all stakeholders. </p>
+<p id="P-0071" num="0071"> The DMA <b>120</b> preferably constructs a layer of abstraction between device specific interfaces <b>111</b> and system management applications. See, for example, <figref idref="DRAWINGS">FIGS. 10, 13</figref>, and <b>14</b>. The abstraction provides a common view of device data, event, and operations to system management applications. The DMA <b>120</b> adopts a model-based approach to create device abstractions. The device models used for this purpose are based on industry standard efforts in DMTF (Distributed Management Task Force) consortium. An enhanced version of DMTF Common Information Model (CIM) is used as a basis. However, the implementation of common model with device interface is unique. Interactions between post-sale application clients and DMA are based in DMTF CIM Operations Over HTTP specification. </p>
+<p id="P-0072" num="0072"> The DMA <b>120</b> enhances a DMTF/CIM implementation by adding a service manager component <b>126</b>. The service manager <b>126</b> is responsible for loading services <b>140</b>, maintaining a list of services <b>140</b> currently installed in the DMA <b>120</b>, and management and lifecycle control of services <b>140</b>. The service manager <b>126</b> preferably works as an automated process and can automatically look up and start services <b>140</b> as a standalone component that can be accessed programmatically or through a DMTF CIM API <b>123</b>. The service manager <b>126</b> can provide access to active services <b>140</b> on the device <b>110</b>, as well as management data for one or more active services <b>140</b>. </p>
+<p id="P-0073" num="0073"> The DMA service manager <b>126</b> preferably supports core services that are started automatically when the service manager <b>126</b> loads. Such core services preferably do not require provisioning support. The service manager <b>126</b> also preferably supports subscribed services <b>140</b> that require enablement through a dynamic provisioning feature of the DMA <b>120</b>. </p>
+<p id="P-0074" num="0074"> <figref idref="DRAWINGS">FIG. 15</figref> is a schematic flow diagram that illustrates the service manager <b>126</b> startup and normal execution. When the DMA <b>120</b> boots, it starts the service manager (block <b>510</b>). The service manager <b>126</b> then loads the core services (block <b>511</b>) and checks with the dynamic services provisioning host (block <b>512</b>). The service manager <b>126</b> further interprets and processes service configuration parameters (block <b>513</b>) and loads and starts subscribed services <b>140</b> (block <b>514</b>). The service manager <b>126</b> then monitors the services <b>140</b> for management purposes (block <b>515</b>) and interacts with a system management client as desired (block <b>516</b>). </p>
+<p id="P-0075" num="0075"> The DMA <b>120</b> is preferably written using a substantially platform-independent language, such as, for example, Sun's Java 2 Micro Edition (J2ME). The DMA is thus highly portable and can be used as a system component in any system configuration where Java is available. </p>
+<p id="P-0076" num="0076"> Management and services applications <b>200</b>, according to embodiments, can be located in the user's environment. Some applications <b>220</b> can enable the offering of device services by, in part, behaving as a services proxy for devices <b>110</b> that are networked but not fully enabled to participate actively in device services by themselves as shown schematically in <figref idref="DRAWINGS">FIG. 7</figref>, for example. In other words, the applications <b>220</b> can act as proxies for networked devices that do not have the DMA <b>120</b> or the software to support the service offerings <b>140</b> directly. For example, some applications, such as Xerox&#xae; Corporation's CentreWare Web&#xae; (CWW), can act as device proxies for Simple Network Management Protocol (SNMP) enabled devices. To the extent that the SNMP agents in the devices deliver the required data and functionality to support the services being offered, this can be a good way to bring devices into the services fold. In such a case, the application, such as CWW, assumes the responsibility for hosting the services <b>140</b> that run close to the device <b>110</b>. </p>
+<p id="P-0077" num="0077"> To the back-office or hosted portion <b>300</b> of the end-to-end system <b>1</b>, such as the services host <b>310</b>, the device <b>110</b> looks nearly the same when proxied via applications <b>220</b> as it would if the device communicated with the services host <b>310</b> directly. The difference between proxied devices and direct devices is substantially no different than the differences associated with direct devices with different levels of firmware. The device capability variations can be managed on the back-end/services host <b>310</b> via a provisioning system for device-based services. The impact of these variations is that advanced services utilizing very specific capabilities of a given device become less portable; that is, services written for product specific sections of the CIM extensions will not be completely portable and may not be as compatible with other devices. However, services written to the Core and Common models will remain portable, and deployment issues will be managed by the provisioning system. </p>
+<p id="P-0078" num="0078"> The applications <b>220</b> can also behave as services proxies for devices that are not networked directly, but have an add-on connectivity option. Such a connectivity option can be hard wired, such as Ethernet, or wireless, such as Bluetooth&#x2122; or IEEE 802.11, and can be local or more expansive in its coverage. For example, a stand-alone copier with no network connection for printing can have a small wireless LAN connection has been added, such as an 802.11b or other wireless network. The proxy behaves in all the same ways as when a networked device without DMA is proxied, but the proxy now also includes the hardware required for the wireless access point used to communicate with the devices to which add-on connectivity has been attached. An example of such a system would be CWW installed on a server that is both physically networked on a LAN and also has a wireless access point attached. To the back-office edge host <b>310</b>, the devices <b>110</b> proxied in a wireless fashion look no different-than those proxied on the LAN. </p>
+<p id="P-0079" num="0079"> The applications <b>220</b> can also enable consolidated management of services from a server in the user environment. Device proxies can provide, in embodiments, an aggregation and group management function for services associated with their proxied devices. This can, for example, be a graphical user interface (GUI) for a system administrator or user to look at the status of services on a set of devices. </p>
+<p id="P-0080" num="0080"> The common device interface of services and their transactions to the back-office systems, such as services hosts <b>310</b>, can be an extension of the interface used on the devices themselves. This enables the services to work for both direct to device situations and situations in which devices use proxies. The API from a device directly communicating with the services host is supported, along with a limited set of specific device proxy extensions that deal with transactions and data related to the proxy. All transactions aimed at the devices should look the same. </p>
+<p id="P-0081" num="0081"> With reference to <figref idref="DRAWINGS">FIG. 2</figref>, additional portions of an exemplary embodiment are described. The hosted portion of the services, the services host(s) <b>310</b>, can be located off the user's site <b>100</b>, <b>200</b>, and can be located at the manufacturer's or other service providers' facilities <b>300</b>. A device services edge host <b>410</b> handles the transaction and service management for the device services deployed to the field. This includes the management of message queues and provisioning of software modules and configuration parameters in support of the distributed services <b>140</b>. The edge host <b>410</b> is also responsible for the host end of the security and service models employed by the device services system <b>1</b>. </p>
+<p id="P-0082" num="0082"> The edge host <b>410</b> also provides connections to service sponsor systems <b>310</b>. This connects the external device services world to the internal (or third party) services world. The connections to each of the organizations sponsoring the services are maintained through the edge server and can be compliant with security rules and regulations of the entity maintaining the server and host. The edge host insulates the device <b>110</b> or device proxies <b>220</b> from having to have direct knowledge of the details of interaction with the back-office complexities of the services involved on the services host <b>310</b>. This insulation is advantageous in deploying device services in a manageable and robust fashion. Preferably, embodiments present a common services API to the back-office sponsor organizations in order to standardize the basic operations. Specific services can extend and customize the content of the transactions for a given application. </p>
+<p id="P-0083" num="0083"> With continued reference to <figref idref="DRAWINGS">FIG. 2</figref>, the devices <b>110</b> and user applications <b>220</b>, such as CWW can be located in the user's environment <b>100</b>, <b>200</b>. This can be a managed services environment as well as a regular user environment. Services and communications are distributed and span from the user's internal systems and network <b>100</b>, <b>200</b> across the Internet or other suitable long-distance connection mechanism <b>400</b>. Well known web services, as well as future web services, comprise preferred communications mechanisms <b>130</b>, <b>230</b>, <b>330</b> that are preferably used between the devices/application(s) <b>110</b>, <b>220</b> and the edge host <b>410</b>, as well as between the edge host <b>410</b> and internal services providers <b>310</b>. The system <b>1</b> is preferably built to meet basic IT industry and other standards for its ability to work with existing firewalls both on the user's side (firewall <b>160</b>) and on the service provider side (firewall <b>360</b>). No special configuration of the user's firewall <b>160</b> is required in order to make this system work properly. </p>
+<p id="P-0084" num="0084"> The service supply system <b>300</b> is preferably part of the basic supplier infrastructure to provide a robust, well-managed, 24&#xd7;7 level of service and disaster recovery for all user systems to employ. As indicated above, an edge host <b>410</b> can handle the transaction and service management for the device services deployed to the field. This includes the management of message queues and provisioning of software modules and configuration parameters in support of the distributed services. It is also responsible for the host end of the security and service models employed by the device services system. In embodiments, the edge host also connects the external device services world to the internal (or third party) services world. The connections to each of the organizations sponsoring the services are maintained through an edge server and are preferably complaint with supplier security rules and regulations. </p>
+<p id="P-0085" num="0085"> The edge host <b>410</b> preferably, in embodiments, isolates the devices or device proxies from having to have direct knowledge of the details of interaction with the back-office complexities of the services involved. This isolation can assist in deploying device services in a manageable and robust fashion. A common services API is presented to the back-office sponsor organizations in order to standardize the basic operations. Specific services can extend and customize the content of the transactions for a given application. </p>
+<p id="P-0086" num="heading-0086"> Multiple Delivery Paths </p>
+<p id="P-0087" num="0087"> At the highest-level, the system <b>1</b> is designed to enable services <b>140</b> to operate directly between the devices <b>110</b> and the back-office (supplier) <b>300</b> in some systems, or to be operating with the help of a device proxy <b>220</b> in others. This ensures the broadest possible deployment as rapidly as possible because the device proxy <b>220</b> can quickly bring many legacy devices into the service offering very quickly while user slowly get new devices which are directly enabled themselves. Having both modes of operation is also important because some users will prefer to have a proxy act as a consolidator/clearing house for messages leaving their site rather than from each device independently. In other sites, users may not want to install a device proxy and therefore need the services to be enabled directly. In addition to having each path enabled, it is beneficial to have them work together, because in the end it is possible for users to have both scenarios in place at the same time. </p>
+<p id="P-0088" num="0088"> Just as multiple paths can enhance deployment flexibility, it is beneficial to make those paths invisible from the standpoint of the services provider. Preferably, embodiments decouple the devices <b>110</b> and proxies <b>220</b> from the back office systems <b>310</b> as much as possible. A strong abstraction and decoupling of these two halves makes it possible to deploy capability in devices <b>110</b> or the back-office <b>300</b> in a staged and independent fashion. In addition, if changes need to be made to systems on either end, the changes will not ripple throughout the overall system <b>1</b> if proper abstractions are enabled, enhancing maintainability. </p>
+<p id="P-0089" num="0089"> Referring again to <figref idref="DRAWINGS">FIG. 10</figref>, the abstractions throughout embodiments include, at the device level, an abstract device model <b>122</b> embedded in the DMA <b>120</b>. Preferably, the abstract device model <b>122</b> is built using the DMTF's CIM as a base. The device model <b>122</b> and services platform <b>124</b> both reside in the DMA <b>120</b>, in embodiments. Common services point into the supplier's domain <b>300</b> regardless of the services offered. And at the back office/supplier level <b>300</b>, embodiments use a common API for service sponsors to build and administer services from the supplier back office <b>300</b>. The common API deals with devices <b>110</b> all the same way, regardless of type or connection mechanism. </p>
+<p id="P-0090" num="0090"> This architecture in embodiments provides flexible deployment options, such as deployment flexibility in terms of direct device communication to suppliers or communication via a proxy. In addition to that flexibility, the services themselves can be defined so that many of their parameters can be customized. This service customization can include, for example, the data that is sent as part of a remote monitoring service, the time of day or frequency at which meter reads are sent to the supplier. The exact configuration parameters can be specific to the service being offered. </p>
+<p id="P-0091" num="0091"> The platform of embodiments is designed to enable the configuration of services to be easily managed. The system allows for the configuration of the services to be specified at the individual device serial number, for all devices at a user's site, or for all machines owned by a user no matter where they are. This management, in embodiments, is done in the back office controlled by the service provider. </p>
+<p id="P-0092" num="0092"> An additional part of the flexible deployment options is the use, according to embodiments, of a subscription basis for the services available for devices, as illustrated schematically in <figref idref="DRAWINGS">FIG. 3</figref>. The subscription process can be controlled and managed, for example, by the individual service provider, and the services offered to any given device can be controlled by a combination of user desire and service provider authorization. Thus, not all devices, even of the same product family, need offer or have installed the same services at any point in time. </p>
+<p id="P-0093" num="0093"> There are some activities relevant to DCS. For example, Axeda, Embrace Networks, Questra, and Imaging Portals have been active on the services front. An example of their technological implementations is Embrace Networks' patent application, PreGrant Publication No. 2002-0133581 A1, which is incorporated by reference. However, the prior art lacks provisioning aspects, and there does not appear to be any consequential support for provisioning. </p>
+<p id="P-0094" num="0094"> While several companies, such as 4<sup>th </sup>pass, sell general purpose provisioning software, none of the prior art appears to encompass the aspects of the instant invention. For reference, Sun has a general listing of such provisioning software at http://java.sun.com/j2ee/provisioning/industry.html. Further, all appear to be pursuing the cellular industry as their target market. </p>
+<p id="P-0095" num="0095"> As mentioned above, global telecommunications companies are starting to deliver services over cell phones. To accomplish this, all use a Java standard called CLDC. This released standard describes how Java programs can be run on a small device such as a cellular phone and more importantly how modular programs called Midlets can be added at runtime to a CLDC Java environment. </p>
+<p id="P-0096" num="0096"> Although the standard defines the unit of provisioning and how it is to be accepted and integrated on the device side, it says nothing about the server aspects. Because of this, telecoms have either created their own provisioning server solution or purchased one from the provisioning vendors listed above. There is no way to inspect them for alternate solutions because of the competitive environment in this area. </p>
+<p id="P-0097" num="0097"> A second relevant standard is called OSGi. OSGi is a Java based, released standard which allows a collection of local, network connected devices to communicate with remote servers and download and run modular services. Compared to CLDC/Midlets, this standard has received much less support in industry. </p>
+<p id="P-0098" num="0098"> OSGi also sidesteps the server aspects of provisioning. </p>
+<p id="P-0099" num="0099"> A third standard is SyncML Device Management. SyncML is a released standard focused on the details of keeping mobile devices in synch with some server based sources. The focus in this standard is on things like calendars and appointments. In the last year, this synchronization protocol was extended with the Device Management effort to explicitly support the ability to change service settings on a mobile device and to be able to download services to it. SynchML sidesteps the server side of provisioning. </p>
+<p id="P-0100" num="0100"> A last standard is unnamed but is commonly referred to as JSR-124. In short, Java programmers use the Java Community Process (JCP) to create and standardize Java Specification Requests (JSRs) as additions and extensions to the Java language. JSR-124 is the J2EE Client Provisioning Specification. J2EE is a standard for using Java in high end, transaction processing. A large and growing market has been growing up around it. Effectively, JSR-124 tries to define a framework within which to express provisioning systems in. Almost all the provisioning startups and many of the telecom companies are members of the JSP. It tries to be common enough so that all provisioning systems can interact with a J2EE system in a standard way but loose enough so that vendors can create alternate, competitive solutions. The standard is in the public draft review stage. </p>
+<p id="P-0101" num="0101"> The definition and implementation of a common provisioning model based on a shared user service lifecycle is included in embodiments. A Provisioning Server (PS) <b>310</b>, the DCS devices <b>110</b> that talk to it, and the supplier personnel that interact with it all preferably act according to a shared model for how the provisioning process works. A lifecycle model can be created that defines the roles and responsibilities for each actor that interacts with the PS <b>310</b>. Based on roles and responsibilities, grammars and commands have been created to allow the actors to accomplish their role based goals. </p>
+<p id="P-0102" num="0102"> The architecture and implementation of a provisioning server <b>900</b> running, for example, in the services host <b>310</b> that meets all the requirements in this section is schematically illustrated, for example, in Table 1 and <figref idref="DRAWINGS">FIG. 20</figref>. Working from left to right in <figref idref="DRAWINGS">FIG. 20</figref>, the first major module is the Service Consumer Interface <b>901</b>. It is preferably responsible for all interactions with External Users and External Devices <b>110</b>, <b>220</b>. It also preferably isolates the other PS modules from the different protocols that Devices and Customers may use. The preferred protocol in embodiments is Web Services, but in the future may be extended to http, email, cellular or other transmission formats. For incoming transactions, it routes the transactions to the correct internal resource to process the request. For outgoing transactions, it takes the outputs of other PS modules that have been queued for a Device or User and translates them into the required protocol required to interact wit the Device or Customer. </p>
+<p id="P-0103" num="0103"> The Entity Management module <b>902</b> is a generic PS resource that preferably localizes and isolates entity information from the rest of the server <b>900</b>. The module holds information on entities such as machines, users, their preferences, and associated location information. For entity information that is not local, the Entity Management module <b>902</b> is the single point of contact with these other IM systems. The module <b>902</b> provides a seamless interface for local and network based information. </p>
+<p id="P-0104" num="0104"> The order processing module (OPM) <b>903</b> is responsible for directing the processing of orders from Service Sponsors as well as those created by the policy &#x26; preferences module (PPM) <b>904</b>. The OPM <b>903</b> interacts with required PS modules to achieve the order requirements. The OPM <b>903</b> also preferably tracks the status of an order to be able to respond to inquiries from Sponsors.  
+<tables id="TABLE-US-00001" num="1">
+<table frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup align="left" colsep="0" rowsep="0" cols="3">
+<colspec colname="1" colwidth="70PT" align="left"/>
+<colspec colname="2" colwidth="84PT" align="left"/>
+<colspec colname="3" colwidth="161PT" align="left"/>
+<thead>
+<row>
+<entry namest="1" nameend="3" align="center">TABLE 1</entry>
+</row>
+<row>
+<entry/>
+</row>
+<row>
+<entry namest="1" nameend="3" align="center" rowsep="1"/>
+</row>
+<row>
+<entry>Actor</entry>
+<entry>Definitions</entry>
+<entry>Primary Roles &#x26; Responsibilities</entry>
+</row>
+<row>
+<entry namest="1" nameend="3" align="center" rowsep="1"/>
+</row>
+</thead>
+<tbody valign="top">
+<row>
+<entry>Service Sponsors</entry>
+<entry>Those organizations</entry>
+<entry>Use Service Developers to develop and deploy</entry>
+</row>
+<row>
+<entry/>
+<entry>within a supplier or other</entry>
+<entry>required code for the PS and DCS device portion of</entry>
+</row>
+<row>
+<entry/>
+<entry>parties that support</entry>
+<entry>the service</entry>
+</row>
+<row>
+<entry/>
+<entry>creation and deployment</entry>
+<entry>Create tie-ins between local IM systems and the PS</entry>
+</row>
+<row>
+<entry/>
+<entry>of services on PS 900</entry>
+<entry>900 such that commands issued by the service</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>sponsors are synchronized to local state of IM systems</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>Direct PS 900 to enable and disable service for</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>particular machine in synchronization with local IM</entry>
+</row>
+<row>
+<entry>Service Developers</entry>
+<entry>Those that develop code</entry>
+<entry>Develop code using DCS guidelines</entry>
+</row>
+<row>
+<entry/>
+<entry>implementing a DCS</entry>
+<entry>Deploy code bundles making up service to the PS 900</entry>
+</row>
+<row>
+<entry/>
+<entry>based service</entry>
+<entry>Define service on PS by identifying relevant platforms</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>and other parameter information about the service</entry>
+</row>
+<row>
+<entry>Policy and Preference</entry>
+<entry>Those that define &#x2018;rules&#x2019;</entry>
+<entry>Develop the &#x2018;rules&#x2019; that define</entry>
+</row>
+<row>
+<entry>Setters</entry>
+<entry>that control all aspects of</entry>
+<entry>how default parameters for a service should be</entry>
+</row>
+<row>
+<entry/>
+<entry>service deployment</entry>
+<entry>configured</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>how and whether parameters should be uniform for a</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>site, customer, geographic unit, or other grouping</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>derived from service parameter information and/or IM</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>systems</entry>
+</row>
+<row>
+<entry>External Devices</entry>
+<entry>DCS compatible machines</entry>
+<entry>Use the PS to be notified of service life cycle changes</entry>
+</row>
+<row>
+<entry/>
+<entry>located at user sites</entry>
+<entry>(add, delete, modify, upgrade, etc.)</entry>
+</row>
+<row>
+<entry/>
+<entry>accessible directly or</entry>
+<entry>Use the PS to send requests for restores based on local</entry>
+</row>
+<row>
+<entry/>
+<entry>through local or remote</entry>
+<entry>catastrophic failure</entry>
+</row>
+<row>
+<entry/>
+<entry>proxy servers providing a</entry>
+<entry>Inform PS of relevant machine configuration changes</entry>
+</row>
+<row>
+<entry/>
+<entry>DCS interface</entry>
+<entry>Inform PS of relevant events or state changes</entry>
+</row>
+<row>
+<entry>Internal Users</entry>
+<entry>Supplier organizations that</entry>
+<entry>Send service related transactions to the PS and</entry>
+</row>
+<row>
+<entry/>
+<entry>participate in execution of</entry>
+<entry>potentially to other machines or other users</entry>
+</row>
+<row>
+<entry/>
+<entry>a service</entry>
+<entry>Receive transactions from machines in likewise</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>fashion</entry>
+</row>
+<row>
+<entry>External Users</entry>
+<entry>Non-supplier users that</entry>
+<entry>Send service related transactions to the PS and</entry>
+</row>
+<row>
+<entry/>
+<entry>participate in execution of</entry>
+<entry>potentially to other machines or other users</entry>
+</row>
+<row>
+<entry/>
+<entry>a service</entry>
+<entry>Receive transactions from machines in likewise</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>fashion</entry>
+</row>
+<row>
+<entry namest="1" nameend="3" align="center" rowsep="1"/>
+</row>
+</tbody>
+</tgroup>
+</table>
+</tables>
+</p>
+<p id="P-0105" num="0105"> The registration, authentication, &#x26; authorization module (RAAM) <b>905</b> is responsible for maintaining the security of the system at all times. The RAAM <b>905</b> preferably authorizes all users of the PS and authorizes their ability to execute specific transactions. It is responsible for correctly registering all users, both internal and external. The RAAM <b>905</b> does this by working with the entity module <b>902</b> to obtain required information. The RAAM <b>905</b> is also preferably responsible to work with the service consumer and order processing modules <b>901</b>, <b>903</b> to isolate security related artifacts of transactions. </p>
+<p id="P-0106" num="0106"> The service definitions module <b>906</b> is responsible for maintaining all definitional information on all services <b>140</b> provisioned by the PS <b>900</b>. Version information, file composition, service inter relationships, product line support, are examples of the contained information. </p>
+<p id="P-0107" num="0107"> The service developer interface module <b>907</b> is responsible for supporting service developers in their work to develop, distribute, and update services. The service participant interface module <b>908</b> is responsible for interfacing with all users and directing service lifecycle and service transaction information to the right resources. </p>
+<p id="P-0108" num="0108"> Embodiments apply soft computing techniques, such as, for example, rules and constraints, as a general solution to flexibly model, develop, and examine service policy. The provisioning decision itself is less important overall. That is, given a device <b>110</b> that needs a service <b>140</b>, the PS <b>900</b> determines whether it is allowed, whether there is a bundle (the collection of code files that make up the service to be installed) that is compatible with the device <b>110</b> operating parameter information (model type, OS version, etc.), which of a plurality of bundles should be selected if there are a plurality, and what the parameter settings (if any) for the service <b>140</b> should be. Generally, in embodiments, code can not be written that implements &#x201c;business rules&#x201d; that can be used to resolve the questions above. Coding would be required for every change of a rule, the rules would not be directly inspectable by policy makers, and it would assume that each question is separable from the others. Further, it assumes that there is a single policy maker that determines the answers for all the above questions. Thus, an alternate solution must be, and is, provided, in embodiments. </p>
+<p id="P-0109" num="0109"> The introduction of an appropriate constraint or rule system provides advantageous benefits. Coding is dramatically reduced as the &#x201c;rule&#x201d; is entered at a higher level of abstraction. Additionally, the rules are inspectable by policy makers who may not be comfortable with computers or programming. Further, knowledge implemented as constraints and rules relating to each question can be more easily combined and separability doesn't need to be worried about. Constraints and rules use supports the reality of multiple policy makers that participate in the decisions of the above questions. Interfering rules and constraints based on differing groups participating in a value chain can more easily be identified and resolved. </p>
+<p id="P-0110" num="0110"> The ability of the provisioning server <b>900</b> to use policy based knowledge to identify the correct bundle and parameters is advantageous in several situations. For example, this ability is preferably applied when the PS <b>900</b> has received an Add Service Request and needs to compute the answers to the questions above. Additionally, the PS <b>900</b> employs this ability when a Policy Maker for any service has made an update to the policy knowledge. The PS <b>900</b> can compute the impact of that change, addition, or deletion to the existing relevant devices actively connected to the PS <b>900</b>. Then the PS <b>900</b> can generate the necessary change requests to the impacted devices <b>110</b> to achieve the goals of change and use the change in all future Add Service transactions. When the PS <b>900</b> is notified of a Configuration Change from a device <b>110</b>, the PS <b>900</b> decides whether the device's services <b>140</b> and/or parameters should be changed because of that change. If necessary, the PS <b>900</b> can generate change requests for the device <b>110</b> as required by the policy knowledge. </p>
+<p id="P-0111" num="0111"> Policy Setters can define uniform service versions or parameter settings based on Internal or External Customer requirements through use of rules. This uniformity may be defined at a user level, a site level, a machine category, or any other relevant grouping </p>
+<p id="P-0112" num="0112"> To summarize, the service subscription and deployment method includes identification by a user or user DMA <b>120</b> of a service offering <b>140</b> of interest and a request for activation of such service (block <b>501</b>). During a scheduled check in with the edge host, or during a special connection for the purpose, the DMA <b>120</b> sends a message for the supplier system <b>300</b> regarding the interest and requested activation. The supplier system <b>300</b> retrieves the message from the edge host <b>410</b> and applies business rule and work processes to determine user eligibility (block <b>502</b>). If the user is approved, the supplier system <b>300</b> notify the edge host <b>410</b> that the requested service <b>140</b> can be added (block <b>503</b>). The next time the DMA <b>120</b> checks in with the edge host <b>410</b>, it receives the message that the service <b>140</b> can be added (block <b>504</b>). The DMA <b>120</b> then activates the service <b>140</b>, downloading and/or installing it if necessary (block <b>505</b>). The new service is then deployed and running (block <b>506</b>). </p>
+<p id="P-0113" num="0113"> Sales of services can be done through a plurality of channels. This process is preferably owned by the sponsoring organization (the supplier of the service) and is done in whatever manner the sponsoring organization chooses. It can, for example, be done from the device if desired. </p>
+<p id="P-0114" num="0114"> Once the sponsoring organization is notified that a particular user would like a service to be enabled on a given device, embodiments provide that the sponsoring organization applies whatever business rules and billing/invoicing processes it requires to comply with an applicable business model for that particular service. If the sponsoring organization determines that the device can be permitted to provide the specified service to the user, the sponsoring organization uses a common services order/entry API on the edge server to officially place the order. This can, in embodiments, generate a message that can set deployment and configuration of the desired service into motion. </p>
+<p id="P-0115" num="0115"> Messages are preferably queued for delivery, and the process waits until delivery of the messages occurs. Once the requesting device or device proxy gets the order message, the systems are configured, additional software is downloaded if required, and the new services are started. The service sponsor preferably has the ability, via the system according to embodiments, to turn services on and off as needed based on whatever criteria the service sponsor determines is necessary. Services are preferably written to be device independent. The Common Information Model provided by the Device Model Agent provides a device independent representation of the common data and methods in embodiments. Services are configurable since all users do not have the same requirements. Having configurable services accommodates variation in requirements and operation that may be required. Services are dynamically loadable to enable rapid deployment of new services to users with devices already deployed in the field. And services have a lifecycle to enable management after they are initially deployed. Examples of lifecycle transactions include, but are not limited to, add service, delete service, modify service, sync services, device registration, and proxy registration. </p>
+<p id="P-0116" num="0116"> The DMA <b>120</b> is defined, in embodiments, to enable the embedded computational power, data, and functions of the devices <b>110</b> to be accessed and used in services <b>140</b> that are deployed in a common fashion. An embedded agent <b>122</b> and service platform <b>124</b> enables embodiments to support local operation of services <b>140</b> that play into the overall system <b>1</b>. This provides the common connectivity, service manager, common data access and methods, and secure communication to the service provider/supplier in support of services offerings. </p>
+<p id="P-0117" num="0117"> Given the system, components, methods, and embodiments described above, there are a number of ways that the system can be deployed. This deployment flexibility is a significant advantage of this system and has implications on the detailed designs of the components and behavior models that the system follows. All of these deployment options can be instantiated simultaneously by embodiments given the abstractions and modularity defined. It is possible that in many user installations more than one option can be deployed to ensure complete coverage. <figref idref="DRAWINGS">FIGS. 4-9</figref> and <b>11</b> show several exemplary embodiments representing possible deployment options for systems according to the invention. </p>
+<p id="P-0118" num="0118"> Deployment A, an exemplary embodiment seen in <figref idref="DRAWINGS">FIG. 4</figref>, is a preferred embodiment for smart devices as are currently shipped by some companies, such as Xerox&#xae; Corporation. It can limit the amount of infrastructure required of users to support deployment of services <b>140</b> and provides the simplest implementation. It need not require additional hardware or software to be installed in the user's environment, though devices <b>110</b> must be fitted with the functionality of the DMA <b>120</b>, including the services platform: <b>124</b>, if they are not already part of the devices <b>110</b>. This embodiment is not likely to address many machines already in the field unless the device software is upgraded or another method is employed to give the fielded devices the DMA and services platform. While communications between the device, via the DMA, and the back-office host are substantially independent of the physical medium, preferred embodiments employ the user's, network and the user's Internet access to connect back to the supplier host system. Other communications schemes, such as, for example, local wireless, long distance wireless, telephone, wireless telephone, and satellite telephone can of course be used as well. </p>
+<p id="P-0119" num="0119"> As seen in <figref idref="DRAWINGS">FIG. 4</figref>, each device <b>110</b> includes its respective DMA <b>120</b> and runs its own services <b>140</b> in its own services layer <b>141</b> facilitated by the DMA <b>120</b>. Management and other applications <b>220</b> can be employed on another machine <b>200</b> that can also be in the user's environment <b>100</b> or can, be elsewhere. The devices <b>110</b> preferably use web services <b>250</b>, such as HTTP, HTTPS, and SOAP, to communicate with the supplier <b>300</b> and a services host <b>310</b> therein. The services host <b>310</b> includes services <b>320</b> and host systems <b>340</b> that can assess communications from the DMAs <b>120</b> and deploy services <b>140</b> when appropriate. </p>
+<p id="P-0120" num="0120"> Deployment B, another exemplary embodiment seen in <figref idref="DRAWINGS">FIG. 5</figref>, enables already fielded devices and devices produced by third parties who do not have the required technologies embedded in them to support device services. While multiple devices can be handled in such a manner, this description will focus on one such device for simplicity. In this case, a relatively small add-on component <b>115</b> is added to the device <b>110</b>. The add-on component <b>115</b> contains necessary software and the DMA <b>120</b>, as well as one or more connections to the device <b>110</b> to enable the add-on component <b>115</b> to gain access to the internal data and functions of the device <b>110</b>. With the add-on device <b>115</b> attached, the device/add-on component combination looks like a completely enabled device, as in deployment A seen in <figref idref="DRAWINGS">FIG. 4</figref>, to the rest of the services infrastructure and back-office systems. This provides device services according to embodiments for legacy and third party production equipment. The add-on component <b>115</b>, with the DMA <b>120</b> and its attendant services environment <b>124</b>, then communicates with the supplier <b>300</b> via web services <b>250</b> as in deployment A of <figref idref="DRAWINGS">FIG. 4</figref>. </p>
+<p id="P-0121" num="0121"> Deployment C, a third exemplary embodiment seen in <figref idref="DRAWINGS">FIG. 6</figref>, uses a proxy configuration in which an application <b>220</b> capable of acting as a proxy runs the services for at least some of the devices <b>110</b>. Devices <b>110</b> that do not themselves have the required software enablers embedded, such as the DMA <b>120</b> and services platform <b>124</b>. However, an application <b>220</b> acting as a services proxy for the devices can communicate with the devices <b>110</b>, such as, for example, via LAN, phone, wireless, or other communications media. The basic proxy implements the services APIs <b>140</b> for a selected set of services <b>140</b>, but preferably does not use the full DMA <b>120</b> and standard dynamic services deployment method to the devices <b>110</b> themselves since these features can not be supported with the legacy devices. This deployment is also limited by the richness of the connection between the simple proxy and the device: if data or a function can not be accessed remotely, then services that require them can not be deployed. </p>
+<p id="P-0122" num="0122"> Deployment D, a fourth exemplary embodiment shown in <figref idref="DRAWINGS">FIG. 7</figref>, is a more advantageous form of proxy configuration. This embodiment enables devices without the required embedded software enablers (i.e. the DMA <b>120</b>), but that can communicate in other ways, such as, for example, via LAN, phone, or wireless, to participate in the services deployment system. The devices <b>110</b> communicate with one or more applications <b>220</b> that act as a services proxy for the devices <b>110</b>. The services proxy is a DMA enabled proxy that can host a DMA <b>120</b> for each device <b>110</b> communicating with the services proxy. Additionally, the services proxy can manage the DMAs <b>120</b> for the devices <b>110</b> with which it communicates. This enables the services <b>140</b> to run in substantially exactly the same way on the services proxy as they would if the services <b>140</b> were running directly on the devices <b>110</b> themselves. This also enables additional local applications to be written on the services proxy that can take advantage of the DMA <b>120</b> and the common information model representations of the data and functionality of each of the systems. This can greatly simplify applications since they can be hidden from the implementation specific to each device and only have to build to the common representation of data and methods in the CIM. This is the same advantage that the services gain when written against the CIM and DMA. Additionally, portions of the DMA that can manage multiple instances of the CIM and services can be instantiated once and used to manage the DMA proxy of multiple devices. That is, the full DMA need not be replicated for every proxied device, which can make this embodiment more efficient that just dropping all the DMAs for the connected devices onto one server. </p>
+<p id="P-0123" num="0123"> Another aspect of the services proxy embodiments is that portions of the DMA that can manage multiple instances of the CIM and services can be instantiated once and used to manage the DMA proxy of multiple devices. Thus, the full DMA need not be replicated for every proxied device; rather, one DMA can be used for plural devices. This makes deployment more efficient than simply dropping one DMA for each device onto one server. </p>
+<p id="P-0124" num="0124"> In a particular version of deployments C &#x26; D, embodiments cover the deployment of a device proxy for a printer directly connected to a personal computer. The proxy can be hosted on a user's computer, and a printer, such as a printer connected via a parallel interface, is the device with which the proxy interacts. In embodiments, the proxy can also connect to the print driver for the directly connected printer as an additional source of data to populate the DMA or services interface. The computer can host the DMA and, to the extent supported by the direct connection to the device and the local instrumentation via print driver or other access mechanism, the directly connected printer looks networked from a services and systems management point of view. </p>
+<p id="P-0125" num="0125"> Deployment E, a fifth exemplary embodiment seen in <figref idref="DRAWINGS">FIG. 8</figref>, comprises a local variant of the exemplary embodiments seen in <figref idref="DRAWINGS">FIGS. 6 and 7</figref>. Services can be offered locally, that is, within a substantially self-contained site, in a fashion similar to Internet-spanning embodiments. Such an embodiment uses the abstraction of the DMA <b>120</b> to enable more consistent management and service offering implementations to local devices <b>110</b>. While this lacks the connection to back-office service providers <b>300</b>, the services <b>140</b> can be unique for a user or simply self-contained for security reasons. Management of local services <b>140</b> and devices <b>110</b> can then be moved from a centralized locale for all devices <b>110</b> to a more localized domain. Users can, for example, assume the role of supplier, if so desired, in such an embodiment by running the equivalent of a back-office on their intranets, including application servers, and, depending on user security requirements, edge hosts. This will increase the complexity of the maintenance and support of such a system if offered by a third party, but is a possibly useful configuration given the abstractions defined. </p>
+<p id="P-0126" num="0126"> A further exemplary embodiment, Deployment F in <figref idref="DRAWINGS">FIG. 9</figref>, enables multiple application servers <b>310</b> and/or multiple edge hosts <b>410</b> receiving communication from enabled devices <b>110</b>. Deployment F is an embodiment that an combine, for example, elements of deployments A, B, D, and E. The services <b>140</b> can be written such that they describe everything required for the services <b>140</b> to check in an appropriate fashion with appropriate application servers <b>310</b> via the appropriate edge hosts <b>410</b>. In addition, the services host <b>310</b> to which the edge host <b>410</b> connects the devices <b>110</b> is not limited to any particular services host or supplier <b>300</b>, but can connect to any suitable parties to offer services, as long as the services API presented by the edge host <b>410</b> allows such connection. </p>
+<p id="P-0127" num="heading-0127"> The Device Model Agent </p>
+<p id="P-0128" num="0128"> The Device Model Agent (DMA) <b>120</b>, as discussed above and as seen, for example, in the schematic illustration of <figref idref="DRAWINGS">FIG. 10</figref>, is an enabling component of the end-to-end system <b>1</b> according to embodiments. The DMA <b>120</b> can be embedded in devices <b>110</b>, add-on modules <b>115</b>, and/or device/services proxies to provide a common device model <b>122</b>, a CIM API <b>123</b>, and a device services environment <b>124</b> in which services <b>140</b> can run. The DMA's role is to provide devices <b>110</b> with the capability to actively participate in business process and services that surround the devices throughout their lives. It combines aspects of the Common Information Model Object Manager (CIMOM), from the Distributed Management Task Force (DMTF), and a novel environment for the operation and management of embedded and dynamic services. The agent is responsible for local operation of services and the management of information represented in the CIM. The agent interacts with the device, services (both local and distributed across a networked environment), and other distributed system components. </p>
+<p id="P-0129" num="0129"> The DMA provides the device independent CIM API as specified by the DMTF, but also provides a device independent Service API. As a software agent, the DMA can engage in autonomous and adaptive behaviors, either initiated locally or through interaction with other distributed components. The DMA can also, for example, react to events in the device and the environment, again either locally or distributed, and, in embodiments, can engage in-self-management of services and actions. In a preferred exemplary embodiment, the device independence of the DMA is extended through the use of, for example, JAVA and the J2ME small footprint JAVA standards. Of course, the DMA is not limited to this particular implementation and could be assembled in any suitable software structures with varying degrees of complexity and difficulty to provide all features. This exemplary embodiment of the DMA advantageously uses the J2ME Connected Device Configuration with the Foundation Profile to enable the broadest range of devices from large system components with many resources to small systems with limited resources. Again, the Device Model Agent is not limited to this implementation, and many others are possible in variants of JAVA or other programming languages as required by the device in which it resides. The J2ME environment can ensure that the DMA software is device independent and reusable across device and product platforms. J2ME also offers support for networked and distributed systems, embedded security capabilities, and support for dynamic download and operation of code. </p>
+<p id="P-0130" num="0130"> Preferably, embodiments include extension of the device independence of the agent through the use of a platform-independent standard, such as, for example, the JAVA and the J2ME small footprint JAVA standards. Of course, the agent is not limited to such implementations and could be assembled in any software structures with varying degree of complexity and difficulty to get all the features. Embodiments of the agent using a J2ME Connected Device Configuration with the Foundation Profile can enable a broad range of devices, from large system components with many resources down to small, embedded systems with limited resources. Many other embodiments are possible using variants of JAVA and other programming languages as required by the device in which the agent is to be embedded or which the agent is to represent. The J2ME environment is a preferred environment due to its ability to ensure the agent software remains substantially device independent and substantially reusable across device and product platforms. In addition, J2ME includes support for networked and distributed systems, embedded security capabilities, and support for dynamic download and operation of code. </p>
+<p id="P-0131" num="0131"> In addition to the benefits described above, the DMA provides the ability to hide multiple, disparate sources of data behind a common provider API. This further abstracts the details of the device from the software agent. In embodiments, four separate sources of data can be unified behind the common provider and CIM so that the services need not know the details the data sources. For example, EPSV, PWS, CAN Bus, and Web UI, data can be managed in this fashion. A set of tools can also be provided in embodiments that enable the provider layer and the CIM contained in the Device Model Agent to be easily customized for a given product or device. This encourages reuse and speeds release because programs adopting or maintaining the Device Model Agent need only be concerned with the mapping of CIM element to the source of data and not the management of the entire Device Model Agent. </p>
+<p id="P-0132" num="0132"> An enabling feature of the end-to-end architecture of the system components is the inclusion of, in embodiments, an appropriate abstraction of the communication methods employed between various distributed components. This abstraction is preferably applied to the physical connection mechanism, as well as to the protocol level up through session level. Such abstraction at both levels helps to hide the details of the communication method from the distributed components, allowing them to focus on the operation of the services and decoupling them from changes in the communication media or protocols. For example, this allows the system to use email over a wireless link or Web Services over a dedicated Ethernet link without the services themselves caring which is used. </p>
+<p id="P-0133" num="0133"> This type of abstraction is new to devices and provides several important benefits. It provides for flexibility in deployment of the system components for any given user. Information on the Quality of Service that can be expected from any given combination of physical and protocol, up through session layer, connections can be carried. The system can have a component on the host/back-office side that monitors the Quality of Service for various configurations to assess the effectiveness of a communication link for providing the quality of service required by a given service offered to a particular user. This is an element of the provisioning and self-monitoring portions of the overall end-to-end system. </p>
+<p id="P-0134" num="0134"> The communication abstraction also provides some fault tolerance. If one connection mechanism goes down for some reason, the communication module can detect that and replace the failed connection with another working one without the rest of the system knowing other than the fact that potentially a change in the quality of service has occurred. </p>
+<p id="P-0135" num="0135"> In embodiments, services can alternatively be &#x201c;hardcoded&#x201d; into a device or proxy. This means that many of the management functions associated with dynamic adding and deleting of services is not required. The embedded portion of the service that is to run at the device must be compliant with the web services transactions between distributed components. This enables the back-office to effectively treat &#x201c;hardcoded&#x201d; services the same way as full, dynamic services in the system. </p>
+<p id="P-0136" num="0136"> Hardcoded services can be enabled by back-office subscription. This enables the service provider to control the particular services enabled on any given device, which gives the service provider the flexibility to determine how the services offered will go to market based on business need. For example, the services can be part of a package, offered for free, be offered for a price, require renewal, be offered on a trial basis requiring another transaction for full service provision, etc. </p>
+<p id="P-0137" num="0137"> Hardcoded services preferably share a common underlying set of behaviors and specific extensions for their particular requirements. Preferably, the services have components that work together, but run on the devices themselves in the embedded services platform, on the intelligent proxy, and/or in the back-office server. Though hardcoded, these services can be configured and managed by the service lifecycle management system in the supplier/service provider back-office. </p>
+<p id="P-0138" num="0138"> The types of standards embodiments preferably use include the Distributed Management Task Force (DMTF) Web Based Enterprise Management (WBEM) and Common Information Model (CIM). As described above, the CIM provides embodiments with device model and abstraction to enable services reuse. Additionally, embodiments employ web services, XML, various versions of HTTP, and SSL. Embodiments can also use server side certificates from, for example, VeriSign, which enables communication across firewalls and the Internet. To enable application environments in the device and in the back-office, embodiments can employ, for example, Java 2 Micro Edition (J2ME), Embedded Virtual Machine from Insignia Corporation, Java 2 Enterprise Edition (J2EE), the BEA WebLogic 7.0 Application Server Technology Suite, and Oracle8i. Of course, these are only examples, and additional components can be used where appropriate. Further, it is likely that new components will be developed that are not currently foreseen and that can be added to the system of embodiments, which components fall within the scope of embodiments. The services provided, their lifecycles, and the extension of the DMTF CIM for specific products are examples of new technologies within embodiments. </p>
+<p id="P-0139" num="0139"> Embodiments further enable the rapid addition and roll out of new services to already deployed systems. For example, say that soon after the launch of a new product a new diagnostic service is developed based on lessons learned form the first three months of its operation in the field. The exact nature and behavior of this service could not have been anticipated when the product was launched, so the diagnostic service would not have been included in the launched product. Embodiments allow such a diagnostic service to be added to installed devices at substantially any time. </p>
+<p id="P-0140" num="0140"> Embodiments contemplate the service model and internal specification of what a new &#x201c;service bundle&#x201d; should include. Thus, in addition to the permissions and configuration information for a service, new code can be downloaded if needed to add a new capability to an existing device in the field. This feature can be used in conjunction with, according to embodiments, an embedded services platform on the devices that are designed to accept the new functionality easily. In addition, when used in conjunction with the embedded services platform of embodiments, the new code for the new services can be reused across platforms because of the device independent abstraction provided by the embedded CIM in the DMA. For devices without such a platform, new code can still be added as, for example, a more specialized software download service for patches and upgrades in the field, but the code to enable those services will most likely be platform specific and therefore less reusable. </p>
+<p id="P-0141" num="0141"> This system of embodiments can offer diagnostics routines and other services in a way that is very flexible for the device platform. To the service provider in the back-office, such enabled devices look like every other DMA enabled device according to embodiments. In addition, all the services for the device -family that run locally on the device internal platform can still communicate directly back to the supplier systems rather than through an intelligent proxy. </p>
+<p id="P-0142" num="0142"> Another variant in deployment is to fully embed the DMA into the product itself. This implementation is in a way very similar to the Example 1 implementation in that they are both DMA enabled platforms. For this example however, the small footprint DMA services platform is embedded into the product and communicates with both a Print Station Interface Platform (PSIP) and with an embedded device controller. The limited resources required by the small footprint system is acceptable to that product and development and integration of the required interface components is relatively easy. </p>
+<p id="P-0143" num="0143"> The reusable DMA is a &#x201c;drop-in&#x201d; to systems that already have a JVM. The small footprint DMA is not a drain on the system resources and can greatly speed the enablement of such platforms. </p>
+<p id="P-0144" num="heading-0144"> Automated Meter Reads </p>
+<p id="P-0145" num="0145"> Another example of using the deployment flexibility built into the embodiments is seen by looking at the system from the perspective of an end-to-end service. In this case, the service is automated meter reads. This service focuses on acquiring the monthly or quarterly meter reads typically received via phone calls, faxes, emails, or web entry without a human in the loop. This can increase both the accuracy and timeliness of the reads, save time for users, and enable suppliers to improve invoicing and billing. </p>
+<p id="P-0146" num="0146"> Since the data required from the devices is small and is already largely available, an intelligent proxy can be employed, which can facilitate the participation of all SNMP enabled products. This, used in conjunction with devices that are DMA enabled but not fully SNMP compliant, means broad coverage can be achieved rapidly. Again, the abstractions and the system modularity in this case are significant. The back-office system doesn't need to know which way the devices have contacted the supplier (directly or through a proxy); all it needs is the device's serial number and it can then request meter reads when they are due. This decoupling of the way devices are enabled to participate in the services and the requests made by the back-office service provider is an advantage in providing deployment flexibility. </p>
+<p id="P-0147" num="heading-0147"> Early Warning System </p>
+<p id="P-0148" num="0148"> In embodiments, a reporting system, a remote monitoring service, and other remote services are combined to assemble a set of tools to support more testing in the field. The underlying systems and data collection services can be complementary to data collection systems that rely on human observation and reporting. Together, the combination of systems provides a much greater, integrated set of knowledge upon which engineering teams can base product problem resolution activities. In addition, the common model for data collected from devices in the field creates a mechanism for deploying reporting tools and basic performance reporting that can be used across platforms. </p>
+<p id="P-0149" num="heading-0149"> Premium Remote Assistance via Remote Control and Device Services </p>
+<p id="P-0150" num="0150"> One of the basic principles in embodiments is that the devices themselves should take an active role in their own lifecycles and support. This works in a number of trouble or status reporting situations. It may even work with an embedded diagnostic agent in the device that can monitor system performance and make software or configuration changes automatically in order to keep the system running well in the field. However, many problems that users experience are related to user problems and operational errors as much as they are related to device failures. In addition, as we all know, since marking machines are complex electromechanical systems, they cannot always be repaired remotely. </p>
+<p id="P-0151" num="0151"> To address the operational support needs of devices in the field and to support new ways of working with the operators on site, a remote UI and a human to human support system are combined in embodiments. Support automation solutions can be complementary parts of a premium service and support offering. It automates data collection and remote monitoring as well as offers many remote services described above. The combination also provides an excellent way to work directly with the device operators via a shared UI to help them when additional training, problem resolution, and software tweaks are required. </p>
+<p id="P-0152" num="heading-0152"> Connectivity Trade-Offs: </p>
+<p id="P-0153" num="0153"> Some exemplary options for the communication link between the devices in user sites and the back-office are shown in <figref idref="DRAWINGS">FIG. 41</figref>. There are three primary options labeled A, B and C. Notice that only options A and C complete the connectivity between the devices and the supplier back-office on their own. Option B needs to connect to A or C to complete the link back to the supplier. </p>
+<p id="P-0154" num="0154"> A summary of the pluses and minuses of each option are in Table 2.  
+<tables id="TABLE-US-00002" num="2">
+<table frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup align="left" colsep="0" rowsep="0" cols="3">
+<colspec colname="OFFSET" colwidth="14PT" align="left"/>
+<colspec colname="1" colwidth="105PT" align="left"/>
+<colspec colname="2" colwidth="182PT" align="center"/>
+<thead>
+<row>
+<entry/>
+<entry namest="OFFSET" nameend="2" align="center">TABLE 2</entry>
+</row>
+</thead>
+<tbody valign="top">
+<row>
+<entry/>
+<entry/>
+</row>
+<row>
+<entry/>
+<entry namest="OFFSET" nameend="2" align="center" rowsep="1"/>
+</row>
+<row>
+<entry/>
+<entry>Wired Connectivity</entry>
+<entry>Wireless Connectivity</entry>
+</row>
+</tbody>
+</tgroup>
+<tgroup align="left" colsep="0" rowsep="0" cols="4">
+<colspec colname="1" colwidth="14PT" align="center"/>
+<colspec colname="2" colwidth="105PT" align="left"/>
+<colspec colname="3" colwidth="91PT" align="left"/>
+<colspec colname="4" colwidth="91PT" align="left"/>
+<tbody valign="top">
+<row>
+<entry/>
+<entry>Option A:</entry>
+<entry>Option B: Local</entry>
+<entry>Option C: Long Distance</entry>
+</row>
+<row>
+<entry namest="1" nameend="4" align="center" rowsep="1"/>
+</row>
+<row>
+<entry>+</entry>
+<entry>Available to all network devices in</entry>
+<entry>Use wireless connectivity will</entry>
+<entry>Technology exists for both</entry>
+</row>
+<row>
+<entry/>
+<entry>sites with Internet access.</entry>
+<entry>eventually be available in</entry>
+<entry>cellular and two-way pager</entry>
+</row>
+<row>
+<entry/>
+<entry>No additional user or supplier cost</entry>
+<entry>printers</entry>
+<entry>options.</entry>
+</row>
+<row>
+<entry/>
+<entry>for use of LAN and Internet</entry>
+<entry/>
+<entry>Can be purchased off the shelf</entry>
+</row>
+<row>
+<entry/>
+<entry>Phone line can be added regardless</entry>
+<entry/>
+<entry>from several companies or</entry>
+</row>
+<row>
+<entry/>
+<entry>of printer/stand-alone option</entry>
+<entry/>
+<entry>optimized specifically for</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>supplier from standard</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>technologies available.</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>Potentially good answer for</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>unconnected devices if</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>leverage supplier's existing</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>pager/cellular service</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>plans.</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>User feedback has been</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>positive for this option for</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>unconnected devices</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>without any costs being</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>passed on to them.</entry>
+</row>
+<row>
+<entry>&#x2212;</entry>
+<entry>Some additional traffic on users</entry>
+<entry>Wireless capability not yet</entry>
+<entry>Two-way pager and cellular</entry>
+</row>
+<row>
+<entry/>
+<entry>network</entry>
+<entry>available in non-connected</entry>
+<entry>add-on components costly.</entry>
+</row>
+<row>
+<entry/>
+<entry>Unconnected systems not covered</entry>
+<entry>printers yet.</entry>
+<entry>Users have security concerns</entry>
+</row>
+<row>
+<entry/>
+<entry>by LAN option</entry>
+<entry>Wireless access points for</entry>
+<entry>about networked devices</entry>
+</row>
+<row>
+<entry/>
+<entry>Phone line option is added expense</entry>
+<entry>connectivity to rest of network</entry>
+<entry>that are also connected</entry>
+</row>
+<row>
+<entry/>
+<entry>to enable and operate</entry>
+<entry>may not be present</entry>
+<entry>wirelessly to another</entry>
+</row>
+<row>
+<entry/>
+<entry>Phone line connectivity has proven</entry>
+<entry>Local wireless still requires</entry>
+<entry>network.</entry>
+</row>
+<row>
+<entry/>
+<entry>to be difficult to maintain.</entry>
+<entry>either A or C to be present to</entry>
+<entry>Bandwidth limited vs. wired</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>complete the link to supplier.</entry>
+<entry>connectivity</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>Need for wireless may be</entry>
+<entry>Need for wireless may be</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>temporary as more devices</entry>
+<entry>temporary as more devices</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry>become connected.</entry>
+<entry>become connected.</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>Add-on boxes are likely to</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>require unique</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>communication interfaces to</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>connect the box to each type</entry>
+</row>
+<row>
+<entry/>
+<entry/>
+<entry/>
+<entry>of printer.</entry>
+</row>
+<row>
+<entry namest="1" nameend="4" align="center" rowsep="1"/>
+</row>
+</tbody>
+</tgroup>
+</table>
+</tables>
+</p>
+<p id="P-0155" num="0155"> All connectivity options preferably reuse the same back-office infrastructure even though they may enter the supplier via different mechanisms. </p>
+<p id="P-0156" num="0156"> All options are attractive because as a group they can provide additional flexibility for deployments that will meet a variety of user requirements. The preferred method of connecting, when feasible, is Option A&#x2014;Wired connectivity via LAN and Internet. This is the option of least development investment and least operation expense. In the short-term this is especially important while the value of the services are being proven and resources need to be focused on initial services development and delivery&#x2014;not additional ways to connect to devices. It does not, however, address unconnected devices that will initially be left out of the services if only this option is pursued. For the time being each service will need to consider how to manually include non-connected devices in the offerings. </p>
+<p id="P-0157" num="0157"> The next preferred method of connecting is Option C&#x2014;Long-distance wireless via cellular or 2-way pager technology. The system can work in this configuration seamlessly with wired devices, and having capability available would enable some user problems to be solved when they come up. However, there are some challenges with deploying the wireless capability on a large scale over a large number of products. For example: developing a number of different add-on modules to be compatible with the very wide array of products in the field could be costly since few systems have the same interfaces to access detailed device data and operations. Additionally, the added expense of adding wireless connectivity and communications costs may be prohibitive until several services are available to use the connection. Simple, more easily deployable wireless configurations have inherent limitations on the number and types of services that can be offered, making it harder to justify the cost. Finally, users voiced concerns with networked systems that also had wireless connections since this is a way that suppliers/service providers or another party could bypass their firewalls and potentially access other resources on their network. </p>
+<p id="P-0158" num="0158"> Finally, Option B&#x2014;Local-wireless connectivity. This method can be used depending on how the local wireless connectivity technologies integrate into our user's environments and printers specifically. </p>
+<p id="P-0159" num="heading-0159"> Supporting End-To-End Infrastructure for Device Services </p>
+<p id="P-0160" num="0160"> A supporting end-to-end infrastructure for connecting devices in user sites back into legacy systems and business processes is required. The end-to-end system shown in <figref idref="DRAWINGS">FIGS. 1 and 2</figref> is an initial exemplary embodiment of an end-to-end infrastructure. It supports the basic dual-mode of device participation (direct and via a services proxy), uses the initial service communication and subscription models, and employs a common entry point for services data and actions via an edge server hosted, for example, in the supplier environment. The edge host can be partitioned in a manner suitable for additional embodiments, but can also be physically hosted on one system, minimizing start up costs while penetration and adoption ramps up.  
+<tables id="TABLE-US-00003" num="3">
+<table frame="none" colsep="0" rowsep="0" pgwide="1">
+<tgroup align="left" colsep="0" rowsep="0" cols="1">
+<colspec colname="1" colwidth="329PT" align="center"/>
+<thead>
+<row>
+<entry namest="1" nameend="1" align="center">TABLE 3</entry>
+</row>
+</thead>
+<tbody valign="top">
+<row>
+<entry/>
+</row>
+<row>
+<entry namest="1" nameend="1" align="center" rowsep="1"/>
+</row>
+<row>
+<entry>A sample of the Technology and Infrastructure.</entry>
+</row>
+</tbody>
+</tgroup>
+<tgroup align="left" colsep="0" rowsep="0" cols="2">
+<colspec colname="1" colwidth="161PT" align="left"/>
+<colspec colname="2" colwidth="168PT" align="left"/>
+<tbody valign="top">
+<row>
+<entry>Enabling Technology Evolution</entry>
+<entry>Infrastructure Evolution</entry>
+</row>
+<row>
+<entry namest="1" nameend="2" align="center" rowsep="1"/>
+</row>
+<row>
+<entry>High-end devices can act as services proxies for other</entry>
+<entry>Edge Host focuses on service provisioning and</entry>
+</row>
+<row>
+<entry>devices they find within their environment if the users</entry>
+<entry>transaction management</entry>
+</row>
+<row>
+<entry>chooses</entry>
+<entry>Supplier maintains common DataMart where CIM data</entry>
+</row>
+<row>
+<entry>Device can participate in a combination of services</entry>
+<entry>from all devices is stored and is accessible by a</entry>
+</row>
+<row>
+<entry>directly or through proxies.</entry>
+<entry>variety of internal supplier functions.</entry>
+</row>
+<row>
+<entry>Secure communication initiated by either devices or</entry>
+<entry>In addition to sending data to the DataMart, data/events</entry>
+</row>
+<row>
+<entry>supplier can be deployed services that require high</entry>
+<entry>are routed based on subscription and services needs</entry>
+</row>
+<row>
+<entry>level of service guarantees.</entry>
+<entry>directly to the service sponsors</entry>
+</row>
+<row>
+<entry>CWW can communicate with new devices via the CIM</entry>
+<entry>The physical split between the Edge Host, database,</entry>
+</row>
+<row>
+<entry>protocol vs. only SNMP</entry>
+<entry>and service specific</entry>
+</row>
+<row>
+<entry>Device can participate is services via wireless</entry>
+<entry>Authentication/Authorization of devices and</entry>
+</row>
+<row>
+<entry>connectivity directly from them to supplier.</entry>
+<entry>communication is handled centrally via supplier</entry>
+</row>
+<row>
+<entry/>
+<entry>systems.</entry>
+</row>
+<row>
+<entry/>
+<entry>Provisioning and software/tools for services to define the</entry>
+</row>
+<row>
+<entry/>
+<entry>business rules which describe how devices need to be</entry>
+</row>
+<row>
+<entry/>
+<entry>configured to participate are established and used to</entry>
+</row>
+<row>
+<entry/>
+<entry>deploy new services quickly.</entry>
+</row>
+<row>
+<entry namest="1" nameend="2" align="center" rowsep="1"/>
+</row>
+</tbody>
+</tgroup>
+</table>
+</tables>
+</p>
+<p id="P-0161" num="0161"> Each of the areas listed in Table 3 represent areas of technology development or areas where third party COTS systems need to be acquired and explored. They also represent areas where the full requirements for the technologies are not yet known. </p>
+<p id="P-0162" num="0162"> As described above, printing products not originally designed to support user assisted self-help programs, device-centric services, and/or remote monitoring for ECAT sometimes find that such offerings are important to speeding initial delivery and to continued success of the products. A need of such products is to receive daily (or at some other period) reports from devices in the field as to their state and how they have been used by the user. We have called this service Remote Monitoring. This is important as it allows the program team to identify problems earlier in the field and provides important information to enable, sales, marketing, and support to improve their outputs as well. </p>
+<p id="P-0163" num="0163"> One solution to this is to offer the Device-Centric Services (DCS) Device Model Agent (DMA) <b>120</b> on the controller and connected locally to the IOT from there. The add-on component or Customer Services Platform (CS Platform) <b>115</b> is the solution to this need. The CS Platform <b>115</b> can take the form of an embedded system that connects locally to the IOT through one or more of several existing interfaces, unifies the view of that data and functionality, and provides a local UI for operation, management of functionality locally, and the services platform <b>124</b> and APIs for remote connectivity and device-centric services. The CS Platform <b>115</b> is a product embodiment of both the DMA <b>120</b> and the embedded services layer <b>141</b> enabled by the services platform <b>124</b> in the Device-Centric Services framework. </p>
+<p id="P-0164" num="0164"> With reference to FIGS. <b>12</b>, <b>16</b>-<b>19</b> and <b>21</b>, the CS Platform <b>115</b> can preferably take the form of a networked, embedded personal computer. Additionally, the add-on component can take the form of a headless box. In whatever particular form, the add-on component <b>115</b> is connected to the IOT via at least one physical interface. The UI for the CS Platform <b>115</b> is available at any browser on the local network and is served by an embedded web server <b>130</b> in the CS Platform <b>115</b>. In a preferred embodiment the user would use the browser on their DFE as the local UI for the CS Platform <b>115</b>. The CS Platform <b>115</b> is preferably networked and configured, just as any browser is configured, to know the local network proxies, firewall passwords, DNS server IP addresses, and so forth, so that it can connect to the edge server <b>410</b> which is available on the Internet <b>400</b>. When running, the CS Platform <b>115</b> will use this connection to check for messages and instructions and will send required data in support of subscribed services <b>140</b> as well. The edge server <b>410</b> manages the queues, messages, services, and transactions associated with the end-to-end operation of the device services. </p>
+<p id="P-0165" num="0165"> Preferably, the CS Platform <b>115</b> is a low cost, embedded personal computer based platform with a motherboard <b>701</b>, and an embedded software operating system <b>704</b>, such as Linux, though other operating systems could be used. The add-on component <b>115</b> can be customized with hardware, such as an auxiliary input/output and static memory board <b>702</b>, but such customizations are preferably minimal to keep costs down. The component <b>115</b> is designed to enable the internal hardware platform to change over time to follow the minimum generic personal computer value curve which can reduce the cost of the platform by &#x2154;. Memory, such as compact flash memory, for example, can be used as an internal storage medium <b>703</b>, which has improved reliability over hard disk drives. The use of compact flash memory also lowers the cost of upgrading the CS Platform <b>115</b> if new services <b>140</b> to be deployed require additional storage resources, yet the compact flash memory appears to the system as a normal hard disk drive. Further, the use of standard personal computer technology in the add-on component <b>115</b> enables rapid revision to follow cost curves and trends and also ensures that standard add-on technology (for example a web camera) is compatible with the platform. </p>
+<p id="P-0166" num="0166"> Examples of connection paths between the CS Platform add-on component <b>115</b> and the IOT of a device include Electronic Partner (EPSV) <b>712</b>-<b>714</b>, a Fuji Xerox protocol and interface; RS422 and/or RS232 serial port <b>715</b>, <b>716</b>; PWS <b>717</b>-<b>718</b>, the connection used by the customer service engineers to connect their service laptops to devices; CAN bus connection <b>719</b>-<b>721</b>; and USB (not shown). Additional interfaces, such as a proprietary interface to the digital front end, could also be monitored to provide additional data for services and system management activities. Other connections fall within the scope of embodiments, as well, especially since the CS Platform <b>115</b> is preferably designed in such a way as to not be limited to these connections. </p>
+<p id="P-0167" num="0167"> A router <b>730</b> is preferably included and responsible for managing the multiple information sources and handling preemption of some activities given another connection becoming active. Communication is thus mediated in such a way as to allow communication to occur without data corruption problems. </p>
+<p id="P-0168" num="0168"> An embedded software system preferably provides the flexible components in support of both locally hosted functions, such as the diagnostics routines described here, and services that can be dynamically added and configured. Embodiments thus contemplate a system component based on the Device-Centric Services platform and embedding the DMA <b>120</b>, and an embedded JVM and web server to enable the CS Platform <b>115</b> to act as a local enabler for the system to actively participate in device-centric services. </p>
+<p id="P-0169" num="0169"> The embedded DMA <b>120</b> enables services <b>140</b> to be offered directly from the device <b>110</b> regardless of its digital front end and/or ability to run the DMA <b>120</b> on its own. This enables the device <b>110</b> to participate actively in services offerings via the DCS services model. The add-on component <b>115</b> also provides a programmatic interface for new services <b>140</b> to be built around the system, enabling rapid and robust solutions integration with the product. Further, the inclusion of a web server <b>130</b> in the add-on component <b>115</b> allows web services transactions and services directly between the CS Platform <b>115</b> as an interface for the IOT and remote service offerings. </p>
+<p id="P-0170" num="0170"> A customized IOT diagnostics offering <b>740</b> geared towards a trained user rather than the customer service engineer provides easy to use, globalized UIs for predefined diagnostics already offered by the IOT. The diagnostic routines can, for example, optimize toner density levels and obtain consistent image quality (MaxSetup <b>741</b>). Other services <b>742</b> that can be offered include Belt Edge Learn, a routine that learns the edge of a new intermediate belt to improve lateral registration and belt steering performance. The purpose of Belt Edge Learn is to track the belt movement using the two Belt Edge Sensors. Using data received from these Sensors, the IOT automatically adjusts using the Belt Tracking Roll/Motor/Sensor to ensure that the Belt rotates without any inboard/outboard movement. More services can include RegiCon, a set-up routine that sets up the complete image on image registration system found in the IOT, and Halftone, a set-up routine to adjust the halftone densities printed by the system. Printing a halftone pattern places a user-definable level of constant tone over the whole page. The halftone pattern itself is used to diagnose problems, as almost every image quality defect will show up in a halftone pattern. </p>
+<p id="P-0171" num="0171"> The CS Platform add-on <b>115</b> preferably employs a web based UI through an embedded web server. This saves hardware cost on the CS Platform <b>115</b> itself and instead uses the monitor, keyboard and mouse hardware associated with the digital front end of the device <b>110</b>, which is almost always present and networked. It is also accessible from any other networked PC with a suitable browser on the local network. Such a UI offers increased ease of use and extendibility for new services and capability over time. The cost of providing a GUI just for this application would be prohibitive. The web based UI can include, in embodiments, context sensitive help and links to a call center and other support sites, making the system much easier to use. The UI can be available at any connected browser on the user's LAN, including hardwired networked personal computers. Further, wirelessly connected personal computers or handhelds with compatible browsers could also be used as a UI if a wireless access point is connected to the CS Platform <b>115</b> directly or installed on the user's network. </p>
+<p id="P-0172" num="0172"> The Device-Centric services add-on component <b>115</b> of embodiments preferably comes equipped with several services pre-loaded and authorized, though this need not be the case. The CS Platform follows the Device-Centric Services model for subscribed service offerings. The PDT has made the decision to enable a basic set of services. Additionally, the component is preferably enabled for software download and remote upgrade of the CS Platform firmware via notification from remote site. </p>
+<p id="P-0173" num="0173"> The system, through the synchronization service, will preferably periodically check in with the remote DCS host <b>310</b> or <b>410</b> to see if new transactions are waiting for it. One of those could be that new software is available for the system. If so, the user can be notified via an upgrade status screen available from the administration tab. The user also has the option of manually checking for updates via a refresh status button on a software upgrade screen. If an upgrade is available, the user has the option to accept it. If accepted, the software download process automatically downloads the required updates, installs them, saves the older version, and reboots the system. </p>
+<p id="P-0174" num="0174"> The component <b>115</b> provides secure, encrypted communication back to the supplier in support of eService offerings. Diagnostic routines of embodiments, even though completely local in operation, are treated as services. They can then be controlled via the services subscription model used for all services. This allows the functionality of the CS Platform to be effectively turned-off when it becomes necessary to do so. </p>
+<p id="P-0175" num="0175"> An initial set of services can preferably be offered to the user by the system. Such an initial offering can include, for example, Automated Billing, Automated Supplies Replenishment, and Remote Monitoring. Automated Billing is preferably a subscribed service that on demand or automatically reports the required billing meter to the supplier via the Device-centric services infrastructure. Automated Supplies Replenishment, as the name suggests, is preferably a subscribed service that tracks toner usage, area coverage, and toner bottle change events in order to supply the supplier with the information necessary to ensure the timely and accurate delivery of meter supplies to the user's site without human intervention. Remote monitoring is preferably a service that periodically gathers up a configurable set of data found in the system, models it in a standard fashion, and publishes it back to the supplier. Examples of the type of data found in this service include billing meters, IOT faults, media path jams, image area coverage, media usage (weight, size, and type), feature usage, toner status, simplex/duplex quantities, media tray usage, reduction and enlargement, copy modes, and High-Frequency Service Items status. </p>
+<p id="P-0176" num="0176"> An additional set of services can be embedded in the system to ensure proper system operation. For example, DMA Housekeeping Service, Health Monitor, DMA to IOT communication status Monitor, and Services Synchronization Service, a service that periodically checks back with the remote portions of the DCS system to see if there are new instructions or activities the DMA should be doing. </p>
+<p id="P-0177" num="0177"> To ensure security, the add-on component <b>115</b> employs in embodiments standard, secure web data transmission technologies and certificates. For example, VeriSign certificates, RSA encryption, SSL, and related technologies can be employed. Additionally, the add-on component <b>115</b> can provide a detailed transaction log allowing the user to inspect all the messages sent from the device. All transactions sent from the CS platform <b>115</b> can be logged in XML form before they are packaged for transmission and encrypted. This provides another layer of inspection capability by the user to increase confidence in the supplier's statements that we sending only what we say we are. </p>
+<p id="P-0178" num="0178"> Three levels of authorization can be invoked before data is sent to the edge host <b>410</b>, in embodiments. It is expected that contractual agreements will state that data will be sent automatically and the user will have the ability to inspect the transmission logs. Options are designed into the system to accommodate multiple levels of authorization for users who require different agreements to be made. The levels can include Audit and Log, in which records of all transactions are kept in the transaction Log; Simple Notification, in which a user representative is notified via on screen message, email or some other mechanism when a transmission to the back-office is accomplished; and Approval Before Sending, in which a queue of messages to the back-office <b>300</b> is maintained and the user representative is notified when the queue is not empty. In Approval Before Sending, the user representative can inspect the messages if desired, and can then OK the sending of the data. The default authorization level is configurable, though the preferred shipped default level is Audit and Log. Previous assisted self-help tools and even the diagnostics access on the IOT itself had one password for all functionality. There was no way for the previous system to accommodate multiple people roles and manage passwords accordingly. </p>
+<p id="P-0179" num="0179"> In embodiments, the multiple roles enabled can include Technical Key Operator (TKO), Customer Service Engineer (CSE), and System Administrator (SA). A system for configuring the access for any given role is provided via the web based GUI. Passwords are preferably initially set to common passwords individualized for each role. The system of embodiments contemplates allowing the SA to configure his or her own password and manage the passwords of the TK); enabling networked role based password management using standard IT industry processes, protocols, and procedures, and enabling remotely authenticated login and password management for any or all roles. Remote login may be especially attractive for CSEs who want to use their same password on any CS Platform <b>115</b> that they visit. Authentication for remote login can be password only, a, combination of password and token, or any other suitable method. This would be limited by the network connectivity of the CS Platform to the remote host site and a back-up (or local) common CSE or user role password would need to be supplied. </p>
+<p id="P-0180" num="0180"> The platform even can include a process for remotely resetting local passwords that are forgotten. The SA calls the help desk and is successfully authenticated as who they say they are. The Help desk places an order to the CS Platform (identified by IOT serial number) to have it reset its SA password. The SA is told to manually press the SYNC button, causing the CS Platform to check in with the Edge Host <b>410</b>, receive the order to reset the SA password, and complete the operation. If all else fails a CS Platform Factory Reset procedure can be followed which will reset all the passwords to default configuration. </p>
+<p id="P-0181" num="0181"> New software services <b>140</b> can be added to the CS Platform add-on component through the normal DCS service subscription and activation processes. Subscribed services can be automatically managed and installed by the DMA <b>120</b> and the DCS end-to-end system <b>1</b>. This enables the CS Platform <b>115</b> to offer new services over time. New software upgrades can be offered through the remote software upgrade feature of the CS Platform. This enables more significant upgrades of the CS Platform <b>115</b> to be performed with user approval without the need for a tech rep to visit the user's site. This increases the frequency at which system upgrades can be deployed because cost is significantly reduced. </p>
+<p id="P-0182" num="0182"> New hardware can be added with the appropriate services added remotely to the platform because of the above features and the use of COTS technology for most of the system hardware and software. An example of a new service requiring hardware extensions would be web camera based support for users. With the addition of a low cost USB web cam, the CS Platform <b>115</b> can offer a service for those subscribed that allows them to get better remote support on the phone because they can snap and send photos of the problems they are having to a help desk or call center. </p>
+<p id="P-0183" num="0183"> Embodiments contemplate installation of the CS Platform on a network connected personal computer on the same subnet as the CS platform <b>115</b>. The install process, a schematic illustration of which is shown in <figref idref="DRAWINGS">FIG. 19</figref>, uses a combination of standard networking utilities and LED indications found on the back of the CS Platform to walk the installer through the process. Since the CS Platform <b>115</b> is preferably a headless embedded system, the install process can be tricky. The steps listed here are one possible way to do the install, though others are possible. The combination of feedback on the command screen and LEDs on the device provide a robust process for the installation. The component <b>115</b> is initially in power-on standby (block <b>801</b>) and is powered on by the user (block <b>802</b>). Preferably, a status LED or the like blinks to indicate that the component <b>115</b> is booting, then becomes steady on when the component <b>115</b> is ready (block <b>803</b>). In embodiments, the user reads the MAC address of the component <b>115</b> (block <b>804</b>), opens a command window on the UI (block <b>805</b>), and enters a command with the MAC address and other information (block <b>806</b>). The user can then ping the component <b>115</b> (block <b>807</b>) to test it, then wait for an indication of completion (block <b>808</b>), such as one or more LEDs in a steady on state. The user then goes to the component's web server <b>130</b> via a browser (block <b>809</b>), logs on as the administrator (block <b>810</b>), and configures network information as required (block <b>811</b>) to enable the component <b>115</b> to communicate with the edge host <b>410</b>. The component <b>115</b> reboots, during which the IOT should be powered down (block <b>813</b>). Once both have completed their reboot, installation and setup are complete (block <b>813</b>). </p>
+<p id="P-0184" num="0184"> The CS Platform can be configured in multiple ways for network connectivity, including use of a fixed IP address and use of DHCP to acquire an IP address. A fixed address is preferred for most users and has the advantage of making it easy to point a browser to the CS Platform UI when ready. DHCP is a very easy to install alternative, but would require a device domain name for the CS Platform and DNS services connection. One possible way to provide an automatic domain name is to combine the IOT serial number with the last two digits of the MAC address. Other combinations of readily available information known to the user and the CS Platform by default are possible. </p>
+<p id="P-0185" num="0185"> The CS Platform is configured for the network just as any browser would be configured. This can be done manually via form fill-in on the CS Platform UI. It can also be done through a look-up to see the setting already found in the web browser platform if the OS provides that capability. This would provide the base-line settings and the user then has the ability to customize or correct them as necessary. Once configured, a Test Configuration button can be provided that immediately tries to contact the supplier edge server <b>410</b> to ensure that the settings are correct before the user leaves the network administration page. </p>
+<p id="P-0186" num="0186"> Users of the CS Platform <b>115</b> may lose a bookmark to the CS Platform Web Page and a way needs to be provided for users to find that web page again easily. If DHCP was used to configure the system, then the user can simply follow instructions to determine the default or hard coded domain name of the CS Platform. A discovery tool can also be provided that is installed and runs on the DFE or a networked personal computer in the user's environment and will find and display all CS Platforms that are running. This discovery tool could also be downloaded from the supplier web site. A link to the tool could be made available from the CS Platform UI so the tool can be downloaded and saved in preparation for CS Platform IP address loss. The tool could also come stored locally on the CS Platform with an option to save it locally on the DFE during install. </p>
+<p id="P-0187" num="0187"> As mentioned above, the router manages simultaneous access methods to the CS Platform. The CS Platform router is preferably compatible with the supplier gateway and DMA requirements and with devices <b>110</b> in the field. The router preferably provides direct connectivity between the Local PWS port and the IOT diagnostic (serial) port. The router of embodiments also provides network connectivity for a network client through, for example, the IOT diagnostic (serial) port, and can support network pathways to the IOT CAN Bus, to the EP Service for various devices <b>110</b>, and mediates all (except EP) communications traffic and priorities. Priorities are enabled to allow the smooth transition of operational modes. For example, a priority for Application Session for DCU Software Upgrade, another for Local PWS Port IOT Diagnostic Session at the IOT Serial port3, and another for other Network Sessions. Under normal system operation, an &#x201c;open&#x201d; Local PWS session is preferably not preempted, and a Local PWS session request may preferably interrupt a network diagnostic application session. Any interruption should be graceful. Preemption of a Network DCU software upgrade session is preferably not be permissible, though an EP and/or CAN Bus session should preferably be permitted at any time as long as only one CAN session is permitted at any one time. The DMA EP Gateway server/client client preferably has exclusive access to the EP port, and DCU v2.0 preferably supports a pathway for local PWS transactions over the network. </p>
+<p id="P-0188" num="0188"> In support of DCU v2.0, the Communication Controller can provide, for example, the contents of local CSE diagnostic session over the network by generating a START_DIAG_SESSION event (Consumer of this event is DMA Push Event Provider), generating END_DIAG_SESSION event (Consumer of this event is DMA Push Event Provider), delivering each message between LOCAL_PWS_PORT and IOT_SERIAL communication ports as PWS_MESSAGE_EVENT to DMA Push Event Provider. </p>
+<p id="P-0189" num="0189"> In further support of DCU v2.0, the Communication Controller can support a local CSE diagnostic connection through the Local PWS port to the IOT serial port by providing a method to communicate its presence to the PWS connected to the system, for example by utilizing the RS232 signal designated as the CTS (Clear To Send) signal. The CTS signal is preferably held at logic level HIGH at the DCU. </p>
+<p id="P-0190" num="0190"> The DSR (Data Signal Ready) signal in the RS232 interface can control the diagnostic mode of the IOT. The DCU will preserve or as necessary &#x2018;create&#x2019; this control. If the IOT is in the diagnostic mode and is powered off it will power up in the diagnostics mode when the DSR signal to the IOT has been set HIGH. The PSW controls the DSR signal. </p>
+<p id="P-0191" num="0191"> While particular embodiments have been described, alternatives, modifications, variations, improvements, and substantial equivalents that are or may be presently unforeseen may arise to applicants or others skilled in the art. Accordingly, the appended claims as filed and as they may be amended are intended to embrace all such alternatives, modifications variations, improvements, and substantial equivalents. </p>
+<?detailed-description description="Detailed Description" end="tail"?>
+</description>
+<claims id="claims">
+<claim id="CLM-00001" num="00001">
+<claim-text><b>1</b>. A device model agent (DMA) comprising: 
+<claim-text>at least one device API through which the agent communicates with a device; </claim-text>
+<claim-text>a core device model including at least one CIM provider; and </claim-text>
+<claim-text>a service environment. </claim-text>
+</claim-text>
+ </claim>
+<claim id="CLM-00002" num="00002">
+<claim-text><b>2</b>. The DMA of <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the core device model comprises a service manager. </claim-text>
+ </claim>
+<claim id="CLM-00003" num="00003">
+<claim-text><b>3</b>. The DMA of <claim-ref idref="CLM-00002">claim 2</claim-ref> wherein the service manager loads services into the service environment. </claim-text>
+ </claim>
+<claim id="CLM-00004" num="00004">
+<claim-text><b>4</b>. The DMA of <claim-ref idref="CLM-00002">claim 2</claim-ref> wherein the service manager maintains a list of services installed in the DMA. </claim-text>
+ </claim>
+<claim id="CLM-00005" num="00005">
+<claim-text><b>5</b>. The DMA of <claim-ref idref="CLM-00002">claim 2</claim-ref> wherein the service manager controls lifecycles of at least one service installed in the DMA. </claim-text>
+ </claim>
+<claim id="CLM-00006" num="00006">
+<claim-text><b>6</b>. The DMA of <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the core device model comprises an object manager. </claim-text>
+ </claim>
+<claim id="CLM-00007" num="00007">
+<claim-text><b>7</b>. The DMA of <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the core device model agent comprises an event manager. </claim-text>
+ </claim>
+<claim id="CLM-00008" num="00008">
+<claim-text><b>8</b>. The DMA of <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the service environment is a Java virtual machine. </claim-text>
+ </claim>
+<claim id="CLM-00009" num="00009">
+<claim-text><b>9</b>. The DMA of <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the Java virtual machine is J2ME. </claim-text>
+ </claim>
+<claim id="CLM-00010" num="00010">
+<claim-text><b>10</b>. In a device comprising an operating system and a web server, a device model agent (DMA) in communication with the operating system and the web server and running at least one service, the DMA comprising: 
+<claim-text>a service environment in which the at least one service runs, the service environment facilitating communication between the at least one service and other parts of the DMA, the service environment further facilitating communication between the at least one service and the web server; </claim-text>
+<claim-text>a core device model including a service manager in communication with and managing the at least one service; and </claim-text>
+<claim-text>a device API in communication with the core device model and aspects of the operating system of the device. </claim-text>
+</claim-text>
+ </claim>
+<claim id="CLM-00011" num="00011">
+<claim-text><b>11</b>. The DMA of <claim-ref idref="CLM-00010">claim 10</claim-ref> wherein the at least one service communicates with a service supplier via the web server. </claim-text>
+ </claim>
+<claim id="CLM-00012" num="00012">
+<claim-text><b>12</b>. The DMA of <claim-ref idref="CLM-00011">claim 11</claim-ref> wehrein the at least one service communicates with a server of the service supplier to deliver information about the device. </claim-text>
+ </claim>
+<claim id="CLM-00013" num="00013">
+<claim-text><b>13</b>. The DMA of <claim-ref idref="CLM-00011">claim 11</claim-ref> wehrein the at least one service communicates with a server of the service supplier to request an additional service. </claim-text>
+ </claim>
+<claim id="CLM-00014" num="00014">
+<claim-text><b>14</b>. The DMA of <claim-ref idref="CLM-00010">claim 10</claim-ref> wherein the at least one service checks in with an edge server to deliver pending messages to the edge server and to receive waiting messages from the edge server. </claim-text>
+ </claim>
+<claim id="CLM-00015" num="00015">
+<claim-text><b>15</b>. The DMA of <claim-ref idref="CLM-00010">claim 10</claim-ref> wherein the device model agent provides a UI through the web server. </claim-text>
+ </claim>
+<claim id="CLM-00016" num="00016">
+<claim-text><b>16</b>. The DMA of <claim-ref idref="CLM-00010">claim 10</claim-ref> wherein the core device model monitors device events. </claim-text>
+ </claim>
+<claim id="CLM-00017" num="00017">
+<claim-text><b>17</b>. The DMA of <claim-ref idref="CLM-00016">claim 16</claim-ref> wherein the core device model takes at least one action in response to device events. </claim-text>
+ </claim>
+<claim id="CLM-00018" num="00018">
+<claim-text><b>18</b>. The DMA of <claim-ref idref="CLM-00017">claim 17</claim-ref> wherein the at least one action includes publishing data. </claim-text>
+ </claim>
+<claim id="CLM-00019" num="00019">
+<claim-text><b>19</b>. The DMA of <claim-ref idref="CLM-00017">claim 17</claim-ref> wherein the at least one action includes invoking processes on the host device as directed by external clients. </claim-text>
+ </claim>
+<claim id="CLM-00020" num="00020">
+<claim-text><b>20</b>. The DMA of <claim-ref idref="CLM-00017">claim 17</claim-ref> wherein the at least one action includes requesting addition of a service. </claim-text>
+ </claim>
+<claim id="CLM-00021" num="00021">
+<claim-text><b>21</b>. The DMA of <claim-ref idref="CLM-00017">claim 17</claim-ref> wherein the at least one action includes deleting a service.</claim-text>
+ </claim>
+</claims>
+</us-patent-application>
+

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE us-patent-application SYSTEM "us-patent-application-v40-2004-12-02.dtd" [ ]>
+<us-patent-application lang="EN" dtd-version="v4.0 2004-12-02" file="US20050004437A1-20050106.XML" status="PARALLEL-RUN" id="us-patent-application" country="US" date-produced="20041222" date-publ="20050106">
+<us-bibliographic-data-application lang="EN" country="US">
+<publication-reference>
+<document-id>
+<country>US</country>
+<doc-number>20050004437</doc-number>
+<kind>A1</kind>
+<date>20050106</date>
+</document-id>
+</publication-reference>
+<application-reference appl-type="utility">
+<document-id>
+<country>US</country>
+<doc-number>10830857</doc-number>
+<date>20040423</date>
+</document-id>
+</application-reference>
+<us-application-series-code>10</us-application-series-code>
+<us-publication-filing-type>
+<us-original-publication-voluntary/>
+</us-publication-filing-type>
+<priority-claims>
+<priority-claim sequence="01" kind="national">
+<country>CH</country>
+<doc-number>1974/01</doc-number>
+<date>20011026</date>
+</priority-claim>
+</priority-claims>
+<classification-ipc>
+<edition>07</edition>
+<main-classification>A61B005/00</main-classification>
+</classification-ipc>
+<classification-national>
+<country>US</country>
+<main-classification>600300000</main-classification>
+<further-classification>128905000</further-classification>
+<further-classification>345952000</further-classification>
+</classification-national>
+<invention-title id="d0e103">Simulation device for playful evaluation and display of blood sugar levels</invention-title>
+<us-related-documents>
+<continuation>
+<relation>
+<parent-doc>
+<document-id>
+<country>US</country>
+<doc-number>PCT/CH02/00573</doc-number>
+<date>20021021</date>
+</document-id>
+<parent-status>UNKNOWN</parent-status>
+</parent-doc>
+<child-doc>
+<document-id>
+<country>US</country>
+<doc-number>10830857</doc-number>
+<kind>A1</kind>
+<date>20040423</date>
+</document-id>
+</child-doc>
+</relation>
+</continuation>
+</us-related-documents>
+<parties>
+<applicants>
+<applicant sequence="00" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Kaufmann</last-name>
+<first-name>Heiner</first-name>
+<address>
+<city>Bern</city>
+<country>CH</country>
+</address>
+</addressbook>
+<nationality>
+<country>CH</country>
+</nationality>
+<residence>
+<country>CH</country>
+</residence>
+</applicant>
+<applicant sequence="01" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Vering</last-name>
+<first-name>Thomas</first-name>
+<address>
+<city>Bremgarten b. Bern</city>
+<country>CH</country>
+</address>
+</addressbook>
+<nationality>
+<country>CH</country>
+</nationality>
+<residence>
+<country>CH</country>
+</residence>
+</applicant>
+</applicants>
+<correspondence-address>
+<addressbook>
+<name>David E. Bruhn, Esq.;DORSEY &#x26; WHITNEY LLP</name>
+<address>
+<address-1>Intellectual Property Department</address-1>
+<address-2>Suite 1500, 50 South Sixth Street</address-2>
+<city>Minneapolis</city>
+<state>MN</state>
+<postcode>55402-1498</postcode>
+<country>US</country>
+</address>
+</addressbook>
+</correspondence-address>
+</parties>
+</us-bibliographic-data-application>
+<abstract id="abstract">
+<p id="A-0001" num="none">A simulation device for playful evaluation and display of blood sugar levels, including a display, wherein the evaluation is displayed by a virtual creature. </p>
+</abstract>
+<drawings id="DRAWINGS">
+<figure id="figure-D00000" num="00000">
+<img id="EMI-D00000" he="70.87mm" wi="128.71mm" file="US20050004437A1-20050106-D00000.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00001" num="00001">
+<img id="EMI-D00001" he="221.83mm" wi="147.74mm" file="US20050004437A1-20050106-D00001.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="figure-D00002" num="00002">
+<img id="EMI-D00002" he="226.06mm" wi="165.27mm" file="US20050004437A1-20050106-D00002.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+</drawings>
+<description id="description">
+<?cross-reference-to-related-applications description="Cross Reference To Related Applications" end="lead"?>
+<heading level="2" id="d0e253">CROSS-REFERENCE TO RELATED APPLICATION(S) </heading>
+<p id="P-0001" num="0001"> This application is a continuation of International Application No. PCT/CH02/00573, filed on Oct. 21, 2002, which claims priority to Swiss Application No. 1974/01, filed Oct. 26, 2001, the content of both are incorporated in their entirety by reference.</p>
+<?cross-reference-to-related-applications description="Cross Reference To Related Applications" end="tail"?>
+<?summary-of-invention description="Summary of Invention" end="lead"?>
+<heading level="2" id="d0e266">BACKGROUND </heading>
+<p id="P-0002" num="0002"> The present invention relates to simulation devices for playful evaluation and display of blood sugar levels. </p>
+<p id="P-0003" num="0003"> Diabetics are obliged to check their blood sugar levels several time a day. This is done by sampling blood themselves, applying the blood to a glucose measuring strip, connecting the measuring strip to the measuring and displaying apparatus and lastly displaying the measurement result. </p>
+<p id="P-0004" num="0004"> The disadvantages of the known systems are the limited interactivity, and insufficient visual, haptic and acoustic representation of individual measuring results and/or the evaluation of measuring results reached. </p>
+<heading level="2" id="d0e287">SUMMARY </heading>
+<p id="P-0005" num="0005"> It is an object of the invention to convey to the patient the information of the individual measuring results and the evaluation of multiple measuring results in order, in a visually, haptically and acoustically appealing&#x2014;more playful&#x2014;way </p>
+<p id="P-0006" num="0006"> The invention addresses the object using a simulation device featuring a virtual creature which communicates the evaluation to the user in various ways and interacts with the user through signs, speech or other acoustic signals, vibration, changes in temperature, size, shape or colour, and changes in the behaviour of the virtual creature. </p>
+<p id="P-0007" num="0007"> The simulation device in accordance with the invention comprises a housing and a display means, for example in the form of a graphic LCD display. Via an input device which is directly attached to the housing or can also be attached to an apparatus separate from the housing, the user inputs his blood sugar levels into a storing, evaluating and controlling unit, for example a microchip or microprocessor, for the purpose of storing the values. These can of course also be separate units. The inputted value is analyzed and assessed by the chip or processor using a stored evaluation method. Depending on the result, the apparatus then communicates the evaluation result and the measured result to the user in a playful way. In some preferred embodiments, the evaluation is displayed with the aid of a virtual creature which conveys the evaluation through signs, speech or other acoustic signals, changes in size, shape or color, or changes in posture or changes in its behavior. </p>
+<p id="P-0008" num="0008"> In accordance with another aspect of the invention, which can be used together with or independently of the simulation device described above, the evaluation of the readings is conveyed in the form of heating or cooling the entire apparatus or only a part of it. It is heated or cooled by means of a conventional cooling or heating element. </p>
+<p id="P-0009" num="0009"> A number of the parameters mentioned can also display or communicate the evaluation simultaneously or sequentially by being changed. </p>
+<p id="P-0010" num="0010"> In order to also be able to operate the apparatus at night, in some preferred embodiments, it comprises a light-emitting diode. </p>
+<p id="P-0011" num="0011"> The device in accordance with the invention can also be integrated into a PC, a mobile pocket PC or a mobile telephone </p>
+<p id="P-0012" num="0012"> In another embodiment of the device in accordance with the invention, the measured values are transmitted directly from a blood sugar measuring apparatus to the simulation device. The advantage of this arrangement and method is that readings do not have to be read from the measuring system and then inputted into the simulation device via a keyboard. Here, too, the data are transmitted from the measuring system to the simulation device either via a wire or wirelessly. </p>
+<p id="P-0013" num="0013"> In another embodiment, the simulation device is integrated into a conventional blood sugar measuring system. </p>
+<p id="P-0014" num="0014"> In another embodiment, the device in accordance with the invention exhibits a specific shape and/or choice of material of the housing; if, for example, the device is integrated into a teddy bear, this could increase acceptance of the simulation device by children. </p>
+<p id="P-0015" num="0015"> In addition, all the simulation devices can be controlled such that not only individual blood sugar level inputs change the display parameters, but rather by storing multiple values, the longer-term state of health is represented, e.g., the more bent over the virtual creature is displayed, the worse the average value of the readings for the previous month. </p>
+<p id="P-0016" num="0016"> Insufficient discipline by the user can also be very easily represented, e.g., the more heavily the virtual creature blushes, the more undisciplined blood sugar levels are transmitted to the simulation device. In this respect, the simulation device can also be described as a monitoring apparatus. </p>
+<p id="P-0017" num="0017"> The behavior of the virtual creature can also be changed by means of adjusting parameters. Thus, for example, the number of interactions per day between the virtual creature and the diabetic can be defined.</p>
+<?summary-of-invention description="Summary of Invention" end="tail"?>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="lead"?>
+<heading level="2" id="d0e361">BRIEF DESCRIPTION OF THE DRAWINGS </heading>
+<p id="P-0018" num="0018"> Exemplary preferred embodiments of a device and method in accordance with the invention are described below with the aid of figures, wherein the figures show the following: </p>
+<p id="P-0019" num="0019"> <figref idref="DRAWINGS">FIG. 1</figref> is a schematic representation of a simulation device in accordance with the invention; </p>
+<p id="P-0020" num="0020"> <figref idref="DRAWINGS">FIG. 2</figref><i>a </i>is a schematic representation of the simulation device in accordance with the invention, with an external input keyboard, </p>
+<p id="P-0021" num="0021"> <figref idref="DRAWINGS">FIG. 2</figref><i>b </i>is a schematic representation of the simulation device in accordance with the invention, with an external blood sugar measuring system; </p>
+<p id="P-0022" num="0022"> <figref idref="DRAWINGS">FIG. 3</figref> is a schematic representation of the simulation device in accordance with the invention, integrated into a blood sugar measuring system.</p>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="tail"?>
+<?detailed-description description="Detailed Description" end="lead"?>
+<heading level="2" id="d0e413">DETAILED DESCRIPTION OF THE INVENTION </heading>
+<p id="P-0023" num="0023"> As can be seen from <figref idref="DRAWINGS">FIG. 1</figref>, the simulation device in accordance with the invention comprises a housing <b>1</b>, a display means <b>2</b>, for example in the form of a graphic LCD display, and an &#x201c;on/off&#x201d; or &#x201c;reset&#x201d; button <b>3</b>. Via the keyboard <b>4</b>, which can be directly attached to the housing, the user inputs his blood sugar levels into a storing, evaluating and controlling unit <b>5</b>, for example a suitable microchip or microprocessor, for the purpose of storing the values. The inputted value is then analyzed and assessed by the chip <b>5</b> using a stored evaluation method. Depending on the result, the apparatus communicates the evaluation result and the measured result to the user. In some preferred embodiments, the evaluation is displayed with the aid of a virtual creature <b>6</b>. Acoustic signals are generated by means of a signal emitters <b>8</b>. </p>
+<p id="P-0024" num="0024"> For purposes of and uses in the present invention, exemplary suitable microchips, computers, microprocessors, processing, communication and display systems and electronic devices and components, and methods of their use are described in U.S. Pat. No. 6,186,145, the disclosures and teachings of which patent are incorporated herein by reference in their entirety. </p>
+<p id="P-0025" num="0025"> It is also possible to display the evaluation by means of a suitable heating/cooling element (not shown). It is equally possible to display using a suitable vibration element (not shown). </p>
+<p id="P-0026" num="0026"> In order to be able to operate the apparatus at night, in some preferred embodiments it comprises a suitable illumination element or elements, such as a light-emitting diode <b>7</b>. </p>
+<p id="P-0027" num="0027"> <figref idref="DRAWINGS">FIG. 2</figref><i>a </i>shows another embodiment of the device in accordance with the invention. The input keyboard is connected to the evaluation and displaying apparatus via wireless communication or by means of wires. </p>
+<p id="P-0028" num="0028"> <figref idref="DRAWINGS">FIG. 2</figref><i>b </i>shows another embodiment of the device in accordance with the invention, in which the measured values are transmitted, wirelessly or by means of wires, from a blood sugar measuring apparatus <b>9</b>, shown with a measuring strip <b>10</b>, to the simulation device. </p>
+<p id="P-0029" num="0029"> <figref idref="DRAWINGS">FIG. 3</figref> shows another embodiment, in which the simulation device is integrated into a conventional blood sugar measuring system. </p>
+<p id="P-0030" num="0030"> In the foregoing description, embodiments of the present invention, including preferred embodiments, have been presented for the purpose of illustration and description. They are not intended to be exhaustive or to limit the invention to the precise form disclosed. Obvious modifications or variations are possible in light of the above teachings. The embodiments were chosen and described to provide the best illustration of the principals of the invention and its practical application, and to enable one of ordinary skill in the art to utilize the invention in various embodiments and with various modifications as are suited to the particular use contemplated. All such modifications and variations are within the scope of the invention as determined by the appended claims when interpreted in accordance with the breadth they are fairly, legally, and equitably entitled. </p>
+<?detailed-description description="Detailed Description" end="tail"?>
+</description>
+<claims id="claims">
+<claim id="CLM-00001" num="00001">
+<claim-text><b>1</b>. A simulation device for displaying and evaluating blood sugar readings, comprising: 
+<claim-text>a housing; </claim-text>
+<claim-text>a display means; and </claim-text>
+<claim-text>a storing, evaluating and controlling unit; </claim-text>
+<claim-text>wherein the evaluation is displayed by means of a virtual creature. </claim-text>
+</claim-text>
+ </claim>
+<claim id="CLM-00002" num="00002">
+<claim-text><b>2</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein said simulation device has an input device. </claim-text>
+ </claim>
+<claim id="CLM-00003" num="00003">
+<claim-text><b>3</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the evaluation of the blood sugar levels causes a change in said virtual creature. </claim-text>
+ </claim>
+<claim id="CLM-00004" num="00004">
+<claim-text><b>4</b>. The simulation device as set forth in <claim-ref idref="CLM-00003">claim 3</claim-ref>, wherein said change in the virtual creature can be seen as a change in color. </claim-text>
+ </claim>
+<claim id="CLM-00005" num="00005">
+<claim-text><b>5</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the device is integrated into another apparatus. </claim-text>
+ </claim>
+<claim id="CLM-00006" num="00006">
+<claim-text><b>6</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the device is integrated into a pocket PC. </claim-text>
+ </claim>
+<claim id="CLM-00007" num="00007">
+<claim-text><b>7</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the device is integrated into a blood sugar measuring apparatus. </claim-text>
+ </claim>
+<claim id="CLM-00008" num="00008">
+<claim-text><b>8</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the evaluation of the blood sugar levels is additionally conveyed via acoustic means. </claim-text>
+ </claim>
+<claim id="CLM-00009" num="00009">
+<claim-text><b>9</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the housing has a specific shape. </claim-text>
+ </claim>
+<claim id="CLM-00010" num="00010">
+<claim-text><b>10</b>. The simulation device as set forth in <claim-ref idref="CLM-00001">claim 1</claim-ref>, wherein the ascertained blood sugar levels are transmitted to the evaluating unit by means of wireless communication.</claim-text>
+ </claim>
+</claims>
+</us-patent-application>
+

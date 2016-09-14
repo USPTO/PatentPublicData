@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import gov.uspto.parser.dom4j.KeyValueParser;
+import gov.uspto.parser.dom4j.keyvalue.KvParser;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.greenbook.fragments.AbstractTextNode;
 import gov.uspto.patent.greenbook.fragments.AgentNode;
@@ -30,6 +30,7 @@ import gov.uspto.patent.greenbook.fragments.RelatedIdNode;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
+import gov.uspto.patent.model.ClaimTreeBuilder;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
@@ -46,11 +47,11 @@ import gov.uspto.patent.model.entity.Inventor;
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  */
-public class Greenbook extends KeyValueParser {
+public class Greenbook extends KvParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Greenbook.class);
 
+	/*
 	private static final Set<String> SECTIONS = new HashSet<String>(20);
-
 	static {
 		SECTIONS.add("PATN");
 		SECTIONS.add("INVT");
@@ -73,10 +74,7 @@ public class Greenbook extends KeyValueParser {
 		SECTIONS.add("CLMS");
 		SECTIONS.add("DCLM");
 	}
-
-	public Greenbook() {
-		super(SECTIONS);
-	}
+    */
 
 	@Override
 	public Patent parse(Document document) throws PatentReaderException {
@@ -106,6 +104,7 @@ public class Greenbook extends KeyValueParser {
 		Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
 		Description description = new DescriptionNode(document, textProcessor).read();
 		List<Claim> claims = new ClaimNode(document, textProcessor).read();
+		new ClaimTreeBuilder(claims).build();
 
 		/*
 		 * Building Patent Object.

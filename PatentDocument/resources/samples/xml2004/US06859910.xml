@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE us-patent-grant SYSTEM "us-patent-grant-v40-2004-12-02.dtd" [ ]>
+<us-patent-grant lang="EN" dtd-version="v40 2004-12-02" file="US06859910-20050222.XML" status="PARALLEL-RUN" id="us-patent-grant" country="US" date-produced="20050209" date-publ="20050222">
+<us-bibliographic-data-grant>
+<publication-reference>
+<document-id>
+<country>US</country>
+<doc-number>06859910</doc-number>
+<kind>B2</kind>
+<date>20050222</date>
+</document-id>
+</publication-reference>
+<application-reference appl-type="utility">
+<document-id>
+<country>US</country>
+<doc-number>09832323</doc-number>
+<date>20010410</date>
+</document-id>
+</application-reference>
+<us-application-series-code>09</us-application-series-code>
+<us-term-of-grant>
+<us-term-extension>802</us-term-extension>
+</us-term-of-grant>
+<classification-ipc>
+<edition>7</edition>
+<main-classification>G06F015/00</main-classification>
+<further-classification>G06F017/00</further-classification>
+<further-classification>G06F017/21</further-classification>
+<further-classification>G06F017/24</further-classification>
+</classification-ipc>
+<classification-national>
+<country>US</country>
+<main-classification>715513</main-classification>
+<further-classification>709219</further-classification>
+<further-classification>709227</further-classification>
+<further-classification>709203</further-classification>
+<further-classification>705 26</further-classification>
+<further-classification>705 39</further-classification>
+<further-classification>705 75</further-classification>
+<further-classification>707  7</further-classification>
+<further-classification>707 10</further-classification>
+<further-classification>707102</further-classification>
+<further-classification>345748</further-classification>
+<further-classification>345760</further-classification>
+<further-classification>345762</further-classification>
+</classification-national>
+<invention-title id="d0e53">Methods and systems for transactional tunneling</invention-title>
+<references-cited>
+<citation>
+<patcit num="00001">
+<document-id>
+<country>US</country>
+<doc-number>5793966</doc-number>
+<kind>A</kind>
+<name>Amstein et al.</name>
+<date>19980800</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709203</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00002">
+<document-id>
+<country>US</country>
+<doc-number>6205482</doc-number>
+<kind>B1</kind>
+<name>Navarre et al.</name>
+<date>20010300</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709227</main-classification></classification-national>
+</citation>
+<citation>
+<patcit num="00003">
+<document-id>
+<country>US</country>
+<doc-number>20020055909</doc-number>
+<kind>A1</kind>
+<name>Fung et al.</name>
+<date>20020500</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+</citation>
+<citation>
+<patcit num="00004">
+<document-id>
+<country>US</country>
+<doc-number>20020069244</doc-number>
+<kind>A1</kind>
+<name>Blair et al.</name>
+<date>20020600</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+</citation>
+<citation>
+<patcit num="00005">
+<document-id>
+<country>US</country>
+<doc-number>20020078093</doc-number>
+<kind>A1</kind>
+<name>Samaniego et al.</name>
+<date>20020600</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+</citation>
+<citation>
+<patcit num="00006">
+<document-id>
+<country>US</country>
+<doc-number>20020095387</doc-number>
+<kind>A1</kind>
+<name>Sosa et al.</name>
+<date>20020700</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+</citation>
+<citation>
+<patcit num="00007">
+<document-id>
+<country>US</country>
+<doc-number>20020152126</doc-number>
+<kind>A1</kind>
+<name>Lieu et al.</name>
+<date>20021000</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+</citation>
+<citation>
+<patcit num="00008">
+<document-id>
+<country>US</country>
+<doc-number>20030208684</doc-number>
+<kind>A1</kind>
+<name>Camacho et al.</name>
+<date>20031100</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+</citation>
+</references-cited>
+<number-of-claims>2</number-of-claims>
+<us-exemplary-claim>1</us-exemplary-claim>
+<field-of-search>
+<classification-national>
+<country>US</country>
+<main-classification>709203</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>709217</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>709219</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>709227</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>705 26</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>705 39</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>705 64</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>705 75</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>902 40</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>707  2</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>707  7</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>707 10</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>707102</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>345748</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>345762</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>345760</main-classification>
+</classification-national>
+<classification-national>
+<country>US</country>
+<main-classification>715513</main-classification>
+</classification-national>
+</field-of-search>
+<figures>
+<number-of-drawing-sheets>9</number-of-drawing-sheets>
+<number-of-figures>10</number-of-figures>
+</figures>
+<us-related-documents>
+<us-provisional-application>
+<document-id>
+<country>US</country>
+<doc-number>60195933</doc-number>
+<kind>00</kind>
+<date>20000410</date>
+</document-id>
+</us-provisional-application>
+<related-publication>
+<document-id>
+<country>US</country>
+<doc-number>20010037361</doc-number>
+<kind>A1</kind>
+<date>20011101</date>
+</document-id>
+</related-publication>
+</us-related-documents>
+<parties>
+<applicants>
+<applicant sequence="001" app-type="applicant-inventor" designation="us-only">
+<addressbook>
+<last-name>Croy</last-name>
+<first-name>John Charles</first-name>
+<address>
+<city>Middletown</city>
+<state>RI</state>
+<country>US</country>
+</address>
+</addressbook>
+<nationality>
+<country>omitted</country>
+</nationality>
+<residence>
+<country>US</country>
+</residence>
+</applicant>
+</applicants>
+<agents>
+<agent sequence="01" rep-type="attorney">
+<addressbook>
+<last-name>Born</last-name>
+<first-name>Joseph H.</first-name>
+<address>
+<country>unknown</country>
+</address>
+</addressbook>
+</agent>
+<agent sequence="02" rep-type="attorney">
+<addressbook>
+<orgname>Foley Hoag LLP</orgname>
+<address>
+<country>unknown</country>
+</address>
+</addressbook>
+</agent>
+</agents>
+</parties>
+<assignees>
+<assignee>
+<orgname>Bluestreak.com</orgname>
+<role>02</role>
+</assignee>
+</assignees>
+<examiners>
+<primary-examiner>
+<last-name>Knight</last-name>
+<first-name>Anthony</first-name>
+<department>2121</department>
+</primary-examiner>
+<assistant-examiner>
+<last-name>Barnes</last-name>
+<first-name>Crystal J</first-name>
+</assistant-examiner>
+</examiners>
+</us-bibliographic-data-grant>
+<abstract id="abstract">
+<p id="P-00001" num="00001">Methods and systems for executing an electronic transaction are provided, including parsing pages of a web server that execute a transaction to separate static from transactional content, identifying and storing rules for executing a transaction on the site, and presenting displays that enable a user to complete the transaction without interacting directly with the site, such as by interacting with a banner ad, electronic mail, cellular phone, or other simple interface.</p>
+</abstract>
+<drawings id="DRAWINGS">
+<figure id="Fig-EMI-D00000" num="00000">
+<img id="EMI-D00000" he="157.99mm" wi="180.91mm" file="US06859910-20050222-D00000.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00001" num="00001">
+<img id="EMI-D00001" he="196.21mm" wi="140.40mm" file="US06859910-20050222-D00001.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00002" num="00002">
+<img id="EMI-D00002" he="154.24mm" wi="134.43mm" file="US06859910-20050222-D00002.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00003" num="00003">
+<img id="EMI-D00003" he="170.50mm" wi="98.30mm" file="US06859910-20050222-D00003.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00004" num="00004">
+<img id="EMI-D00004" he="82.36mm" wi="135.32mm" file="US06859910-20050222-D00004.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00005" num="00005">
+<img id="EMI-D00005" he="189.86mm" wi="173.80mm" file="US06859910-20050222-D00005.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00006" num="00006">
+<img id="EMI-D00006" he="206.88mm" wi="173.86mm" file="US06859910-20050222-D00006.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00007" num="00007">
+<img id="EMI-D00007" he="204.79mm" wi="165.61mm" file="US06859910-20050222-D00007.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00008" num="00008">
+<img id="EMI-D00008" he="212.72mm" wi="114.49mm" file="US06859910-20050222-D00008.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00009" num="00009">
+<img id="EMI-D00009" he="167.26mm" wi="119.89mm" file="US06859910-20050222-D00009.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+</drawings>
+<description id="description">
+<?RELAPP description="Other Patent Relations" end="lead"?>
+<heading id="heading-d0e654" level="1">CROSS REFERENCE TO RELATED U.S. APPLICATIONS</heading>
+<p id="P-00002" num="00002">This application claims priority to U.S. Provisional Patent Application Ser. No. 60/195,933 filed Apr. 10, 2000, the entire disclosure of which is herein incorporated by reference.</p>
+<?RELAPP description="Other Patent Relations" end="tail"?>
+<?BRFSUM description="Brief Summary" end="lead"?>
+<heading id="heading-d0e670" level="1">BACKGROUND OF THE INVENTION</heading>
+<p id="P-00003" num="00003">1. Field of the Invention</p>
+<p id="P-00004" num="00004">This disclosure relates to the field of electronic commerce, and more particularly to the field of tunneling technology.</p>
+<p id="P-00005" num="00005">2. Description of the Related Art</p>
+<p id="P-00006" num="00006">The advent of the computer and the computer network, particularly the Internet, has revolutionized the ways people communicate and the ways people store, retrieve and manipulate data. An important function of the Internet is electronic commerce through which people shop for and procure various goods, services and information. In a typical electronic commerce transaction a user browses an Internet site that displays content related to goods, services, or information that the user may wish to procure. In addition, a typical electronic commerce transaction requires the user to enter various data into forms or fields on the Internet site, such as the user's name, address, zip code, telephone number, credit card number, quantity of item selected, and the like. Thus, a typical Internet electronic commerce transaction is enabled by a combination of display content (which might include static content, audio, video, sounds, or other displays) and transactional content (which may include any exchange of data that supports the underlying procurement of, or ordering of, goods, services, or information through the site or other similar content).</p>
+<p id="P-00007" num="00007">A well-known problem with the Internet is that of limited transmission speeds. A combination of limited bandwidth, due to the presence of twisted pair copper wires and other low-bandwidth physical transmission media, and transmission delays, such as queuing and routing delays, means that Internet pages can be slow to load, so that Internet navigation is slow, as are some electronic commerce transactions. Delays are particularly acute for so-called &#x201c;rich media&#x201d; content, including dynamic content such as animation, video, and audio. Thus, rich media content used in electronic commerce, such as advertisements, can impair the performance of Internet sites that display such content.</p>
+<p id="P-00008" num="00008">Some solutions have been implemented to reduce the problems of Internet performance. One such solution is web caching. Web caching solutions of a variety of types have been created by Akamai, Sandpiper, Cidera, AT&#x26;T, Inktomi, Alteon and f5, among others. Web caching locates Internet content closer to the user who is interacting with an Internet site. Closeness may be measured in terms of performance, rather than geographic proximity. For example, frequently accessed content may be located on a server that is located fewer network nodes away from end users who are likely to access it or can be located on higher speed machines or transmission services. Web caching results in faster delivery of information over the Internet.</p>
+<p id="P-00009" num="00009">A number of problems exist with web caching. One problem is the nature of content that is cached, namely, static content such as GIF files, static HTML pages, audio files and video files. Although this content represents a significant portion of a given web page, a large amount of content is not cached, such as dynamic content and transactional content. This is because dynamic content is often based on the cookie settings of particular users and because data for transactional content must travel all the way back and forth between origin servers. Since the content can be specific to a user, it can be difficult to cache the content close to a user. That is, the content for one user may need to be in a different place from the content of a second user. When the shear number of users of the Internet is taken into account, the problem becomes quite clear that there is no single location where dynamic content can be cached.</p>
+<p id="P-00010" num="00010">A need exists for a solution that improves Internet performance for situations involving static, dynamic and transactional content.</p>
+<heading id="heading-d0e715" level="1">SUMMARY</heading>
+<p id="P-00011" num="00011">The methods, systems, and means disclosed herein provide for caching of dynamic and transactional content for an Internet site either alone or in conjunction with the caching of static content. In addition, the methods and systems disclosed herein allow convenient separation of a selected Internet site into static portions that are easily cached and dynamic portions that are cacheable with an appropriately configured engine located at a web cache.</p>
+<p id="P-00012" num="00012">Included herein is a method of executing an electronic transaction, with various steps, including establishing a persistent connection to a server, wherein the server has a capability of executing an electronic transaction, obtaining a set of pages from the server, wherein interaction with the set of pages is sufficient to execute the electronic transaction, parsing the set of pages to separate transactional content from other content, identifying elements of the transactional content that are required to complete the electronic transaction, storing one or more rules, wherein compliance with the one or more rules satisfies the elements required to complete the electronic transaction, presenting a display to a user, wherein the display is different from the set of pages and wherein the display encourages execution of the electronic transaction, and upon interaction of the user with the display, executing the rules to send a signal to the server to complete the electronic transaction. In some situations, the static content may be cached close (performance-wise) to the user to enhance performance.</p>
+<p id="P-00013" num="00013">As used herein, the following terms encompass the following meanings. However, these definitions in no way limit the meaning of the term as would be understood by one of skill in the art.</p>
+<p id="P-00014" num="00014">&#x2018;User&#x2019; generally denotes an entity, such as a human being, using a device, such as one allowing access to a network. This is typically a computer having a keyboard, a pointing device, and an a/v display device, with the computer running software able to display computer-originated material typically received from one or more separate devices. Preferably the user's computer is running browser software enabling it to act as a client and communicate by the network to one or more servers. The user can, however, be any entity connected to a network through any type of client.</p>
+<p id="P-00015" num="00015">&#x2018;Browser&#x2019; generally denotes, among other things, a process or system that provides the functionality of a client, such that it interconnects by a network to one or more servers. The browser may be Microsoft's Internet Explorer, Netscape's Navigator, or any other commercial or custom designed browser or any other thing allowing access to material on a network. A browser can also include browser plug-ins.</p>
+<p id="P-00016" num="00016">&#x2018;Client&#x2019; generally denotes a computer or other thing such as, but not limited to, a PDA, pager, phone, WebTV system, thin client, or any software or hardware process that interconnects by a network with one or more servers. A client need not be continuously attached to the network.</p>
+<p id="P-00017" num="00017">&#x2018;Server&#x2019; generally denotes one or more computers or similar things that interconnect by a network with clients and that have application programs running therein, such as for the purpose of transferring computer software, data, audio, graphic and/or other material. A server can be a purely software based function. Server also includes any process or system for interconnecting via a network with clients.</p>
+<p id="P-00018" num="00018">&#x2018;Network&#x2019; generally denotes a collection of clients and servers. A network can include, but is not limited to, the Internet, the World Wide Web, any intranet system, any extranet system, a telecommunications network, a wireless network, a media broadcast network (such as, but not limited to, a broadcast television network, a broadcast radio network, or a cable television network), a satellite network, or any other private or public network.</p>
+<?BRFSUM description="Brief Summary" end="tail"?>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="lead"?>
+<description-of-drawings>
+<heading id="heading-d0e766" level="1">BRIEF DESCRIPTION OF THE FIGURES</heading>
+<p id="P-00019" num="00019"><figref idref="DRAWINGS">FIG. 1</figref> describes an embodiment of conventional tunneling.</p>
+<p id="P-00020" num="00020"><figref idref="DRAWINGS">FIG. 2</figref> describes an embodiment of transactional tunneling.</p>
+<p id="P-00021" num="00021"><figref idref="DRAWINGS">FIG. 3</figref> describes an embodiment of a configuration with elements for tunneling to a web server.</p>
+<p id="P-00022" num="00022"><figref idref="DRAWINGS">FIG. 4</figref> shows a flowchart depicting the steps of an embodiment for generating a transactional tunnel.</p>
+<p id="P-00023" num="00023"><figref idref="DRAWINGS">FIG. 5</figref> depicts the separation of rules from content from HTML as received from a destination site in an embodiment.</p>
+<p id="P-00024" num="00024"><figref idref="DRAWINGS">FIG. 6</figref> depicts functional elements for an embodiment involving transactional tunneling.</p>
+<p id="P-00025" num="00025"><figref idref="DRAWINGS">FIG. 7</figref> shows an embodiment of a graphical user interface (GUI).</p>
+<p id="P-00026" num="00026"><figref idref="DRAWINGS">FIG. 8</figref> shows a field view of the embodiment of a graphical user interface depicted in FIG. <b>7</b>.</p>
+<p id="P-00027" num="00027"><figref idref="DRAWINGS">FIG. 9</figref> shows a flowchart with the steps of an embodiment for creating validation code.</p>
+<p id="P-00028" num="00028"><figref idref="DRAWINGS">FIG. 10</figref> shows a schematic of an embodiment of the functions of a servlet validation engine.</p>
+</description-of-drawings>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="tail"?>
+<?DETDESC description="Detailed Description" end="lead"?>
+<heading id="heading-d0e863" level="1">DETAILED DESCRIPTION</heading>
+<p id="P-00029" num="00029">Tunneling is a method of transporting data from one server to another in a computer network. Referring to <figref idref="DRAWINGS">FIG. 1</figref>, conventional tunneling involves moving data from one virtual private network (VPN) or host <b>110</b> to another host <b>112</b> using a protocol, such as the Point-to-Point protocol of Microsoft Corporation. Tunneling typically uses encryption to encode data, such as RC4 encryption from RSA, which is a fast stream cipher, or Secure Socket Layer (SSL) encryption, which is a widely available public key cryptography scheme distributed by Netscape Corporation. SSL is supported in almost all browsers and web server technologies. Tunneling also implies that once a connection <b>114</b> is established between servers, it remains open over a sustained period of time.</p>
+<p id="P-00030" num="00030">Referring to <figref idref="DRAWINGS">FIG. 2</figref>, transactional tunneling is a form of tunneling that moves transactional groups of data according to a pre-defined set of transactional rules. In the configuration <b>200</b> of <figref idref="DRAWINGS">FIG. 2</figref>, the host <b>110</b> and the host <b>112</b> are connected by the connection <b>114</b> as in FIG. <b>1</b>. However, in transactional tunneling, there is at least one protocol layer on top of conventional tunneling. It relies upon the functionality of the tunneling layer below, namely, encryption and an ability to transport data. Thus, a set of rules are stored, such as in a rules database <b>202</b>, which establish the transactional protocol on top of the tunneling.</p>
+<p id="P-00031" num="00031">Transactional tunneling enables support of HTTP data to web servers from a dedicated smart client application, where a smart client is an unmanned application, rather than a browser operated by a person. Business applications that require this type of solution can be web advertising servers, distributed global servers of transactional content, and shopping robots, among others. A smart client enhances the functionality of a web server's functionality. A smart client has a &#x201c;multiplier effect&#x201d; on functionality of a web server, permitting the web server to, among other things, build advertisements and serve them across the Internet, duplicate behavior of a web site, send email to customers encapsulating web site sign-ups, enable global serving of a web site from an origin server, and perform web site visualization and redundancy checking.</p>
+<p id="P-00032" num="00032">Transactional tunneling is desirable to communicate with HTTP web servers because they are designed to deliver content primarily to human beings. They transport content according to the HTTP protocol, and the content for human viewing is presented as executed HTML. Responses to transactional web pages are done using URL encoded data sets, including Common Gateway URL encoding schemas. Since web content is oriented to human beings, enabling a machine to communicate with a web server is not an easy task. To do so, the connection must be managed, and the syntax of the data language that the server uses must be employed. To do so requires a solution that manages the connection, the data flow, the data syntax and the encryption.</p>
+<p id="P-00033" num="00033">Referring to <figref idref="DRAWINGS">FIGS. 3 and 4</figref>, it is a four step process to tunnel to a web server. The flow chart <b>400</b> of <figref idref="DRAWINGS">FIG. 4</figref> depicts the steps for tunneling. First in a step <b>402</b>, the web server must be scanned and its data syntax and connection rules must be defined. Next, in a step <b>404</b>, rules must be stored in a database using a well-defined syntax. Next, in a step <b>408</b>, using the previously identified rules, any data requiring tunneling must be validated, the connection managed, and the data encrypted. Finally, in a step <b>410</b>, the rules must be periodically checked and validated against the web site in case the rules need to be refreshed. <figref idref="DRAWINGS">FIG. 3</figref> depicts a configuration <b>300</b> with the elements for tunneling to a web server. A rules engine <b>302</b> makes a connection <b>304</b> to the destination web server <b>112</b>. The rules engine <b>302</b> accesses the rules in the rules database <b>202</b>, which can also be accessed by the first host <b>110</b>.</p>
+<p id="P-00034" num="00034">The methods and systems disclosed herein provide for caching of dynamic and transactional content for an Internet site either alone or in conjunction with the caching of static content. In addition, the methods and systems disclosed herein allow convenient separation of a selected Internet site into static portions that are easily cached and dynamic portions that are cacheable with an appropriately configured engine located at a web cache. Although the examples presented below will discuss caching of dynamic or transactional information primarily in conjunction with advertising over the World Wide Web, it would be obvious to one of skill in the art that the technologies described below could be used in conjunction with any type of dynamic or transactional content that could be served over a network. Therefore the invention below includes, but is not limited to, caching of advertising material, caching of Internet purchasing information, caching of information specific to an individual user, and/or caching of any other type of dynamic or transactional content. This caching may be performed on any type of network including the Internet, the World Wide Web, any intranet or extranet system, or any other type of network known now or later developed.</p>
+<p id="P-00035" num="00035">Web server content can be thought of as having two constituent parts: first, static or flat HTML content that is viewed by a user accessing the site, and second, rules for communicating with the web server containing the site. In the methods and systems disclosed herein, the HTML content is separated from the rules for interacting with the site. Although the two elements are bound together in an HTML document, the portion that communicates with the web server can be separated from the portion that is presented to the user. This need not be a physical separation and the two portions can still be contained in the same document or file, but they can be understood as being separable conceptually. <figref idref="DRAWINGS">FIG. 5</figref> depicts separation of rules from content from the HTML that is retrieved from a destination site.</p>
+<p id="P-00036" num="00036">The transactional tunneling methods and systems disclosed herein provide speed, reliability, and cost-effectiveness. First, a persistent connection between the client and server can be established and maintained, which can be accomplished using TCP/IP relying on TCP to manage open stream connections. SSL, which is widely adopted, can be used to encrypt data. A variety of errors can occur in tunneled transactions. Malformed transactions that supply incorrect data should be guaranteed not to happen, and transactions that break a connection should be minimized. Alarms should be established to warn operations personnel if a problem occurs. Second, the persistent connection can be selected so as to be optimized. Standard routing for networks (such as IP networks, and/or the Internet) is not always optimized. When a user is connected to a server, that connection is chosen at the time of connection and may go through any number of routes. These routes may contain a suboptimal segment of transmission media, for instance, a lower grade cable. When a tunnel is established, and because of its persistence, a tunnel can placed on a preselected optimized route and can the maintain that route indefinitely. Both of these potential benefits of transactional tunneling can create increased efficiency on networks and can allow network users trying to interact with remote servers do so faster.</p>
+<p id="P-00037" num="00037">The transactional tunneling methods disclosed herein provide a robust solution for transactional tunneling. The tunneling is a sophisticated solution that builds upon existing standards and opens opportunities for many permutations of business. The solution layers on top of HTTP and utilizes the functionality of layers beneath it, including HTTP, SSL and TCP/IP.</p>
+<p id="P-00038" num="00038">The methods and systems disclosed herein in one embodiment permit an operator to scan a multi-page web site and identify form fields, to store rules in a database, to re-use rules by providing an HTTP receptor to rules, to generate code or HTML forms to use the rules and to store each transaction enabled with the web server in an encrypted database.</p>
+<p id="P-00039" num="00039">Referring to <figref idref="DRAWINGS">FIG. 6</figref>, a configuration <b>600</b> is provided indicating functional elements for the methods and systems disclosed herein. A number of functional elements may be provided, including a graphical user interface <b>602</b> or administration tool, a rules engine <b>608</b>, a tunnel engine <b>610</b>, a web server engine <b>612</b>, and a rules database <b>604</b>. The configuration allows the operator to interact with the destination web server <b>614</b> and the client <b>618</b> using the rules.</p>
+<p id="P-00040" num="00040">At a high level, the graphical user interface <b>602</b> assists an operator in scanning web site pages that permit execution of a transaction, identifying transactional elements, such as form fields, and identifying rules for submitting data to the transactional element. A second high level component, a servlet side validation engine, validates data that is received when a user interacts with a display or other element that the operator creates. The validation engine and administration tool can reside both on a server of the operator and on a client machine of the operator. Both the client-side and the server-side can operate mutually according to a validation rule that is stored in the rules database <b>604</b>.</p>
+<p id="P-00041" num="00041">The graphical user interface (GUI) <b>602</b> may consist of a served application built on client JAVA technology and running on any conventional web browser. It may be made accessible from a site that is provided by a host of the methods and systems disclosed herein. The site may include password protection. The graphical user interface <b>602</b> preferably permits the operator to enter the URL of a site that that operator wishes to scan, to identify form field rules, to test data submissions, to store rules in a database for re-use, and to establish alarm conditions and alarm routing instructions.</p>
+<p id="P-00042" num="00042">The rules engine <b>608</b> may consist of a server-side application that communicates with the graphical user interface <b>602</b>. The rules engine <b>608</b> may be a multiple threaded application that is responsible for driving the graphical user interface <b>602</b>, building the rules from a destination web site, and storing the rules in the rules database <b>604</b>. The rules engine <b>608</b> can generate content, including HTML content and other coded content for providing displays, such as rich media advertising displays. The rules engine <b>608</b> also enables easy re-use of rules. The generated to content can be provided with metadata for easy access to database rules.</p>
+<p id="P-00043" num="00043">The tunnel engine <b>610</b> plugs into the rules engine <b>608</b> as well as the web server engine <b>612</b>. The tunnel engine <b>610</b> is responsible for encrypting data, managing the HTTP connection state, and transporting data to the destination web server.</p>
+<p id="P-00044" num="00044">The web server engine <b>612</b> exposes the rules that are established in rules database <b>604</b>. The web engine can record all transaction activity in an activity log, and controls access to the rules database <b>604</b>. The web engine <b>612</b> uses the rules engine <b>608</b>, the tunnel engine <b>612</b>, and the rules database <b>604</b>. It triggers alarms whenever it detects a mismatch of rules.</p>
+<p id="P-00045" num="00045">The rules database <b>604</b> may be any JDBC compliant database, such as Oracle, SQL Server, or the like. The database may store rules that can be used, once identified, to provide a way of pre-validating data before it is submitted to a destination web site, such as to prove that any data to be submitted to the site is properly formatted. For example, if a form on the web site requires name, zip code, and phone in a format, the rules can check submitted data to ensure that it is properly formatted for submission (for instance, that a zip code contains no letters, only numbers). Further, a user may click a single click on an advertisement, but the transaction may require submission of data to fields on five different pages of the destination site (for instance, if name and zip code are submitted on different pages). The rules database <b>604</b> can direct how to parse the data to be submitted to direct it to the appropriate pages on the destination site.</p>
+<p id="P-00046" num="00046">The graphical user interface <b>602</b> is an administrative component that the operator or host can use to assist in parsing a web site into static and transactional components, and to configure the connection to a selected web site. <figref idref="DRAWINGS">FIG. 7</figref> shows an example of one graphical user interface <b>602</b> of the present invention. In that figure, the graphical user interface <b>602</b> is being used by an operator to configure transactional content that contains a search engine. In this embodiment, the operator is a provider of advertising displays, and the operator has decided to use the Yahoo! search engine in an advertising display. The operator has therefore accessed the Yahoo! search engine webpage <b>701</b> through the graphical user interface <b>602</b>. On the graphical user interface <b>602</b> there can be seen five separate file tabs which correspond to different types of views the operator can have of the Yahoo! site. The currently selected tab is the HTML tab <b>703</b>, which is showing the web page as it would appear to a user. Thus this tab <b>703</b> shows the executed HTML. Other tabs will show other views of this page. The HTML Source tab <b>705</b> would show the underlying HTML source code that generates this page. The XML tab <b>709</b> will show XML data relating to the use of fields and the linking of the transmission tunneling to XML language parameters. The Jasper Code tab <b>711</b> shows the page as laid out in the proprietary Jasper language, a language for generating rich media displays. It should be understood that in accordance with the methods and systems disclosed herein, an operator could create a graphical user interface <b>602</b> for creating displays or other content with any suitable language. The Field tab <b>713</b> will show the operator the fields which can be activated in the page they are currently viewing. <figref idref="DRAWINGS">FIG. 8</figref> shows the same Yahoo! webpage laid out by fields. On the field layout, there are separate columns showing the name of the field <b>801</b>, the type of field <b>803</b>, and the value of the field <b>805</b>. In this particular example, one of the entries (labeled &#x201c;q&#x201d;) <b>815</b> is for a field corresponding to the search entry box <b>715</b> visible in FIG. <b>7</b>. If a value is entered corresponding to this field, Yahoo will perform the search on that value. In this way the operator can discover the fields that will need to have values defined in order to execute their desired action. Once this field has been located, the operator, as described below, can use this field in conjunction with their other content to allow a user to search through an alternative connection.</p>
+<p id="P-00047" num="00047">The graphical user interface <b>602</b> or administration tool can be embodied as a JAVA application or a JAVA applet that permits the operator to access it through the Internet. The main purpose of the graphical user interface <b>602</b> is to enable creation of validation code; that is, code that validates the data that will be submitted to a destination web site where a transaction will occur. In addition, the graphical user interface <b>602</b> enables cookie control, email notification, transaction data and operator information.</p>
+<p id="P-00048" num="00048">To create validation code, the operator can have two choices. First, the operator can use the graphical user interface <b>602</b> and enter a URL. The system scans the URL, parses the first page of the HTML, and displays the result of the parsing. Then the operator can modify the currently scanned information from the site by selecting the HTML tab <b>703</b> and can also submit specific data that is modified by the operator to the destination web site. All of the properties, such as cookies, submitted type (GET, POST, etc.), and form tags within HTML that occurred during submission are recorded, such as in XML validation code. The XML validation code is usually in accordance with the XML 1.0 Document Type Definition (DTD) published by the World Wide Web Consortium of the International Standards Organization. Alternatively, the operator can create each field manually. The operator can design the steps with whatever fields and validation types the operator prefers. The validation of this HTML code is like text, email, or the like. The user can set up specific properties, such as URL, submit type, and cookies.</p>
+<p id="P-00049" num="00049"><figref idref="DRAWINGS">FIG. 9</figref> depicts a flow chart <b>900</b> with steps for either automatic or manual creation of validation code. First, at a step <b>902</b>, the process initiates. At a step <b>904</b> the operator indicates whether to automatically scan a URL or to manually create a form for a transaction. If the user selects automatic scanning, then the user enters the URL at a step <b>906</b> and creates forms at a step <b>908</b> as indicated above by interacting with the graphical user interface <b>602</b>. The automatic scanning mode can present a tree view on the left portion of the display screen that shows the current HTML configuration, as well as a content panel that includes the five sub-panels, HTML, HTML Source, XML and JASPER Code views. The tree view presents the current HTML, so that if the operator submits the modified data to the selected URL, it should be parsed and should present a child node to show the next step. Clicking a particular tree node can display the relevant content for that node in the display panel. The content panel is separated to assist in creation of the validation rule. The HTML and HTML Source views assist the operator in creating validation code, by displaying the form fields, tags and the like that will be needed in order to submit a transaction to the destination site. The Field view shows the list of input tags in HTML, as well as the value of the tags and the appropriate validation rule (e.g., confirming that the entered data is of the type necessary to complete the tagged element). Whenever a user makes changes in the Field panel, changes are automatically made in the XML panel, which shows the code that will serve as validation code. Thus, an operator can, without knowing XML, create XML code by interacting with the other panels. The automatically created XML code has the input tag data from the HTML code, as well as other properties for submitting to the destination web site for the transaction, such as URL, and type of submitted data. The Jasper Code panel (which could represent any proprietary language for creating content that is to be associated with the transactional content found at the URL) displays proprietary code, if any, for the URL. For example, the code can be design code for designing a rich media banner advertisement or other display. Thus, the creation of a validation rule for submitting to a destination web site can happen simultaneously with creation of a rich media display or other presentation. Each element in the tree structure may be given an index or identifier, which can be associated with the related validation code. The ID may be created when the operator wishes to save particular rules or validation code. Once the validation code is complete, the operator stores the forms in the rules database <b>604</b> at a step <b>910</b>.</p>
+<p id="P-00050" num="00050">If at the step <b>904</b> the operator opts to manually create a form, the operator creates the form by interacting with the graphical user interface <b>602</b> at a step <b>912</b>. Using a similar graphical user interface <b>602</b>, the operator manually enters HTML code, validation code, and other elements to create the appropriate forms for submission to the destination web site. The operator then creates additional forms as desired at a step <b>914</b>, and stores the forms in a step <b>910</b>, at which point the process terminates at a step <b>916</b>.</p>
+<p id="P-00051" num="00051">Various validation data types can be used to confirm that data submitted by a user is appropriate for a given form field, including Alpha, Numeric, email, True-False, Static, ETC (unchecked), Date, Month, Weekday, and Zip Code types.</p>
+<p id="P-00052" num="00052">The methods and systems disclosed herein can create a paradigm and system that allows the operator to scan a site, identify the form fields, and generate XML rules that, after a site is analyzed, allow the operator to validate form transmission data that is directed to that site. The transactional tunneling methods and systems disclosed herein parse code like a browser, laying out the parsed HTML into form fields, which permits the operator or user to, for example, run words against fields and submit them back to the parsed web site. Rules are supplied to the web server engine <b>612</b>, which makes the rules available to all advertisements or transactional data to be submitted to the destination web site.</p>
+<p id="P-00053" num="00053">The methods and systems disclosed herein make HTML reusable. They parse and store XML in engines, then put another presentation layer on top, giving more flexibility to the presentation layer.</p>
+<p id="P-00054" num="00054">JAVA-based servlets can be used to track and collect data regarding what transactions were executed, permitting checking of transactions and establishment of alarms for failure situations (e.g., renamed fields, servers down, or the like). The servlet validation engine can exist as part of the server-side processor for the operator who wishes to create a presentation, such as a rich media advertising display, that will be associated with transactional content, such as content from a destination web site. When the user presses a submit button (or otherwise initiates a transaction the user wishes to engage in with the destination web site), the servlet validation engine gets data from the user's submission to validate the code from the database with the identifier and index number for that code element. The submission can automatically send the identifier and index number with the servlet engine URL, so that the servlet validation engine can check the ID or index value and return an error message if the ID or index is not recognized. The error or validation can be stored in a transaction log by the servlet validation engine. After getting validation code from the rules database <b>604</b>, the servlet validation engine compares the submitted data to the stored data types. If the data are of suitable types, then the engine sends the data to the destination site that is specified in the validation code, which executes the transaction with the data. A confirmation can be sent to the user once the transaction is executed. Referring to <figref idref="DRAWINGS">FIG. 10</figref>, a schematic <b>1000</b> indicates the functions of the servlet validation engine <b>1004</b>. At a step <b>1002</b> the user interacts with a display or submission form (e.g., a banner ad, email, offer, submit button, link, form, template, icon or any other element that indicates the user should activate the element to complete a transaction), resulting in submission of data to the servlet validation engine <b>1004</b>. At a step <b>1006</b>, it is determined whether the submitted data complies with the validation rules from the rules database <b>604</b>. If not, processing is returned to the user with an error message. If so, then the data is submitted to the destination web site in a step <b>1008</b>.</p>
+<p id="P-00055" num="00055">In another embodiment of the invention, the individual data is not submitted following the validation. Instead, all the data are batched and submitted in a single communication. This is of particular use for devices such as, but not limited to, wireless Internet connection devices, wireless modems, web accessible phones, devices connected through a mobile phone, satellite connected devices, other wireless devices, or other devices where the device does not maintain a continuous connection with the network. In this type of transaction, referred to as a transactional proxy, the rule generation and validation steps occur in the same manner as is described above. However, once the validation has been completed, the individual data is not submitted but is batched until a later time when the system makes a connection and all the data is submitted. This allows for the preservation of resources since there is less need to establish and reestablish connections. The system can also use a mixture of communication after validation and batching to achieve a more efficient transfer from any type of device.</p>
+<p id="P-00056" num="00056">The methods and systems disclosed herein can be used in a variety of commercial contexts, including any applications where it is desired to serve richer content faster, especially where transactional content is required. Other applications include shopping bots, where it is desirable to permit them to transact on the spot. The methods and systems disclosed herein can enhance a price engine by providing improved transactional capability. The methods and systems disclosed herein can also be used as an HTML to XML translator, thereby permitting convenient translation of older web content to XML.</p>
+<p id="P-00057" num="00057">By way of example, the methods and systems disclosed herein can be used as a proxy for advertisements that are capable of communication with a web site. Thus, it is possible to create advertisements that have forms in them, which can, through transactional tunneling, submit data to a web site on which the advertisement resides (or other web site), gather results back from the web site, and parse the signals in both directions so as to encapsulate an entire transaction, such as a buying transaction, in one advertisement.</p>
+<p id="P-00058" num="00058">In another example, the methods and systems disclosed herein can create an advertisement that has a search engine in it. In order to carry out such a search previously, it would have been necessary for the user to be forwarded to a search engine and to enter their desired search from there. Such a task is not desirable for advertising because it sends the user from the advertisement (which has caught their interest) to a potentially unaffiliated search engine where the user may forget the product they were interested in and search for other topics. In the invention, a search engine can be identified as the destination web site. The site can be scanned using the graphical user interface <b>602</b>, which identifies all pages at the site, all form field values, all session cookies, and all validation rules (including by human trial and error for server-side rules not visible in HTML) as was discussed above for the Yahoo! web site. These items can be stored in the rules database <b>604</b> in XML. The operator can then create an advertisement that includes a form field for a search. The advertisement can then appear with an entry box similar to that on the Yahoo! site asking if the user would like to perform a search. This box can be a form field that has been connected by rules in the rules database <b>604</b> to the form field to carry out the search on a search engine. When a viewer enters a search term into the form field on the advertisement, the system can then retrieve and execute the rules and supply the information to the search engine, which in turn supplies the search results to the advertisement. This allows the search to be performed and a result to appear to the user possibly within the advertisements area or in a related area without the user leaving the advertisement. It makes the advertisement interactive. At the same time since the rule is the only item used, it allows for faster transactions because the system has been transactionally tunneled.</p>
+<p id="P-00059" num="00059">In another embodiment, the transaction tunneling could be used to enable purchase of an item from a web site. The operator could go to the destination site, identify pages, form field values, session cookies, and the like. Again, the server-side rules can be inferred by trial and error. The rules can be stored in XML. The form field for a purchase can be included in an advertisement. When the field is completed by interacting with the advertisement, the rules are retrieved and executed in which case the data is sent to the retail site to purchase the item. The purchase transaction can be completed by the user through another location such as an advertisement for the product.</p>
+<p id="P-00060" num="00060">In yet another embodiment, the transaction tunneling can be used to allow for improved performance from an interactive web site such as but not limited to a search engine, an e-commerce website, an information gathering website, or any other type of website where any type of data or information is gathered from the user of that website. The following shows an example of such improved performance. If a user was situated in Frankfurt Germany and wished to purchase a product from an online retailer whose origin server (containing the information from their website) was located in Malden, Mass. using traditional systems and methods, that user would have to have each piece of information transferred between Malden and Frankfurt. This would include all information the user entered as well as content from the site. Even with high speed lines, there can be significant delay for such a transaction to take place. If the system was to use transactional tunneling as discussed herein the user could be provided a much faster interaction with the e-tailer. The static, dynamic, and transactional content could be cached at a remote server nearer the user (for instance in Frankfurt) allowing for a faster connection between the user and the cached content. This remote server can then establish a high speed connection with the origin server in Malden, Mass., to provide the transactional data (from field values, etc.) to the origin server in Malden. This line may allow for a persistent connection between the remote server and the origin server and/or can be a specifically chosen line for high speed routing. With a transactional tunnel, the route can be pre-established and can be optimized allowing for improved communication speed for users distant geographically and/or in performance from the origin server they wish to interact with.</p>
+<p id="P-00061" num="00061">In other embodiments, the methods and systems disclosed herein can be used cache transactional and dynamic content. In particular, parsing web pages permits storage of all static content close to the web server or user, while only transactional content is passed around.</p>
+<p id="P-00062" num="00062">The methods and systems disclosed herein can also be used to run advertisements on a wireless or handheld device, and as an e-commerce proxy in the wireless arena.</p>
+<p id="P-00063" num="00063">In other embodiments, the advertisement could take the form of a banner advertisement, link, or email. The transaction could also be enabled by a cellular phone or wireless transaction.</p>
+<p id="P-00064" num="00064">While the invention has been disclosed in connection with certain preferred embodiments, other embodiments should be understood to be encompassed in the present disclosure as would be understood by those of ordinary skill in the art.</p>
+<?DETDESC description="Detailed Description" end="tail"?>
+</description>
+<claims id="claims">
+<claim id="CLM-00001" num="00001">
+<claim-text>1. A method of executing an electronic transaction, comprising:
+<claim-text>establishing a persistent connection to a server, wherein the server has a capability of executing an electronic transaction; </claim-text>
+<claim-text>obtaining a set of pages from the server, wherein interaction with the set of pages is sufficient to execute the electronic transaction; </claim-text>
+<claim-text>parsing the set of pages to separate transactional content from other content; </claim-text>
+<claim-text>identifying elements of the transactional content that are required to complete the electronic transaction; </claim-text>
+<claim-text>storing one or more rules, wherein compliance with the one or more rules satisfies the elements required to complete the electronic transaction; </claim-text>
+<claim-text>presenting a display to a user, wherein the display is different from the set of pages and wherein the display encourages execution of the electronic transaction; and </claim-text>
+<claim-text>upon interaction of the user with the display, executing the rules to send a signal to the server to complete the electronic transaction. </claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00002" num="00002">
+<claim-text>2. A method of <claim-ref idref="CLM-00001">claim 1</claim-ref>, further comprising:
+<claim-text>caching static content from the set of pages.</claim-text>
+</claim-text>
+</claim>
+</claims>
+</us-patent-grant>
+

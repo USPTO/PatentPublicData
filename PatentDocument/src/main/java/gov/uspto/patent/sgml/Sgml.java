@@ -17,6 +17,7 @@ import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
+import gov.uspto.patent.model.ClaimTreeBuilder;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
@@ -78,8 +79,9 @@ public class Sgml extends Dom4JParser {
 		 */
 		FormattedText textProcessor = new FormattedText();
 		Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
-		List<Claim> claims = new ClaimNode(document, textProcessor).read();
 		Description description = new DescriptionNode(document, textProcessor).read();
+        List<Claim> claims = new ClaimNode(document, textProcessor).read();
+        new ClaimTreeBuilder(claims).build();
 
 		/*
 		 * Start Building Patent Object.

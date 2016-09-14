@@ -23,7 +23,7 @@ public class PatentDocFormatDetect {
 	    PatentDocFormat format = PatentDocFormat.findMimeType(file.getName());
 		if (format == PatentDocFormat.Unknown) {
 
-			if (file.getName().endsWith(".greenbook")) {
+			if (file.getName().endsWith(".greenbook") || file.getName().endsWith(".gbk")) {
 			    format = PatentDocFormat.Greenbook;
 			}
 		}

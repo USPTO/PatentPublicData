@@ -1,18 +1,20 @@
 package gov.uspto.patent.greenbook;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import gov.uspto.parser.dom4j.KeyValue2Dom4j;
+import gov.uspto.parser.dom4j.keyvalue.KeyValue;
+import gov.uspto.parser.dom4j.keyvalue.KvReader;
 import gov.uspto.patent.PatentReaderException;
 
 /**
@@ -21,10 +23,10 @@ import gov.uspto.patent.PatentReaderException;
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
-public class Greenbook2GreenbookXml extends KeyValue2Dom4j {
+public class Greenbook2GreenbookXml {
 
+    /*
 	private static final Set<String> SECTIONS = new HashSet<String>(20);
-
 	static {
 		SECTIONS.add("PATN");
 		SECTIONS.add("INVT");
@@ -47,11 +49,16 @@ public class Greenbook2GreenbookXml extends KeyValue2Dom4j {
 		SECTIONS.add("CLMS");
 		SECTIONS.add("DCLM");
 	}
+    */
 
-	public Greenbook2GreenbookXml() {
-		super(SECTIONS);
-	}
-
+    public Document parse(File file) throws IOException, PatentReaderException{
+        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF-8")) {
+            KvReader kvReader = new KvReader();
+            List<KeyValue> keyValues = kvReader.parse(reader);
+            return kvReader.genXml(keyValues);
+        }
+    }
+    
 	public static void writeFile(Document document, Path outDir, String outFileName) throws IOException{
 	    OutputFormat format = OutputFormat.createPrettyPrint();
         XMLWriter writer = new XMLWriter( new FileWriter( outDir.resolve(outFileName).toFile() ) );
@@ -95,4 +102,5 @@ public class Greenbook2GreenbookXml extends KeyValue2Dom4j {
 			}
 		}
 	}
+
 }

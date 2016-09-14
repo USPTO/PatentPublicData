@@ -83,10 +83,6 @@ public class Address {
 		this.email = email;
 	}
 
-	public String getZipcode() {
-		return zipcode;
-	}
-
 	public boolean validate() throws InvalidDataException {
 		if (country == null) {
 			throw new InvalidDataException("Invalid Address: country is null");

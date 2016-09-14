@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PATDOC SYSTEM "ST32-US-Grant-025xml.dtd" [
+<!ENTITY US06336130-20020101-D00000.TIF SYSTEM "US06336130-20020101-D00000.TIF" NDATA TIF>
+<!ENTITY US06336130-20020101-D00001.TIF SYSTEM "US06336130-20020101-D00001.TIF" NDATA TIF>
+<!ENTITY US06336130-20020101-D00002.TIF SYSTEM "US06336130-20020101-D00002.TIF" NDATA TIF>
+<!ENTITY US06336130-20020101-D00003.TIF SYSTEM "US06336130-20020101-D00003.TIF" NDATA TIF>
+]>
+<PATDOC DTD="2.5" STATUS="Build 20020101">
+<SDOBI>
+<B100>
+<B110><DNUM><PDAT>06336130</PDAT></DNUM></B110>
+<B130><PDAT>B1</PDAT></B130>
+<B140><DATE><PDAT>20020101</PDAT></DATE></B140>
+<B190><PDAT>US</PDAT></B190>
+</B100>
+<B200>
+<B210><DNUM><PDAT>09413215</PDAT></DNUM></B210>
+<B211US><PDAT>09</PDAT></B211US>
+<B220><DATE><PDAT>19991005</PDAT></DATE></B220>
+</B200>
+<B300>
+<B310><DNUM><PDAT>971605</PDAT></DNUM></B310>
+<B320><DATE><PDAT>19970408</PDAT></DATE></B320>
+<B330><CTRY><PDAT>NO</PDAT></CTRY></B330>
+</B300>
+<B500>
+<B510>
+<B511><PDAT>G06F 1516</PDAT></B511>
+<B512><PDAT>G06F 1300</PDAT></B512>
+<B516><PDAT>7</PDAT></B516>
+</B510>
+<B520>
+<B521><PDAT>709202</PDAT></B521>
+<B522><PDAT>709201</PDAT></B522>
+</B520>
+<B540><STEXT><PDAT>Arrangement for improving availability of services in a communication system</PDAT></STEXT></B540>
+<B560>
+<B561>
+<PCIT>
+<DOC><DNUM><PDAT>5825759</PDAT></DNUM>
+<DATE><PDAT>19981000</PDAT></DATE>
+<KIND><PDAT>A</PDAT></KIND>
+</DOC>
+<PARTY-US>
+<NAM><SNM><STEXT><PDAT>Liu</PDAT></STEXT></SNM></NAM>
+</PARTY-US>
+<PNC><PDAT>370331</PDAT></PNC></PCIT><CITED-BY-EXAMINER/>
+</B561>
+<B561>
+<PCIT>
+<DOC><DNUM><PDAT>5974441</PDAT></DNUM>
+<DATE><PDAT>19991000</PDAT></DATE>
+<KIND><PDAT>A</PDAT></KIND>
+</DOC>
+<PARTY-US>
+<NAM><SNM><STEXT><PDAT>Rogers et al.</PDAT></STEXT></SNM></NAM>
+</PARTY-US>
+<PNC><PDAT>709200</PDAT></PNC></PCIT><CITED-BY-EXAMINER/>
+</B561>
+<B561>
+<PCIT>
+<DOC><DNUM><PDAT>6049819</PDAT></DNUM>
+<DATE><PDAT>20000400</PDAT></DATE>
+<KIND><PDAT>A</PDAT></KIND>
+</DOC>
+<PARTY-US>
+<NAM><SNM><STEXT><PDAT>Buckle et al.</PDAT></STEXT></SNM></NAM>
+</PARTY-US>
+<PNC><PDAT>709202</PDAT></PNC></PCIT><CITED-BY-EXAMINER/>
+</B561>
+<B561>
+<PCIT>
+<DOC><DNUM><PDAT>6076099</PDAT></DNUM>
+<DATE><PDAT>20000600</PDAT></DATE>
+<KIND><PDAT>A</PDAT></KIND>
+</DOC>
+<PARTY-US>
+<NAM><SNM><STEXT><PDAT>Chen et al.</PDAT></STEXT></SNM></NAM>
+</PARTY-US>
+<PNC><PDAT>709202</PDAT></PNC></PCIT><CITED-BY-EXAMINER/>
+</B561>
+<B561>
+<PCIT>
+<DOC><DNUM><PDAT>6085086</PDAT></DNUM>
+<DATE><PDAT>20000700</PDAT></DATE>
+<KIND><PDAT>A</PDAT></KIND>
+</DOC>
+<PARTY-US>
+<NAM><SNM><STEXT><PDAT>La Porta et al.</PDAT></STEXT></SNM></NAM>
+</PARTY-US>
+<PNC><PDAT>455432</PDAT></PNC></PCIT><CITED-BY-EXAMINER/>
+</B561>
+<B561>
+<PCIT>
+<DOC><DNUM><PDAT>96/25012</PDAT></DNUM>
+<DATE><PDAT>19960800</PDAT></DATE>
+<CTRY><PDAT>WO</PDAT></CTRY>
+</DOC>
+</PCIT>
+<CITED-BY-OTHER/>
+</B561>
+<B562><NCIT><STEXT><PDAT>S. Krause et al.; Mobile Service Agents Enabling &lsquo;Intelligence on Demand&rsquo; in Telecommunications; Globecom &apos;96 Communications: The Key to Global Prosperity; pp. 78-84, Nov. 1996.* </PDAT></STEXT></NCIT><CITED-BY-OTHER/></B562>
+<B562><NCIT><STEXT><PDAT>IEEE 46</PDAT><HIL><SP><PDAT>th </PDAT></SP></HIL><PDAT>Technology Conference, Apr. 28-May 1, 1996, Atlanta, Georgia, van Thanh et al., &ldquo;Making Mobility Transparent to the Applications&rdquo;. </PDAT></STEXT></NCIT><CITED-BY-OTHER/></B562>
+<B562><NCIT><STEXT><HIL><ITALIC><PDAT>Telektronikk, </PDAT></ITALIC></HIL><PDAT>vol. 90, No. 2, 1994, Norway, T. Handeg&aring;ard, &ldquo;The TINA Consortium&rdquo;.</PDAT></STEXT></NCIT><CITED-BY-OTHER/></B562>
+</B560>
+<B570>
+<B577><PDAT>22</PDAT></B577>
+<B578US><PDAT>1</PDAT></B578US>
+</B570>
+<B580>
+<B582><PDAT>709201</PDAT></B582>
+<B582><PDAT>709202</PDAT></B582>
+<B582><PDAT>709317</PDAT></B582>
+</B580>
+<B590><B595><PDAT>3</PDAT></B595><B596><PDAT>5</PDAT></B596><B597US/>
+</B590>
+</B500>
+<B600>
+<B630><B631><PARENT-US><CDOC><DOC><DNUM><PDAT>09/413215</PDAT></DNUM></DOC></CDOC><PDOC><DOC><DNUM><PDAT>PCT/NO98/00107</PDAT></DNUM><DATE><PDAT>19980402</PDAT></DATE><CTRY><PDAT>US</PDAT></CTRY><KIND><PDAT>00</PDAT></KIND></DOC></PDOC><PSTA><PDAT>00</PDAT></PSTA></PARENT-US></B631></B630>
+</B600>
+<B700>
+<B720>
+<B721>
+<PARTY-US>
+<NAM><FNM><PDAT>Thanh Van</PDAT></FNM><SNM><STEXT><PDAT>Do</PDAT></STEXT></SNM></NAM>
+<ADR>
+<CITY><PDAT>Oslo</PDAT></CITY>
+<CTRY><PDAT>NO</PDAT></CTRY>
+</ADR>
+</PARTY-US>
+</B721>
+</B720>
+<B730>
+<B731>
+<PARTY-US>
+<NAM><ONM><STEXT><PDAT>Telefonaktiebolaget LM Ericsson (publ)</PDAT></STEXT></ONM></NAM>
+<ADR><CITY><PDAT>Stockholm</PDAT></CITY><CTRY><PDAT>SE</PDAT></CTRY></ADR>
+</PARTY-US>
+</B731>
+<B732US>
+<PDAT>03</PDAT>
+</B732US>
+</B730>
+<B740>
+<B741>
+<PARTY-US>
+<NAM><ONM><STEXT><PDAT>Nixon &amp; Vanderhye P.C.</PDAT></STEXT></ONM></NAM>
+</PARTY-US>
+</B741>
+</B740>
+<B745>
+<B746>
+<PARTY-US>
+<NAM><FNM><PDAT>Kenneth R.</PDAT></FNM><SNM><STEXT><PDAT>Coulter</PDAT></STEXT></SNM></NAM>
+</PARTY-US>
+</B746>
+<B748US><PDAT>2154</PDAT></B748US>
+</B745>
+</B700>
+</SDOBI>
+<SDOAB>
+<BTEXT>
+<PARA ID="P-00001" LVL="0"><PTEXT><PDAT>A communications systems, e.g., a telecommunications system, includes distributed hardware and software components which interact to provide services to one or more users. Mobile terminal communications with the distributed components are supported (1) by dividing a kernel transport network (kTN) into a fixed part and a mobile part, and (2) by using two agents. One terminal agent on the fixed part represents the mobile terminal, and another agent on each mobile terminal represents the fixed part of the kernel transport network.</PDAT></PTEXT></PARA>
+</BTEXT>
+</SDOAB>
+<SDODE>
+<RELAPP>
+<BTEXT>
+<PARA ID="P-00002" LVL="0"><PTEXT><PDAT>This is a continuation of PCT application No. PCT/NO98/00107, filed Apr. 2, 1998, the entire content of which is hereby incorporated by reference in this application.</PDAT></PTEXT></PARA>
+</BTEXT>
+</RELAPP>
+<BRFSUM>
+<BTEXT>
+<H LVL="1"><STEXT><PDAT>FIELD OF THE INVENTION</PDAT></STEXT></H>
+<PARA ID="P-00003" LVL="0"><PTEXT><PDAT>Generally, the present invention relates to an arrangement for improving availability of services in a communications system, especially a telecommunications system, said system comprising distributed hardware and software components which interact in order to provide services to one or more users.</PDAT></PTEXT></PARA>
+<PARA ID="P-00004" LVL="0"><PTEXT><PDAT>More specifically the present invention relates to the improvement of such availability of services in all forms of terminal mobility.</PDAT></PTEXT></PARA>
+<PARA ID="P-00005" LVL="0"><PTEXT><PDAT>Further, the present invention finds specific utilisation in connection with terminal mobility support in distributed systems, and even more specifically the mechanisms for such terminal mobility support in distributed systems.</PDAT></PTEXT></PARA>
+<H LVL="1"><STEXT><PDAT>BACKGROUND</PDAT></STEXT></H>
+<PARA ID="P-00006" LVL="0"><PTEXT><PDAT>An open distributed system is a category of distributed systems which are made up of components that may be obtained from a number of different sources, which together work as a single distributed system. The Open Distributed Processing (ODP) model provides an application interface to the distributed system. In distributed computing, this model is called the virtual main frame and is enabled by distributed object technology, the virtual main frame being created from &ldquo;componentware&rdquo;.</PDAT></PTEXT></PARA>
+<PARA ID="P-00007" LVL="0"><PTEXT><PDAT>The present invention will be described in the example, non-limiting context of the industry standard or open distributed processing, named Common Request Broker Architecture, CORBA, which in the present case will be used as a platform for test implementations.</PDAT></PTEXT></PARA>
+<PARA ID="P-00008" LVL="0"><PTEXT><PDAT>In current distributed platforms, such as CORBA, (see Object Management Group, Inc. The Common Object Request Broker: Architecture and Specification, Revision 2.0, July 1995), terminal mobility is not addressed or supported, and hence, cannot be used in the design and implementation of mobile systems.</PDAT></PTEXT></PARA>
+<PARA ID="P-00009" LVL="0"><PTEXT><PDAT>In current distributed environments, objects can interact with each other completely independent of where they are located, i.e., on the same machine or on different machines. In </PDAT><FGREF ID="DRAWINGS"><PDAT>FIG. 1</PDAT></FGREF><PDAT>, the objects CO</PDAT><HIL><BOLD><PDAT>1</PDAT></BOLD></HIL><PDAT> and CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT> are located on two different machines or nodes, N</PDAT><HIL><BOLD><PDAT>1</PDAT></BOLD></HIL><PDAT> and N</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>, but can still interact as if they are located on the same machine. The DPE (Distributed Processing Environment) is responsible for marshalling the operation request into messages, locating the addressed object, sending the message to the destination node, unmarshalling the request, delivering the request to the addressed object, and returning the results to the requested object. The network used for the transportation and conveyance of an operation request is called kTN (kernel Transport Network) in TINA terminology, (see TINA-C, Engineering Modelling Concepts (DPE Kernel Specifications), November 1994).</PDAT></PTEXT></PARA>
+<PARA ID="P-00010" LVL="0"><PTEXT><PDAT>The above applies for fixed systems, but not for mobile systems. In mobile systems, there are numerous nodes that are mobile. A mobile node may frequently change the node with which it has a direct link, and may disappear from a node and reappear later at any other node. The topology of a kernel Transport Network for systems containing mobile DPE nodes therefore changes and may also be undetermined in the sense that the connectivity of a mobile DPE node is not ensured unless additional functionality is inserted in the DPE. In such a mobile system, operational interactions are not guaranteed. Accordingly, there is a need for terminal mobility support functions in DPEs.</PDAT></PTEXT></PARA>
+<PARA ID="P-00011" LVL="0"><PTEXT><PDAT>An object of the present invention is to provide terminal mobility support which solves the problems noted above.</PDAT></PTEXT></PARA>
+<PARA ID="P-00012" LVL="0"><PTEXT><PDAT>Another object is to provide an arrangement where terminal mobility support is offered in a distributed environment.</PDAT></PTEXT></PARA>
+<PARA ID="P-00013" LVL="0"><PTEXT><PDAT>Still another object of the present invention is to provide an arrangement enabling the use of a distributed environment in the design and implementation of mobile systems.</PDAT></PTEXT></PARA>
+<PARA ID="P-00014" LVL="0"><PTEXT><PDAT>The above objects are achieved in an arrangement of the type as stated in the preamble, which according to the present invention is characterised by the features as stated in the present description and the appending patent claims described, illustrated, and claimed below.</PDAT></PTEXT></PARA>
+</BTEXT>
+</BRFSUM>
+<DRWDESC>
+<BTEXT>
+<H LVL="1"><STEXT><PDAT>BRIEF DESCRIPTION OF THE DRAWINGS</PDAT></STEXT></H>
+<PARA ID="P-00015" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 1</PDAT></FGREF><PDAT> is a block diagram illustrating how object interactions in a distributed environment can take place.</PDAT></PTEXT></PARA>
+<PARA ID="P-00016" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 2</PDAT></FGREF><PDAT> illustrates schematically an embodiment of the present invention, illustrating how the kernel Transport Network kTN may consist of fixed and mobile parts.</PDAT></PTEXT></PARA>
+<PARA ID="P-00017" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 3</PDAT></FGREF><PDAT> is a block diagram illustrating how objects can be involved in operational interactions.</PDAT></PTEXT></PARA>
+<PARA ID="P-00018" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 4</PDAT></FGREF><PDAT> is a schematical diagram illustrating how interactions may be initiated by a mobile part.</PDAT></PTEXT></PARA>
+<PARA ID="P-00019" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 5</PDAT></FGREF><PDAT> is a schematical diagram illustrating how interactions are initiated by a fixed part.</PDAT></PTEXT></PARA>
+</BTEXT>
+</DRWDESC>
+<DETDESC>
+<BTEXT>
+<H LVL="1"><STEXT><PDAT>DETAILED DESCRIPTION</PDAT></STEXT></H>
+<PARA ID="P-00020" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 1</PDAT></FGREF><PDAT>, as previously discussed, illustrates object interactions in a distributed environment. Operational interactions are not guaranteed if they occur in a mobile system. Terminal mobility support functions are introduced for distributed mobile systems. FIG. </PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT> and </PDAT><FGREF ID="DRAWINGS"><PDAT>FIG. 3</PDAT></FGREF><PDAT> illustrate an example embodiment of the present invention based on a division of the kTN and the use of agents.</PDAT></PTEXT></PARA>
+<PARA ID="P-00021" LVL="7"><PTEXT><PDAT>Division of the kTN</PDAT></PTEXT></PARA>
+<PARA ID="P-00022" LVL="0"><PTEXT><PDAT>The kTN network is divided into two parts:</PDAT></PTEXT></PARA>
+<PARA ID="P-00023" LVL="2"><PTEXT><PDAT>a fixed part including all fixed DPE nodes.</PDAT></PTEXT></PARA>
+<PARA ID="P-00024" LVL="2"><PTEXT><PDAT>a mobile part including all mobile DPE nodes.</PDAT></PTEXT></PARA>
+<PARA ID="P-00025" LVL="0"><PTEXT><PDAT>At the boundary of the fixed part of the kTN, there are several Network Access Points (NAPs), i.e., points where a mobile DPE node, (i.e., a mobile terminal), can connect to the fixed kTN part.</PDAT></PTEXT></PARA>
+<PARA ID="P-00026" LVL="0"><PTEXT><PDAT>An NAP object is introduced to represent a NAP on the kTN. An NAP object is an interceptor which stands at the boundary of the terminal domain and the telecom system domain and is responsible for checking, transforming and forwarding of interactions that cross the boundary. An NAP object has two communication interfaces, one with the mobile DPE and one with the fixed kTN. Several NAPs can be located at the same DPE node.</PDAT></PTEXT></PARA>
+<PARA ID="P-00027" LVL="0"><PTEXT><PDAT>Each mobile DPE node may have one or several Terminal Access Points (TAP), i.e., the points where the mobile DPE node can exchange operations with other DPE nodes. A TAP will be represented by a TAP object in the terminal domain. Prior to any operational interaction, the mobile DPE, i.e., one of its TAPs, must be attached to a NAP. Operational interactions between a computational object residing on a mobile DPE and a computational object residing on a fixed DPE go through a TAP and a NAP.</PDAT></PTEXT></PARA>
+<PARA ID="P-00028" LVL="7"><PTEXT><PDAT>Use of Agents</PDAT></PTEXT></PARA>
+<PARA ID="P-00029" LVL="0"><PTEXT><PDAT>We introduced a Terminal_Agent Object (TA) to represent the mobile DPE node in the fixed part of the kTN. When the mobile DPE node is moving, the NAP to which the TAP is connected may change. The TA unburdens the requesting object on the fixed part, i.e, as shown in </PDAT><FGREF ID="DRAWINGS"><PDAT>FIG. 3</PDAT></FGREF><PDAT>, and keeps track of the current NAP.</PDAT></PTEXT></PARA>
+<PARA ID="P-00030" LVL="0"><PTEXT><PDAT>On the mobile DPE node, we introduce a SPA object (Service Provider Agent) to represent the fixed part of a kTN that the mobile node is communicating with. The SPA is thus entrusted with two responsibilities: supporting security functions and keeping location information. In this way, only one interceptor object is required in the terminal for managing both security and location updating. The introduction of the SPA is also convenient to keep the TAP hidden from the application objects. Instead of issuing an operation invocation to CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>, CO</PDAT><HIL><BOLD><PDAT>1</PDAT></BOLD></HIL><PDAT> issues a request to the SPA. The reason is that a mobile DPE for example on a PABX may in fact have several TAPs which should be transparent to the application objects. The SPA will ensure this transparency.</PDAT></PTEXT></PARA>
+<PARA ID="P-00031" LVL="7"><PTEXT><PDAT>Interactions Initiated By the Mobile Part</PDAT></PTEXT></PARA>
+<PARA ID="P-00032" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 4</PDAT></FGREF><PDAT> shows an example of the request of an operation opX on CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT> by CO</PDAT><HIL><BOLD><PDAT>1</PDAT></BOLD></HIL><PDAT>. The request is packed inside an operation call (CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>.opX) on the SPA. The SPA on its turn invokes call (TA.call (CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>.opX) on the TAP. The TAP invokes call (TA.call (CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>.opX) on the NAP. The TAP invokes call (CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>.opX on the TA. Finally, the TA invokes opX on CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>. The operation results will be conveyed on the reciprocal way back to CO</PDAT><HIL><BOLD><PDAT>1</PDAT></BOLD></HIL><PDAT>.</PDAT></PTEXT></PARA>
+<PARA ID="P-00033" LVL="7"><PTEXT><PDAT>Interactions Initiated by the Fixed Part</PDAT></PTEXT></PARA>
+<PARA ID="P-00034" LVL="0"><PTEXT><FGREF ID="DRAWINGS"><PDAT>FIG. 5</PDAT></FGREF><PDAT> shows an example of a request of an operation opY on CO</PDAT><HIL><BOLD><PDAT>1</PDAT></BOLD></HIL><PDAT> initiated by CO</PDAT><HIL><BOLD><PDAT>2</PDAT></BOLD></HIL><PDAT>. The conveyance process is similar but reciprocal to the example above and we will not describe it again.</PDAT></PTEXT></PARA>
+<PARA ID="P-00035" LVL="7"><PTEXT><PDAT>Location Registration and Deregistration</PDAT></PTEXT></PARA>
+<PARA ID="P-00036" LVL="0"><PTEXT><PDAT>For interactions initiated by objects on the fixed side the success relies on two conditions. First, both the association between the TA and the NAP and the association between the NAP and TAP must be identified. If one or both of the two associations are undefined, the interaction will be unsuccessful. Second, the two associations must be consistent with each other. If the TAP is associated with an instance of a NAP, then the TA must be associated with the same instance of the NAP. An inconsistency will lead to failure.</PDAT></PTEXT></PARA>
+<PARA ID="P-00037" LVL="0"><PTEXT><PDAT>When the mobile DPE is moving, the TAP-NAP association and the NAP-TA association must change correlatively and may sometimes be undefined. The operations necessary to determine these two associations and to supply this information to the TA are commonly referred to as location registration and location deregistration. Such a location registration and deregistration procedure must be implemented, but since there exists several known methods, we need not describe them here.</PDAT></PTEXT></PARA>
+<PARA ID="P-00038" LVL="7"><PTEXT><PDAT>Merits of the Invention</PDAT></PTEXT></PARA>
+<PARA ID="P-00039" LVL="2"><PTEXT><PDAT>This invention offers terminal mobility support in distributed environment.</PDAT></PTEXT></PARA>
+<PARA ID="P-00040" LVL="2"><PTEXT><PDAT>Such a terminal mobility support is characterized by the division of the kernel Transport Network into a fixed and a mobile part. The mobile part includes the mobile terminals or mobile DPE nodes while the fixed part covers fixed machines or nodes. Terminal mobility support is implemented by the use of two agents: one agent residing on the fixed part and representing the mobile node and another agent residing on the mobile node and representing the fixed part.</PDAT></PTEXT></PARA>
+<PARA ID="P-00041" LVL="2"><PTEXT><PDAT>The agent technology yields a high level of flexibility by allowing different ways of implementing the Terminal_Agent (TA) and the Service_Provider_Agent (SPA). The internal implementation of these agents can also be modified without affecting the rest of the system.</PDAT></PTEXT></PARA>
+<PARA ID="P-00042" LVL="2"><PTEXT><PDAT>It enables the use of distributed environment in the design and implementation of mobile systems.</PDAT></PTEXT></PARA>
+<PARA ID="P-00043" LVL="0"><PTEXT><PDAT>While the present invention has been described with respect to particular example embodiments, those skilled in the art will recognize that the present invention is not limited to those specific embodiments described and illustrated herein. Different formats, embodiments, adaptations besides those shown and described, as well as many modifications, variations and equivalent arrangements may also be used to implement the invention. Although the present invention is described in relation to preferred example embodiments, it is to be understood that this disclosure is only illustrative and exemplary of the present invention. The scope of the invention is defined by the appended claims.</PDAT></PTEXT></PARA>
+</BTEXT>
+</DETDESC>
+</SDODE>
+<SDOCL>
+<H LVL="1"><STEXT><PDAT>What is claimed is: </PDAT></STEXT></H>
+<CL>
+<CLM ID="CLM-00001">
+<PARA ID="P-00044" LVL="0"><PTEXT><PDAT>1. An arrangement in a network including a plurality of mobile terminals and a plurality of fixed terminals supporting distributed communication service operations between fixed and mobile terminals, the network comprising:</PDAT></PTEXT></PARA>
+<CLMSTEP LVL="2"><PTEXT><PDAT>a fixed network node including a mobile terminal agent that is configured to perform mobility management functions associated with the plurality of mobile terminals, and </PDAT></PTEXT></CLMSTEP>
+<CLMSTEP LVL="2"><PTEXT><PDAT>each of the mobile terminals including a fixed network node agent representing the fixed network node. </PDAT></PTEXT></CLMSTEP>
+</CLM>
+<CLM ID="CLM-00002">
+<PARA ID="P-00045" LVL="0"><PTEXT><PDAT>2. The arrangement in </PDAT><CLREF ID="CLM-00001"><PDAT>claim 1</PDAT></CLREF><PDAT>, wherein the fixed network node agent is configured to perform a security function.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00003">
+<PARA ID="P-00046" LVL="0"><PTEXT><PDAT>3. The arrangement in </PDAT><CLREF ID="CLM-00001"><PDAT>claim 1</PDAT></CLREF><PDAT>, wherein the fixed network node agent is configured to perform a mobile location storage function.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00004">
+<PARA ID="P-00047" LVL="0"><PTEXT><PDAT>4. The arrangement in </PDAT><CLREF ID="CLM-00001"><PDAT>claim 1</PDAT></CLREF><PDAT>, the network further comprising:</PDAT></PTEXT></PARA>
+<CLMSTEP LVL="2"><PTEXT><PDAT>plural network access points (NAPs) at a boundary between the mobile terminals and the fixed network node, each NAP corresponding to a point at which a mobile terminal can communicate with the fixed network node. </PDAT></PTEXT></CLMSTEP>
+</CLM>
+<CLM ID="CLM-00005">
+<PARA ID="P-00048" LVL="0"><PTEXT><PDAT>5. The arrangement in </PDAT><CLREF ID="CLM-00004"><PDAT>claim 4</PDAT></CLREF><PDAT>, wherein each NAP is configured to check, transform, and forward a communication crossing the boundary.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00006">
+<PARA ID="P-00049" LVL="0"><PTEXT><PDAT>6. The arrangement in </PDAT><CLREF ID="CLM-00004"><PDAT>claim 4</PDAT></CLREF><PDAT>, wherein each NAP includes a mobile terminal interface and a fixed network node interface.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00007">
+<PARA ID="P-00050" LVL="0"><PTEXT><PDAT>7. The arrangement in </PDAT><CLREF ID="CLM-00004"><PDAT>claim 4</PDAT></CLREF><PDAT>, wherein each mobile terminal includes one or more terminal access points (TAPs) such that for a communication between a mobile terminal and the fixed network node, a TAP in the mobile terminal is attached to one of the NAPs.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00008">
+<PARA ID="P-00051" LVL="0"><PTEXT><PDAT>8. The arrangement in </PDAT><CLREF ID="CLM-00007"><PDAT>claim 7</PDAT></CLREF><PDAT>, wherein the fixed network node agent hides the TAP from application objects in the mobile terminal.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00009">
+<PARA ID="P-00052" LVL="0"><PTEXT><PDAT>9. Arrangement for improving availability of a communication system, comprising distributed hardware and software components which interact via a network in order to provide services to one or more users, wherein terminal mobility is supported by dividing the network used for transportation and conveyance of an operation request into a fixed part and a mobile part, the mobile part including all mobile nodes and the fixed part including all the fixed nodes, and by introducing two agents, one agent residing in the fixed part and representing the mobile nodes and another agent residing in each mobile node and representing the fixed part.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00010">
+<PARA ID="P-00053" LVL="0"><PTEXT><PDAT>10. Arrangement as claimed in </PDAT><CLREF ID="CLM-00009"><PDAT>claim 9</PDAT></CLREF><PDAT>, characterized in that at least one Network Access Point object, an NAP object, is introduced to represent a Network Access Point (NAP) on said kTN, said NAP object operating as an interceptor at the boundary of the terminal domain and the telecom system domain, and being responsible for checking, transforming and forwarding of interactions that cross the boundary.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00011">
+<PARA ID="P-00054" LVL="0"><PTEXT><PDAT>11. Arrangement as claimed in </PDAT><CLREF ID="CLM-00010"><PDAT>claim 10</PDAT></CLREF><PDAT>, characterized in that any of said NAP objects may have two communication interfaces, one with the mobile DPE and one with the fixed kTN, and that several NAPs can be located at the same DPE node.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00012">
+<PARA ID="P-00055" LVL="0"><PTEXT><PDAT>12. Arrangement as claimed in </PDAT><CLREF ID="CLM-00009"><PDAT>claim 9</PDAT></CLREF><PDAT>, characterized in that each mobile DPE node may have one or several Terminal Access Points, TAPs, and that a TAP may be represented by a TAP object in the terminal domain.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00013">
+<PARA ID="P-00056" LVL="0"><PTEXT><PDAT>13. Arrangement as claimed in </PDAT><CLREF ID="CLM-00010"><PDAT>claim 10</PDAT></CLREF><PDAT>, characterized in that any operational interactions between a computational object residing on a mobile DPE and a computational object residing on a fixed DPE, is communicated through a TAP and an NAP.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00014">
+<PARA ID="P-00057" LVL="0"><PTEXT><PDAT>14. Arrangement as claimed in </PDAT><CLREF ID="CLM-00009"><PDAT>claim 9</PDAT></CLREF><PDAT>, characterized in that a Terminal Agent object, TA object, is introduced to represent the mobile DPE node in the fixed part of the kTN, and that on the mobile DPE node there is introduced a service Provider Agent (SPA), to represent the fixed part of a kTN that the mobile node is communicating with.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00015">
+<PARA ID="P-00058" LVL="0"><PTEXT><PDAT>15. Arrangement as claimed in </PDAT><CLREF ID="CLM-00014"><PDAT>claim 14</PDAT></CLREF><PDAT>, characterized in that said TA object adapted to unburden the requesting object on the fixed part (CO2), and is adapted also to keep track of which is the current NAP.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00016">
+<PARA ID="P-00059" LVL="0"><PTEXT><PDAT>16. Arrangement as claimed in </PDAT><CLREF ID="CLM-00015"><PDAT>claim 15</PDAT></CLREF><PDAT>, characterized in that said SPA is adapted to be entrusted with two responsibilities, i.e., supporting security functions and keeping location information, for thereby reducing the terminal requirement for managing both security and location updating to only one interceptor.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00017">
+<PARA ID="P-00060" LVL="0"><PTEXT><PDAT>17. Arrangement as claimed in </PDAT><CLREF ID="CLM-00016"><PDAT>claim 16</PDAT></CLREF><PDAT>, characterized in that said SPA is adapted to keep the TAP hidden from the application objects, for thereby ensuring transparency therebetween.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00018">
+<PARA ID="P-00061" LVL="0"><PTEXT><PDAT>18. A method for use in a network having a fixed network part associated with a plurality of fixed nodes and a mobile network part associated with a plurality of mobile nodes, comprising:</PDAT></PTEXT></PARA>
+<CLMSTEP LVL="2"><PTEXT><PDAT>a mobile node agent in the fixed part receiving from one of the fixed nodes a request for an operation by a mobile node; </PDAT></PTEXT></CLMSTEP>
+<CLMSTEP LVL="2"><PTEXT><PDAT>the mobile node agent formulating an operating call to carry the request through the fixed network part; and </PDAT></PTEXT></CLMSTEP>
+<CLMSTEP LVL="2"><PTEXT><PDAT>receiving the carried request in a fixed node agent in the mobile node and forwarding the carried request to an application object in the mobile node. </PDAT></PTEXT></CLMSTEP>
+</CLM>
+<CLM ID="CLM-00019">
+<PARA ID="P-00062" LVL="0"><PTEXT><PDAT>19. The method in </PDAT><CLREF ID="CLM-00018"><PDAT>claim 18</PDAT></CLREF><PDAT>, wherein the mobile node includes one or more terminal access points (TAPs) and the fixed network part includes a plurality of network access points (NAPs) to provide mobile node access to the fixed network part, the method further comprising:</PDAT></PTEXT></PARA>
+<CLMSTEP LVL="2"><PTEXT><PDAT>a mobile node attaching to a NAP through a TAP to permit an operational interaction between a computational object residing on the mobile node and a computational object residing on a fixed node. </PDAT></PTEXT></CLMSTEP>
+</CLM>
+<CLM ID="CLM-00020">
+<PARA ID="P-00063" LVL="0"><PTEXT><PDAT>20. The method according to </PDAT><CLREF ID="CLM-00019"><PDAT>claim 19</PDAT></CLREF><PDAT>, wherein in response to a request for an operation initiated by the mobile node, the method further comprising:</PDAT></PTEXT></PARA>
+<CLMSTEP LVL="2"><PTEXT><PDAT>formulating the request as an operation call to the fixed node agent which then invokes the call on a TAP; </PDAT></PTEXT></CLMSTEP>
+<CLMSTEP LVL="2"><PTEXT><PDAT>the TAP invoking the call on one of the NAPs; </PDAT></PTEXT></CLMSTEP>
+<CLMSTEP LVL="2"><PTEXT><PDAT>the NAP invoking the call on the mobile node agent; and </PDAT></PTEXT></CLMSTEP>
+<CLMSTEP LVL="2"><PTEXT><PDAT>the mobile node agent invoking the requested operation on the computational object in the fixed network node. </PDAT></PTEXT></CLMSTEP>
+</CLM>
+<CLM ID="CLM-00021">
+<PARA ID="P-00064" LVL="0"><PTEXT><PDAT>21. The method in </PDAT><CLREF ID="CLM-00019"><PDAT>claim 19</PDAT></CLREF><PDAT>, wherein when the mobile node moves and changes a network access point (NAP), the mobile node agent keeps track of the NAP change.</PDAT></PTEXT></PARA>
+</CLM>
+<CLM ID="CLM-00022">
+<PARA ID="P-00065" LVL="0"><PTEXT><PDAT>22. The method in </PDAT><CLREF ID="CLM-00019"><PDAT>claim 19</PDAT></CLREF><PDAT>, wherein the fixed network node agent performs a security function and a mobile node location updating function for the fixed network.</PDAT></PTEXT></PARA>
+</CLM>
+</CL>
+</SDOCL>
+<SDODR ID="DRAWINGS">
+<EMI ID="EMI-D00000" ALT="embedded image" FILE="US06336130-20020101-D00000.TIF"/>
+<EMI ID="EMI-D00001" ALT="embedded image" FILE="US06336130-20020101-D00001.TIF"/>
+<EMI ID="EMI-D00002" ALT="embedded image" FILE="US06336130-20020101-D00002.TIF"/>
+<EMI ID="EMI-D00003" ALT="embedded image" FILE="US06336130-20020101-D00003.TIF"/>
+</SDODR>
+</PATDOC>
+
+

@@ -1,17 +1,21 @@
 package gov.uspto.patent.serialize;
 
-import java.io.StringReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.stream.JsonGenerator;
 
-import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.Claim;
@@ -23,8 +27,6 @@ import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
 import gov.uspto.patent.model.PatCitation;
 import gov.uspto.patent.model.Patent;
-import gov.uspto.patent.model.PatentApplication;
-import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
@@ -43,16 +45,17 @@ import gov.uspto.patent.model.entity.NamePerson;
  */
 public class JsonMapper {
 
-    public String buildJson(Patent patent) {
+    public JsonObject buildJson(Patent patent) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         builder.add("patentCorpus", patent.getPatentCorpus().toString());
-        builder.add("documentId", patent.getDocumentId().toText());
+        builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
 
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
 
         builder.add("relatedIds", mapDocIds(patent.getRelationIds()));
 
+        // OtherIds contain [documentId, applicationId, relatedIds]
         builder.add("otherIds", mapDocIds(patent.getOtherIds()));
 
         builder.add("productionDate", mapDate(patent.getDateProduced()));
@@ -66,14 +69,31 @@ public class JsonMapper {
 
         builder.add("title", valueOrEmpty(patent.getTitle()));
 
-        builder.add("abstract", Json.createObjectBuilder().add("raw", patent.getAbstract().getRawText())
-                .add("normalized", patent.getAbstract().getPlainText()));
+        builder.add("abstract", Json.createObjectBuilder()
+                .add("raw", patent.getAbstract().getRawText())
+                .add("normalized", patent.getAbstract().getSimpleHtml())
+                .add("plain", patent.getAbstract().getPlainText()));
 
         builder.add("description", mapDescription(patent.getDescription()));
         builder.add("claims", mapClaims(patent.getClaims()));
         builder.add("citations", mapCitations(patent.getCitations()));
 
-        return builder.build().toString();
+        return builder.build();
+    }
+
+    public String getPrettyPrint(JsonObject jsonObject) throws IOException{
+        Map<String, Boolean> config = new HashMap<String, Boolean>();
+        config.put(JsonGenerator.PRETTY_PRINTING, true);
+        
+        JsonWriterFactory writerFactory = Json.createWriterFactory(config);
+        
+        String output = null;
+        try (StringWriter sw = new StringWriter(); JsonWriter jsonWriter = writerFactory.createWriter(sw)){
+            jsonWriter.writeObject(jsonObject);
+            output = sw.toString();
+        }
+
+        return output;
     }
 
     private String valueOrEmpty(String value) {
@@ -125,6 +145,7 @@ public class JsonMapper {
         if (section != null) {
             jsonObj.add("raw", section.getRawText());
             jsonObj.add("normalized", section.getSimpleHtml());
+            jsonObj.add("plain", section.getPlainText());
         }
         return jsonObj.build();
     }
@@ -161,9 +182,9 @@ public class JsonMapper {
         for (Assignee assignee : assignees) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
             jsonObj.add("name", mapName(assignee.getName()));
-            jsonObj.add("type", assignee.getEntityType().toString());
             jsonObj.add("address", mapAddress(assignee.getAddress()));
-
+            jsonObj.add("role", assignee.getRole());
+            jsonObj.add("roleDefinition", assignee.getRoleDesc());
             arBldr.add(jsonObj);
         }
 
@@ -175,8 +196,11 @@ public class JsonMapper {
 
         for (Inventor inventor : inventors) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            jsonObj.add("sequence", valueOrEmpty(inventor.getSequence()));
             jsonObj.add("name", mapName(inventor.getName()));
             jsonObj.add("address", mapAddress(inventor.getAddress()));
+            jsonObj.add("residency", valueOrEmpty(inventor.getResidency()));
+            jsonObj.add("nationality", valueOrEmpty(inventor.getNationality()));
             arBldr.add(jsonObj);
         }
 
@@ -208,22 +232,14 @@ public class JsonMapper {
             jsonObj.add("middleName", valueOrEmpty(perName.getMiddleName()));
             jsonObj.add("lastName", valueOrEmpty(perName.getLastName()));
             jsonObj.add("suffix", valueOrEmpty(perName.getPrefix()));
-            // jsonObj.add("abbreviated",
-            // valueOrEmpty(perName.getAbbreviatedName()));
-            JsonArrayBuilder synonyms = Json.createArrayBuilder();
-            for (String syn : perName.getSynonyms()) {
-                synonyms.add(syn);
-            }
-            jsonObj.add("synonyms", synonyms);
+            jsonObj.add("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
+            jsonObj.add("synonyms", mapStringCollection(perName.getSynonyms()));
         } else {
             NameOrg orgName = (NameOrg) name;
             jsonObj.add("type", "org");
             jsonObj.add("raw", valueOrEmpty(name.getName()));
-            JsonArrayBuilder synonyms = Json.createArrayBuilder();
-            for (String syn : orgName.getSynonyms()) {
-                synonyms.add(syn);
-            }
-            jsonObj.add("synonyms", synonyms);
+            jsonObj.add("suffix", valueOrEmpty(orgName.getSuffix()));
+            jsonObj.add("synonyms", mapStringCollection(orgName.getSynonyms()));
         }
         return jsonObj.build();
     }
@@ -233,18 +249,21 @@ public class JsonMapper {
         jsonObj.add("street", valueOrEmpty(address.getStreet()));
         jsonObj.add("city", valueOrEmpty(address.getCity()));
         jsonObj.add("state", valueOrEmpty(address.getState()));
+        jsonObj.add("zipCode", valueOrEmpty(address.getZipCode()));
         jsonObj.add("country", valueOrEmpty(address.getCountry()));
         jsonObj.add("email", valueOrEmpty(address.getEmail()));
         jsonObj.add("fax", valueOrEmpty(address.getFaxNumber()));
         jsonObj.add("phone", valueOrEmpty(address.getPhoneNumber()));
-        jsonObj.add("tokens", mapStringCollection(address.getTokenSet()));
+        //jsonObj.add("tokens", mapStringCollection(address.getTokenSet()));
         return jsonObj.build();
     }
 
     private JsonArray mapStringCollection(Collection<String> strings) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
-        for (String tok : strings) {
-            arBldr.add(tok);
+        if (strings != null){
+            for (String tok : strings) {
+                arBldr.add(tok);
+            }
         }
         return arBldr.build();
     }
@@ -265,8 +284,29 @@ public class JsonMapper {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Claim claim : claimList) {
-            arBldr.add(Json.createObjectBuilder().add("id", claim.getId()).add("type", claim.getClaimType().toString())
-                    .add("raw", claim.getRawText()).add("normalized", claim.getSimpleHtml()));
+
+            JsonArrayBuilder childArBldr = Json.createArrayBuilder();
+            for (Claim childClaim: claim.getChildClaims()){
+                childArBldr.add(childClaim.getId());
+            }
+            JsonArray childClaimJsonAr = childArBldr.build();
+
+            JsonObjectBuilder claimTreeJson = Json.createObjectBuilder()
+            .add("parentIds", mapStringCollection(claim.getDependentIds()))
+            .add("parentCount", claim.getDependentIds() !=null ? claim.getDependentIds().size() : 0)
+            .add("childIds", childClaimJsonAr)
+            .add("childCount",  claim.getChildClaims() !=null ? claim.getChildClaims().size() : 0)
+            .add("claimTreelevel", claim.getClaimTreeLevel());
+ 
+            arBldr.add(
+                    Json.createObjectBuilder()
+                    .add("id", claim.getId())
+                    .add("type", claim.getClaimType().toString())
+                    .add("raw", claim.getRawText())
+                    .add("normalized", claim.getSimpleHtml())
+                    .add("plain", claim.getPlainText())
+                    .add("claimTree", claimTreeJson)
+            );
         }
 
         return arBldr.build();
@@ -281,12 +321,14 @@ public class JsonMapper {
                 NplCitation nplCite = (NplCitation) cite;
 
                 arBldr.add(Json.createObjectBuilder().add("num", nplCite.getNum())
-                        .add("type", nplCite.getCitType().toString()).add("examinerCited", nplCite.isExaminerCited())
+                        .add("type", "NPL")
+                        .add("citedBy", nplCite.getCitType().toString()).add("examinerCited", nplCite.isExaminerCited())
                         .add("text", nplCite.getCiteText()).add("quotedText", nplCite.getQuotedText()));
             } else if (cite.getCitType() == CitationType.PATCIT) {
                 PatCitation patCite = (PatCitation) cite;
                 arBldr.add(Json.createObjectBuilder().add("num", patCite.getNum())
-                        .add("type", patCite.getCitType().toString()).add("examinerCited", patCite.isExaminerCited())
+                        .add("type", "PATENT")
+                        .add("citedBy", patCite.getCitType().toString()).add("examinerCited", patCite.isExaminerCited())
                         .add("text", patCite.getDocumentId().toText()));
             }
         }

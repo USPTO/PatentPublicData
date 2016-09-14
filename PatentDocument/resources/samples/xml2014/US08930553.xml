@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE us-patent-grant SYSTEM "us-patent-grant-v45-2014-04-03.dtd" [ ]>
+<us-patent-grant lang="EN" dtd-version="v4.5 2014-04-03" file="US08930553-20150106.XML" status="PRODUCTION" id="us-patent-grant" country="US" date-produced="20141220" date-publ="20150106">
+<us-bibliographic-data-grant>
+<publication-reference>
+<document-id>
+<country>US</country>
+<doc-number>08930553</doc-number>
+<kind>B2</kind>
+<date>20150106</date>
+</document-id>
+</publication-reference>
+<application-reference appl-type="utility">
+<document-id>
+<country>US</country>
+<doc-number>13648029</doc-number>
+<date>20121009</date>
+</document-id>
+</application-reference>
+<us-application-series-code>13</us-application-series-code>
+<us-term-of-grant>
+<us-term-extension>129</us-term-extension>
+</us-term-of-grant>
+<classifications-ipcr>
+<classification-ipcr>
+<ipc-version-indicator><date>20060101</date></ipc-version-indicator>
+<classification-level>A</classification-level>
+<section>G</section>
+<class>06</class>
+<subclass>F</subclass>
+<main-group>15</main-group>
+<subgroup>16</subgroup>
+<symbol-position>F</symbol-position>
+<classification-value>I</classification-value>
+<action-date><date>20150106</date></action-date>
+<generating-office><country>US</country></generating-office>
+<classification-status>B</classification-status>
+<classification-data-source>H</classification-data-source>
+</classification-ipcr>
+</classifications-ipcr>
+<classification-national>
+<country>US</country>
+<main-classification>709228</main-classification>
+</classification-national>
+<invention-title id="d2e53">Managing mid-dialog session initiation protocol (SIP) messages</invention-title>
+<us-references-cited>
+<us-citation>
+<patcit num="00001">
+<document-id>
+<country>US</country>
+<doc-number>7844851</doc-number>
+<kind>B2</kind>
+<name>Cosmadopoulos et al.</name>
+<date>20101100</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00002">
+<document-id>
+<country>US</country>
+<doc-number>7995466</doc-number>
+<kind>B2</kind>
+<name>Baker et al.</name>
+<date>20110800</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00003">
+<document-id>
+<country>US</country>
+<doc-number>8078737</doc-number>
+<kind>B2</kind>
+<name>Cosmadopoulos et al.</name>
+<date>20111200</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00004">
+<document-id>
+<country>US</country>
+<doc-number>2007/0140112</doc-number>
+<kind>A1</kind>
+<name>Osterhout et al.</name>
+<date>20070600</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00005">
+<document-id>
+<country>US</country>
+<doc-number>2007/0220302</doc-number>
+<kind>A1</kind>
+<name>Cline et al.</name>
+<date>20070900</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>714  4</main-classification></classification-national>
+</us-citation>
+<us-citation>
+<patcit num="00006">
+<document-id>
+<country>US</country>
+<doc-number>2007/0253328</doc-number>
+<kind>A1</kind>
+<name>Harper et al.</name>
+<date>20071100</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00007">
+<document-id>
+<country>US</country>
+<doc-number>2009/0022145</doc-number>
+<kind>A1</kind>
+<name>Bakshi et al.</name>
+<date>20090100</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>370352</main-classification></classification-national>
+</us-citation>
+<us-citation>
+<patcit num="00008">
+<document-id>
+<country>US</country>
+<doc-number>2009/0193057</doc-number>
+<kind>A1</kind>
+<name>Maes</name>
+<date>20090700</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00009">
+<document-id>
+<country>US</country>
+<doc-number>2010/0070563</doc-number>
+<kind>A1</kind>
+<name>Baker et al.</name>
+<date>20100300</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00010">
+<document-id>
+<country>US</country>
+<doc-number>2010/0205263</doc-number>
+<kind>A1</kind>
+<name>Langen et al.</name>
+<date>20100800</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709206</main-classification></classification-national>
+</us-citation>
+<us-citation>
+<patcit num="00011">
+<document-id>
+<country>US</country>
+<doc-number>2011/0007732</doc-number>
+<kind>A1</kind>
+<name>Ward et al.</name>
+<date>20110100</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00012">
+<document-id>
+<country>US</country>
+<doc-number>2011/0029812</doc-number>
+<kind>A1</kind>
+<name>Lu et al.</name>
+<date>20110200</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<patcit num="00013">
+<document-id>
+<country>US</country>
+<doc-number>2013/0311825</doc-number>
+<kind>A1</kind>
+<name>Brunson et al.</name>
+<date>20131100</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>714 16</main-classification></classification-national>
+</us-citation>
+<us-citation>
+<patcit num="00014">
+<document-id>
+<country>US</country>
+<doc-number>2014/0047122</doc-number>
+<kind>A1</kind>
+<name>Haserodt et al.</name>
+<date>20140200</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709228</main-classification></classification-national>
+</us-citation>
+<us-citation>
+<patcit num="00015">
+<document-id>
+<country>US</country>
+<doc-number>2014/0095723</doc-number>
+<kind>A1</kind>
+<name>Ezell et al.</name>
+<date>20140400</date>
+</document-id>
+</patcit>
+<category>cited by examiner</category>
+<classification-national><country>US</country><main-classification>709227</main-classification></classification-national>
+</us-citation>
+<us-citation>
+<patcit num="00016">
+<document-id>
+<country>US</country>
+<doc-number>2014/0101322</doc-number>
+<kind>A1</kind>
+<name>Nissim et al.</name>
+<date>20140400</date>
+</document-id>
+</patcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<nplcit num="00017">
+<othercit>Rosenberg, J. &#x201c;Reconsituting Call State in SIP User Agents&#x201d;, Internet Engineering Task Force, SIP WG, Internet Draft, Jul. 13, 2001, retrieved from the Internet: &#x3c;http://www.jdrosen.net/papers/draft-rosenberg-sip-reconstitute-00.txt&#x3e;.</othercit>
+</nplcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<nplcit num="00018">
+<othercit>Tahat, L.H. et al,. &#x201c;Dual mode service: Learning from integrating an IP multimedia subsystem service into existing live networks&#x201d;, In Bell Labs Technical Journal, vol. 11, No. 4, pp. 135-150, 2007, retrieved from the Internet: &#x3c;www.alcatel-lucent.com/enrich/v1i12007/pdf/bltj20200.pdfShare&#x3e;.</othercit>
+</nplcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<nplcit num="00019">
+<othercit>Singh, K.M. &#x201c;Reliable, Scalable and Interoperable Internet Telephony&#x201d;, PhD Thesis, Columbia University, Graduate School of Arts and Sciences, 2006, 383 pgs, retrieved from the Internet: &#x3c;www1.cs.columbia.edu/&#x2dc;kns10/publication/thesis.pdf&#x3e;.</othercit>
+</nplcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<nplcit num="00020">
+<othercit>U.S. Appl. No. 14/026,198, Non-Final Office Action, May 12, 2014, 17 pg.</othercit>
+</nplcit>
+<category>cited by applicant</category>
+</us-citation>
+<us-citation>
+<nplcit num="00021">
+<othercit>U.S. Appl. No. 14/026,198, Notice of Allowance, Sep. 5, 2014, 11 pg.</othercit>
+</nplcit>
+<category>cited by applicant</category>
+</us-citation>
+</us-references-cited>
+<number-of-claims>8</number-of-claims>
+<us-exemplary-claim>1</us-exemplary-claim>
+<us-field-of-classification-search>
+<classification-national>
+<country>US</country>
+<main-classification>None</main-classification>
+</classification-national>
+</us-field-of-classification-search>
+<figures>
+<number-of-drawing-sheets>5</number-of-drawing-sheets>
+<number-of-figures>5</number-of-figures>
+</figures>
+<us-related-documents>
+<related-publication>
+<document-id>
+<country>US</country>
+<doc-number>20140101323</doc-number>
+<kind>A1</kind>
+<date>20140410</date>
+</document-id>
+</related-publication>
+</us-related-documents>
+<us-parties>
+<us-applicants>
+<us-applicant sequence="001" app-type="applicant" designation="us-only" applicant-authority-category="assignee">
+<addressbook>
+<orgname>International Business Machines Corporation</orgname>
+<address>
+<city>Armonk</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+<residence>
+<country>US</country>
+</residence>
+</us-applicant>
+</us-applicants>
+<inventors>
+<inventor sequence="001" designation="us-only">
+<addressbook>
+<last-name>Nissim</last-name>
+<first-name>Nitzan</first-name>
+<address>
+<city>Rehovot</city>
+<country>IL</country>
+</address>
+</addressbook>
+</inventor>
+<inventor sequence="002" designation="us-only">
+<addressbook>
+<last-name>Pulito</last-name>
+<first-name>Brian</first-name>
+<address>
+<city>Lexington</city>
+<state>KY</state>
+<country>US</country>
+</address>
+</addressbook>
+</inventor>
+<inventor sequence="003" designation="us-only">
+<addressbook>
+<last-name>Zinger</last-name>
+<first-name>Asaf</first-name>
+<address>
+<city>Rehovot</city>
+<country>IL</country>
+</address>
+</addressbook>
+</inventor>
+</inventors>
+<agents>
+<agent sequence="01" rep-type="attorney">
+<addressbook>
+<orgname>Cuenot, Forsythe &#x26; Kim, LLC</orgname>
+<address>
+<country>unknown</country>
+</address>
+</addressbook>
+</agent>
+</agents>
+</us-parties>
+<assignees>
+<assignee>
+<addressbook>
+<orgname>International Business Machines Corporation</orgname>
+<role>02</role>
+<address>
+<city>Armonk</city>
+<state>NY</state>
+<country>US</country>
+</address>
+</addressbook>
+</assignee>
+</assignees>
+<examiners>
+<primary-examiner>
+<last-name>Meky</last-name>
+<first-name>Moustafa M</first-name>
+<department>2457</department>
+</primary-examiner>
+<assistant-examiner>
+<last-name>Williams</last-name>
+<first-name>Clayton R</first-name>
+</assistant-examiner>
+</examiners>
+</us-bibliographic-data-grant>
+<abstract id="abstract">
+<p id="p-0001" num="0000">Processing mid-dialog SIP messages by receiving a mid-dialog SIP message from a SIP user agent client, creating a new SIP session, associating the new SIP session with the mid-dialog SIP message, identifying an application that is associated with the mid-dialog SIP message, providing to the application the mid-dialog SIP message in the context of the new SIP session, receiving an acknowledgement from the application that the application will accept the mid-dialog SIP message, and responsive to receiving the acknowledgement, providing to the application the mid-dialog SIP message in the context of the new SIP session.</p>
+</abstract>
+<drawings id="DRAWINGS">
+<figure id="Fig-EMI-D00000" num="00000">
+<img id="EMI-D00000" he="244.35mm" wi="150.20mm" file="US08930553-20150106-D00000.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00001" num="00001">
+<img id="EMI-D00001" he="199.98mm" wi="170.60mm" orientation="landscape" file="US08930553-20150106-D00001.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00002" num="00002">
+<img id="EMI-D00002" he="247.99mm" wi="165.95mm" file="US08930553-20150106-D00002.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00003" num="00003">
+<img id="EMI-D00003" he="196.77mm" wi="180.09mm" file="US08930553-20150106-D00003.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00004" num="00004">
+<img id="EMI-D00004" he="163.07mm" wi="154.43mm" file="US08930553-20150106-D00004.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+<figure id="Fig-EMI-D00005" num="00005">
+<img id="EMI-D00005" he="195.83mm" wi="157.14mm" orientation="landscape" file="US08930553-20150106-D00005.TIF" alt="embedded image" img-content="drawing" img-format="tif"/>
+</figure>
+</drawings>
+<description id="description">
+<?BRFSUM description="Brief Summary" end="lead"?>
+<heading id="h-0001" level="1">FIELD OF THE INVENTION</heading>
+<p id="p-0002" num="0001">The present invention relates to computer networks in general, and more particularly to computer networks supporting SIP.</p>
+<heading id="h-0002" level="1">BACKGROUND OF THE INVENTION</heading>
+<p id="p-0003" num="0002">The Session Initiation Protocol (SIP) is used to establish, manage, and terminate computer-network based communications. Such communications, including IP telephony, presence, and instant messaging, may be provided in one or more SIP application sessions. A SIP application server includes one or more SIP containers that invoke and terminate SIP application sessions, and manage messages and responses that are sent and received in the context of SIP application sessions. Each participant in a SIP application session is represented by a separate SIP session. Thus, for example, a SIP application session representing a computer network-based conference call having multiple participants would have multiple SIP sessions associated with it, where a separate SIP session is associated with each participant in the conference call.</p>
+<p id="p-0004" num="0003">Once a SIP container has created a SIP session for a participant in a SIP application session, the SIP container and the participant conduct their SIP session communications as part of a SIP dialog. Normally, mid-dialog SIP messages sent by the participant are routed only to the SIP container that is managing the SIP session, as the SIP container and any application instances that are associated with the related SIP application session maintain state information in connection with the SIP session. In some systems such state information is continuously replicated to a backup site that enables management of a SIP session to be taken over mid-dialog by a SIP container that did not create the SIP session. However, such mechanisms are often costly or otherwise impractical due to performance constraints.</p>
+<heading id="h-0003" level="1">SUMMARY OF THE INVENTION</heading>
+<p id="p-0005" num="0004">In one aspect of the invention a method is provided for processing mid-dialog SIP messages, the method including receiving a mid-dialog SIP message from a SIP user agent client, creating a new SIP session, associating the new SIP session with the mid-dialog SIP message, identifying an application that is associated with the mid-dialog SIP message, providing to the application the mid-dialog SIP message in the context of the new SIP session, receiving an acknowledgement from the application that the application will accept the mid-dialog SIP message, and responsive to receiving the acknowledgement, providing to the application the mid-dialog SIP message in the context of the new SIP session.</p>
+<p id="p-0006" num="0005">In another aspect of the invention a method is provided for processing mid-dialog SIP messages, the method including receiving a mid-dialog SIP message from a SIP user agent client, creating a new SIP session, and associating the new SIP session with the mid-dialog SIP message.</p>
+<p id="p-0007" num="0006">In other aspects of the invention systems and computer program products embodying the invention are provided.</p>
+<?BRFSUM description="Brief Summary" end="tail"?>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="lead"?>
+<description-of-drawings>
+<heading id="h-0004" level="1">BRIEF DESCRIPTION OF THE DRAWINGS</heading>
+<p id="p-0008" num="0007">The invention will be understood and appreciated more fully from the following detailed description taken in conjunction with the appended drawings in which:</p>
+<p id="p-0009" num="0008"><figref idref="DRAWINGS">FIG. 1</figref> is a simplified conceptual illustration of a system for managing mid-dialog SIP messages, constructed and operative in accordance with an embodiment of the invention;</p>
+<p id="p-0010" num="0009"><figref idref="DRAWINGS">FIG. 2A</figref> is a simplified flowchart illustration of an exemplary method of operation of SIP container <b>102</b> of the system of <figref idref="DRAWINGS">FIG. 1</figref>, operative in accordance with an embodiment of the invention;</p>
+<p id="p-0011" num="0010"><figref idref="DRAWINGS">FIG. 2B</figref> is a simplified flowchart illustration of an exemplary method of operation of SIP container <b>102</b> of the system of <figref idref="DRAWINGS">FIG. 1</figref>, operative in accordance with an alternative embodiment of the invention;</p>
+<p id="p-0012" num="0011"><figref idref="DRAWINGS">FIG. 3</figref> is a simplified flowchart illustration of an exemplary method of operation of SIP application <b>104</b> of the system of <figref idref="DRAWINGS">FIG. 1</figref>, operative in accordance with an embodiment of the invention; and</p>
+<p id="p-0013" num="0012"><figref idref="DRAWINGS">FIG. 4</figref> is a simplified block diagram illustration of an exemplary hardware implementation of a computing system, constructed and operative in accordance with an embodiment of the invention.</p>
+</description-of-drawings>
+<?brief-description-of-drawings description="Brief Description of Drawings" end="tail"?>
+<?DETDESC description="Detailed Description" end="lead"?>
+<heading id="h-0005" level="1">DETAILED DESCRIPTION OF THE INVENTION</heading>
+<p id="p-0014" num="0013">The invention is now described within the context of one or more embodiments, although the description is intended to be illustrative of the invention as a whole, and is not to be construed as limiting the invention to the embodiments shown. It is appreciated that various modifications may occur to those skilled in the art that, while not specifically shown herein, are nevertheless within the true spirit and scope of the invention.</p>
+<p id="p-0015" num="0014">As will be appreciated by one skilled in the art, aspects of the present invention may be embodied as a system, method or computer program product. Accordingly, aspects of the present invention may take the form of an entirely hardware embodiment, an entirely software embodiment (including firmware, resident software, micro-code, etc.) or an embodiment combining software and hardware aspects that may all generally be referred to herein as a &#x201c;circuit,&#x201d; &#x201c;module&#x201d; or &#x201c;system.&#x201d; Furthermore, aspects of the present invention may take the form of a computer program product embodied in one or more computer readable medium(s) having computer readable program code embodied thereon.</p>
+<p id="p-0016" num="0015">Any combination of one or more computer readable medium(s) may be utilized. The computer readable medium may be a computer readable signal medium or a computer readable storage medium. A computer readable storage medium may be, for example, but not limited to, an electronic, magnetic, optical, electromagnetic, infrared, or semiconductor system, apparatus, or device, or any suitable combination of the foregoing. More specific examples (a non-exhaustive list) of the computer readable storage medium would include the following: an electrical connection having one or more wires, a portable computer diskette, a hard disk, a random access memory (RAM), a read-only memory (ROM), an erasable programmable read-only memory (EPROM or Flash memory), an optical fiber, a portable compact disc read-only memory (CD-ROM), an optical data storage device, a magnetic data storage device, or any suitable combination of the foregoing. In the context of this document, a computer readable storage medium may be any tangible medium that can contain, or store a program for use by or in connection with an instruction execution system, apparatus, or device.</p>
+<p id="p-0017" num="0016">A computer readable signal medium may include a propagated data signal with computer readable program code embodied therein, for example, in baseband or as part of a carrier wave. Such a propagated signal may take any of a variety of forms, including, but not limited to, electro-magnetic, optical, or any suitable combination thereof. A computer readable signal medium may be any computer readable medium that is not a computer readable storage medium and that can communicate, propagate, or transport a program for use by or in connection with an instruction execution system, apparatus, or device.</p>
+<p id="p-0018" num="0017">Program code embodied on a computer readable medium may be transmitted using any appropriate medium, including but not limited to wireless, wireline, optical fiber cable, RF, etc., or any suitable combination of the foregoing.</p>
+<p id="p-0019" num="0018">Computer program code for carrying out operations for aspects of the present invention may be written in any combination of one or more programming languages, including an object oriented programming language such as Java, Smalltalk, C++ or the like and conventional procedural programming languages, such as the &#x201c;C&#x201d; programming language or similar programming languages. The program code may execute entirely on the user's computer, partly on the user's computer, as a stand-alone software package, partly on the user's computer and partly on a remote computer or entirely on the remote computer or server. In the latter scenario, the remote computer may be connected to the user's computer through any type of network, including a local area network (LAN) or a wide area network (WAN), or the connection may be made to an external computer (for example, through the Internet using an Internet Service Provider).</p>
+<p id="p-0020" num="0019">Aspects of the present invention are described below with reference to flowchart illustrations and/or block diagrams of methods, apparatus (systems) and computer program products according to embodiments of the invention. It will be understood that each block of the flowchart illustrations and/or block diagrams, and combinations of blocks in the flowchart illustrations and/or block diagrams, can be implemented by computer program instructions. These computer program instructions may be provided to a processor of a general purpose computer, special purpose computer, or other programmable data processing apparatus to produce a machine, such that the instructions, which execute via the processor of the computer or other programmable data processing apparatus, create means for implementing the functions/acts specified in the flowchart and/or block diagram block or blocks.</p>
+<p id="p-0021" num="0020">These computer program instructions may also be stored in a computer readable medium that can direct a computer, other programmable data processing apparatus, or other devices to function in a particular manner, such that the instructions stored in the computer readable medium produce an article of manufacture including instructions which implement the function/act specified in the flowchart and/or block diagram block or blocks.</p>
+<p id="p-0022" num="0021">The computer program instructions may also be loaded onto a computer, other programmable data processing apparatus, or other devices to cause a series of operational steps to be performed on the computer, other programmable apparatus or other devices to produce a computer implemented process such that the instructions which execute on the computer or other programmable apparatus provide processes for implementing the functions/acts specified in the flowchart and/or block diagram block or blocks.</p>
+<p id="p-0023" num="0022">Reference is now made to <figref idref="DRAWINGS">FIG. 1</figref> which is a simplified conceptual illustration of a system for managing mid-dialog Session Initiation Protocol (SIP) messages, constructed and operative in accordance with an embodiment of the invention. In the system of <figref idref="DRAWINGS">FIG. 1</figref>, a SIP application server <b>100</b> is configured with a SIP container <b>102</b> and a SIP application <b>104</b>. Beyond their known configurations in the art with respect to managing and processing SIP-related transactions relating to SIP application sessions, SIP sessions and SIP dialogs, SIP application server <b>100</b>, SIP container <b>102</b>, and SIP application <b>104</b> are preferably configured to operate as described hereinbelow.</p>
+<p id="p-0024" num="0023">SIP container <b>102</b> preferably includes an incoming message processor <b>106</b> and an unknown message processor <b>108</b>. Incoming message processor <b>106</b> is preferably configured to determine whether a SIP message that is received by SIP container <b>102</b>, such as from a SIP user agent client (UAC), is a mid-dialog SIP message and, if so, whether the mid-dialog SIP message is associated with a SIP session/dialog that is managed by SIP container <b>102</b>. Unknown message processor <b>108</b> is preferably configured such that if the mid-dialog SIP message is not associated with a pre-existing SIP session/dialog that is managed by SIP container <b>102</b>, then unknown message processor <b>108</b> creates a new SIP session and associates the new SIP session with the mid-dialog SIP message. Unknown message processor <b>108</b> identifies that SIP application <b>104</b> is associated with the mid-dialog SIP message, such as using an application identifier included in the mid-dialog SIP message, and provides the mid-dialog SIP message in the context of the new SIP session to SIP application <b>104</b> via a callback to SIP application <b>104</b>, where this callback is preferably an out-of-SIP-protocol callback. If unknown message processor <b>108</b> receives an acknowledgement from SIP application <b>104</b> that SIP application <b>104</b> will accept the mid-dialog SIP message for normal SIP processing, SIP container <b>102</b> provides the mid-dialog SIP message in the context of the new SIP session to SIP application <b>104</b> via another callback to SIP application <b>104</b>, where this callback is preferably a normal, in-SIP-protocol callback.</p>
+<p id="p-0025" num="0024">SIP application <b>104</b> preferably includes a non-SIP message processor <b>110</b> and a SIP session/dialog reconstructor <b>112</b>. Non-SIP message processor <b>110</b> preferably includes a non-SIP API configured to receive the out-of-SIP-protocol callback from SIP container <b>102</b> that includes the mid-dialog SIP message in the context of the new SIP session. SIP session/dialog reconstructor <b>112</b> is preferably configured to decide whether it is able to accept the mid-dialog SIP message for normal SIP processing, which may require successfully reconstructing some or all of the state information of the original SIP session/dialog associated with the mid-dialog SIP message. If SIP session/dialog reconstructor <b>112</b> decides that it is able to accept the mid-dialog SIP message for normal SIP processing, then non-SIP message processor <b>110</b> sends an out-of-SIP-protocol acknowledgement to SIP container <b>102</b> indicating that SIP application <b>104</b> will accept the mid-dialog SIP message for normal SIP processing.</p>
+<p id="p-0026" num="0025">Any of the elements shown in <figref idref="DRAWINGS">FIG. 1</figref> are preferably implemented by one or more computers, such as computer <b>114</b>, in computer hardware and/or in computer software embodied in a non-transitory, computer-readable medium in accordance with conventional techniques.</p>
+<p id="p-0027" num="0026">Reference is now made to <figref idref="DRAWINGS">FIG. 2A</figref>, which is a simplified flowchart illustration of an exemplary method of operation of SIP container <b>102</b> of the system of <figref idref="DRAWINGS">FIG. 1</figref>, operative in accordance with an embodiment of the invention. In the method of <figref idref="DRAWINGS">FIG. 2A</figref>, a mid-dialog SIP message is received (step <b>200</b>), such as where the mid-dialog SIP message is sent from a SIP user agent client (UAC) and where the recipient of the mid-dialog SIP message is a SIP container. If the mid-dialog SIP message is not associated with a SIP session/dialog that is managed by the recipient (step <b>202</b>), a new SIP session is created and associated with the mid-dialog SIP message (step <b>204</b>). The SIP application that is associated with the mid-dialog SIP message is identified (step <b>206</b>), such as using an application identifier included in the mid-dialog SIP message. The mid-dialog SIP message is provided to the identified SIP application in the context of the new SIP session via a callback (step <b>208</b>), where this callback is preferably an out-of-SIP-protocol callback. If an acknowledgement is received from the SIP application accepting the mid-dialog SIP message for normal SIP processing (step <b>210</b>), then the mid-dialog SIP message is provided to the identified SIP application in the context of the new SIP session via another callback (step <b>212</b>), where this callback is preferably a normal, in-SIP-protocol callback.</p>
+<p id="p-0028" num="0027">Reference is now made to <figref idref="DRAWINGS">FIG. 2B</figref>, which is a simplified flowchart illustration of an exemplary method of operation of SIP container <b>102</b> of the system of <figref idref="DRAWINGS">FIG. 1</figref>, operative in accordance with an alternative embodiment of the invention. The method of <figref idref="DRAWINGS">FIG. 2B</figref> is substantially similar to the method of <figref idref="DRAWINGS">FIG. 2A</figref> with the notable exception that steps <b>204</b>-<b>212</b> are performed only if the mid-dialog SIP message is associated with a cluster, such as of SIP containers and/or SIP application servers, that is known to the recipient of the mid-dialog SIP message (step <b>214</b>), such as where the recipient of the mid-dialog SIP message is part of a backup cluster for the cluster associated with the mid-dialog SIP message.</p>
+<p id="p-0029" num="0028">Reference is now made to <figref idref="DRAWINGS">FIG. 3</figref>, which is a simplified flowchart illustration of an exemplary method of operation of SIP application <b>104</b> of the system of <figref idref="DRAWINGS">FIG. 1</figref>, operative in accordance with an embodiment of the invention. In the method of <figref idref="DRAWINGS">FIG. 3</figref>, an out-of-SIP-protocol callback is received by a SIP application, such as from a SIP container, where the callback includes a mid-dialog SIP message in the context of the new SIP session (step <b>300</b>). A determination is made whether the mid-dialog SIP message can be accepted for normal SIP processing (step <b>302</b>), which may require successfully reconstructing some or all of the state information of the original SIP session/dialog associated with the mid-dialog SIP message. If the SIP application decides that it is able to accept the mid-dialog SIP message for normal SIP processing (step <b>304</b>), then an out-of-SIP-protocol acknowledgement is sent to the requestor indicating that the SIP application will accept the mid-dialog SIP message for normal SIP processing (step <b>306</b>).</p>
+<p id="p-0030" num="0029">Referring now to <figref idref="DRAWINGS">FIG. 4</figref>, block diagram <b>400</b> illustrates an exemplary hardware implementation of a computing system in accordance with which one or more components/methodologies of the invention (e.g., components/methodologies described in the context of <figref idref="DRAWINGS">FIGS. 1-3</figref>) may be implemented, according to an embodiment of the invention.</p>
+<p id="p-0031" num="0030">As shown, the techniques for controlling access to at least one resource may be implemented in accordance with a processor <b>410</b>, a memory <b>412</b>, I/O devices <b>414</b>, and a network interface <b>416</b>, coupled via a computer bus <b>418</b> or alternate connection arrangement.</p>
+<p id="p-0032" num="0031">It is to be appreciated that the term &#x201c;processor&#x201d; as used herein is intended to include any processing device, such as, for example, one that includes a CPU (central processing unit) and/or other processing circuitry. It is also to be understood that the term &#x201c;processor&#x201d; may refer to more than one processing device and that various elements associated with a processing device may be shared by other processing devices.</p>
+<p id="p-0033" num="0032">The term &#x201c;memory&#x201d; as used herein is intended to include memory associated with a processor or CPU, such as, for example, RAM, ROM, a fixed memory device (e.g., hard drive), a removable memory device (e.g., diskette), flash memory, etc. Such memory may be considered a computer readable storage medium.</p>
+<p id="p-0034" num="0033">In addition, the phrase &#x201c;input/output devices&#x201d; or &#x201c;I/O devices&#x201d; as used herein is intended to include, for example, one or more input devices (e.g., keyboard, mouse, scanner, etc.) for entering data to the processing unit, and/or one or more output devices (e.g., speaker, display, printer, etc.) for presenting results associated with the processing unit.</p>
+<p id="p-0035" num="0034">The flowchart and block diagrams in the Figures illustrate the architecture, functionality, and operation of possible implementations of systems, methods and computer program products according to various embodiments of the invention. In this regard, each block in the flowchart or block diagrams may represent a module, segment, or portion of code, which comprises one or more executable instructions for implementing the specified logical function(s). It should also be noted that, in some alternative implementations, the functions noted in the block may occur out of the order noted in the figures. For example, two blocks shown in succession may, in fact, be executed substantially concurrently, or the blocks may sometimes be executed in the reverse order, depending upon the functionality involved. It will also be noted that each block of the block diagrams and/or flowchart illustration, and combinations of blocks in the block diagrams and/or flowchart illustration, can be implemented by special purpose hardware-based systems that perform the specified functions or acts, or combinations of special purpose hardware and computer instructions.</p>
+<p id="p-0036" num="0035">It will be appreciated that any of the elements described hereinabove may be implemented as a computer program product embodied in a computer-readable medium, such as in the form of computer program instructions stored on magnetic or optical storage media or embedded within computer hardware, and may be executed by or otherwise accessible to a computer (not shown).</p>
+<p id="p-0037" num="0036">While the methods and apparatus herein may or may not have been described with reference to specific computer hardware or software, it is appreciated that the methods and apparatus described herein may be readily implemented in computer hardware or software using conventional techniques.</p>
+<p id="p-0038" num="0037">While the invention has been described with reference to one or more specific embodiments, the description is intended to be illustrative of the invention as a whole and is not to be construed as limiting the invention to the embodiments shown. It is appreciated that various modifications may occur to those skilled in the art that, while not specifically shown herein, are nevertheless within the true spirit and scope of the invention.</p>
+<?DETDESC description="Detailed Description" end="tail"?>
+</description>
+<us-claim-statement>What is claimed is:</us-claim-statement>
+<claims id="claims">
+<claim id="CLM-00001" num="00001">
+<claim-text>1. A system for processing mid-dialog SIP messages, the system comprising:
+<claim-text>an incoming message hardware processor configured to receive a mid-dialog SIP message from a SIP user agent client; and</claim-text>
+<claim-text>an unknown message hardware processor configured to</claim-text>
+<claim-text>create a new SIP session,</claim-text>
+<claim-text>associate the new SIP session with the mid-dialog SIP message,</claim-text>
+<claim-text>identify an application that is associated with the mid-dialog SIP message,</claim-text>
+<claim-text>provide to the application the mid-dialog SIP message in the context of the new SIP session, and</claim-text>
+<claim-text>receive an acknowledgement from the application that the application will accept the mid-dialog SIP message.</claim-text>
+</claim-text>
+</claim>
+<claim id="CLM-00002" num="00002">
+<claim-text>2. The system according to <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the unknown message hardware processor is configured to create the new SIP session and associate the new SIP session with the mid-dialog SIP message responsive to the incoming message hardware processor unsuccessfully associating the mid-dialog SIP message with a pre-existing SIP session.</claim-text>
+</claim>
+<claim id="CLM-00003" num="00003">
+<claim-text>3. The system according to <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the unknown message hardware processor is configured to provide the mid-dialog SIP message in an out-of-SIP-protocol callback to the application.</claim-text>
+</claim>
+<claim id="CLM-00004" num="00004">
+<claim-text>4. The system according to <claim-ref idref="CLM-00001">claim 1</claim-ref> and further comprising a SIP container configured to provide to the application the mid-dialog SIP message in the context of the new SIP session, responsive to the unknown message hardware processor receiving the acknowledgement.</claim-text>
+</claim>
+<claim id="CLM-00005" num="00005">
+<claim-text>5. The system according to <claim-ref idref="CLM-00004">claim 4</claim-ref> wherein the SIP container is configured to provide to the application the mid-dialog SIP message in an in-protocol SIP callback to the application.</claim-text>
+</claim>
+<claim id="CLM-00006" num="00006">
+<claim-text>6. The system according to <claim-ref idref="CLM-00004">claim 4</claim-ref> wherein the unknown message hardware processor is configured to create the new SIP session and associate the new SIP session with the mid-dialog SIP message responsive to determining that the mid-dialog SIP message is associated with a cluster that is known to the SIP container.</claim-text>
+</claim>
+<claim id="CLM-00007" num="00007">
+<claim-text>7. The system according to <claim-ref idref="CLM-00001">claim 1</claim-ref> wherein the unknown message hardware processor is configured to identify the application using an application identifier included in the mid-dialog SIP message.</claim-text>
+</claim>
+<claim id="CLM-00008" num="00008">
+<claim-text>8. A computer program product for processing mid-dialog SIP messages, the computer program product comprising:
+<claim-text>a computer-readable storage device; and</claim-text>
+<claim-text>computer-readable program code embodied in the computer-readable storage device, where the computer-readable program code executed by a processor is configured to</claim-text>
+<claim-text>receive a mid-dialog SIP message from a SIP user agent client,</claim-text>
+<claim-text>create a new SIP session,</claim-text>
+<claim-text>associate the new SIP session with the mid-dialog SIP message,</claim-text>
+<claim-text>identify an application that is associated with the mid-dialog SIP message,</claim-text>
+<claim-text>provide to the application the mid-dialog SIP message in the context of the new SIP session,</claim-text>
+<claim-text>receive an acknowledgement from the application that the application will accept the mid-dialog SIP message, and</claim-text>
+<claim-text>responsive to receiving the acknowledgement, provide to the application the mid-dialog SIP message in the context of the new SIP session. </claim-text>
+</claim-text>
+</claim>
+</claims>
+</us-patent-grant>
+

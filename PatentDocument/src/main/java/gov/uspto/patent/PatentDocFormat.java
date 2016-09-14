@@ -6,6 +6,7 @@ public enum PatentDocFormat {
 	Pap("text/pap-xml", "pa", "patent-application-publication", "<patent-application-publication>"),
 	Sgml("text/grant-sgml", "pg", "PATDOC", "<PATDOC "),
 	Greenbook("text/greenbook-aps", "pftaps", "PATN", "PATN"),
+	CSS_BRS("text/css-brs", "", "*** BRS DOCUMENT BOUNDARY ***", ""),
 	Unknown("UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN");
 
 	private String parentElement;

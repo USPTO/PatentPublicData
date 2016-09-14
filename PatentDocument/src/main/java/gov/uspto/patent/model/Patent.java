@@ -16,8 +16,18 @@ import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.model.entity.MathFormula;
 
 /**
- * 
+ *
  * Patent - Right granted by a Patent Office to prevent others from making, using, or selling an invention of the grantee.
+ *
+ *<h4>Changes allowed to Patents after being Granted:</h4>
+ *<ul>
+ * <li>Related Ids, patent family may continue to grow after being Granted</li>
+ * <li>Assignee; Update available daily within Patent Assignment XML Dump files</li>
+ * <li>Classifications; Updates available monthly within Master Classification File Dump files</li>
+ *<ul>
+ * The original public patent and application bulk dumps are not updated once they are created and made public.
+ * Updates are made available within additional dump files listed above. 
+ *
  */
 public abstract class Patent {
 
@@ -234,10 +244,20 @@ public abstract class Patent {
 		this.examiners = examiners;
 	}
 
+	/**
+     * Other IDs for Same Patent (Application Id, Regional Patent IDs, Related Patent IDs)
+     * 
+     * @param otherId
+     */
 	public List<DocumentId> getOtherIds() {
 		return otherIds;
 	}
 
+	/**
+	 * Other IDs for Same Patent (Application Id, Regional Patent IDs, Related Patent IDs)
+	 * 
+	 * @param otherId
+	 */
 	public void addOtherId(DocumentId otherId) {
 		this.otherIds.add(otherId);
 	}

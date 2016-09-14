@@ -1,6 +1,9 @@
 package gov.uspto.patent.serialize;
 
+import java.io.IOException;
 import java.util.Arrays;
+
+import javax.json.JsonObject;
 
 import org.junit.Test;
 
@@ -25,7 +28,7 @@ import gov.uspto.patent.xml.FormattedText;
 public class JsonMapperTest {
 
     @Test
-    public void buildJsonTest() throws InvalidDataException {
+    public void buildJsonTest() throws InvalidDataException, IOException {
         
         FormattedText textParserNormalizer = new FormattedText();
         
@@ -48,9 +51,11 @@ public class JsonMapperTest {
         patent.setDescription(desc);
  
         JsonMapper json = new JsonMapper();
-        String jsonStr = json.buildJson(patent);
+        JsonObject jsonObj = json.buildJson(patent);
         
-        System.out.println(jsonStr);
+        System.out.println(jsonObj.toString());
+
+        //System.out.println(json.getPrettyPrint(jsonObj));
     }
     
 }
