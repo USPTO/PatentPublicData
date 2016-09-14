@@ -26,7 +26,7 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | claim | improvement: identify independent and dependent claims; capture dependent claim hierarchy |
 | classification | improvement: normalization of CPC, IPC and USPC patent classifications |
 | country | improvement: mapping of country codes to country name, current and historic codes used before 1978 or individual codes dropped or changed since |
-| address and name | not-fixed, lookout for switched value errors: within name the first-name and last-name or middle name switched; within address the country and state switched ; farther back in time more likely to see these data errors. Older Greenbook patents sometimes have first name or last name switched with middle name (presented as an initial), switched makes searching by a person's name more difficult |
+| address and name | not-fixed, lookout for switched value errors: within name the first-name and last-name or middle name switched; within address the country and state switched ; farther back in time more likely to see these data errors. Older Greenbook patents sometimes have first name or last name switched with middle name (presented as an initial), making searching by a person's name more difficult |
 
 
 ## Also Parses
