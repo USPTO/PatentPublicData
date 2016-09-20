@@ -37,6 +37,8 @@ import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
+import gov.uspto.patent.model.PatentType;
+import gov.uspto.patent.model.UsKindCode2PatentType;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Assignee;
@@ -60,6 +62,8 @@ public class CssBrs extends KvParser {
         DocumentId documentId = new DocumentIdNode(document).read();
         MDC.put("DOCID", documentId.toText());
 
+        PatentType patentType = UsKindCode2PatentType.getInstance().lookupPatentType(documentId.getKindCode());
+        
         DocumentId applicationId = new ApplicationIdNode(document).read();
 
         Node titleN = document.selectSingleNode("/DOCUMENT/TTL");
@@ -86,7 +90,7 @@ public class CssBrs extends KvParser {
         /*
          * Building Patent Object.
          */
-        Patent patent = new PatentGranted(documentId);
+        Patent patent = new PatentGranted(documentId, patentType);
 
         if (documentId != null && documentId.getDate() != null) {
             patent.setDatePublished(documentId.getDate());

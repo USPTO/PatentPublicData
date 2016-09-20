@@ -8,7 +8,7 @@ public class Examiner extends Entity {
 	private final ExaminerType type;
 
 	public Examiner(Name name, String department, ExaminerType type){
-		super(EntityType.EXAMINER, name);
+		super(EntityType.EXAMINER, name, null);
 		this.department = department;
 		this.type = type;
 	}

@@ -14,11 +14,13 @@ public abstract class Entity {
 
 	private final EntityType entityType;
 	private final Name name;
-	private final List<EntityRelationship> relations = new ArrayList<EntityRelationship>(); 
+	private final List<EntityRelationship> relations = new ArrayList<EntityRelationship>();
+    private final Address address; 
 
-	public Entity(EntityType type, Name name){
+	public Entity(EntityType type, Name name, Address address){
 		this.entityType = type;
 		this.name = name;
+		this.address = address;
 	}
 
 	public void addRelationship(EntityRelationship relationship){
@@ -40,9 +42,13 @@ public abstract class Entity {
 	public Name getName(){
 		return name;
 	}
+	
+	public Address getAddress(){
+	    return address;
+	}
 
 	@Override
 	public String toString() {
-		return " name=" + name + ", relations=" + relations;
+		return " name=" + name + ", relations=" + relations + ", address=" + address;
 	}
 }

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.InvalidDataException;
+import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.model.entity.RelationshipType;
 import gov.uspto.patent.xml.items.AddressBookNode;
@@ -34,7 +35,6 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
     public List<Inventor> read() {
         List<Inventor> inventorList = new ArrayList<Inventor>();
 
-        
         @SuppressWarnings("unchecked")
         List<Node> applicants = document.selectNodes(FRAGMENT_PATH_APPLICANT);
         List<Inventor> applicantInventors = readApplicantInventors(applicants);
@@ -64,7 +64,7 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
         List<Inventor> pre2012Inventors = readInventors(inventors2);
         inventorList.addAll(pre2012Inventors);
         //return pre2012Inventors;
-        
+
         return inventorList;
     }
 
@@ -105,8 +105,26 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
     private Inventor readInventor(Node inventorNode) {
         AddressBookNode addressBook = new AddressBookNode(inventorNode);
 
+        Node nationalityN = inventorNode.selectSingleNode("nationality/country");
+        CountryCode nationlityCC = null;
+        try {
+            nationlityCC = nationalityN != null ? CountryCode.fromString(nationalityN.getText()) : null;
+        } catch (InvalidDataException e1) {
+            LOGGER.warn("Invalid Nationality Country Code", e1);
+        }
+
+        Node residenceN = inventorNode.selectSingleNode("residence/country");
+        CountryCode residenceCC = null;
+        try {
+            residenceCC = residenceN != null ? CountryCode.fromString(residenceN.getText()) : null;
+        } catch (InvalidDataException e1) {
+            LOGGER.warn("Invalid Residence Country Code", e1);
+        }
+
         try {
             Inventor inventor = new Inventor(addressBook.getPersonName(), addressBook.getAddress());
+            inventor.setNationality(nationlityCC);
+            inventor.setResidency(residenceCC);
             if (addressBook.getOrgName() != null) {
                 inventor.addRelationship(addressBook.getOrgName(), RelationshipType.EMPLOYEE);
             }

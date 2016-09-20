@@ -7,29 +7,22 @@ package gov.uspto.patent.model.entity;
  */
 public class Applicant extends Entity {
 
-	private final Address address;
-	private String sequence;
+    private String sequence;
 
-	public Applicant(Name name, Address address){
-		super(EntityType.APPLICANT, name);
-		this.address = address;
-	}
+    public Applicant(Name name, Address address) {
+        super(EntityType.APPLICANT, name, address);
+    }
 
-	public Address getAddress(){
-		return address;
-	}
+    public String getSequence() {
+        return sequence;
+    }
 
-	public String getSequence() {
-		return sequence;
-	}
+    public void setSequence(String sequence) {
+        this.sequence = sequence;
+    }
 
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
-	}
-
-	@Override
-	public String toString() {
-		return "Applicant[ name=" + getName() +" , sequence=" + sequence + ", address=" + address + "]";
-	}
-	
+    @Override
+    public String toString() {
+        return "Applicant[ name=" + getName() + " , sequence=" + sequence + ", address=" + getAddress() + "]";
+    }
 }

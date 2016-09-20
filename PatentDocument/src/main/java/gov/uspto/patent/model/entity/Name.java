@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import gov.uspto.common.text.StringCaseUtil;
+
 public abstract class Name {
 
 	private final String fullName;
@@ -16,6 +18,10 @@ public abstract class Name {
 	
 	public String getName(){
 		return fullName;
+	}
+
+	public String getNameTitleCase(){
+	    return StringCaseUtil.toTitleCase(fullName);
 	}
 
 	public Set<String> getSynonyms() {

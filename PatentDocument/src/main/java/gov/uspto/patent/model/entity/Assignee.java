@@ -20,12 +20,10 @@ public class Assignee extends Entity {
 		AssigneeRoleType.put("09", "U.S. state government");
 	}
 
-	private final Address address;
 	private String roleType;
 
 	public Assignee(Name name, Address address){
-		super(EntityType.ASSIGNEE, name);
-		this.address = address;
+		super(EntityType.ASSIGNEE, name, address);
 	}
 
 	public String getRole() {
@@ -52,12 +50,8 @@ public class Assignee extends Entity {
 		}
 	}
 
-	public Address getAddress() {
-		return address;
-	}
-
 	@Override
 	public String toString() {
-		return "Assignee[name=" + getName() + "roleType=" + roleType + ", address=" + address + "]";
+		return "Assignee[name=" + getName() + "roleType=" + roleType + ", address=" + getAddress() + "]";
 	}	
 }

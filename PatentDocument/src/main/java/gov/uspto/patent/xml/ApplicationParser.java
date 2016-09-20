@@ -23,14 +23,17 @@ import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentApplication;
+import gov.uspto.patent.model.PatentType;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
+import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.xml.fragments.AbstractTextNode;
 import gov.uspto.patent.xml.fragments.AgentNode;
 import gov.uspto.patent.xml.fragments.ApplicantNode;
 import gov.uspto.patent.xml.fragments.ApplicationIdNode;
+import gov.uspto.patent.xml.fragments.AssigneeNode;
 import gov.uspto.patent.xml.fragments.CitationNode;
 import gov.uspto.patent.xml.fragments.ClaimNode;
 import gov.uspto.patent.xml.fragments.ClassificationNode;
@@ -63,6 +66,14 @@ public class ApplicationParser extends Dom4JParser {
             MDC.put("DOCID", publicationId.toText());
         }
 
+        String patentTypeStr = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-application/application-reference/@appl-type");
+        PatentType patentType = PatentType.UNDEFINED;
+        try {
+            patentType = PatentType.fromString(patentTypeStr);
+        } catch (InvalidDataException e1) {
+            LOGGER.warn("Invalid Patent Type: '{}'", patentTypeStr, e1);
+        }
+
         DocumentId applicationId = new ApplicationIdNode(document).read();
 
         DocumentId regionId = new RegionalIdNode(document).read();
@@ -72,7 +83,8 @@ public class ApplicationParser extends Dom4JParser {
         List<Inventor> inventors = new InventorNode(document).read();
         List<Applicant> applicants = new ApplicantNode(document).read();
         List<Agent> agents = new AgentNode(document).read();
-
+        List<Assignee> assignees = new AssigneeNode(document).read();
+        
         List<Citation> citations = new CitationNode(document).read();
         Set<Classification> classifications = new ClassificationNode(document).read();
 
@@ -89,7 +101,7 @@ public class ApplicationParser extends Dom4JParser {
          * Start Building Patent Object.
          */
         if (patent == null) {
-            patent = new PatentApplication(publicationId);
+            patent = new PatentApplication(publicationId, patentType);
         } else {
             patent.reset();
         }
@@ -105,6 +117,7 @@ public class ApplicationParser extends Dom4JParser {
         patent.setInventor(inventors);
         patent.setApplicant(applicants);
         patent.setAgent(agents);
+        patent.setAssignee(assignees);
         patent.setCitation(citations);
         patent.setClaim(claims);
         patent.setClassification(classifications);

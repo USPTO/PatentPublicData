@@ -31,296 +31,305 @@ import gov.uspto.patent.model.entity.MathFormula;
  */
 public abstract class Patent {
 
-	private PatentCorpus patentCorpus;
-	private DocumentId documentId;
-	private List<DocumentId> otherIds = new ArrayList<DocumentId>(); // store regional filing id, or other ids referencing this unique Patent.
-	private List<DocumentId> relationIds = new ArrayList<DocumentId>(); // Cross Reference to related Applications or Publications.
+    private PatentCorpus patentCorpus;
+    private DocumentId documentId;
+    private List<DocumentId> otherIds = new ArrayList<DocumentId>(); // store regional filing id, or other ids referencing this unique Patent.
+    private List<DocumentId> relationIds = new ArrayList<DocumentId>(); // Cross Reference to related Applications or Publications.
 
-	private DocumentDate datePublished;
-	private DocumentDate dateProduced;
+    private DocumentDate datePublished;
+    private DocumentDate dateProduced;
 
-	private String title; // invention-title
-	private Abstract abstractText;
-	private Description description;
+    private String title; // invention-title
+    private Abstract abstractText;
+    private Description description;
 
-	private List<Citation> citations = new ArrayList<Citation>();
-	private Set<Classification> classifications = new HashSet<Classification>();
-	private List<Claim> claims = new ArrayList<Claim>();
+    private List<Citation> citations = new ArrayList<Citation>();
+    private Set<Classification> classifications = new HashSet<Classification>();
+    private List<Claim> claims = new ArrayList<Claim>();
 
-	private List<Inventor> inventors = new ArrayList<Inventor>();
-	private List<Assignee> assignees = new ArrayList<Assignee>();
-	private List<Applicant> applicants = new ArrayList<Applicant>();
-	private List<Agent> agents = new ArrayList<Agent>();
-	private List<Examiner> examiners = new ArrayList<Examiner>();
-	private DocumentId applicationId;
-	private List<DocumentId> referenceIds;
+    private List<Inventor> inventors = new ArrayList<Inventor>();
+    private List<Assignee> assignees = new ArrayList<Assignee>();
+    private List<Applicant> applicants = new ArrayList<Applicant>();
+    private List<Agent> agents = new ArrayList<Agent>();
+    private List<Examiner> examiners = new ArrayList<Examiner>();
+    private DocumentId applicationId;
+    private List<DocumentId> referenceIds;
 
-	private List<ChemicalFormula> chemFomulas;
+    private List<ChemicalFormula> chemFomulas;
 
-	private List<MathFormula> mathFormulas;
+    private List<MathFormula> mathFormulas;
+    private PatentType patentType;
 
-	public Patent(PatentCorpus patentCorpus, DocumentId documentId) {
-		this.patentCorpus = patentCorpus;
-		this.documentId = documentId;
-	}
+    public Patent(PatentCorpus patentCorpus, DocumentId documentId, PatentType patentType) {
+        this.patentCorpus = patentCorpus;
+        this.documentId = documentId;
+        this.patentType= patentType;
+    }
 
-	public void reset() {
-	    patentCorpus = null;
-		otherIds.clear();
-		relationIds.clear();
-		referenceIds = null;
-		datePublished = null;
-		dateProduced = null;
-		applicationId = null;
-		title = null;
-		abstractText = null;
-		description = null;
-		citations.clear();
-		classifications.clear();
-		claims.clear();
-		inventors.clear();
-		assignees.clear();
-		applicants.clear();
-		agents.clear();
-		examiners.clear();
-		chemFomulas.clear();
-		mathFormulas.clear();
-	}
+    public void reset() {
+        patentCorpus = null;
+        otherIds.clear();
+        relationIds.clear();
+        referenceIds = null;
+        datePublished = null;
+        dateProduced = null;
+        applicationId = null;
+        title = null;
+        abstractText = null;
+        description = null;
+        setPatentType(null);
+        citations.clear();
+        classifications.clear();
+        claims.clear();
+        inventors.clear();
+        assignees.clear();
+        applicants.clear();
+        agents.clear();
+        examiners.clear();
+        chemFomulas.clear();
+        mathFormulas.clear();
+    }
 
-	public void setApplicationId(DocumentId documentId) {
-		this.applicationId = documentId;
-	}
+    public void setApplicationId(DocumentId documentId) {
+        this.applicationId = documentId;
+    }
 
-	public DocumentId getApplicationId() {
-		return applicationId;
-	}
+    public DocumentId getApplicationId() {
+        return applicationId;
+    }
 
-	public void setDocumentId(DocumentId documentId) {
-		this.documentId = documentId;
-	}
+    public void setDocumentId(DocumentId documentId) {
+        this.documentId = documentId;
+    }
 
-	public DocumentId getDocumentId() {
-		return documentId;
-	}
+    public DocumentId getDocumentId() {
+        return documentId;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public PatentType getPatentType() {
+        return patentType;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setPatentType(PatentType patentType) {
+        this.patentType = patentType;
+    }
 
-	public List<Claim> getClaims() {
-		return claims;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public void addClaim(Claim claim) {
-		claims.add(claim);
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setClaim(List<Claim> claims) {
-		this.claims = claims;
-	}
+    public List<Claim> getClaims() {
+        return claims;
+    }
 
-	public List<Citation> getCitations() {
-		return citations;
-	}
+    public void addClaim(Claim claim) {
+        claims.add(claim);
+    }
 
-	public void addCitation(Citation citation) {
-		citations.add(citation);
-	}
+    public void setClaim(List<Claim> claims) {
+        this.claims = claims;
+    }
 
-	public void setCitation(List<Citation> citations) {
-		this.citations.addAll(citations);
-	}
+    public List<Citation> getCitations() {
+        return citations;
+    }
 
-	public Description getDescription() {
-		return description;
-	}
+    public void addCitation(Citation citation) {
+        citations.add(citation);
+    }
 
-	public void setDescription(Description description) {
-		this.description = description;
-	}
+    public void setCitation(List<Citation> citations) {
+        this.citations.addAll(citations);
+    }
 
-	public Set<Classification> getClassification() {
-		return classifications;
-	}
+    public Description getDescription() {
+        return description;
+    }
 
-	public void setClassification(Set<Classification> classifications) {
-		this.classifications = classifications;
-	}
+    public void setDescription(Description description) {
+        this.description = description;
+    }
 
-	public void addClassification(List<Classification> classification) {
-		classifications.addAll(classification);
-	}
+    public Set<Classification> getClassification() {
+        return classifications;
+    }
 
-	public void addClassification(Classification classification) {
-		classifications.add(classification);
-	}
+    public void setClassification(Set<Classification> classifications) {
+        this.classifications = classifications;
+    }
 
-	public PatentCorpus getPatentCorpus() {
-		return patentCorpus;
-	}
+    public void addClassification(List<Classification> classification) {
+        classifications.addAll(classification);
+    }
 
-	public void setPatentCorpus(PatentCorpus patentCorpus) {
-		this.patentCorpus = patentCorpus;
-	}
+    public void addClassification(Classification classification) {
+        classifications.add(classification);
+    }
 
-	public void setDatePublished(DocumentDate datePublished) {
-		this.datePublished = datePublished;
-	}
+    public PatentCorpus getPatentCorpus() {
+        return patentCorpus;
+    }
 
-	public void setDatePublished(String datePublished) throws InvalidDataException {
-		this.datePublished = new DocumentDate(datePublished);
-	}
+    public void setPatentCorpus(PatentCorpus patentCorpus) {
+        this.patentCorpus = patentCorpus;
+    }
 
-	public DocumentDate getDatePublished() {
-		return datePublished;
-	}
+    public void setDatePublished(DocumentDate datePublished) {
+        this.datePublished = datePublished;
+    }
 
-	public DocumentDate getDateProduced() {
-		return dateProduced;
-	}
+    public void setDatePublished(String datePublished) throws InvalidDataException {
+        this.datePublished = new DocumentDate(datePublished);
+    }
 
-	public void setDateProduced(DocumentDate dateProduced) {
-		this.dateProduced = dateProduced;
-	}
+    public DocumentDate getDatePublished() {
+        return datePublished;
+    }
 
-	public void setDateProduced(String dateProduced) throws InvalidDataException {
-		this.dateProduced = new DocumentDate(dateProduced);
-	}
+    public DocumentDate getDateProduced() {
+        return dateProduced;
+    }
 
-	public Abstract getAbstract() {
-		return abstractText;
-	}
+    public void setDateProduced(DocumentDate dateProduced) {
+        this.dateProduced = dateProduced;
+    }
 
-	public void setAbstract(Abstract patentAbstract) {
-		this.abstractText = patentAbstract;
-	}
+    public void setDateProduced(String dateProduced) throws InvalidDataException {
+        this.dateProduced = new DocumentDate(dateProduced);
+    }
 
-	public List<Inventor> getInventors() {
-		return inventors;
-	}
+    public Abstract getAbstract() {
+        return abstractText;
+    }
 
-	public void setInventor(List<Inventor> inventors) {
-		this.inventors = inventors;
-	}
+    public void setAbstract(Abstract patentAbstract) {
+        this.abstractText = patentAbstract;
+    }
 
-	public List<Applicant> getApplicants() {
-		return applicants;
-	}
+    public List<Inventor> getInventors() {
+        return inventors;
+    }
 
-	public void setApplicant(List<Applicant> applicants) {
-		this.applicants = applicants;
-	}
+    public void setInventor(List<Inventor> inventors) {
+        this.inventors = inventors;
+    }
 
-	public List<Assignee> getAssignee() {
-		return assignees;
-	}
+    public List<Applicant> getApplicants() {
+        return applicants;
+    }
 
-	public void setAssignee(List<Assignee> assignees) {
-		this.assignees = assignees;
-	}
+    public void setApplicant(List<Applicant> applicants) {
+        this.applicants = applicants;
+    }
 
-	/**
-	 * Get Legal Agent
-	 * @param agents
-	 * @return 
-	 */
-	public List<Agent> getAgent() {
-		return agents;
-	}
+    public List<Assignee> getAssignee() {
+        return assignees;
+    }
 
-	public void setAgent(List<Agent> agents) {
-		this.agents = agents;
-	}
+    public void setAssignee(List<Assignee> assignees) {
+        this.assignees = assignees;
+    }
 
-	public List<Examiner> getExaminers() {
-		return examiners;
-	}
+    /**
+     * Get Legal Agent
+     * @param agents
+     * @return 
+     */
+    public List<Agent> getAgent() {
+        return agents;
+    }
 
-	public void setExaminer(List<Examiner> examiners) {
-		this.examiners = examiners;
-	}
+    public void setAgent(List<Agent> agents) {
+        this.agents = agents;
+    }
 
-	/**
+    public List<Examiner> getExaminers() {
+        return examiners;
+    }
+
+    public void setExaminer(List<Examiner> examiners) {
+        this.examiners = examiners;
+    }
+
+    /**
      * Other IDs for Same Patent (Application Id, Regional Patent IDs, Related Patent IDs)
      * 
      * @param otherId
      */
-	public List<DocumentId> getOtherIds() {
-		return otherIds;
-	}
+    public List<DocumentId> getOtherIds() {
+        return otherIds;
+    }
 
-	/**
-	 * Other IDs for Same Patent (Application Id, Regional Patent IDs, Related Patent IDs)
-	 * 
-	 * @param otherId
-	 */
-	public void addOtherId(DocumentId otherId) {
-		this.otherIds.add(otherId);
-	}
+    /**
+     * Other IDs for Same Patent (Application Id, Regional Patent IDs, Related Patent IDs)
+     * 
+     * @param otherId
+     */
+    public void addOtherId(DocumentId otherId) {
+        this.otherIds.add(otherId);
+    }
 
-	/**
-	 * Get Related Patent Ids, patents within same patent family (continuations, ...)
-	 * @return
-	 */
-	public List<DocumentId> getRelationIds() {
-		return relationIds;
-	}
+    /**
+     * Get Related Patent Ids, patents within same patent family (continuations, ...)
+     * @return
+     */
+    public List<DocumentId> getRelationIds() {
+        return relationIds;
+    }
 
-	public void setRelationIds(List<DocumentId> relationIds) {
-		this.relationIds = relationIds;
-	}
+    public void setRelationIds(List<DocumentId> relationIds) {
+        this.relationIds = relationIds;
+    }
 
-	public void addRelationIds(List<DocumentId> relationIds) {
-		this.relationIds.addAll(relationIds);
-	}
+    public void addRelationIds(List<DocumentId> relationIds) {
+        this.relationIds.addAll(relationIds);
+    }
 
-	public void addRelationId(DocumentId relationId) {
-		this.relationIds.add(relationId);
-	}
+    public void addRelationId(DocumentId relationId) {
+        this.relationIds.add(relationId);
+    }
 
-	public void setReferenceIds(List<DocumentId> referenceIds) {
-		this.referenceIds = referenceIds;
-	}
+    public void setReferenceIds(List<DocumentId> referenceIds) {
+        this.referenceIds = referenceIds;
+    }
 
-	/**
-	 * Get Referenced Patent Ids, references to non-related patents.
-	 * @return
-	 */
-	public List<DocumentId> setReferenceIds() {
-		return this.referenceIds;
-	}
+    /**
+     * Get Referenced Patent Ids, references to non-related patents.
+     * @return
+     */
+    public List<DocumentId> setReferenceIds() {
+        return this.referenceIds;
+    }
 
-	public List<ChemicalFormula> getChemFomulas() {
-		return chemFomulas;
-	}
+    public List<ChemicalFormula> getChemFomulas() {
+        return chemFomulas;
+    }
 
-	public void setChemFomulas(List<ChemicalFormula> chemFomulas) {
-		this.chemFomulas = chemFomulas;
-	}
+    public void setChemFomulas(List<ChemicalFormula> chemFomulas) {
+        this.chemFomulas = chemFomulas;
+    }
 
-	public List<MathFormula> getMathFormulas() {
-		return mathFormulas;
-	}
+    public List<MathFormula> getMathFormulas() {
+        return mathFormulas;
+    }
 
-	public void setMathFormulas(List<MathFormula> mathFormulas) {
-		this.mathFormulas = mathFormulas;
-	}
+    public void setMathFormulas(List<MathFormula> mathFormulas) {
+        this.mathFormulas = mathFormulas;
+    }
 
-	@Override
-	public String toString() {
-		return "Patent [\n\tdocumentId=" + documentId + ",\n\t applicationId=" + applicationId + ",\n\t otherIds="
-				+ otherIds + ",\n\t relationIds=" + relationIds + ",\n\t referenceIds=" + referenceIds
-				+ ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced + ",\n\t title=" + title
-				+ ",\n\t abstractText=" + abstractText
-				+ ",\n\t description=" + description
-				+ ",\n\t patentCorpus=" + patentCorpus + ",\n\t citations=" + citations
-				+ ",\n\t classifications=" + classifications + ",\n\t claims=" + claims + ",\n\t inventors=" + inventors
-				+ ",\n\t assignees=" + assignees + ",\n\t applicant=" + applicants + ",\n\t agent=" + agents
-				+ ",\n\t examiners=" + examiners + ",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas="
-				+ mathFormulas + "\n\t]";
-	}
+    @Override
+    public String toString() {
+        return "Patent [\n\tdocumentId=" + documentId + ",\n\t applicationId=" + applicationId + ",\n\t patentType="
+                + patentType + ",\n\t otherIds=" + otherIds + ",\n\t relationIds=" + relationIds + ",\n\t referenceIds="
+                + referenceIds + ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced
+                + ",\n\t title=" + title + ",\n\t abstractText=" + abstractText + ",\n\t description=" + description
+                + ",\n\t patentCorpus=" + patentCorpus + ",\n\t citations=" + citations + ",\n\t classifications="
+                + classifications + ",\n\t claims=" + claims + ",\n\t inventors=" + inventors + ",\n\t assignees="
+                + assignees + ",\n\t applicant=" + applicants + ",\n\t agent=" + agents + ",\n\t examiners=" + examiners
+                + ",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas=" + mathFormulas + "\n\t]";
+    }
 }

@@ -21,6 +21,8 @@ import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentApplication;
+import gov.uspto.patent.model.PatentType;
+import gov.uspto.patent.model.UsKindCode2PatentType;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Inventor;
@@ -63,6 +65,8 @@ public class PatentAppPubParser extends Dom4JParser {
             MDC.put("DOCID", publicationId.toText());
         }
 
+        PatentType patentType = UsKindCode2PatentType.getInstance().lookupPatentType(publicationId.getKindCode());
+        
         DocumentId applicationId = new ApplicationIdNode(document).read();
         //DocumentId relatedId = new RelatedIdNode(document).read();
 
@@ -84,7 +88,7 @@ public class PatentAppPubParser extends Dom4JParser {
          * Start Building Patent Object.
          */
         if (patent == null) {
-            patent = new PatentApplication(publicationId);
+            patent = new PatentApplication(publicationId, patentType);
         } else {
             patent.reset();
         }

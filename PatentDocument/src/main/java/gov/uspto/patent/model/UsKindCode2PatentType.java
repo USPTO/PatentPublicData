@@ -10,9 +10,23 @@ import java.util.Map;
  */
 public class UsKindCode2PatentType {
 
-    private static Map<String, PatentType> mapping = new HashMap<String, PatentType>();
+    private Map<String, PatentType> mapping;
+    
+    private static UsKindCode2PatentType kindCode2PatentTpe;
+    
+    private UsKindCode2PatentType(){}
 
-    static {
+    public static UsKindCode2PatentType getInstance(){
+        if (kindCode2PatentTpe == null){
+            kindCode2PatentTpe = new UsKindCode2PatentType();
+            kindCode2PatentTpe.init();
+        }
+        return kindCode2PatentTpe;
+    }
+
+    private void init(){
+        mapping = new HashMap<String, PatentType>();
+
         // UTILITY
         mapping.put("A", PatentType.UTILITY);
         mapping.put("A1", PatentType.UTILITY);
@@ -46,6 +60,10 @@ public class UsKindCode2PatentType {
     }
 
     public PatentType lookupPatentType(String kindCode) {
-        return mapping.get(kindCode);
+        PatentType patentType = mapping.get(kindCode);
+        if (patentType == null){
+            patentType = PatentType.UNDEFINED;
+        }
+        return patentType;
     }
 }

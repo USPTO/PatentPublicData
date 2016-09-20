@@ -23,6 +23,7 @@ import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
+import gov.uspto.patent.model.PatentType;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
@@ -66,6 +67,14 @@ public class GrantParser extends Dom4JParser {
             MDC.put("DOCID", publicationId.toText());
         }
 
+        String patentTypeStr = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-grant/application-reference/@appl-type");
+        PatentType patentType = PatentType.UNDEFINED;
+        try {
+            patentType = PatentType.fromString(patentTypeStr);
+        } catch (InvalidDataException e1) {
+            LOGGER.warn("Invalid Patent Type: '{}'", patentTypeStr, e1);
+        }
+  
         DocumentId applicationId = new ApplicationIdNode(document).read();
 
         DocumentId regionId = new RegionalIdNode(document).read();
@@ -94,7 +103,7 @@ public class GrantParser extends Dom4JParser {
          * Start Building Patent Object.
          */
         //if (patent == null) {
-        patent = new PatentGranted(publicationId);
+        patent = new PatentGranted(publicationId, patentType);
         //} else {
         //	patent.reset();
         //}

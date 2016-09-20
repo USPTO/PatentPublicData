@@ -17,6 +17,7 @@ import gov.uspto.patent.model.DescriptionSection;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.PatentGranted;
+import gov.uspto.patent.model.PatentType;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Inventor;
@@ -33,7 +34,7 @@ public class JsonMapperTest {
         FormattedText textParserNormalizer = new FormattedText();
         
         DocumentId docId = new DocumentId(CountryCode.US, "123456789");
-        PatentGranted patent = new PatentGranted(docId);
+        PatentGranted patent = new PatentGranted(docId, PatentType.UTILITY);
         patent.setDateProduced(new DocumentDate("20160101"));
         patent.setDatePublished(new DocumentDate("20160202"));
         patent.setInventor( Arrays.asList(new Inventor(new NamePerson("Bob", "Inventee"), new Address("123 Main St", "Alexandria", "VA", "22314", CountryCode.US)) )  );
@@ -50,7 +51,7 @@ public class JsonMapperTest {
         desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, "Detailed Description Text", textParserNormalizer));
         patent.setDescription(desc);
  
-        JsonMapper json = new JsonMapper();
+        JsonMapper json = new JsonMapper(false);
         JsonObject jsonObj = json.buildJson(patent);
         
         System.out.println(jsonObj.toString());
