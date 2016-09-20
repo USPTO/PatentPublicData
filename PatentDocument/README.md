@@ -21,6 +21,7 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | references-cited | variation: us-references-cited |
 | citation | variation: us-citation |
 | inventor | variation: Applicant with attribute "app-type" value "applicant-inventor" |
+| address/street | variation: address-1 address-2
 | agent | fix: if missing use "correspondence-address" field |
 | description | fix to corresponds with non-xml patent versions, improvement since individual sections are often searched on: break description into individual sections by XML Processing Instructions |
 | claim | improvement: identify independent and dependent claims; capture dependent claim hierarchy |
