@@ -70,6 +70,8 @@ public class ReadBulkPatentZip {
         File inputFile = new File(args[0]);
         int skip = 100;
         int limit = 1;
+        boolean flatJson = false;
+        boolean jsonPrettyPrint = true;
 
         PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(inputFile);
 
@@ -96,10 +98,16 @@ public class ReadBulkPatentZip {
             try (PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)) {
                 Patent patent = patentReader.read();
                 System.out.println(patent.getDocumentId().toText());
-
-                //JsonMapper json = new JsonMapper();
-                //String jsonStr = json.buildJson(patent);
-                //System.out.println("JSON: " + jsonStr);
+                
+                DocumentBuilder<Patent, String> json;
+                if (flatJson){
+                   json = new JsonMapperFlat(jsonPrettyPrint);
+                } else {
+                    json = new JsonMapper(jsonPrettyPrint);
+                }
+                
+                String jsonStr = json.build(patent);
+                System.out.println("JSON: " + jsonStr);
                 
                 //System.out.println("Patent: " + patent.toString());
             }
