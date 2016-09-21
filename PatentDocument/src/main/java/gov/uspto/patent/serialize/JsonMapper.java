@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -28,6 +29,11 @@ import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
 import gov.uspto.patent.model.PatCitation;
 import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.ClassificationType;
+import gov.uspto.patent.model.classification.CpcClassification;
+import gov.uspto.patent.model.classification.IpcClassification;
+import gov.uspto.patent.model.classification.UspcClassification;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
@@ -97,6 +103,8 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         builder.add("claims", mapClaims(patent.getClaims()));
         builder.add("citations", mapCitations(patent.getCitations()));
 
+        builder.add("classification", mapClassifications(patent.getClassification()));
+
         return builder.build();
     }
 
@@ -113,6 +121,84 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         }
 
         return output;
+    }
+
+    private JsonObject mapClassifications(Collection<? extends Classification> classes) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        @SuppressWarnings("unchecked")
+        List<IpcClassification> ipcClasses = (List<IpcClassification>) Classification.getByType(classes,
+                ClassificationType.IPC);
+        JsonArrayBuilder ipcAr = Json.createArrayBuilder();
+        for (IpcClassification claz : ipcClasses) {
+            JsonObjectBuilder ipcObj = Json.createObjectBuilder();
+            ipcObj.add("type", "main");
+            ipcObj.add("raw", claz.toText());
+            ipcObj.add("normalized", claz.toTextNormalized());
+            ipcObj.add("facets", toJsonArray(claz.toFacet()));
+            ipcAr.add(ipcObj.build());
+
+            JsonObjectBuilder ipcObj2 = Json.createObjectBuilder();
+            for (Classification furtherClassification : claz.getChildren()) {
+                IpcClassification furtherIpc = (IpcClassification) furtherClassification;
+                ipcObj2.add("type", "further");
+                ipcObj2.add("raw", furtherIpc.toText());
+                ipcObj2.add("normalized", furtherIpc.toTextNormalized());
+                ipcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+            }
+            ipcAr.add(ipcObj2.build());
+        }
+        builder.add("ipc", ipcAr.build());
+
+        @SuppressWarnings("unchecked")
+        List<UspcClassification> uspcClasses = (List<UspcClassification>) Classification.getByType(classes,
+                ClassificationType.USPC);
+        JsonArrayBuilder uspcAr = Json.createArrayBuilder();
+        for (UspcClassification claz : uspcClasses) {
+            JsonObjectBuilder uspcObj = Json.createObjectBuilder();
+            uspcObj.add("type", "main");
+            uspcObj.add("raw", claz.toText());
+            uspcObj.add("normalized", claz.toTextNormalized());
+            uspcObj.add("facets", toJsonArray(claz.toFacet()));
+            uspcAr.add(uspcObj.build());
+
+            JsonObjectBuilder uspcObj2 = Json.createObjectBuilder();
+            for (Classification furtherClassification : claz.getChildren()) {
+                UspcClassification furtherIpc = (UspcClassification) furtherClassification;
+                uspcObj2.add("type", "further");
+                uspcObj2.add("raw", furtherIpc.toText());
+                uspcObj2.add("normalized", furtherIpc.toTextNormalized());
+                uspcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+            }
+            uspcAr.add(uspcObj2.build());
+        }
+        builder.add("uspc", uspcAr.build());
+
+        @SuppressWarnings("unchecked")
+        List<CpcClassification> cpcClasses = (List<CpcClassification>) Classification.getByType(classes,
+                ClassificationType.CPC);
+        JsonArrayBuilder cpcAr = Json.createArrayBuilder();
+        for (CpcClassification claz : cpcClasses) {
+            JsonObjectBuilder cpcObj = Json.createObjectBuilder();
+            cpcObj.add("type", "main");
+            cpcObj.add("raw", claz.toText());
+            cpcObj.add("normalized", claz.toTextNormalized());
+            cpcObj.add("facets", toJsonArray(claz.toFacet()));
+            cpcAr.add(cpcObj.build());
+
+            JsonObjectBuilder cpcObj2 = Json.createObjectBuilder();
+            for (Classification furtherClassification : claz.getChildren()) {
+                CpcClassification furtherIpc = (CpcClassification) furtherClassification;
+                cpcObj2.add("type", "further");
+                cpcObj2.add("raw", furtherIpc.toText());
+                cpcObj2.add("normalized", furtherIpc.toTextNormalized());
+                cpcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+            }
+            cpcAr.add(cpcObj2.build());
+        }
+        builder.add("cpc", cpcAr.build());
+
+        return builder.build();
     }
 
     private String valueOrEmpty(String value) {
@@ -252,13 +338,13 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
             jsonObj.add("lastName", valueOrEmpty(perName.getLastName()));
             jsonObj.add("suffix", valueOrEmpty(perName.getPrefix()));
             jsonObj.add("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
-            jsonObj.add("synonyms", mapStringCollection(perName.getSynonyms()));
+            jsonObj.add("synonyms", toJsonArray(perName.getSynonyms()));
         } else {
             NameOrg orgName = (NameOrg) name;
             jsonObj.add("type", "org");
             jsonObj.add("raw", valueOrEmpty(name.getName()));
             jsonObj.add("suffix", valueOrEmpty(orgName.getSuffix()));
-            jsonObj.add("synonyms", mapStringCollection(orgName.getSynonyms()));
+            jsonObj.add("synonyms", toJsonArray(orgName.getSynonyms()));
         }
         return jsonObj.build();
     }
@@ -279,7 +365,30 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return jsonObj.build();
     }
 
-    private JsonArray mapStringCollection(Collection<String> strings) {
+    private JsonArray toJsonArray(Collection<String> strings) {
+        JsonArrayBuilder arBldr = Json.createArrayBuilder();
+        if (strings != null) {
+            for (String tok : strings) {
+                arBldr.add(tok);
+            }
+        }
+        return arBldr.build();
+    }
+
+    private JsonArray toJsonArray(Collection<String> strings, JsonArray jsonArray) {
+        JsonArrayBuilder arBldr = Json.createArrayBuilder();
+        for (int i = 0; i > jsonArray.size(); i++) {
+            arBldr.add(jsonArray.get(i));
+        }
+        if (strings != null) {
+            for (String tok : strings) {
+                arBldr.add(tok);
+            }
+        }
+        return arBldr.build();
+    }
+
+    private JsonArray toJsonArray(String... strings) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
         if (strings != null) {
             for (String tok : strings) {
@@ -313,7 +422,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
             JsonArray childClaimJsonAr = childArBldr.build();
 
             JsonObjectBuilder claimTreeJson = Json.createObjectBuilder()
-                    .add("parentIds", mapStringCollection(claim.getDependentIds()))
+                    .add("parentIds", toJsonArray(claim.getDependentIds()))
                     .add("parentCount", claim.getDependentIds() != null ? claim.getDependentIds().size() : 0)
                     .add("childIds", childClaimJsonAr)
                     .add("childCount", claim.getChildClaims() != null ? claim.getChildClaims().size() : 0)

@@ -25,7 +25,7 @@ public abstract class Classification implements Comparable<Classification> {
 		this.originalText = originalText;
 	}
 
-	public Boolean getIsMainClassification() {
+	public Boolean isMainClassification() {
 		return isMainClassification;
 	}
 
@@ -156,7 +156,7 @@ public abstract class Classification implements Comparable<Classification> {
 		return facets;
 	}
 
-	public static List<Classification> getByType(Collection<Classification> classes, ClassificationType type) {
+	public static List<? extends Classification> getByType(Collection<? extends Classification> classes, ClassificationType type) {
 		List<Classification> retClasses = new LinkedList<Classification>();
 
 		for (Classification pclass : classes) {
@@ -164,11 +164,11 @@ public abstract class Classification implements Comparable<Classification> {
 				retClasses.add(pclass);
 			}
 		}
-
+		
 		return retClasses;
 	}
 
-	public static SortedSet<String> getFacetByType(Collection<Classification> classes, ClassificationType type) {
+	public static SortedSet<String> getFacetByType(Collection<? extends Classification> classes, ClassificationType type) {
 		SortedSet<String> retClasses = new TreeSet<String>();
 
 		for (Classification pclass : classes) {
