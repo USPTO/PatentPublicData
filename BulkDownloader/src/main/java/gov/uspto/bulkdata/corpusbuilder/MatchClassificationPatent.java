@@ -28,8 +28,8 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 
 	private final List<Classification> wantedClasses;
 
-	private List<Classification> wantedCPC;
-	private List<Classification> wantedUSPC;
+	private List<CpcClassification> wantedCPC;
+	private List<UspcClassification> wantedUSPC;
 	private Patent patent;
 	private String lastPatternMatch;
 
@@ -37,10 +37,11 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 		this.wantedClasses = wantedClasses;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void setup() throws XPathExpressionException {
-		wantedCPC = Classification.getByType(wantedClasses, ClassificationType.CPC);
-		wantedUSPC = Classification.getByType(wantedClasses, ClassificationType.USPC);
+		wantedCPC = (List<CpcClassification>) Classification.getByType(wantedClasses, ClassificationType.CPC);
+		wantedUSPC = (List<UspcClassification>) Classification.getByType(wantedClasses, ClassificationType.USPC);
 
 	}
 
@@ -63,7 +64,8 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 			return false;
 		}
 
-		List<Classification> patentCPC = Classification.getByType(patent.getClassification(), ClassificationType.CPC);
+		@SuppressWarnings("unchecked")
+        List<CpcClassification> patentCPC = (List<CpcClassification>) Classification.getByType(patent.getClassification(), ClassificationType.CPC);
 		for (Classification wantedCpcClass : wantedCPC) {
 			CpcClassification wantedCpc = (CpcClassification) wantedCpcClass;
 
@@ -78,7 +80,8 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 			}
 		}
 
-		List<Classification> patentUSPC = Classification.getByType(patent.getClassification(), ClassificationType.USPC);
+		@SuppressWarnings("unchecked")
+        List<UspcClassification> patentUSPC = (List<UspcClassification>) Classification.getByType(patent.getClassification(), ClassificationType.USPC);
 		for (Classification wantedUspcClass : wantedUSPC) {
 			UspcClassification wantedUspc = (UspcClassification) wantedUspcClass;
 

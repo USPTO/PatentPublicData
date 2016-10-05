@@ -1,6 +1,7 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -153,6 +154,25 @@ public class IpcClassification extends Classification {
 				+ "]";
 	}
 
+    /**
+     * Generate List of IpcClassifications from list of Facets.
+     * 
+     * @param classificationFacets
+     */
+    public static List<IpcClassification> fromFacets(final List<String> classificationFacets) {
+        List<String> specificClasses = getMostSpecificClasses(classificationFacets);
+        List<IpcClassification> retClasses = new ArrayList<IpcClassification>();
+        for (String textClass : specificClasses) {
+            try {
+                IpcClassification ipcClass = fromText(textClass);
+                retClasses.add(ipcClass);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return retClasses;
+    }
+	
 	/**
 	 * Parse classification text to create IpcClassification
 	 * 

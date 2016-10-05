@@ -2,11 +2,13 @@ package gov.uspto.patent.serialize;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -50,21 +52,25 @@ import gov.uspto.patent.model.entity.NamePerson;
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
-public class JsonMapper implements DocumentBuilder<Patent, String> {
+public class JsonMapper implements DocumentBuilder<Patent> {
 
-    private boolean pretty;
+    private final boolean pretty;
+    private final boolean base64;
 
-    public JsonMapper(boolean pretty) {
+    public JsonMapper(boolean pretty, boolean base64) {
         this.pretty = pretty;
+        this.base64 = base64;
     }
 
     @Override
-    public String build(Patent patent) throws IOException {
+    public void write(Patent patent, Writer writer) throws IOException {
         JsonObject json = buildJson(patent);
         if (pretty) {
-            return getPrettyPrint(json);
+            writer.write(getPrettyPrint(json));
+        } else if (base64) {
+            writer.write(base64(json.toString()));
         } else {
-            return json.toString();
+            writer.write(json.toString());
         }
     }
 
@@ -72,19 +78,21 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         builder.add("patentCorpus", patent.getPatentCorpus().toString());
-        builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
-
         builder.add("patentType", patent.getPatentType().toString());
 
+        builder.add("productionDate", mapDate(patent.getDateProduced()));
+        builder.add("publishedDate", mapDate(patent.getDatePublished()));
+
+        builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
+        builder.add("documentDate", mapDate(patent.getDocumentDate()));
+
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
+        builder.add("applicationDate", mapDate(patent.getApplicationDate()));
 
         builder.add("relatedIds", mapDocIds(patent.getRelationIds()));
 
         // OtherIds contain [documentId, applicationId, relatedIds]
         builder.add("otherIds", mapDocIds(patent.getOtherIds()));
-
-        builder.add("productionDate", mapDate(patent.getDateProduced()));
-        builder.add("publishedDate", mapDate(patent.getDatePublished()));
 
         builder.add("agent", mapAgent(patent.getAgent()));
         builder.add("applicant", mapApplicant(patent.getApplicants()));
@@ -255,7 +263,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return jsonObj.build();
     }
 
-    private JsonArray mapAgent(List<Agent> agents) {
+    private JsonArray mapAgent(Collection<Agent> agents) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Agent agent : agents) {
@@ -268,7 +276,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapApplicant(List<Applicant> applicants) {
+    private JsonArray mapApplicant(Collection<Applicant> applicants) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Applicant applicant : applicants) {
@@ -281,7 +289,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapAssignees(List<Assignee> assignees) {
+    private JsonArray mapAssignees(Collection<Assignee> assignees) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Assignee assignee : assignees) {
@@ -296,7 +304,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapInventors(List<Inventor> inventors) {
+    private JsonArray mapInventors(Collection<Inventor> inventors) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Inventor inventor : inventors) {
@@ -312,7 +320,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapExaminers(List<Examiner> examiners) {
+    private JsonArray mapExaminers(Collection<Examiner> examiners) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Examiner examiner : examiners) {
@@ -398,7 +406,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapDocIds(List<DocumentId> docIds) {
+    private JsonArray mapDocIds(Collection<DocumentId> docIds) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
         if (docIds != null) {
             for (DocumentId docId : docIds) {
@@ -410,7 +418,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapClaims(List<Claim> claimList) {
+    private JsonArray mapClaims(Collection<Claim> claimList) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Claim claim : claimList) {
@@ -436,7 +444,7 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapCitations(List<Citation> CitationList) {
+    private JsonArray mapCitations(Collection<Citation> CitationList) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Citation cite : CitationList) {
@@ -456,6 +464,10 @@ public class JsonMapper implements DocumentBuilder<Patent, String> {
         }
 
         return arBldr.build();
+    }
+
+    private String base64(String string) {
+        return Base64.getEncoder().encodeToString(string.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

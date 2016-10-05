@@ -1,7 +1,9 @@
 package gov.uspto.patent.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,11 +35,14 @@ public abstract class Patent {
 
     private PatentCorpus patentCorpus;
     private DocumentId documentId;
-    private List<DocumentId> otherIds = new ArrayList<DocumentId>(); // store regional filing id, or other ids referencing this unique Patent.
-    private List<DocumentId> relationIds = new ArrayList<DocumentId>(); // Cross Reference to related Applications or Publications.
+    private Set<DocumentId> otherIds = new LinkedHashSet<DocumentId>(); // store regional filing id, or other ids referencing this unique Patent.
+    private Set<DocumentId> relationIds = new LinkedHashSet<DocumentId>(); // Cross Reference to related Applications or Publications.
+    private Set<DocumentId> referenceIds = new LinkedHashSet<DocumentId>();
 
     private DocumentDate datePublished;
     private DocumentDate dateProduced;
+    private DocumentDate applicationDate;
+    private DocumentDate documentDate;
 
     private String title; // invention-title
     private Abstract abstractText;
@@ -53,7 +58,6 @@ public abstract class Patent {
     private List<Agent> agents = new ArrayList<Agent>();
     private List<Examiner> examiners = new ArrayList<Examiner>();
     private DocumentId applicationId;
-    private List<DocumentId> referenceIds;
 
     private List<ChemicalFormula> chemFomulas;
 
@@ -63,21 +67,26 @@ public abstract class Patent {
     public Patent(PatentCorpus patentCorpus, DocumentId documentId, PatentType patentType) {
         this.patentCorpus = patentCorpus;
         this.documentId = documentId;
-        this.patentType= patentType;
+        if (documentId != null){
+        	this.documentDate = documentId.getDate();
+        }
+        this.patentType = patentType;
     }
 
     public void reset() {
         patentCorpus = null;
         otherIds.clear();
         relationIds.clear();
-        referenceIds = null;
+        referenceIds.clear();
         datePublished = null;
         dateProduced = null;
         applicationId = null;
+        applicationDate = null;
+        documentDate = null;
         title = null;
         abstractText = null;
         description = null;
-        setPatentType(null);
+        patentType = null;
         citations.clear();
         classifications.clear();
         claims.clear();
@@ -92,18 +101,30 @@ public abstract class Patent {
 
     public void setApplicationId(DocumentId documentId) {
         this.applicationId = documentId;
+        if (documentId != null){
+        	this.applicationDate = documentId.getDate();
+        }
     }
 
     public DocumentId getApplicationId() {
         return applicationId;
     }
 
+    public DocumentDate getApplicationDate() {
+        return applicationDate;
+    }
+
     public void setDocumentId(DocumentId documentId) {
         this.documentId = documentId;
+        this.documentDate = documentId.getDate();
     }
 
     public DocumentId getDocumentId() {
         return documentId;
+    }
+
+    public DocumentDate getDocumentDate() {
+        return documentDate;
     }
 
     public PatentType getPatentType() {
@@ -256,36 +277,31 @@ public abstract class Patent {
     }
 
     /**
-     * Other IDs for Same Patent (Application Id, Regional Patent IDs, Related Patent IDs)
+     * Other IDs for Same Patent (Application Id, PCT Regional Patent IDs, Related Patent IDs)
      * 
      * @param otherId
      */
-    public List<DocumentId> getOtherIds() {
+    public Set<DocumentId> getOtherIds() {
         return otherIds;
     }
 
-    /**
-     * Other IDs for Same Patent (Application Id, Regional Patent IDs, Related Patent IDs)
-     * 
-     * @param otherId
-     */
     public void addOtherId(DocumentId otherId) {
         this.otherIds.add(otherId);
+    }
+
+    public void addOtherId(Collection<DocumentId> otherIds) {
+        this.otherIds.addAll(otherIds);
     }
 
     /**
      * Get Related Patent Ids, patents within same patent family (continuations, ...)
      * @return
      */
-    public List<DocumentId> getRelationIds() {
+    public Set<DocumentId> getRelationIds() {
         return relationIds;
     }
 
-    public void setRelationIds(List<DocumentId> relationIds) {
-        this.relationIds = relationIds;
-    }
-
-    public void addRelationIds(List<DocumentId> relationIds) {
+    public void addRelationIds(Collection<DocumentId> relationIds) {
         this.relationIds.addAll(relationIds);
     }
 
@@ -293,16 +309,16 @@ public abstract class Patent {
         this.relationIds.add(relationId);
     }
 
-    public void setReferenceIds(List<DocumentId> referenceIds) {
-        this.referenceIds = referenceIds;
-    }
-
     /**
      * Get Referenced Patent Ids, references to non-related patents.
      * @return
      */
-    public List<DocumentId> setReferenceIds() {
+    public Set<DocumentId> getReferenceIds() {
         return this.referenceIds;
+    }
+
+    public void addReferenceIds(Collection<DocumentId> referenceIds) {
+        this.referenceIds.addAll(referenceIds);
     }
 
     public List<ChemicalFormula> getChemFomulas() {
@@ -323,13 +339,13 @@ public abstract class Patent {
 
     @Override
     public String toString() {
-        return "Patent [\n\tdocumentId=" + documentId + ",\n\t applicationId=" + applicationId + ",\n\t patentType="
-                + patentType + ",\n\t otherIds=" + otherIds + ",\n\t relationIds=" + relationIds + ",\n\t referenceIds="
-                + referenceIds + ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced
-                + ",\n\t title=" + title + ",\n\t abstractText=" + abstractText + ",\n\t description=" + description
-                + ",\n\t patentCorpus=" + patentCorpus + ",\n\t citations=" + citations + ",\n\t classifications="
-                + classifications + ",\n\t claims=" + claims + ",\n\t inventors=" + inventors + ",\n\t assignees="
-                + assignees + ",\n\t applicant=" + applicants + ",\n\t agent=" + agents + ",\n\t examiners=" + examiners
-                + ",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas=" + mathFormulas + "\n\t]";
+        return "Patent [patentCorpus=" + patentCorpus + ",\n\t documentId=" + documentId + ",\n\t otherIds=" + otherIds
+                + ",\n\t relationIds=" + relationIds + ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced
+                + ",\n\t applicationDate=" + applicationDate + ",\n\t documentDate=" + documentDate + ",\n\t title=" + title
+                + ",\n\t abstractText=" + abstractText + ",\n\t description=" + description + ",\n\t citations=" + citations
+                + ",\n\t classifications=" + classifications + ",\n\t claims=" + claims + ",\n\t inventors=" + inventors
+                + ",\n\t assignees=" + assignees + ",\n\t applicants=" + applicants + ",\n\t agents=" + agents + ",\n\t examiners="
+                + examiners + ",\n\t applicationId=" + applicationId + ",\n\t referenceIds=" + referenceIds + ",\n\t chemFomulas="
+                + chemFomulas + ",\n\t mathFormulas=" + mathFormulas + ",\n\t patentType=" + patentType + "]";
     }
 }

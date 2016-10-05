@@ -32,10 +32,10 @@ public class DocumentDate {
         this.date = date;
     }
 
-    public String getYear() {
+    public int getYear() {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         calendar.setTime(date);
-        return String.valueOf(calendar.get(Calendar.YEAR));
+        return calendar.get(Calendar.YEAR);
     }
 
     public void setDate(String date) throws InvalidDataException {

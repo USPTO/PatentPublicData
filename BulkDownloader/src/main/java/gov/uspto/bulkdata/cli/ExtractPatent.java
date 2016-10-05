@@ -17,13 +17,13 @@ import org.dom4j.io.XMLWriter;
 
 import com.google.common.base.Preconditions;
 
-import gov.uspto.bulkdata.DumpFileAps;
-import gov.uspto.bulkdata.DumpFileXml;
-import gov.uspto.bulkdata.DumpReader;
 import gov.uspto.common.file.filter.FileFilterChain;
 import gov.uspto.common.file.filter.SuffixFileFilter;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.bulk.DumpFileAps;
+import gov.uspto.patent.bulk.DumpFileXml;
+import gov.uspto.patent.bulk.DumpReader;
 import gov.uspto.patent.model.Patent;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;

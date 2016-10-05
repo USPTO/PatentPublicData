@@ -16,12 +16,12 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
 
-import gov.uspto.patent.greenbook.Greenbook;
+import gov.uspto.patent.doc.greenbook.Greenbook;
+import gov.uspto.patent.doc.pap.PatentAppPubParser;
+import gov.uspto.patent.doc.sgml.Sgml;
+import gov.uspto.patent.doc.xml.ApplicationParser;
+import gov.uspto.patent.doc.xml.GrantParser;
 import gov.uspto.patent.model.Patent;
-import gov.uspto.patent.pap.PatentAppPubParser;
-import gov.uspto.patent.sgml.Sgml;
-import gov.uspto.patent.xml.ApplicationParser;
-import gov.uspto.patent.xml.GrantParser;
 
 /**
  * Detect Patent Document Type and/or Parse Document into Patent Object

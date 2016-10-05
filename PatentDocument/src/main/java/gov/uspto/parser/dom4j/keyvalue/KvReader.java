@@ -327,7 +327,7 @@ public class KvReader {
      * @return
      */
     public boolean isValidKey(String key) {
-        if (key.length() > 5 && key.length() < 2) {
+        if (key.length() > 5 || key.length() < 2) {
             return false;
         }
 

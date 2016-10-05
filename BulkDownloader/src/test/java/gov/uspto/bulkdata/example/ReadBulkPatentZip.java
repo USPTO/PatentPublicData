@@ -3,14 +3,16 @@ package gov.uspto.bulkdata.example;
 import java.io.File;
 import java.io.IOException;
 
-import gov.uspto.bulkdata.DumpFileAps;
-import gov.uspto.bulkdata.DumpFileXml;
-import gov.uspto.bulkdata.DumpReader;
+import javax.json.JsonObject;
+
 import gov.uspto.common.file.filter.FileFilterChain;
 import gov.uspto.common.file.filter.PathFileFilter;
 import gov.uspto.common.file.filter.SuffixFileFilter;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.bulk.DumpFileAps;
+import gov.uspto.patent.bulk.DumpFileXml;
+import gov.uspto.patent.bulk.DumpReader;
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.Patent;
@@ -19,7 +21,7 @@ import gov.uspto.patent.serialize.JsonMapper;
 public class ReadBulkPatentZip {
 
     public static void main(String... args) throws IOException, PatentReaderException {
-        
+
         File inputFile = new File(args[0]);
         int skip = 100;
         int limit = 1;
@@ -47,14 +49,17 @@ public class ReadBulkPatentZip {
         for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
             String xmlDocStr = (String) dumpReader.next();
             try (PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)) {
+                //System.out.println("RAW: " + xmlDocStr);
+
                 Patent patent = patentReader.read();
                 System.out.println(patent.getDocumentId().toText());
+                //System.out.println("Patent: " + patent.toString());
 
-                JsonMapper json = new JsonMapper();
-                String jsonStr = json.buildJson(patent);
-                System.out.println("JSON: " + jsonStr);
-                
-                System.out.println("Patent: " + patent.toString());
+                //JsonMapper json = new JsonMapper();
+                //JsonObject jsonObj = json.buildJson(patent);
+                //System.out.println("JSON: " + jsonObj.toString());
+                //System.out.println("JSON: " + json.getPrettyPrint(jsonObj));
+
             }
         }
 

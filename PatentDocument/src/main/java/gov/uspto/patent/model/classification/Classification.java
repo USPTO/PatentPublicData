@@ -201,4 +201,27 @@ public abstract class Classification implements Comparable<Classification> {
 		int last = this.originalText.compareTo(other.originalText);
 		return last == 0 ? this.originalText.compareTo(other.originalText) : last;
 	}
+	
+	 /**
+     * Collapse Classification Facets to list of Specific Classifications
+     * 
+     * Returns the classification list extracted from the faceted string stored in solr
+     * 
+     * @param cpcVal // e.g. {0/A45B, 0/E04H, 1/A45B/A45B17, 1/E04H/E04H12, 2/A45B/A45B17/A45B1700, 2/E04H/E04H12/E04H122284 }
+     * @return       // {A45B1700, E04H122284}
+     */
+    public static List<String> getMostSpecificClasses(List<String> facets) {
+        List<String> leafClasses = new ArrayList<String>();
+
+        String largestNode = facets.get(facets.size() - 1).split("/")[0];
+        for (int i = facets.size() - 1; i > 0; i--) {
+            String nodes[] = facets.get(i).split("/");
+            if (!nodes[0].equals(largestNode)) {
+                break;
+            }
+            leafClasses.add(nodes[nodes.length - 1]);
+        }
+
+        return leafClasses;
+    }
 }

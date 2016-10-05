@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import gov.uspto.patent.InvalidDataException;
 
@@ -83,6 +84,24 @@ public class DocumentId {
         return strb.toString();
     }
 
+    /**
+     * Full String ID Representation, example: US12345A1
+     * 
+     * @param zeroPadMinLen - anything under provided length will be padded with leading zeros
+     * @return
+     */
+    public String getId(int zeroPadMinLen) {
+        StringBuilder strb = new StringBuilder().append(countryCode);
+                
+        strb.append(Strings.padStart(docNumber, zeroPadMinLen, '0'));
+
+        if (kindCode != null) {
+            strb.append(kindCode);
+        }
+
+        return strb.toString();
+    }
+
     public CountryCode getCountryCode() {
         return countryCode;
     }
@@ -133,6 +152,10 @@ public class DocumentId {
         return getId();
     }
 
+    public String toText(int zeroPadMinLen) {
+        return getId(zeroPadMinLen);
+    }
+
     /**
      * Parse Patent DocumentId into its parts.
      * 
@@ -146,12 +169,16 @@ public class DocumentId {
      * @return
      * @throws InvalidDataException
      */
-    public static DocumentId fromText(final String documentIdStr) throws InvalidDataException {
+    public static DocumentId fromText(final String documentIdStr, int year) throws InvalidDataException {
         String docIdStr = documentIdStr.replaceAll(" ", "");
         Matcher matcher = PARSE_PATTERN.matcher(docIdStr);
         if (matcher.matches()) {
             String country = matcher.group(1);
+
             CountryCode cntyCode = CountryCode.fromString(country);
+            if (CountryCode.UNKNOWN == cntyCode || year < 1978){
+                cntyCode = CountryCodeHistory.getCurrentCode(country, year);
+            }
 
             String applicationYear = matcher.group(2); // applications ids
                                                        // sometimes has the

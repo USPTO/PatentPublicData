@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import gov.uspto.patent.FreetextField;
 import gov.uspto.patent.InvalidDataException;
+import gov.uspto.patent.doc.xml.FormattedText;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DescSection;
@@ -24,7 +25,6 @@ import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
 import gov.uspto.patent.serialize.JsonMapper;
-import gov.uspto.patent.xml.FormattedText;
 
 public class JsonMapperTest {
 
@@ -51,7 +51,7 @@ public class JsonMapperTest {
         desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, "Detailed Description Text", textParserNormalizer));
         patent.setDescription(desc);
  
-        JsonMapper json = new JsonMapper(false);
+        JsonMapper json = new JsonMapper(false, false);
         JsonObject jsonObj = json.buildJson(patent);
         
         System.out.println(jsonObj.toString());
