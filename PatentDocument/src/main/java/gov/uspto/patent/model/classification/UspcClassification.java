@@ -1,6 +1,7 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -163,6 +164,27 @@ public class UspcClassification extends Classification {
 				//+ ", range=" + range
 				+ "]";
 	}
+
+    /**
+     * Generate List of CpcClassifications from list of Facets.
+     * @param <T>
+     * 
+     * @param classificationFacets
+     */
+    public static List<UspcClassification> fromFacets(final List<String> classificationFacets) {
+        List<String> specificClasses = getMostSpecificClasses(classificationFacets);
+        List<UspcClassification> retClasses = new ArrayList<UspcClassification>(specificClasses.size());
+        for (String textClass : specificClasses) {
+            UspcClassification uspcClass;
+            try {
+                uspcClass = fromText(textClass);
+                retClasses.add(uspcClass);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return retClasses;
+    }
 
 	/**
 	 * Parse classification text to create USPC Classification.

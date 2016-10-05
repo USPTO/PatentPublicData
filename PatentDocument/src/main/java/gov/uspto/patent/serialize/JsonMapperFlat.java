@@ -2,6 +2,9 @@ package gov.uspto.patent.serialize;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,21 +58,25 @@ import gov.uspto.patent.model.entity.NamePerson;
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
-public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
+public class JsonMapperFlat implements DocumentBuilder<Patent> {
 
-    private boolean pretty;
+    private final boolean pretty;
+    private final boolean base64;
 
-    public JsonMapperFlat(boolean pretty) {
+    public JsonMapperFlat(boolean pretty, boolean base64) {
         this.pretty = pretty;
+        this.base64 = base64;
     }
 
     @Override
-    public String build(Patent patent) throws IOException {
+    public void write(Patent patent, Writer writer) throws IOException {
         JsonObject json = buildJson(patent);
         if (pretty) {
-            return getPrettyPrint(json);
+            writer.write(getPrettyPrint(json));
+        } else if (base64) {
+            writer.write(base64(json.toString()));
         } else {
-            return json.toString();
+            writer.write(json.toString());
         }
     }
 
@@ -77,26 +84,34 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         builder.add("patentCorpus", patent.getPatentCorpus().toString());
-        builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
-
         builder.add("patentType", patent.getPatentType().toString());
 
+        if (patent.getDateProduced() != null) {
+            builder.add("productionDateRaw", patent.getDateProduced().getDateText(DateTextType.RAW));
+            builder.add("productionDateIso", patent.getDateProduced().getDateText(DateTextType.ISO));
+        }
+
+        if (patent.getDatePublished() != null) {
+            builder.add("publishedDateRaw", patent.getDatePublished().getDateText(DateTextType.RAW));
+            builder.add("publishedDateIso", patent.getDatePublished().getDateText(DateTextType.ISO));
+        }
+
+        builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
+        if (patent.getDocumentDate() != null) {
+            builder.add("documentDateRaw", patent.getDocumentDate().getDateText(DateTextType.RAW));
+            builder.add("documentDateIso", patent.getDocumentDate().getDateText(DateTextType.ISO));
+        }
+
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
+        if (patent.getApplicationDate() != null) {
+            builder.add("applicationDateRaw", patent.getApplicationDate().getDateText(DateTextType.RAW));
+            builder.add("applicationDateIso", patent.getApplicationDate().getDateText(DateTextType.ISO));
+        }
 
         builder.add("relatedIds", mapDocIds(patent.getRelationIds()));
 
         // OtherIds contain [documentId, applicationId, relatedIds]
         builder.add("otherIds", mapDocIds(patent.getOtherIds()));
-
-        if (patent.getDateProduced() != null) {
-            builder.add("productionDateRaw", patent.getDateProduced().getDateText(DateTextType.RAW));
-            builder.add("productionDateISO", patent.getDateProduced().getDateText(DateTextType.ISO));
-        }
-
-        if (patent.getDatePublished() != null) {
-            builder.add("publishedDate", patent.getDatePublished().getDateText(DateTextType.RAW));
-            builder.add("publishedDateIso", patent.getDatePublished().getDateText(DateTextType.ISO));
-        }
 
         builder.add("agent", mapEntity(patent.getAgent(), EntityField.NAME));
         builder.add("agentLastName", mapEntity(patent.getAgent(), EntityField.FIRSTNAME));
@@ -255,7 +270,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         }
     }
 
-    private JsonArray mapExaminerDepartment(List<Examiner> examiners) {
+    private JsonArray mapExaminerDepartment(Collection<Examiner> examiners) {
 
         Set<String> depts = new HashSet<String>();
         for (Examiner examiner : examiners) {
@@ -265,7 +280,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         return toJsonArray(depts);
     }
 
-    private JsonArray mapAgentRep(List<Agent> agents) {
+    private JsonArray mapAgentRep(Collection<Agent> agents) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
         for (Agent agent : agents) {
             arBldr.add(agent.getRepType().toString());
@@ -273,7 +288,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapInventor(List<Inventor> inventors, InventorField inventorField) {
+    private JsonArray mapInventor(Collection<Inventor> inventors, InventorField inventorField) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Inventor inventor : inventors) {
@@ -294,7 +309,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapAssigneeRoles(List<Assignee> assignees) {
+    private JsonArray mapAssigneeRoles(Collection<Assignee> assignees) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Assignee assignee : assignees) {
@@ -311,7 +326,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         }
     }
 
-    private void mapClaimText(List<Claim> claimList, JsonObjectBuilder builder) {
+    private void mapClaimText(Collection<Claim> claimList, JsonObjectBuilder builder) {
         for (TextType textType : TextType.values()) {
             JsonArrayBuilder arBldr = Json.createArrayBuilder();
             for (Claim claim : claimList) {
@@ -347,7 +362,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapEntity(List<? extends Entity> entities, EntityField entityField) {
+    private JsonArray mapEntity(Collection<? extends Entity> entities, EntityField entityField) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Entity entity : entities) {
@@ -417,7 +432,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapDocIds(List<DocumentId> docIds) {
+    private JsonArray mapDocIds(Collection<DocumentId> docIds) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
         if (docIds != null) {
             for (DocumentId docId : docIds) {
@@ -429,7 +444,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
         return arBldr.build();
     }
 
-    private JsonArray mapCitations(List<Citation> CitationList, boolean examinerCited, CitationType citeType) {
+    private JsonArray mapCitations(Collection<Citation> CitationList, boolean examinerCited, CitationType citeType) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (Citation cite : CitationList) {
@@ -454,4 +469,9 @@ public class JsonMapperFlat implements DocumentBuilder<Patent, String> {
     private enum InventorField {
         NATIONALITY, RESIDENCE
     }
+
+    private String base64(String string) {
+        return Base64.getEncoder().encodeToString(string.getBytes(StandardCharsets.UTF_8));
+    }
+
 }

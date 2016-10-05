@@ -24,13 +24,13 @@ import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.primitives.Ints;
 
-import gov.uspto.bulkdata.DumpFileAps;
-import gov.uspto.bulkdata.DumpFileXml;
-import gov.uspto.bulkdata.DumpReader;
 import gov.uspto.bulkdata.cli2.BulkData;
 import gov.uspto.bulkdata.cli2.BulkDataType;
 import gov.uspto.bulkdata.downloader.DownloadJob;
 import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.bulk.DumpFileAps;
+import gov.uspto.patent.bulk.DumpFileXml;
+import gov.uspto.patent.bulk.DumpReader;
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.classification.Classification;

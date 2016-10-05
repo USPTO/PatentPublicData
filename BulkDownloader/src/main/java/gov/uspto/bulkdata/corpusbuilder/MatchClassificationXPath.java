@@ -38,17 +38,19 @@ public class MatchClassificationXPath implements CorpusMatch<MatchClassification
 	public void setup() throws XPathExpressionException{
 		matcher = new PatternMatcher();
 
-		List<Classification> cpcClasses = Classification.getByType(wantedClasses, ClassificationType.CPC);
-		for (Classification cpcClass : cpcClasses) {
-			String CPCXpathStr = buildCPCxPathString((CpcClassification) cpcClass);
+		@SuppressWarnings("unchecked")
+        List<CpcClassification> cpcClasses = (List<CpcClassification>) Classification.getByType(wantedClasses, ClassificationType.CPC);
+		for (CpcClassification cpcClass : cpcClasses) {
+			String CPCXpathStr = buildCPCxPathString(cpcClass);
 			LOGGER.debug("CPC xPath: {}", CPCXpathStr);
 			PatternXPath CPC = new PatternXPath(CPCXpathStr);
 			matcher.add(CPC);
 		}
 
-		List<Classification> uspcClasses = Classification.getByType(wantedClasses, ClassificationType.USPC);
-		for (Classification uspcClass : uspcClasses) {
-			String UspcXpathStr = buildUSPCxPathString((UspcClassification) uspcClass);
+		@SuppressWarnings("unchecked")
+        List<UspcClassification> uspcClasses = (List<UspcClassification>) Classification.getByType(wantedClasses, ClassificationType.USPC);
+		for (UspcClassification uspcClass : uspcClasses) {
+			String UspcXpathStr = buildUSPCxPathString(uspcClass);
 			LOGGER.debug("USPC xPath: {}", UspcXpathStr);
 			PatternXPath USPC = new PatternXPath(UspcXpathStr);
 			matcher.add(USPC);
