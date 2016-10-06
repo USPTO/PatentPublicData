@@ -51,19 +51,17 @@ Short list of some of the XML variations handled and improvements made by the Pa
 ```JAVA
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import gov.uspto.common.file.filter.FileFilterChain;
-import gov.uspto.common.file.filter.PathFileFilter;
 import gov.uspto.common.file.filter.SuffixFileFilter;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
-import gov.uspto.patent.PatentReader;
-import gov.uspto.patent.PatentReaderException;
-import gov.uspto.patent.PatentDocFormat;
-import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.serialize.DocumentBuilder;
 import gov.uspto.patent.serialize.JsonMapper;
+import gov.uspto.patent.serialize.JsonMapperFlat;
 
 public class ReadBulkPatentZip {
 
@@ -101,16 +99,19 @@ public class ReadBulkPatentZip {
                 Patent patent = patentReader.read();
                 System.out.println(patent.getDocumentId().toText());
                 
-                DocumentBuilder<Patent, String> json;
+                DocumentBuilder<Patent> json;
                 if (flatJson){
-                   json = new JsonMapperFlat(jsonPrettyPrint);
+                   json = new JsonMapperFlat(jsonPrettyPrint, false);
                 } else {
-                    json = new JsonMapper(jsonPrettyPrint);
+                    json = new JsonMapper(jsonPrettyPrint, false);
                 }
-                
-                String jsonStr = json.build(patent);
-                System.out.println("JSON: " + jsonStr);
-                
+
+                StringWriter writer = new StringWriter();
+                //FileWriter writer = new FileWriter(patent.getDocumentId().toText() + ".json");
+                json.write(patent, writer);
+                System.out.println("JSON: " + writer.toString());
+                writer.close();
+
                 //System.out.println("Patent: " + patent.toString());
             }
         }
