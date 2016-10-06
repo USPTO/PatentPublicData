@@ -96,33 +96,39 @@ public class ReadBulkPatentZip {
             dumpReader.skip(skip);
         }
 
+        DocumentBuilder<Patent> json;
+        if (flatJson) {
+            json = new JsonMapperFlat(jsonPrettyPrint, false);
+        } else {
+            json = new JsonMapper(jsonPrettyPrint, false);
+        }
+
         for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
             String xmlDocStr = (String) dumpReader.next();
             try (PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)) {
                 Patent patent = patentReader.read();
-                System.out.println(patent.getDocumentId().toText());
+                String patentId = patent.getDocumentId().toText();
                 
-                DocumentBuilder<Patent> json;
-                if (flatJson){
-                   json = new JsonMapperFlat(jsonPrettyPrint, false);
-                } else {
-                    json = new JsonMapper(jsonPrettyPrint, false);
-                }
+                System.out.println(patentId);
+                //System.out.println("Patent Object: " + patent.toString());
 
                 Writer writer;
                 if (writeFile) {
-                    writer = new FileWriter(patent.getDocumentId().toText() + ".json");
+                    writer = new FileWriter(patentId + ".json");
                 } else {
                     writer = new StringWriter();
                 }
 
-                json.write(patent, writer);
-
-                if (!writeFile) {
-                    System.out.println("JSON: " + writer.toString());
+                try {
+                    json.write(patent, writer);
+                    if (!writeFile) {
+                        System.out.println("JSON: " + writer.toString());
+                    }
+                } catch (IOException e) {
+                    System.err.println("Failed to write file for: " + patentId + "\n" + e.getStackTrace());
+                } finally {
+                    writer.close();
                 }
-
-                //System.out.println("Patent: " + patent.toString());
             }
         }
 
