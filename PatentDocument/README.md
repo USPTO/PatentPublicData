@@ -50,8 +50,10 @@ Short list of some of the XML variations handled and improvements made by the Pa
 ## Example Usage:
 ```JAVA
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import gov.uspto.common.file.filter.FileFilterChain;
 import gov.uspto.common.file.filter.SuffixFileFilter;
@@ -72,6 +74,7 @@ public class ReadBulkPatentZip {
         int limit = 1;
         boolean flatJson = false;
         boolean jsonPrettyPrint = true;
+        boolean writeFile = false;
 
         PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(inputFile);
 
@@ -106,11 +109,18 @@ public class ReadBulkPatentZip {
                     json = new JsonMapper(jsonPrettyPrint, false);
                 }
 
-                StringWriter writer = new StringWriter();
-                //FileWriter writer = new FileWriter(patent.getDocumentId().toText() + ".json");
+                Writer writer;
+                if (writeFile) {
+                    writer = new FileWriter(patent.getDocumentId().toText() + ".json");
+                } else {
+                    writer = new StringWriter();
+                }
+
                 json.write(patent, writer);
-                System.out.println("JSON: " + writer.toString());
-                writer.close();
+
+                if (!writeFile) {
+                    System.out.println("JSON: " + writer.toString());
+                }
 
                 //System.out.println("Patent: " + patent.toString());
             }
