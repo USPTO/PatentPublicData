@@ -89,8 +89,11 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 
 	@Override
 	public String next() {
-		currentRawDoc = read().toString();
-		return currentRawDoc;
+		currentRawDoc = read();
+		if (currentRawDoc != null){
+		    return currentRawDoc.toString();
+		}
+		return null;
 	}
 
 	@Override

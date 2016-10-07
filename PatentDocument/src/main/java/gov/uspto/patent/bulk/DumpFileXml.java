@@ -65,7 +65,8 @@ public class DumpFileXml extends DumpFile {
             LOGGER.error("Error while reading file: {}; record: {}", super.getFile(), currentRecCount, e);
         }
 
-        throw new NoSuchElementException();
+        return null;
+        //throw new NoSuchElementException();
     }
 
     @Override

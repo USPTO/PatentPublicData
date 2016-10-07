@@ -75,7 +75,7 @@ public class TransformerCli {
     }
 
     public void setup(Path intputPath, int limit) throws FileNotFoundException {
-        if (limit > 0){
+        if (limit > 0) {
             this.totalLimit = limit;
         }
         setup(intputPath);
@@ -151,7 +151,11 @@ public class TransformerCli {
 
             for (; dumpReader.hasNext() && totalCount < totalLimit; totalCount++) {
 
-                String xmlDocStr = (String) dumpReader.next();
+                String xmlDocStr = dumpReader.next();
+                if (xmlDocStr == null) {
+                    currentWriter.close();
+                    break;
+                }
 
                 try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentDocFormat())) {
                     Patent patent = patentReader.read();
