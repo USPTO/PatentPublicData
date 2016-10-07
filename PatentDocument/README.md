@@ -50,20 +50,20 @@ Short list of some of the XML variations handled and improvements made by the Pa
 ## Example Usage:
 ```JAVA
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 
 import gov.uspto.common.file.filter.FileFilterChain;
-import gov.uspto.common.file.filter.PathFileFilter;
 import gov.uspto.common.file.filter.SuffixFileFilter;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
-import gov.uspto.patent.PatentReader;
-import gov.uspto.patent.PatentReaderException;
-import gov.uspto.patent.PatentDocFormat;
-import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.serialize.DocumentBuilder;
 import gov.uspto.patent.serialize.JsonMapper;
+import gov.uspto.patent.serialize.JsonMapperFlat;
 
 public class ReadBulkPatentZip {
 
@@ -74,6 +74,7 @@ public class ReadBulkPatentZip {
         int limit = 1;
         boolean flatJson = false;
         boolean jsonPrettyPrint = true;
+        boolean writeFile = false;
 
         PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(inputFile);
 
@@ -95,23 +96,39 @@ public class ReadBulkPatentZip {
             dumpReader.skip(skip);
         }
 
+        DocumentBuilder<Patent> json;
+        if (flatJson) {
+            json = new JsonMapperFlat(jsonPrettyPrint, false);
+        } else {
+            json = new JsonMapper(jsonPrettyPrint, false);
+        }
+
         for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
             String xmlDocStr = (String) dumpReader.next();
             try (PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)) {
                 Patent patent = patentReader.read();
-                System.out.println(patent.getDocumentId().toText());
+                String patentId = patent.getDocumentId().toText();
                 
-                DocumentBuilder<Patent, String> json;
-                if (flatJson){
-                   json = new JsonMapperFlat(jsonPrettyPrint);
+                System.out.println(patentId);
+                //System.out.println("Patent Object: " + patent.toString());
+
+                Writer writer;
+                if (writeFile) {
+                    writer = new FileWriter(patentId + ".json");
                 } else {
-                    json = new JsonMapper(jsonPrettyPrint);
+                    writer = new StringWriter();
                 }
-                
-                String jsonStr = json.build(patent);
-                System.out.println("JSON: " + jsonStr);
-                
-                //System.out.println("Patent: " + patent.toString());
+
+                try {
+                    json.write(patent, writer);
+                    if (!writeFile) {
+                        System.out.println("JSON: " + writer.toString());
+                    }
+                } catch (IOException e) {
+                    System.err.println("Failed to write file for: " + patentId + "\n" + e.getStackTrace());
+                } finally {
+                    writer.close();
+                }
             }
         }
 
