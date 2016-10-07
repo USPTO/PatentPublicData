@@ -58,10 +58,10 @@ Short list of some of the XML variations handled and improvements made by the Pa
      Options:
          --input="FILE.zip"   Patent Bulk Zip
          --outDir="output"    Output Directory      
-         --limit=100          Record Limit
+         --limit=100          Total Record Limit
          --flat=true          Flat JSON or Hierarchy
-         --pettyPrint         Pretty Print JSON
-         --stdout             Write to Terminal instead of file 
+         --pettyPrint=true    Pretty Print JSON
+         --stdout=true        Write to Terminal instead of file 
          
 
 ## Example Usage:
