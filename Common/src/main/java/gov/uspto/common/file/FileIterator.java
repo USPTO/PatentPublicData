@@ -30,6 +30,25 @@ public class FileIterator {
     }
 
     /**
+     * Iterator for Files
+     *
+     * If directory is passed, iterator includes all files in the directory.
+     * If single file is passed, iterator includes the single file.
+     *
+     * @param directory
+     * @param
+     * @return
+     * @throws FileNotFoundException 
+     */
+    public static Iterator<File> getFileIterator(File file, String[] fileExts, boolean recursive) throws FileNotFoundException {
+        if (file.isDirectory()){
+            return FileUtils.iterateFiles(file, fileExts, recursive);
+        } else {
+            return FileIterator.getFileIterator(Arrays.asList(new String[]{file.getAbsolutePath()}));
+        }
+    }
+
+    /**
      * Iterator for File names passed in, Single or Multiple.
      * 
      * @param filePathStrings
