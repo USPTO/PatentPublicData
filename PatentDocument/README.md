@@ -47,6 +47,23 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | Date            | date format yyyyMMdd |
 | Address         | must have a country |
 
+
+## CLI Tool to export all Patents as indexable JSON:
+    Single Line Per Record: 
+       gov.uspto.patent.TransformerCli --input="ipa_corpusApps_2005.zip"
+       
+    Single File Per Record:
+       gov.uspto.patent.TransformerCli --input="ipa_corpusApps_2005.zip" --outBulk=false
+
+     Options:
+         --input="FILE.zip"   Patent Bulk Zip
+         --outDir="output"    Output Directory      
+         --limit=100          Record Limit
+         --flat=true          Flat JSON or Hierarchy
+         --pettyPrint         Pretty Print JSON
+         --stdout             Write to Terminal instead of file 
+         
+
 ## Example Usage:
 ```JAVA
 import java.io.File;
