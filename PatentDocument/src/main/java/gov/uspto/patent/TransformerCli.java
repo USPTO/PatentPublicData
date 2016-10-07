@@ -75,7 +75,9 @@ public class TransformerCli {
     }
 
     public void setup(Path intputPath, int limit) throws FileNotFoundException {
-        this.totalLimit = limit;
+        if (limit > 0){
+            this.totalLimit = limit;
+        }
         setup(intputPath);
     }
 
