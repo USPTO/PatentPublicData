@@ -1,10 +1,13 @@
 package gov.uspto.patent.doc.cpc.masterfile;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +29,17 @@ import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.classification.CpcClassification;
 
+/**
+ * 
+ * Build CSV File from CPC Master
+ * 
+ * <pre>
+ * grant docId, grant doc number, application docId, application doc number [main,further], CpcClassification
+ * </pre>
+ * 
+ * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ *
+ */
 public class CpcMasterParser extends BulkArchive {
     private static final Logger LOGGER = LoggerFactory.getLogger(CpcMasterParser.class);
 
@@ -66,7 +80,7 @@ public class CpcMasterParser extends BulkArchive {
 
         Node cpcN = root.selectSingleNode("pat:CPCClassificationBag");
         List<CpcClassification> cpcClass = readCPC(cpcN);
-        
+
         return new MasterClassificationRecord(grantId, appId, cpcClass);
     }
 
@@ -81,9 +95,12 @@ public class CpcMasterParser extends BulkArchive {
         List<Node> furtherCpcN = node.selectNodes("pat:FurtherCPC");
         for (Node futherN : furtherCpcN) {
             CpcClassification cpcClass = readClass(futherN);
-            mainCpc.addChild(cpcClass);
-            cpcClasses.add(cpcClass);
-            LOGGER.info("FURTHER CPC: {}", cpcClass.toText());
+            if (cpcClass != null) {
+                cpcClass.setIsMainClassification(false);
+                mainCpc.addChild(cpcClass);
+                cpcClasses.add(cpcClass);
+                LOGGER.debug("FURTHER CPC: {}", cpcClass.toText());
+            }
         }
 
         return cpcClasses;
@@ -91,6 +108,9 @@ public class CpcMasterParser extends BulkArchive {
 
     private CpcClassification readClass(Node node) {
         Node classN = node.selectSingleNode("pat:CPCClassification");
+        if (classN == null) {
+            return null;
+        }
 
         Node dateVersionN = classN.selectSingleNode("pat:ClassificationVersionDate");
         Node cpcSectionN = classN.selectSingleNode("pat:CPCSection");
@@ -148,16 +168,54 @@ public class CpcMasterParser extends BulkArchive {
 
         CpcMasterParser cpcMaster = new CpcMasterParser(new File(filePath));
         cpcMaster.open();
-        
+
+        File outFile = new File("cpc_master.csv");
+        Writer writer = new BufferedWriter(new FileWriter(outFile));
+
         while (cpcMaster.hasNext()) {
             try (DumpFile dumpFile = cpcMaster.next()) {
                 dumpFile.open();
-                while(dumpFile.hasNext()){
+                while (dumpFile.hasNext()) {
                     LOGGER.info("Processing: {}:{}", dumpFile.getFile(), dumpFile.getCurrentRecCount());
                     String rawRecord = dumpFile.next();
+                    if (rawRecord == null){
+                        break;
+                    }
                     try {
                         MasterClassificationRecord record = cpcMaster.parse(header + rawRecord + footer);
-                        LOGGER.info("Record: {}", record);
+
+                        writer.write(record.getGrantId().toText(7));
+                        writer.write(",");
+                        writer.write(record.getGrantId().getDocNumber());
+                        writer.write(",");
+                        writer.write(record.getAppId().toText());
+                        writer.write(",");
+                        writer.write(record.getAppId().getDocNumber());
+                        writer.write(",");
+                        writer.write("main");
+                        writer.write(",");
+                        writer.write(record.getMainCPC().toText());
+                        writer.write("\n");
+
+                        List<CpcClassification> furtherCpcClasses = record.getFutherCPC();
+                        if (!furtherCpcClasses.isEmpty()) {
+                            for (CpcClassification cpcClass : furtherCpcClasses) {
+                                writer.write(record.getGrantId().toText(7));
+                                writer.write(",");
+                                writer.write(record.getGrantId().getDocNumber());
+                                writer.write(",");
+                                writer.write(record.getAppId().toText());
+                                writer.write(",");
+                                writer.write(record.getAppId().getDocNumber());
+                                writer.write(",");
+                                writer.write("further");
+                                writer.write(",");
+                                writer.write(cpcClass.toText());
+                                writer.write("\n");
+                            }
+                        }
+
+                        LOGGER.trace("Record: {}", record);
 
                     } catch (PatentReaderException e) {
                         LOGGER.error("Failed on: {}:{}", dumpFile.getFile(), dumpFile.getCurrentRecCount(), e);
@@ -165,7 +223,9 @@ public class CpcMasterParser extends BulkArchive {
                 }
             }
         }
-        
+
+        writer.close();
         cpcMaster.close();
     }
+
 }

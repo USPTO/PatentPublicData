@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.classification.CpcClassification;
 
@@ -41,12 +43,11 @@ public class MasterClassificationRecord {
     }
 
     public List<CpcClassification> getFutherCPC() {
-        List<CpcClassification> futherCPC = new ArrayList<CpcClassification>();
+        List<CpcClassification> futherCPC = new ArrayList<CpcClassification>(cpcList.size()-1);
         for (CpcClassification cpc : cpcList) {
-            if (cpc.isMainClassification()) {
-                continue;
+            if (!cpc.isMainClassification()) {
+                futherCPC.add(cpc);
             }
-            futherCPC.add(cpc);
         }
         return futherCPC;
     }
