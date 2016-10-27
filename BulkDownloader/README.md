@@ -17,6 +17,8 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
 ### Example Usage
 
+    java -cp BulkDownloader/target/*:BulkDownloader/target/dependency-jars/* gov.uspto.bulkdata.cli2.BulkData --type application --years="2016" --limit=1 --outdir="download"
+
 ## Download Bulk Patent Zips 
    Downloads from https://bulkdata.uspto.gov/
 
