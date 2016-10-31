@@ -12,7 +12,7 @@ Tool kit to download, read and utilize open patent data provided to the public.
 Note this source code is a work in progress and has not been fully vetted for a production environment. 
 
 #### Following changes may occur after a Patent has been published
-Bulk files are not updated once published, updates can be received by indexing additional supplimental files also made availble to the public.  The following are fields which may update after being published.
+Bulk files are not updated once published, updates can be received by indexing additional supplemental files also made available to the public. The following are fields which may update after being published.
 
 | field | description |
 | :-------- | ------------|
