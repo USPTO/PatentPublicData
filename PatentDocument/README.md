@@ -25,7 +25,7 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | agent | fix: if missing use "correspondence-address" field |
 | description | fix to corresponds with non-xml patent versions, improvement since individual sections are often searched on: break description into individual sections by XML Processing Instructions |
 | claim | improvement: identify independent and dependent claims; capture dependent claim hierarchy |
-| IPC classification | variations: classification-ipc and classification-ipcr, first flat other seperated in sections |
+| IPC classification | variations: classification-ipc and classification-ipcr, first flat other separated in sections |
 | classification | normalization: CPC, IPC and USPC patent classifications |
 | documentId / patentId | normalization; including removing leading 0 padding, currently added to patent ids with length less than 8 digits, in the near future patent ids may increase to 13 digits |
 | country | improvement: mapping of country codes to country name, current and historic codes used before 1978 or individual codes dropped or changed since |
