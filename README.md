@@ -1,7 +1,12 @@
 
 # Patent Public Bulk Files
 
-This module provides the ability to download and work with weekly bulk Patent zip files, along with other external data resources.
+Tool kit to download, read and utilize open patent date provided to the public.
+
+<ul> Code is broken up into two main modules:
+<li><a href="https://github.com/USPTO/PatentPublicData/tree/master/BulkDownloader">Bulk Downloader</a> automates downloading of public bulk patent data</li>
+<li><a href="https://github.com/USPTO/PatentPublicData/tree/master/PatentDocument">Patent Document</a> provides the ability to iterate and read patents directly from the large bulk download files, supports reading patent documents from 1976 to Current</li>
+</ul>
 
 Note this source code has not been fully vetted for a production enviroment. It has been developed for prototyping and exploring of patent data.
 
