@@ -9,7 +9,7 @@ Tool kit to download, read and utilize open patent data provided to the public.
 <li>Patent Document module can also read CPC Classification files - Master CPC File (contains current CPC classifiation for all patents), and the CPC Scheme (CPC classification definitions)
 </ul>
 
-Note this source code has not been fully vetted for a production enviroment. It has been developed for prototyping and exploring of patent data.
+Note this source code is a work in progress and has not been fully vetted for a production environment. 
 
 #### Changes allowed to Patents after being published
 Bulk files are not updated once published, updates can be received by indexing additional supplimental files also made availble to the public.  The following are fields which may update after being published.
