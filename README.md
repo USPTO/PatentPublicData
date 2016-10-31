@@ -6,7 +6,7 @@ Tool kit to download, read and utilize open patent data provided to the public.
 <ul> Code is broken up into two main modules:
 <li><a href="https://github.com/USPTO/PatentPublicData/tree/master/BulkDownloader">Bulk Downloader</a> automates downloading of public bulk patent data</li>
 <li><a href="https://github.com/USPTO/PatentPublicData/tree/master/PatentDocument">Patent Document</a> provides the ability to iterate and read patents directly from the large bulk download files, supports reading patent documents from 1976 to current (formats: Greenbook, SGML, PAP, Redbook XML)</li>
-<li>CPC Classification Files - Master CPC File (contains current CPC classifiation for all patents), CPC Scheme (CPC classification definitions)
+<li>Patent Document module can also read CPC Classification files - Master CPC File (contains current CPC classifiation for all patents), and the CPC Scheme (CPC classification definitions)
 </ul>
 
 Note this source code has not been fully vetted for a production enviroment. It has been developed for prototyping and exploring of patent data.
