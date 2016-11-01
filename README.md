@@ -7,7 +7,7 @@ Tool kit to download, read and utilize open patent data provided to the public.
 <li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/BulkDownloader">Bulk Downloader</a></b> automates downloading of public bulk patent data</li>
 <li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/PatentDocument">Patent Document</a></b> provides the ability to iterate and read patents directly from the large bulk download files, supports reading patent documents from 1976 to current (formats: Greenbook, SGML, PAP, Redbook XML)</li>
 <li>Patent Document module can also read CPC Classification files - <b><a href="https://bulkdata.uspto.gov/data2/patent/classification/cpc/">Master CPC File</a></b> (contains current CPC classification for patents starting a patent number 1), and the <b><a href="http://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/Bulk.html">CPC Scheme</a></b> (CPC classification definitions)
-<li>Bulk Downloader module's <b>Corpus Builder</b>, automates build a corpus by downloading and extracting patent/applications matching specified classifications, one bulk file at a time for a date range.
+<li>Bulk Downloader module's <b>Corpus Builder</b>, automates building a corpus by downloading and extracting patent/applications matching specified classifications, one bulk file at a time for a date range.
 </ul>
 
 Note this source code is a work in progress and has not been fully vetted for a production environment. 
