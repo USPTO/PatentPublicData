@@ -26,7 +26,7 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
         options:
           --type=application       options:[grant, application, gazette]
-          --years="2014-2016"
+          --years="2014-2016"      Year, Year list(using comma) or Year Range(using dash)
           --limit=0
           --skip=0
           --outdir="../download"
