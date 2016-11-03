@@ -3,13 +3,16 @@
 
 Tool kit to download, read and utilize open patent data provided to the public.
 
-### Two main modules
+## Notice
+This source code is a work in progress and has not been fully vetted for a production environment. 
+
+## Two main modules
 <ul>
 <li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/BulkDownloader">Bulk Downloader</a></b> automates downloading of public bulk patent data</li>
 <li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/PatentDocument">Patent Document</a></b> provides the ability to iterate and read patents directly from the large bulk download files, supports reading patent documents from 1976 to current (formats: Greenbook, SGML, PAP, Redbook XML) into a normalized Patent Object Model.</li>
 </ul>
 
-### Features
+## Features
 <ul>
 <li><b>Download</b> Bulk Patent Grants and Applications, as well as additional resources</li>
 <li><b>View</b> individual Patent Documents directly from the large bulk files</li>
@@ -22,9 +25,7 @@ Tool kit to download, read and utilize open patent data provided to the public.
 <li><b>Build a corpus</b> using Corpus Builder which automates building a corpus by downloading and extracting patent/applications matching specified classifications, one bulk file at a time for a date range.</li>
 </ul>
 
-Note this source code is a work in progress and has not been fully vetted for a production environment. 
-
-#### Following changes may occur after a Patent has been published
+## Changes after Patents are published
 Bulk files are not updated once published, updates can be received by indexing additional supplemental files also made available to the public. The following are fields which may update after being published.
 
 | field | description |
