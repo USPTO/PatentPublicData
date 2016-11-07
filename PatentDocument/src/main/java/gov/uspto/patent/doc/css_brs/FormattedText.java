@@ -3,12 +3,13 @@ package gov.uspto.patent.doc.css_brs;
 import java.util.Collections;
 import java.util.List;
 
+import gov.uspto.patent.FreetextConfig;
 import gov.uspto.patent.TextProcessor;
 
 public class FormattedText implements TextProcessor {
 
     @Override
-    public String getPlainText(String rawText) {
+    public String getPlainText(String rawText, FreetextConfig textConfig) {
         return rawText;
     }
 

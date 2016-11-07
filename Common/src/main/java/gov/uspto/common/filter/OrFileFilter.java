@@ -1,4 +1,4 @@
-package gov.uspto.common.file.filter;
+package gov.uspto.common.filter;
 
 import java.io.File;
 import java.io.FileFilter;

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+<predicate> 
+    <equal></equal>
+    <prefix></prefix>
+    <suffix></suffix>
+    <pattern></pattern> 
+</predicate>
+-->
+
+<sources>
+	<source>
+		<name>CPC</name>
+		<type>CPC_SCHEME</type>
+		<download>
+			<scrape>http://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/Bulk.html
+			</scrape>
+			<count>1</count>
+			<predicate>
+				<pattern>CPCSchemeXML2[0-9]{3}[0-1][0-9]\.zip</pattern>
+			</predicate>
+		</download>
+	</source>
+
+	<source>
+		<name>REEDTECH</name>
+		<type>PATENT_APPLICATION</type>
+		<download>
+			<scrape>http://patents.reedtech.com/parbft.php</scrape>
+			<count>*</count>
+			<predicate>
+				<pattern>^i?pa[0-9]+\.zip$</pattern>
+			</predicate>
+		</download>
+	</source>
+
+	<source>
+		<name>REEDTECH</name>
+		<type>PATENT_GRANT</type>
+		<download>
+			<scrape>http://patents.reedtech.com/pgrbft.php</scrape>
+			<count>*</count>
+			<predicate>
+                <pattern>^(:?i?pg|pftaps)[^\.]+\.zip$</pattern>
+			</predicate>
+		</download>
+	</source>
+
+	<source>
+		<name>GOOGLE</name>
+		<type>PATENT_APPLICATION</type>
+		<download>
+			<scrape>http://www.google.com/googlebooks/uspto-patents-applications-text.html
+			</scrape>
+			<count>*</count>
+			<predicate>
+				<pattern>^i?pa[0-9]+\.zip$</pattern>
+			</predicate>
+		</download>
+	</source>
+
+	<source>
+		<name>GOOGLE</name>
+		<type>PATENT_GRANT</type>
+		<download>
+			<scrape>http://www.google.com/googlebooks/uspto-patents-grants-text.html
+			</scrape>
+			<count>*</count>
+			<predicate>
+				<pattern>^(:?i?pg|pftaps)[^\.]+\.zip$</pattern>
+			</predicate>
+		</download>
+	</source>
+
+	<source>
+		<name>FDA</name>
+		<type>NDC</type>
+		<download>
+			<scrape>http://www.fda.gov/Drugs/InformationOnDrugs/ucm142438.htm
+			</scrape>
+			<!-- <url>http://www.accessdata.fda.gov/cder/ndctext.zip</url> -->
+			<count>1</count>
+			<predicate>
+				<equal>ndctext.zip</equal>
+			</predicate>
+		</download>
+	</source>
+</sources>

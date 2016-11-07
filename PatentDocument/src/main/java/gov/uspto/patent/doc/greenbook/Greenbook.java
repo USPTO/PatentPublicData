@@ -117,7 +117,6 @@ public class Greenbook extends KvParser {
         /*
          * Building Patent Object.
          */
-
         Patent patent = new PatentGranted(documentId, patentType);
 
         if (documentId != null && documentId.getDate() != null) {

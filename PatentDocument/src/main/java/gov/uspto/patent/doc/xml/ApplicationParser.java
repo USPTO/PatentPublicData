@@ -85,8 +85,7 @@ public class ApplicationParser extends Dom4JParser {
             MDC.put("DOCID", publicationId.toText());
         }
 
-        String patentTypeStr = Dom4jUtil.getTextOrNull(document,
-                XML_ROOT + "/us-bibliographic-data-application/application-reference/@appl-type");
+        String patentTypeStr = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-application/application-reference/@appl-type");
         PatentType patentType = PatentType.UNDEFINED;
         try {
             patentType = PatentType.fromString(patentTypeStr);
@@ -104,7 +103,7 @@ public class ApplicationParser extends Dom4JParser {
         List<Applicant> applicants = new ApplicantNode(document).read();
         List<Agent> agents = new AgentNode(document).read();
         List<Assignee> assignees = new AssigneeNode(document).read();
-
+        
         List<Citation> citations = new CitationNode(document).read();
         Set<Classification> classifications = new ClassificationNode(document).read();
 
@@ -125,7 +124,7 @@ public class ApplicationParser extends Dom4JParser {
         } else {
             patent.reset();
         }
-
+   
         patent.setDateProduced(dateProducedDate);
         patent.setDatePublished(datePublishedDate);
         patent.setDocumentId(publicationId);

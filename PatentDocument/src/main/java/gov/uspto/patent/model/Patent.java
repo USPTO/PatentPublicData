@@ -2,6 +2,7 @@ package gov.uspto.patent.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -60,7 +61,6 @@ public abstract class Patent {
     private DocumentId applicationId;
 
     private List<ChemicalFormula> chemFomulas;
-
     private List<MathFormula> mathFormulas;
     private PatentType patentType;
 
@@ -74,7 +74,8 @@ public abstract class Patent {
     }
 
     public void reset() {
-        patentCorpus = null;
+        //patentCorpus = null;
+        //patentType = null;
         otherIds.clear();
         relationIds.clear();
         referenceIds.clear();
@@ -86,7 +87,6 @@ public abstract class Patent {
         title = null;
         abstractText = null;
         description = null;
-        patentType = null;
         citations.clear();
         classifications.clear();
         claims.clear();
@@ -95,8 +95,8 @@ public abstract class Patent {
         applicants.clear();
         agents.clear();
         examiners.clear();
-        chemFomulas.clear();
-        mathFormulas.clear();
+        chemFomulas = null;
+        mathFormulas = null;
     }
 
     public void setApplicationId(DocumentId documentId) {
@@ -236,7 +236,9 @@ public abstract class Patent {
     }
 
     public void setInventor(List<Inventor> inventors) {
-        this.inventors = inventors;
+        if (inventors != null){
+            this.inventors = inventors;
+        }
     }
 
     public List<Applicant> getApplicants() {
@@ -244,7 +246,9 @@ public abstract class Patent {
     }
 
     public void setApplicant(List<Applicant> applicants) {
-        this.applicants = applicants;
+        if (applicants != null){
+            this.applicants = applicants;
+        }
     }
 
     public List<Assignee> getAssignee() {
@@ -252,7 +256,9 @@ public abstract class Patent {
     }
 
     public void setAssignee(List<Assignee> assignees) {
-        this.assignees = assignees;
+        if (assignees != null){
+            this.assignees = assignees;
+        }
     }
 
     /**
@@ -265,7 +271,9 @@ public abstract class Patent {
     }
 
     public void setAgent(List<Agent> agents) {
-        this.agents = agents;
+        if (agents != null){
+            this.agents = agents;
+        }
     }
 
     public List<Examiner> getExaminers() {
@@ -273,7 +281,9 @@ public abstract class Patent {
     }
 
     public void setExaminer(List<Examiner> examiners) {
-        this.examiners = examiners;
+        if (examiners != null){
+            this.examiners = examiners;
+        }
     }
 
     /**
@@ -322,6 +332,9 @@ public abstract class Patent {
     }
 
     public List<ChemicalFormula> getChemFomulas() {
+        if (chemFomulas == null){
+           return Collections.emptyList();
+        }
         return chemFomulas;
     }
 
@@ -330,6 +343,9 @@ public abstract class Patent {
     }
 
     public List<MathFormula> getMathFormulas() {
+        if (mathFormulas == null){
+            return Collections.emptyList();
+        }
         return mathFormulas;
     }
 

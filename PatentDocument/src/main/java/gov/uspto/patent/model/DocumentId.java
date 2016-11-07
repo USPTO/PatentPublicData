@@ -13,6 +13,8 @@ import gov.uspto.patent.InvalidDataException;
 
 /**
  * Document ID for only Patents and Patent Applications. see WIPO ST.14.
+ * 
+ * Note that US Patent Id numbers can also have an "X" see: X-Patents https://en.wikipedia.org/wiki/X-Patent
  *
  */
 public class DocumentId {
@@ -27,7 +29,7 @@ public class DocumentId {
     /*
      * Parsing of Document Id into its parts, such as Citation PatentIds.
      */
-    private static final Pattern PARSE_PATTERN = Pattern.compile("^(\\D\\D)(\\d{1,4}[/-])?(\\d+)(\\D\\d?)?$");
+    private static final Pattern PARSE_PATTERN = Pattern.compile("^(\\D\\D)(\\d{1,4}[/-])?(X?\\d+)(\\D\\d?)?$");
 
     public DocumentId(CountryCode countryCode, String docNumber) throws IllegalArgumentException {
         this(countryCode, docNumber, null);

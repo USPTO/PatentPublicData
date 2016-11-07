@@ -402,7 +402,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
                 }
                 break;
             case CITY:
-                if (entity.getAddress() != null) {
+                if (entity.getAddress() != null && entity.getAddress().getCity() != null) {
                     arBldr.add(entity.getAddress().getCity());
                 }
                 break;

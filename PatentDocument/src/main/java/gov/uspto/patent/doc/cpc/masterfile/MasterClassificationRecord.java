@@ -43,7 +43,7 @@ public class MasterClassificationRecord {
     }
 
     public List<CpcClassification> getFutherCPC() {
-        List<CpcClassification> futherCPC = new ArrayList<CpcClassification>(cpcList.size()-1);
+        List<CpcClassification> futherCPC = new ArrayList<CpcClassification>();
         for (CpcClassification cpc : cpcList) {
             if (!cpc.isMainClassification()) {
                 futherCPC.add(cpc);
