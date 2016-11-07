@@ -11,45 +11,39 @@ This module provides the ability to download and work with weekly bulk Patent zi
 
 ### Sources
 <ul>
-<li>USPTO Bulk Patent Download, grants and applications from USPTO, Reedtech, or Google (google stopped update on May 2015)</li>
+<li>USPTO Bulk Patent Download, grants and applications from Google or Reedtech</li>
 <li>Patent CPC Classification Scheme</li>
+<li>FDA "NDA" Drug Database</li>
 </ul>
 
 ### Example Usage
 
-    java -cp BulkDownloader/target/*:BulkDownloader/target/dependency-jars/* gov.uspto.bulkdata.cli2.BulkData --type application --years="2016" --limit=1 --outdir="download"
-
-## Download Bulk Patent Zips 
-   Downloads from https://bulkdata.uspto.gov/
-
+## Download Bulk Patent Zips from USPTO
+  Downloads from https://bulkdata.uspto.gov/
+    
       gov.uspto.bulkdata.cli2.BulkData
 
         options:
-          --type=application       options:[grant, application, gazette]
-          --years="2014-2016"      Year, Year list(using comma) or Year Range(using dash)
+          --type=application               Data type: [grant, application, gazette]
+          --date="20140101-20161231"       Single date range or comma seperated list of date ranges
           --limit=0
           --skip=0
           --outdir="../download"
           --async=false
+          --filename="ipa140109.zip"
 
-        Advanced Options:
-          Year List:   --years="2014, 2016"
-          Year Range:  --years="2014-2016"
-          Specific Bulk File: --filename="ipa140109.zip"
-
-## Old Downloader
+## Download other External Resources
      gov.uspto.bulkdata.cli.Download
 
         Options:
-          --source=reedtech        options:[reetech,google]
-          --type=application       options:[grant, application]
+          --available             Display available sources
+          --source=cpc            Source provider: [cpc, fda, reetech, google]
+          --type=cpc_scheme       Data type: [cpc_scheme, nda, patent_grant, patent_application]
           --limit=1
           --skip=0
           --outdir="../download"
           --async=false
-          
-        Advanced Options:
-          Specific Bulk File: --filename="ipa140109.zip"
+          --filename="ipa140109.zip"
             
 
 #### Extract Patent XML Documents, utilizing limit
