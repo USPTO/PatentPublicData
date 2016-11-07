@@ -1,40 +1,39 @@
 package gov.uspto.patent.doc.cpc.masterfile;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TransferQueue;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
-import gov.uspto.common.file.filter.SuffixFileFilter;
-import gov.uspto.patent.InvalidDataException;
-import gov.uspto.patent.PatentReaderException;
+import gov.uspto.common.filter.SuffixFilter;
 import gov.uspto.patent.bulk.BulkArchive;
 import gov.uspto.patent.bulk.DumpFile;
-import gov.uspto.patent.model.CountryCode;
-import gov.uspto.patent.model.DocumentDate;
-import gov.uspto.patent.model.DocumentId;
-import gov.uspto.patent.model.classification.CpcClassification;
+import gov.uspto.patent.serialize.DocumentBuilder;
+import gov.uspto.patent.thread.DumpFileProcessThread;
+
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
 
 /**
  * 
  * Build CSV File from CPC Master
  * 
+ * <p>
+ * CSV fields: grantIdFull,grantCC,grantId,grantKind,appIdFull,appCC,appId,appKind,cpcLevel,cpcClass
+ * </p>
+ * 
  * <pre>
- * grant docId, grant doc number, application docId, application doc number [main,further], CpcClassification
+ * Time to process US_Grant_CPC_MCF 
+ *    (95 xml files, about 98,000 to 100,150 records per file)
+ *    on a laptop with 8 threads, at 97% cpu, takes approximately 10 minutes.
  * </pre>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
@@ -43,189 +42,117 @@ import gov.uspto.patent.model.classification.CpcClassification;
 public class CpcMasterParser extends BulkArchive {
     private static final Logger LOGGER = LoggerFactory.getLogger(CpcMasterParser.class);
 
-    private static FileFilter fileFilter = new SuffixFileFilter("xml");
+    //private static final int CPU_PROCESSORS = Runtime.getRuntime().availableProcessors();
 
-    private DumpFile currentDumpFile;
+    private static FileFilter fileFilter = new SuffixFilter("xml");
 
-    public CpcMasterParser(File file) {
+    private DocumentBuilder<MasterClassificationRecord> docBuilder;
+    private Path outputDir;
+
+    private TransferQueue<Runnable> recordQueue;
+
+    public CpcMasterParser(File file, DocumentBuilder<MasterClassificationRecord> docBuilder, Path outputDir) {
         super(file, fileFilter);
+        this.outputDir = outputDir;
+        this.docBuilder = docBuilder;
     }
 
-    public MasterClassificationRecord parse(CharSequence xmlString) throws PatentReaderException {
-        StringReader reader = new StringReader(xmlString.toString());
-        return parse(reader);
+    public void skipMasterDoc(int skip) {
+        skip(skip);
     }
 
-    public MasterClassificationRecord parse(Reader reader) throws PatentReaderException {
-        try {
-            SAXReader sax = new SAXReader(false);
-            sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            Document document = sax.read(reader);
-            return parse(document);
-        } catch (SAXException e) {
-            throw new PatentReaderException(e);
-        } catch (DocumentException e) {
-            throw new PatentReaderException(e);
-        }
-    }
+    public void process(int maxThreads) {
+        recordQueue = new LinkedTransferQueue<Runnable>();
 
-    public MasterClassificationRecord parse(Document document) {
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(maxThreads, maxThreads, 1, TimeUnit.MINUTES, recordQueue,
+                new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.prestartAllCoreThreads();
 
-        Node root = document.selectSingleNode("/uspat:CPCMasterClassificationFile/uspat:CPCMasterClassificationRecord");
-        Node appIdN = root.selectSingleNode("pat:ApplicationIdentification");
-        DocumentId appId = readDocumentId(appIdN);
+        CpcMasterReader reader = new CpcMasterReader();
 
-        Node grantIdN = root.selectSingleNode("pat:PatentGrantIdentification");
-        DocumentId grantId = readDocumentId(grantIdN);
+        while (hasNext()) {
+                DumpFile dumpFile = next();
+                File outputFile = outputDir.resolve("cpc_master_" + dumpFile.getFile().getName() + ".csv").toFile();
 
-        Node cpcN = root.selectSingleNode("pat:CPCClassificationBag");
-        List<CpcClassification> cpcClass = readCPC(cpcN);
+                DumpFileProcessThread workThread = new DumpFileProcessThread(dumpFile, reader, docBuilder, outputFile);
 
-        return new MasterClassificationRecord(grantId, appId, cpcClass);
-    }
-
-    public List<CpcClassification> readCPC(Node node) {
-        List<CpcClassification> cpcClasses = new ArrayList<CpcClassification>();
-        Node mainN = node.selectSingleNode("pat:MainCPC");
-        CpcClassification mainCpc = readClass(mainN);
-        mainCpc.setIsMainClassification(true);
-        cpcClasses.add(mainCpc);
-
-        @SuppressWarnings("unchecked")
-        List<Node> furtherCpcN = node.selectNodes("pat:FurtherCPC");
-        for (Node futherN : furtherCpcN) {
-            CpcClassification cpcClass = readClass(futherN);
-            if (cpcClass != null) {
-                cpcClass.setIsMainClassification(false);
-                mainCpc.addChild(cpcClass);
-                cpcClasses.add(cpcClass);
-                LOGGER.debug("FURTHER CPC: {}", cpcClass.toText());
-            }
+                if (recordQueue.size() < maxThreads * 3) {
+                    recordQueue.add(workThread);
+                } else {
+                    try {
+                        recordQueue.transfer(workThread);
+                    } catch (InterruptedException e) {
+                        LOGGER.error("LinkedTransferQueue Interrupted", e);
+                    }
+                }
         }
 
-        return cpcClasses;
-    }
+        executor.shutdown();
 
-    private CpcClassification readClass(Node node) {
-        Node classN = node.selectSingleNode("pat:CPCClassification");
-        if (classN == null) {
-            return null;
-        }
-
-        Node dateVersionN = classN.selectSingleNode("pat:ClassificationVersionDate");
-        Node cpcSectionN = classN.selectSingleNode("pat:CPCSection");
-        Node cpcClassN = classN.selectSingleNode("pat:Class");
-        Node cpcSubClassN = classN.selectSingleNode("pat:Subclass");
-        Node cpcMainGroupN = classN.selectSingleNode("pat:MainGroup");
-        Node cpcSubGroupN = classN.selectSingleNode("pat:Subgroup");
-
-        CpcClassification cpcClass = new CpcClassification("");
-        cpcClass.setSection(cpcSectionN.getText());
-        cpcClass.setMainClass(cpcClassN.getText());
-        cpcClass.setSubClass(cpcSubClassN.getText());
-        cpcClass.setMainGroup(cpcMainGroupN.getText());
-        cpcClass.setSubGroup(cpcSubGroupN.getText());
-        return cpcClass;
-    }
-
-    public DocumentId readDocumentId(Node node) {
-        Node countryN = node.selectSingleNode("com:IPOfficeCode");
-        Node idN = node.selectSingleNode("pat:PatentNumber|ApplicationNumber/ApplicationNumberText");
-        Node kindN = node.selectSingleNode("com:PatentDocumentKindCode");
-        Node dateN = node.selectSingleNode("pat:GrantDate");
-
-        String countryTxt = countryN != null ? countryN.getText() : "";
-        String idTxt = idN != null ? idN.getText() : "";
-        String kindTxt = kindN != null ? kindN.getText() : "";
-        String dateTxt = dateN != null ? dateN.getText() : "";
-        dateTxt = dateTxt.replaceAll("-", "");
-
-        DocumentDate docDate = null;
-        if (!dateTxt.isEmpty()) {
+        while (!executor.isTerminated()) {
             try {
-                docDate = new DocumentDate(dateTxt);
-            } catch (InvalidDataException e1) {
-                LOGGER.error("Failed to parse date: {}", dateTxt, e1);
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                LOGGER.error("ThreadPoolExecutor Interrupted", e);
             }
         }
-
-        try {
-            CountryCode countryCode = CountryCode.fromString(countryTxt);
-            DocumentId docId = new DocumentId(countryCode, idTxt, kindTxt);
-            docId.setDate(docDate);
-            return docId;
-        } catch (InvalidDataException e) {
-            LOGGER.error("Invalid CountryCode: {}", countryTxt, e);
-        }
-        return null;
     }
 
     public static void main(String[] args) throws IOException {
-        String filePath = args[0];
 
-        String header = "<?xml version=\"1.0\" ?>\n<uspat:CPCMasterClassificationFile xmlns:uspat=\"patent:uspto:doc:us:gov\" xmlns:com=\"http://www.wipo.int/standards/XMLSchema/ST96/Common\" xmlns:pat=\"http://www.wipo.int/standards/XMLSchema/ST96/Patent\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"patent:uspto:doc:us:gov CPCMasterClassificationFile.xsd\">";
-        String footer = "</uspat:CPCMasterClassificationFile>";
+        LOGGER.info("--- START ---");
 
-        CpcMasterParser cpcMaster = new CpcMasterParser(new File(filePath));
-        cpcMaster.open();
-
-        File outFile = new File("cpc_master.csv");
-        Writer writer = new BufferedWriter(new FileWriter(outFile));
-
-        while (cpcMaster.hasNext()) {
-            try (DumpFile dumpFile = cpcMaster.next()) {
-                dumpFile.open();
-                while (dumpFile.hasNext()) {
-                    LOGGER.info("Processing: {}:{}", dumpFile.getFile(), dumpFile.getCurrentRecCount());
-                    String rawRecord = dumpFile.next();
-                    if (rawRecord == null){
-                        break;
-                    }
-                    try {
-                        MasterClassificationRecord record = cpcMaster.parse(header + rawRecord + footer);
-
-                        writer.write(record.getGrantId().toText(7));
-                        writer.write(",");
-                        writer.write(record.getGrantId().getDocNumber());
-                        writer.write(",");
-                        writer.write(record.getAppId().toText());
-                        writer.write(",");
-                        writer.write(record.getAppId().getDocNumber());
-                        writer.write(",");
-                        writer.write("main");
-                        writer.write(",");
-                        writer.write(record.getMainCPC().toText());
-                        writer.write("\n");
-
-                        List<CpcClassification> furtherCpcClasses = record.getFutherCPC();
-                        if (!furtherCpcClasses.isEmpty()) {
-                            for (CpcClassification cpcClass : furtherCpcClasses) {
-                                writer.write(record.getGrantId().toText(7));
-                                writer.write(",");
-                                writer.write(record.getGrantId().getDocNumber());
-                                writer.write(",");
-                                writer.write(record.getAppId().toText());
-                                writer.write(",");
-                                writer.write(record.getAppId().getDocNumber());
-                                writer.write(",");
-                                writer.write("further");
-                                writer.write(",");
-                                writer.write(cpcClass.toText());
-                                writer.write("\n");
-                            }
-                        }
-
-                        LOGGER.trace("Record: {}", record);
-
-                    } catch (PatentReaderException e) {
-                        LOGGER.error("Failed on: {}:{}", dumpFile.getFile(), dumpFile.getCurrentRecCount(), e);
-                    }
-                }
+        OptionParser parser = new OptionParser() {
+            {
+                accepts("input").withRequiredArg().ofType(String.class).describedAs("Input Master CPC Zip File")
+                        .required();
+                accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("skip number of master cpc files")
+                        .defaultsTo(0);
+                accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("limit master cpc files to parse")
+                        .defaultsTo(0);
+                accepts("threads").withOptionalArg().ofType(Integer.class).describedAs("Threads to spawn").defaultsTo(5);
+                accepts("outdir").withOptionalArg().ofType(String.class).describedAs("directory").defaultsTo("output");
             }
+        };
+
+        OptionSet options = parser.parse(args);
+        if (!options.hasOptions()) {
+            parser.printHelpOn(System.out);
+            System.exit(1);
         }
 
-        writer.close();
+        String inputZipFile = (String) options.valueOf("input");
+        Path zipFilePath = Paths.get(inputZipFile);
+        File zipFile = zipFilePath.toFile();
+        if (!zipFile.canRead()) {
+            LOGGER.error("Failed to read: '{}'", zipFile.getAbsolutePath());
+            System.exit(1);
+        }
+
+        int skip = (Integer) options.valueOf("skip");
+        int limit = (Integer) options.valueOf("limit"); // limit is not currently used.
+        int threads = (Integer) options.valueOf("threads");
+        String outDir = (String) options.valueOf("outdir");
+        Path outputPath = Paths.get(outDir);
+
+        if (!outputPath.toFile().isDirectory()) {
+            outputPath.toFile().mkdir();
+        }
+
+        MasterCpcCsvBuilder docBuilder = new MasterCpcCsvBuilder();
+
+        CpcMasterParser cpcMaster = new CpcMasterParser(zipFile, docBuilder, outputPath);
+        cpcMaster.open();
+
+        if (skip > 0) {
+            cpcMaster.skipMasterDoc(skip);
+        }
+
+        cpcMaster.process(threads);
+
         cpcMaster.close();
+
+        LOGGER.info("--- DONE ---");
     }
 
 }

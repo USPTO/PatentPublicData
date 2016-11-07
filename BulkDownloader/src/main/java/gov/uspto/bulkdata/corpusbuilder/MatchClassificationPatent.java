@@ -1,6 +1,7 @@
 package gov.uspto.bulkdata.corpusbuilder;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -52,8 +53,9 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 
 	@Override
 	public MatchClassificationPatent on(String xmlDocStr, PatentDocFormat patentDocFormat) throws PatentReaderException, IOException {
-		try(PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)){
-			patent = patentReader.read();
+	    PatentReader patentReader = new PatentReader(patentDocFormat);
+        try (StringReader rawText = new StringReader(xmlDocStr)) {
+			patent = patentReader.read(rawText);
 		}
 		return this;
 	}

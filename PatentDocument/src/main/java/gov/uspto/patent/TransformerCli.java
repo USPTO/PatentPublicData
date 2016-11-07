@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Path;
@@ -18,8 +19,8 @@ import org.slf4j.MDC;
 import com.google.common.base.Preconditions;
 
 import gov.uspto.common.file.FileIterator;
-import gov.uspto.common.file.filter.FileFilterChain;
-import gov.uspto.common.file.filter.SuffixFileFilter;
+import gov.uspto.common.filter.FileFilterChain;
+import gov.uspto.common.filter.SuffixFilter;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
@@ -137,7 +138,7 @@ public class TransformerCli {
             dumpReader = new DumpFileXml(file);
             FileFilterChain filters = new FileFilterChain();
             //filters.addRule(new PathFileFilter(""));
-            filters.addRule(new SuffixFileFilter("xml"));
+            filters.addRule(new SuffixFilter("xml"));
             dumpReader.setFileFilter(filters);
         }
 
@@ -148,6 +149,7 @@ public class TransformerCli {
 
         try {
             dumpReader.open();
+            PatentReader patentReader = new PatentReader(dumpReader.getPatentDocFormat());
 
             for (; dumpReader.hasNext() && totalCount < totalLimit; totalCount++) {
 
@@ -157,8 +159,8 @@ public class TransformerCli {
                     break;
                 }
 
-                try (PatentReader patentReader = new PatentReader(xmlDocStr, dumpReader.getPatentDocFormat())) {
-                    Patent patent = patentReader.read();
+                try (StringReader rawText = new StringReader(xmlDocStr)) {
+                    Patent patent = patentReader.read(rawText);
                     String patentId = patent.getDocumentId().toText();
                     MDC.put("DOCID", patentId);
 

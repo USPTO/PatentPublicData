@@ -2,21 +2,18 @@ package gov.uspto.bulkdata.example;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 
-import javax.json.JsonObject;
-
-import gov.uspto.common.file.filter.FileFilterChain;
-import gov.uspto.common.file.filter.PathFileFilter;
-import gov.uspto.common.file.filter.SuffixFileFilter;
+import gov.uspto.common.filter.FileFilterChain;
+import gov.uspto.common.filter.SuffixFilter;
+import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
-import gov.uspto.patent.PatentDocFormat;
-import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.Patent;
-import gov.uspto.patent.serialize.JsonMapper;
 
 public class ReadBulkPatentZip {
 
@@ -37,7 +34,7 @@ public class ReadBulkPatentZip {
             dumpReader = new DumpFileXml(inputFile);
             FileFilterChain filters = new FileFilterChain();
             //filters.addRule(new PathFileFilter(""));
-            filters.addRule(new SuffixFileFilter("xml"));
+            filters.addRule(new SuffixFilter("xml"));
             dumpReader.setFileFilter(filters);
         }
 
@@ -46,12 +43,14 @@ public class ReadBulkPatentZip {
             dumpReader.skip(skip);
         }
 
+        PatentReader patentReader = new PatentReader(patentDocFormat);
+
         for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
             String xmlDocStr = (String) dumpReader.next();
-            try (PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)) {
-                //System.out.println("RAW: " + xmlDocStr);
+            //System.out.println("RAW: " + xmlDocStr);
 
-                Patent patent = patentReader.read();
+            try (StringReader rawText = new StringReader(xmlDocStr)) {
+                Patent patent = patentReader.read(rawText);
                 System.out.println(patent.getDocumentId().toText());
                 //System.out.println("Patent: " + patent.toString());
 

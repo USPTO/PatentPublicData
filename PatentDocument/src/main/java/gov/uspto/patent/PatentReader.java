@@ -1,13 +1,7 @@
 package gov.uspto.patent;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -29,9 +23,8 @@ import gov.uspto.patent.model.Patent;
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
-public class PatentReader implements Closeable {
+public class PatentReader implements PatentDocReader<Patent> {
 
-	private final Reader reader;
 	private PatentDocFormat patentDocFormat;
 
 	/**
@@ -40,45 +33,9 @@ public class PatentReader implements Closeable {
 	 * @param reader
 	 * @param PatentType
 	 */
-	public PatentReader(Reader reader, PatentDocFormat patentDocFormat) {
-		Preconditions.checkNotNull(reader, "reader can not be Null");
+	public PatentReader(final PatentDocFormat patentDocFormat) {
 		Preconditions.checkNotNull(patentDocFormat, "patentType can not be Null");
-		this.reader = reader;
 		this.patentDocFormat = patentDocFormat;
-	}
-
-	/**
-	 * Load CharSequence (String, StringBuffer, StringBuilder, CharBuffer)
-	 *  
-	 * @param xmlString
- 	 * @param PatentType
-	 */
-	public PatentReader(CharSequence rawDocString, PatentDocFormat patentDocFormat) {
-		this(new StringReader(rawDocString.toString()), patentDocFormat);
-	}
-
-	/**
-	 * Load File
-	 * 
-	 * @param file
- 	 * @param PatentType 
-	 * @return
-	 * @throws IOException 
-	 */
-	public PatentReader(File file, PatentDocFormat patentDocFormat) throws IOException {
-		this(new FileReader(file), patentDocFormat);
-	}
-
-	/**
-	 * Load InputStream (ByteArrayInputStream, FileInputStream, FilterInputStream, InputStream, ObjectInputStream, PipedInputStream, SequenceInputStream, StringBufferInputStream)
-	 * 
-	 * @param inputStream
- 	 * @param PatentType 
-	 * @return
-	 * @throws IOException 
-	 */
-	public PatentReader(InputStream inputStream, PatentDocFormat patentDocFormat) throws IOException {
-		this(new InputStreamReader(inputStream), patentDocFormat);
 	}
 
 	/**
@@ -101,7 +58,10 @@ public class PatentReader implements Closeable {
 	 * @throws PatentReaderException
 	 * @throws IOException 
 	 */
-	public Patent read() throws PatentReaderException, IOException {
+	@Override
+    public Patent read(Reader reader) throws PatentReaderException, IOException {
+        Preconditions.checkNotNull(reader, "reader can not be Null");
+
 		switch (patentDocFormat) {
 		case Greenbook:
 			return new Greenbook().parse(reader);
@@ -115,13 +75,6 @@ public class PatentReader implements Closeable {
 			return new PatentAppPubParser().parse(getJDOM(reader));
 		default:
 			throw new PatentReaderException("Invalid or Unknown Document Type");
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-		if (reader != null) {
-			reader.close();
 		}
 	}
 

@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Document;
+
+import com.google.common.base.Preconditions;
 
 import gov.uspto.parser.dom4j.Dom4j;
 import gov.uspto.patent.PatentReaderException;
@@ -25,6 +25,7 @@ public abstract class KvParser implements Dom4j {
     }
 
     public Patent parse(File file) throws PatentReaderException, IOException {
+        Preconditions.checkArgument(file.isFile(), "File is not plain file: " + file.getAbsolutePath());
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF-8")) {
             return parse(reader);
         }

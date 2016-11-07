@@ -1,0 +1,118 @@
+package gov.uspto.patent.doc.xml;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import gov.uspto.patent.FreetextConfig;
+import gov.uspto.patent.FreetextConfig.FieldType;
+import gov.uspto.patent.doc.xml.FormattedText;
+
+public class FormattedTextTest {
+
+    @Test
+    public void MathML_html() {
+        FormattedText format = new FormattedText();
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("<p id=\"h-1\">SECTION TITLE</p>");
+        stb.append("<p><maths>");
+        stb.append(
+                "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>&InvisibleTimes;</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>");
+        stb.append("</maths></p>");
+
+        StringBuilder expectStb = new StringBuilder();
+        expectStb.append("   <h4 id=\"h-1\">SECTION TITLE</h4> ");
+        expectStb.append(
+                "<p>  <span class=\"math\" format=\"mathml\"><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>⁢</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></span> </p> \n");
+        String expect = expectStb.toString();
+
+        String actual = format.getSimpleHtml(stb.toString());
+        assertEquals(expect, actual);
+    }
+
+    @Test
+    public void MathML_plaintext() {
+        FormattedText format = new FormattedText();
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("<p id=\"h-1\">SECTION TITLE</p>");
+        stb.append("<p><maths>");
+        stb.append(
+                "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>&InvisibleTimes;</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>");
+        stb.append("</maths></p>");
+
+        StringBuilder expectStb = new StringBuilder();
+        expectStb.append("   \n SECTION TITLE\n \n");
+        expectStb.append("  math(mrow(mrow(msup(mi(x)mn(2))mo(+)mrow(mn(4)mo(⁢)mi(x))mo(+)mn(4))mo(=)mn(0)))  \n");
+        String expect = expectStb.toString();
+
+        String actual = format.getPlainText(stb.toString(), new FreetextConfig());
+        assertEquals(expect, actual);
+    }
+
+    @Test
+    public void plaintextRemoveMath() {
+        FormattedText format = new FormattedText();
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("<p id=\"h-1\">SECTION TITLE</p>");
+        stb.append("<p><maths>");
+        stb.append(
+                "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>&InvisibleTimes;</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>");
+        stb.append("</maths></p>");
+
+        StringBuilder expectStb = new StringBuilder();
+        expectStb.append("   \n SECTION TITLE\n \n");
+        expectStb.append("  \n");
+        String expect = expectStb.toString();
+
+        FreetextConfig textConfig = new FreetextConfig();
+        textConfig.remove(FieldType.MATHML);
+
+        String actual = format.getPlainText(stb.toString(), textConfig);
+        assertEquals(expect, actual);
+    }
+
+    @Test
+    public void plaintextRemoveHeaders() {
+        FormattedText format = new FormattedText();
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("<p id=\"h-1\">SECTION TITLE</p>");
+        stb.append("<p><maths>");
+        stb.append(
+                "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>&InvisibleTimes;</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>");
+        stb.append("</maths></p>");
+
+        StringBuilder expectStb = new StringBuilder();
+        expectStb.append("   \n");
+        expectStb.append("  math(mrow(mrow(msup(mi(x)mn(2))mo(+)mrow(mn(4)mo(⁢)mi(x))mo(+)mn(4))mo(=)mn(0)))  \n");
+        String expect = expectStb.toString();
+
+        FreetextConfig textConfig = new FreetextConfig();
+        textConfig.remove(FieldType.HEADER);
+
+        String actual = format.getPlainText(stb.toString(), textConfig);
+        assertEquals(expect, actual);
+    }
+
+    @Test
+    public void plaintextRemoveTable() {
+        FormattedText format = new FormattedText();
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("<p id=\"h-1\">SECTION TITLE</p>");
+        stb.append("<p><table><row><entry>text</entry></row></table></p>");
+
+        StringBuilder expectStb = new StringBuilder();
+        expectStb.append("   \n SECTION TITLE\n \n  \n  \n");
+        String expect = expectStb.toString();
+
+        FreetextConfig textConfig = new FreetextConfig();
+        textConfig.remove(FieldType.TABLE);
+
+        String actual = format.getPlainText(stb.toString(), textConfig);
+        assertEquals(expect, actual);
+    }
+}

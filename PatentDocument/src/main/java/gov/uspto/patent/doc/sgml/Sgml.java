@@ -47,8 +47,7 @@ import gov.uspto.patent.model.entity.Inventor;
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
- * @see http://www.uspto.gov/sites/default/files/products/PatentGrantSGMLv19-
- *      Documentation.pdf
+ * @see http://www.uspto.gov/sites/default/files/products/PatentGrantSGMLv19-Documentation.pdf
  * @see ST32-US-Grant-025xml.dtd
  */
 public class Sgml extends Dom4JParser {
@@ -60,7 +59,7 @@ public class Sgml extends Dom4JParser {
 	public Patent parse(Document document) throws PatentReaderException {
 
 		DocumentId documentId = new DocumentIdNode(document).read();
-		if (documentId != null) {
+		if (documentId != null){
 			MDC.put("DOCID", documentId.toText());
 		}
 
@@ -68,8 +67,8 @@ public class Sgml extends Dom4JParser {
 		
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
-		List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
-		List<DocumentId> relatedIds = new RelatedIdNode(document).read();
+	    List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
+        List<DocumentId> relatedIds = new RelatedIdNode(document).read();
 
 		Node titleN = document.selectSingleNode("/PATDOC/SDOBI/B500/B540/STEXT/PDAT");
 		String title = null;
@@ -90,8 +89,8 @@ public class Sgml extends Dom4JParser {
 		FormattedText textProcessor = new FormattedText();
 		Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
 		Description description = new DescriptionNode(document, textProcessor).read();
-		List<Claim> claims = new ClaimNode(document, textProcessor).read();
-		new ClaimTreeBuilder(claims).build();
+        List<Claim> claims = new ClaimNode(document, textProcessor).read();
+        new ClaimTreeBuilder(claims).build();
 
 		/*
 		 * Start Building Patent Object.
@@ -102,10 +101,11 @@ public class Sgml extends Dom4JParser {
 			patent.setDatePublished(documentId.getDate());
 		}
 
-		if (applicationId != null && applicationId.getDate() != null) {
-			patent.setDateProduced(applicationId.getDate());
-		}
 
+		if (applicationId != null && applicationId.getDate() != null) {
+				patent.setDateProduced(applicationId.getDate());
+		}
+				
 		patent.setApplicationId(applicationId);
 		patent.addOtherId(applicationId);
 		patent.addOtherId(pctRegionalIds);
@@ -145,7 +145,7 @@ public class Sgml extends Dom4JParser {
 				if (patent.getDescription().getAllPlainText().length() < 400) {
 					System.err.println("Description to small.");
 				}
-				// System.out.println(patent.toString());
+				//System.out.println(patent.toString());
 			}
 		} else {
 			Sgml sgml = new Sgml();

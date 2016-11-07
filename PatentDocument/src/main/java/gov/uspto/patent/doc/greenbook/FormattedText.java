@@ -1,19 +1,27 @@
 package gov.uspto.patent.doc.greenbook;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Document.OutputSettings;
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.safety.Whitelist;
 
 import com.google.common.base.Charsets;
 
+import gov.uspto.patent.FreetextConfig;
+import gov.uspto.patent.FreetextConfig.FieldType;
 import gov.uspto.patent.TextProcessor;
 
 /**
@@ -24,88 +32,149 @@ import gov.uspto.patent.TextProcessor;
  */
 public class FormattedText implements TextProcessor {
 
-	private static final Pattern CLAIM_REF = Pattern.compile("\\bclaim ([0-9](?:(?: or |-)[0-9])?)\\b");
-	private static final Pattern PATENT_FIG = Pattern.compile("\\bFIGS?. ([0-30][()A-z]*(?:(?: to |-)[0-30][()A-z]*)?)\\b");
+    private static final Pattern CLAIM_REF = Pattern.compile("\\bclaim ([0-9](?:(?: or |-)[0-9])?)\\b");
+    private static final Pattern PATENT_FIG = Pattern
+            .compile("\\bFIGS?. ([0-30][()A-z]*(?:(?: to |-)[0-30][()A-z]*)?)\\b");
 
-	private static final String[] HTML_WHITELIST = new String[] { "p", "table", "tr", "td"  }; // "ul", "li"
+    private static final String[] HTML_WHITELIST = new String[] { "p", "h2", "table", "tr", "td", "a" }; // "ul", "li"
+    private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref" };
+    
+    private static final Map<String, String> FREETEXT_REPLACE_DEFAULT = new HashMap<String, String>();
+    static {
+        FREETEXT_REPLACE_DEFAULT.put("a.figref", "Patent-Figure");
+        FREETEXT_REPLACE_DEFAULT.put("a.claim", "Patent-Claim");
+    }
 
-	@Override
-	public String getPlainText(String rawText) {
-		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
+    private static final Collection<String> FREETEXT_REMOVE_DEFAULT = new HashSet<String>();
 
-		for (Element element : jsoupDoc.select("PAC")) { // Header Field.
-			element.remove();
-		}
-		
-		jsoupDoc.select("TBL").append("\\n.\\n"); // Table Field
+    @Override
+    public String getPlainText(String rawText, FreetextConfig textConfig) {
+        rawText = createRefs(rawText);
+        Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
 
-		jsoupDoc.select("PAR").prepend("\\n\\t").append("\\n");
+        Collection<String> removeEls = !textConfig.getRemoveElements().isEmpty() ? textConfig.getRemoveElements()
+                : FREETEXT_REMOVE_DEFAULT;
 
-		String textStr = jsoupDoc.html();
-		textStr = cleanText(textStr);
+        Map<String, String> replacEls = !textConfig.getReplaceElements().isEmpty() ? textConfig.getReplaceElements()
+                : FREETEXT_REPLACE_DEFAULT;
+        for (String xmlElementName : replacEls.keySet()) {
+            for (Element element : jsoupDoc.select(xmlElementName)) {
+                element.replaceWith(new TextNode(replacEls.get(xmlElementName), null));
+            }
+        }
 
-		OutputSettings outSettings = new Document.OutputSettings();
-		outSettings.charset(Charsets.UTF_8);
-		outSettings.prettyPrint(false);
-		outSettings.escapeMode(EscapeMode.extended);
+        if (textConfig.keepType(FieldType.HEADER)) {
+            jsoupDoc.select("PAC").prepend("\\n").append("\\n");
+        } else {
+            removeEls.add("PAC");
+        }
 
-		String fieldTextCleaned = Jsoup.clean(textStr, "", Whitelist.none(), outSettings);
+        if (textConfig.keepType(FieldType.TABLE)) {
+            jsoupDoc.select("TBL").append("\\n.\\n");
+        } else {
+            removeEls.add("TBL");
+        }
 
-		return fieldTextCleaned;
-	}
+        jsoupDoc.select("PAR").prepend("\\n    ");
 
-	@Override
-	public String getSimpleHtml(String rawText) {
-		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
+        /*
+         * Remove Elements.
+         */
+        for (String xmlElementName : removeEls) {
+            jsoupDoc.select(xmlElementName).remove();
+        }
 
-		// Remove Header Fields.
-		jsoupDoc.select("PAC").remove();
+        String textStr = jsoupDoc.html();
+        textStr = cleanText(textStr);
 
-		// Rename all "para" tags to "p".
-		jsoupDoc.select("PAR").tagName("p");
-		jsoupDoc.select("TBL").tagName("table");
+        OutputSettings outSettings = new Document.OutputSettings();
+        outSettings.charset(Charsets.UTF_8);
+        outSettings.prettyPrint(false);
+        outSettings.escapeMode(EscapeMode.extended);
 
-		String textStr = jsoupDoc.html();
-		textStr = cleanText(textStr);
+        String fieldTextCleaned = Jsoup.clean(textStr, "", Whitelist.none(), outSettings);
 
-		// Whitelist whitelist = Whitelist.simpleText();
-		Whitelist whitelist = Whitelist.none();
-		whitelist.addTags(HTML_WHITELIST);
+        return fieldTextCleaned;
+    }
 
-		OutputSettings outSettings = new Document.OutputSettings();
-		outSettings.charset(Charsets.UTF_8);
-		outSettings.prettyPrint(false);
-		outSettings.escapeMode(EscapeMode.extended);
+    @Override
+    public String getSimpleHtml(String rawText) {
+        rawText = createRefs(rawText);
+        Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
 
-		String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
+        // rename header to "h2"
+        jsoupDoc.select("PAC").tagName("h2");
 
-		return fieldTextCleaned;
-	}
+        // Rename all "para" tags to "p".
+        jsoupDoc.select("PAR").tagName("p");
+        jsoupDoc.select("TBL").tagName("table");
 
-	/**
-	 * Transform Patent Figure and Patent Claims and their accompanied number
-	 * to simply "Patent-Claim" or "Patent-Figure"
-	 * 
-	 * @param text
-	 * @return
-	 */
-	protected String cleanText(String text) {
-		text = text.replaceAll("\\\\n", "\n");
-		text = CLAIM_REF.matcher(text).replaceAll("Patent-Claim");
-		text = PATENT_FIG.matcher(text).replaceAll("Patent-Figure");
-		return text;
-	}
+        String textStr = jsoupDoc.html();
+        textStr = textStr.replaceAll("\\\\n", "\n");
 
-	@Override
-	public List<String> getParagraphText(String rawText) {
-		String textWithPMarks = getSimpleHtml(rawText);
-		Document jsoupDoc = Jsoup.parse(textWithPMarks, "", Parser.xmlParser());
+        // Whitelist whitelist = Whitelist.simpleText();
+        Whitelist whitelist = Whitelist.none();
+        whitelist.addTags(HTML_WHITELIST);
+        whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
 
-		List<String> paragraphs = new ArrayList<String>();
-		for (Element element : jsoupDoc.select("p")) {
-			paragraphs.add(element.html());
-		}
+        OutputSettings outSettings = new Document.OutputSettings();
+        outSettings.charset(Charsets.UTF_8);
+        outSettings.prettyPrint(false);
+        outSettings.escapeMode(EscapeMode.extended);
 
-		return paragraphs;
-	}
+        String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
+
+        return fieldTextCleaned;
+    }
+
+    public String createRefs(String rawText) {
+        StringBuilder stb = new StringBuilder(rawText);
+        Matcher clmMatcher = CLAIM_REF.matcher(rawText);
+        int additionalChars = 0;
+        while (clmMatcher.find()) {
+            String fullMatch = clmMatcher.group(0);
+            String newStr = "<a class=\"claim\">" + fullMatch + "</a>";
+            stb.replace(clmMatcher.start() + additionalChars, clmMatcher.end() + additionalChars, newStr);
+            additionalChars = additionalChars + (newStr.length() - fullMatch.length());
+        }
+        String htmlText = stb.toString();
+
+        stb = new StringBuilder(htmlText);
+        Matcher figMatcher = PATENT_FIG.matcher(htmlText);
+        additionalChars = 0;
+        while (figMatcher.find()) {
+            String fullMatch = figMatcher.group(0);
+            String newStr = "<a class=\"figref\">" + fullMatch + "</a>";
+            stb.replace(figMatcher.start() + additionalChars, figMatcher.end() + additionalChars, newStr);
+            additionalChars = additionalChars + (newStr.length() - fullMatch.length());
+        }
+        return stb.toString();
+    }
+
+    /**
+     * Transform Patent Figure and Patent Claims and their accompanied number
+     * to simply "Patent-Claim" or "Patent-Figure"
+     * 
+     * @param text
+     * @return
+     */
+    protected String cleanText(String text) {
+        text = text.replaceAll("\\\\n", "\n");
+        text = CLAIM_REF.matcher(text).replaceAll("Patent-Claim");
+        text = PATENT_FIG.matcher(text).replaceAll("Patent-Figure");
+        return text;
+    }
+
+    @Override
+    public List<String> getParagraphText(String rawText) {
+        String textWithPMarks = getSimpleHtml(rawText);
+        Document jsoupDoc = Jsoup.parse(textWithPMarks, "", Parser.xmlParser());
+
+        List<String> paragraphs = new ArrayList<String>();
+        for (Element element : jsoupDoc.select("p")) {
+            paragraphs.add(element.html());
+        }
+
+        return paragraphs;
+    }
 }

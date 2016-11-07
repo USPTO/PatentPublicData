@@ -22,6 +22,13 @@ public class DocumentIdTest {
         validFromTo.put("DE101 47 913C1", "DE10147913C1");
         validFromTo.put("EP 470 185B1", "EP470185B1");
     }
+    
+    @Test
+    public void supportXPatents() throws InvalidDataException {
+        String docIdStr = "USX9876I1";
+        DocumentId docId = DocumentId.fromText(docIdStr, 1836);
+        assertEquals(docIdStr, docId.getId());
+    }
 
     @Test
     public void testParse() throws InvalidDataException {

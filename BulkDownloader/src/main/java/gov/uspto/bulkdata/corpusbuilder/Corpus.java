@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,23 +20,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ContiguousSet;
-import com.google.common.collect.DiscreteDomain;
-import com.google.common.collect.Range;
-import com.google.common.primitives.Ints;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 
 import gov.uspto.bulkdata.cli2.BulkData;
 import gov.uspto.bulkdata.cli2.BulkDataType;
 import gov.uspto.bulkdata.downloader.DownloadJob;
+import gov.uspto.common.DateRange;
+import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
-import gov.uspto.patent.PatentDocFormat;
-import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
+
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import okhttp3.HttpUrl;
@@ -221,8 +222,9 @@ public class Corpus {
 			{
 				accepts("type").withRequiredArg().ofType(String.class)
 						.describedAs("Patent Document Type [grant, application]").required();
-				accepts("years").withRequiredArg().ofType(String.class)
-						.describedAs("Years; comma for individual years; dash for year range").required();
+                accepts("date").withRequiredArg().ofType(String.class)
+                .describedAs("Single Date Range or list, example: 20150801-20150901,20160501-20160601")
+                .required();
 				accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("Number of bulk files to skip")
 						.defaultsTo(0);
 				accepts("delete").withOptionalArg().ofType(Boolean.class)
@@ -264,7 +266,6 @@ public class Corpus {
 		String name = (String) options.valueOf("name");
 		String cpc = (String) options.valueOf("cpc");
 		String uspc = (String) options.valueOf("uspc");
-		String yearRangeStr = (String) options.valueOf("years");
 
 		/*
 		 * Setup and Execution.
@@ -281,15 +282,24 @@ public class Corpus {
 			throw new IllegalArgumentException("Unknown Download Source: " + type);
 		}
 
-		Iterator<Integer> years = Ints.stringConverter()
-				.convertAll(Splitter.on(",").omitEmptyStrings().trimResults().splitToList(yearRangeStr)).iterator();
-		List<String> yearsDash = Splitter.on("-").omitEmptyStrings().trimResults().splitToList(yearRangeStr);
-		if (yearsDash.size() == 2) {
-			Integer range1 = Integer.valueOf(yearsDash.get(0));
-			Integer range2 = Integer.valueOf(yearsDash.get(1));
-			years = (Iterator<Integer>) ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers())
-					.iterator();
-		}
+        String dataInpuStr = (String) options.valueOf("date");
+
+        ListMultimap<String, DateRange> yearMap = LinkedListMultimap.create();
+        Iterable<String> dateInputList = Splitter.on(",").omitEmptyStrings().trimResults().split(dataInpuStr);
+        for (String dateStr : dateInputList) {
+            List<String> dateInputRange = Splitter.on("-").omitEmptyStrings().trimResults().splitToList(dateStr);
+            if (dateInputRange.size() == 2) {
+                DateRange dateRange = DateRange.parse(dateInputRange.get(0), dateInputRange.get(1),
+                        DateTimeFormatter.BASIC_ISO_DATE);
+                for (Integer year : dateRange.getYearsBetween()) {
+                    yearMap.put(String.valueOf(year), dateRange);
+                }
+            } else {
+                LOGGER.warn("Invalid DateRange has more than two dashs: {}", dateInputRange);
+            }
+        }
+
+        LOGGER.info("Request: {}", yearMap);
 
 		List<Classification> wantedClasses = new ArrayList<Classification>();
 		List<String> cpcs = Splitter.on(',').omitEmptyStrings().trimResults().splitToList(cpc);
@@ -304,7 +314,7 @@ public class Corpus {
 			wantedClasses.add(usClass);
 		}
 
-		BulkData downloader = new BulkData(downloadDir, dataType, years, false);
+        BulkData downloader = new BulkData(downloadDir, dataType, yearMap, false);
 
 		CorpusMatch<?> corpusMatch;
 		if ("xml".equalsIgnoreCase(eval)){

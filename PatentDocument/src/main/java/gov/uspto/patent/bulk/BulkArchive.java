@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import gov.uspto.common.file.archive.ZipReader;
-import gov.uspto.common.file.filter.SuffixFileFilter;
+import gov.uspto.common.filter.SuffixFilter;
 import gov.uspto.patent.bulk.DumpFile;
 import gov.uspto.patent.bulk.DumpFileXml;
 
@@ -50,12 +50,17 @@ public class BulkArchive implements Iterator<DumpFile>, AutoCloseable {
         return zipArchive.hasNext();
     }
 
+    public void skip(int skip) {
+        for (int i = 0; i < skip; i++) {
+            zipArchive.nextEntry();
+        }
+    }
+
     @Override
     public DumpFile next() {
         ZipArchiveEntry zipEntry = zipArchive.nextEntry();
-        BufferedReader reader;
         try {
-            reader = zipArchive.readEntry(zipEntry);
+            BufferedReader reader = zipArchive.readEntry(zipEntry);
             return new DumpFileXml(zipEntry.getName(), reader);
         } catch (IOException e) {
             LOGGER.error("Failed Reader DumpFile: {}", e);
@@ -65,29 +70,29 @@ public class BulkArchive implements Iterator<DumpFile>, AutoCloseable {
 
     public static void main(String[] args) throws IOException {
         String filePath = args[0];
-        
-        FileFilter fileFilter = new SuffixFileFilter("xml");
-        
+
+        FileFilter fileFilter = new SuffixFilter("xml");
+
         BulkArchive cpcMaster = new BulkArchive(new File(filePath), fileFilter);
         cpcMaster.open();
-        
+
         while (cpcMaster.hasNext()) {
             DumpFile dumpFile = cpcMaster.next();
             dumpFile.open();
-            
+
             while (dumpFile.hasNext()) {
-                
+
                 System.out.println(dumpFile.getFile());
                 String rawRecord = dumpFile.next();
                 System.out.println(rawRecord);
                 break;
-                
+
             }
-            
+
             dumpFile.close();
             break;
         }
-        
+
         cpcMaster.close();
     }
 }

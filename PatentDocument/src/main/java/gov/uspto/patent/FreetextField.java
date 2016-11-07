@@ -22,7 +22,11 @@ public abstract class FreetextField implements TextField {
     }
 
     public String getPlainText() {
-        return textProcessor.getPlainText(getRawText());
+        return textProcessor.getPlainText(getRawText(), new FreetextConfig());
+    }
+
+    public String getPlainText(FreetextConfig textConfig) {
+        return textProcessor.getPlainText(getRawText(), textConfig);
     }
 
     public String getSimpleHtml() {
