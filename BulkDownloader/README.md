@@ -15,8 +15,7 @@ This module provides the ability to download and work with weekly bulk Patent zi
 <li>Patent CPC Classification Scheme</li>
 <li>FDA "NDA" Drug Database</li>
 </ul>
-
-### Example Usage
+Additional sources can be added to sources.xml
 
 ## Download Bulk Patent Zips from USPTO
   Downloads from https://bulkdata.uspto.gov/
@@ -45,27 +44,39 @@ This module provides the ability to download and work with weekly bulk Patent zi
           --async=false
           --filename="ipa140109.zip"
             
+## Extract Patent Documents
+     gov.uspto.bulkdata.cli.ExtractPatent --source="download/ipa150101.zip" --skip 0 --limit 5 --outDir="download"
 
-#### Extract Patent XML Documents, utilizing limit
-     gov.uspto.bulkdata.cli.ExtractPatentXml --source="download/ipa150101.zip" --limit 5 --skip 0 --outDir="download"
+## View single Patent Document
+     gov.uspto.bulkdata.cli.Look
 
-#### View single Patent XML Document.
-     gov.uspto.bulkdata.cli.Look --source="download/ipa150101.zip" --limit 5 --skip 5 --fields=id,title,family
-
-#### Dump a single Patent XML Document by location in zipfile; the 3rd document:
+       Options:
+          --source="download/ipa150101.zip"
+          --skip=0                  
+          --limit=1                 
+          --num=100                    Diplay by iteration number in bulk file    
+          --id=US3931903A1             Display by Patent ID
+          --fields=id,title,family     Fields to display
+          --out=download/patent.xml    Output to File instead of STDOUT                           
+          
+       Fields:
+          xml        Display raw Document
+          object     Display Patent toString()
+          id
+          title
+          abstract
+          description
+          citations
+          claims
+          assignee
+          inventor
+          classification
+          family
+        
+##### Dump a single Patent XML Document by location in zipfile; the 3rd document:
      gov.uspto.bulkdata.cli.Look --source="download/ipa150305.zip" --num=3 --fields=xml --out=download/patent.xml
 
-#### Dump a single Patent XML Document by ID (note it may be slow as it parse each document to check its id):
+##### Dump a single Patent XML Document by ID (note it may be slow as it parse each document to check its id):
      gov.uspto.bulkdata.cli.Look --source="download/ipa150305.zip" --id=US3931903A1 --fields=xml --out=download/patent.xml
      # id requirements: country code, patent id without leading zero, and kind code.
-
-## CPC Classification Scheme
-#### Download CPC Clasification Scheme (which updates 1-2 times per month)
-     gov.uspto.bulkdata.cli.Download --source cpc --limit 1 --outdir="../download"
      
-## Other Datasources
-#### FDA National Drug Code Database (NDC)
-     gov.uspto.bulkdata.cli.Download --source fda --limit 1 --outdir="../download"
-
-## Download Any File
-     gov.uspto.bulkdata.cli.DownloadFile --url="http://opennlp.sourceforge.net/models-1.5/en-sent.bin" --dir="../download"
