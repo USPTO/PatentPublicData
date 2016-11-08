@@ -57,10 +57,11 @@ Additional sources can be added to sources.xml
           --num=100                    Diplay by iteration number in bulk file    
           --id=US3931903A1             Display by Patent ID
           --fields=id,title,family     Fields to display
-          --out=download/patent.xml    Output to File instead of STDOUT                           
+          --out=download/patent.xml    Output to File instead of STDOUT
+          --aps=true                   Viewing a Greenbook Patent
           
        Fields:
-          xml        Display raw Document
+          raw        Display raw Document
           object     Display Patent toString()
           id
           title
