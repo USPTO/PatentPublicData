@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
@@ -47,7 +48,7 @@ import joptsimple.OptionSet;
  */
 public class Look {
 
-    private String xmlDocStr;
+    private String rawDocStr;
 
     public void look(DumpReader dumpReader, int limit, Writer writer, String[] fields)
             throws PatentReaderException, IOException {
@@ -58,7 +59,7 @@ public class Look {
             System.out.println(dumpReader.getCurrentRecCount() + 1 + " --------------------------");
 
             try {
-                xmlDocStr = dumpReader.next();
+                rawDocStr = dumpReader.next();
             } catch (NoSuchElementException e) {
                 break;
             }
@@ -72,10 +73,10 @@ public class Look {
              }
             */
 
-            if (fields.length == 1 && "xml".equalsIgnoreCase(fields[0])) {
+            if (fields.length == 1 && "raw".equalsIgnoreCase(fields[0])) {
                 show(null, fields, writer);
             } else {
-                try (StringReader rawText = new StringReader(xmlDocStr)) {
+                try (StringReader rawText = new StringReader(rawDocStr)) {
                     Patent patent = patentReader.read(rawText);
                     show(patent, fields, writer);
                 }
@@ -92,12 +93,12 @@ public class Look {
 
         while (dumpReader.hasNext()) {
             try {
-                xmlDocStr = dumpReader.next();
+                rawDocStr = dumpReader.next();
             } catch (NoSuchElementException e) {
                 break;
             }
 
-            try (StringReader rawText = new StringReader(xmlDocStr)) {
+            try (StringReader rawText = new StringReader(rawDocStr)) {
                 Patent patent = patentReader.read(rawText);
                 if (patent.getDocumentId().toText().equals(docId)) {
                     show(patent, fields, writer);
@@ -120,11 +121,11 @@ public class Look {
     private void show(Patent patent, String[] fields, Writer writer) throws IOException {
         for (String field : fields) {
             switch (field) {
-            case "xml":
-                writer.write("Patent XML:\n");
+            case "raw":
+                writer.write("Patent RAW:\n");
                 //String prettyXml = prettyFormatXml(xmlDocStr);
                 //writer.write(prettyXml + "\n");
-                writer.write(xmlDocStr);
+                writer.write(rawDocStr);
                 writer.flush();
                 //System.out.println(prettyXml);
                 break;
@@ -258,6 +259,8 @@ public class Look {
         String[] fields = ((String) options.valueOf("fields")).split(",");
         Look look = new Look();
 
+        FileFilterChain filter = new FileFilterChain();
+        
         DumpReader dumpReader;
         if (!aps) {
             DumpFileXml dumpXml = new DumpFileXml(inputFile);
@@ -265,13 +268,12 @@ public class Look {
                 dumpXml.addHTMLEntities();
             }
             dumpReader = dumpXml;
+            filter.addRule(new SuffixFileFilter("xml"));
         } else {
             dumpReader = new DumpFileAps(inputFile);
+           //filter.addRule(new SuffixFileFilter("txt"));
         }
-
-        FileFilterChain filter = new FileFilterChain();
-        //filter.addRule(new SuffixFileFilter("xml"));
-        //filter.addRule(new SuffixFileFilter("txt"));
+        
         dumpReader.setFileFilter(filter);
 
         dumpReader.open();
