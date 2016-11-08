@@ -32,7 +32,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	private FileFilter fileFilter;
 	private String currentRawDoc = "";
 
-	public DumpFile(File file){
+	public DumpFile(File file) {
 		Preconditions.checkNotNull(file, "File can not be Null");
 		Preconditions.checkArgument(file.isFile(), "File not found:" + file.getAbsolutePath());
 
@@ -40,19 +40,20 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	}
 
 	/**
-	 * @param name - Name use for tracking purposes.
+	 * @param name
+	 *            - Name use for tracking purposes.
 	 * @param reader
 	 */
-    public DumpFile(String name, BufferedReader reader){
-        this.file = new File(name);
-        this.reader = reader;
-    }
+	public DumpFile(String name, BufferedReader reader) {
+		this.file = new File(name);
+		this.reader = reader;
+	}
 
-	public void setPatentDocFormat(PatentDocFormat patentDocFormat){
+	public void setPatentDocFormat(PatentDocFormat patentDocFormat) {
 		this.patentDocFormat = patentDocFormat;
 	}
 
-	public void setFileFilter(FileFilter filter){
+	public void setFileFilter(FileFilter filter) {
 		this.fileFilter = filter;
 	}
 
@@ -62,21 +63,23 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 		if (file.getName().endsWith("zip")) {
 			zipFile = new ZipReader(file, fileFilter);
 			reader = zipFile.open().next();
-		} else if (reader != null){
-		    // use defined reader.
+		} else if (reader != null) {
+			// use defined reader.
 		} else {
 			reader = new BufferedReader(new FileReader(file));
 		}
 
 		patentDocFormat = new PatentDocFormatDetect().fromContent(reader);
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		if (zipFile != null) {
 			zipFile.close();
 		}
-		reader.close();
+		if (reader != null) {
+			reader.close();
+		}
 	}
 
 	@Override
@@ -87,8 +90,8 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	@Override
 	public String next() {
 		currentRawDoc = read();
-		if (currentRawDoc != null){
-		    return currentRawDoc.toString();
+		if (currentRawDoc != null) {
+			return currentRawDoc.toString();
 		}
 		return null;
 	}
@@ -108,7 +111,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 		return patentDocFormat;
 	}
 
-	protected BufferedReader getReader(){
+	protected BufferedReader getReader() {
 		return reader;
 	}
 
