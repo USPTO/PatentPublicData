@@ -209,6 +209,12 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         return builder.build();
     }
 
+    /**
+     * JsonObjects can not set a null value so return empty string.
+     * 
+     * @param value
+     * @return
+     */
     private String valueOrEmpty(String value) {
         if (value == null) {
             return "";
@@ -325,9 +331,9 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
         for (Examiner examiner : examiners) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-            jsonObj.add("name", examiner.getName().getName());
-            jsonObj.add("type", examiner.getExaminerType().toString());
-            jsonObj.add("department", examiner.getDepartment());
+            jsonObj.add("name", valueOrEmpty(examiner.getName().getName()));
+            jsonObj.add("type", valueOrEmpty(examiner.getExaminerType().toString()));
+            jsonObj.add("department", valueOrEmpty(examiner.getDepartment()));
             arBldr.add(jsonObj);
         }
 
