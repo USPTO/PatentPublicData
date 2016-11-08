@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<uspat:CPCMasterClassificationFile uspat:publicationStartNumber="1" uspat:publicationEndNumber="99998" 
+xmlns:uspat="patent:uspto:doc:us:gov" 
+xmlns:com="http://www.wipo.int/standards/XMLSchema/ST96/Common" 
+xmlns:pat="http://www.wipo.int/standards/XMLSchema/ST96/Patent" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="patent:uspto:doc:us:gov CPCMasterClassificationFile.xsd">
+<uspat:CPCMasterClassificationRecord><pat:ApplicationIdentification><com:IPOfficeCode>US</com:IPOfficeCode><com:ApplicationNumber><com:ApplicationNumberText>13897484</com:ApplicationNumberText></com:ApplicationNumber></pat:ApplicationIdentification><pat:PatentGrantIdentification><com:IPOfficeCode>US</com:IPOfficeCode><pat:PatentNumber>9400000</pat:PatentNumber><com:PatentDocumentKindCode>B2</com:PatentDocumentKindCode><pat:GrantDate>2016-07-26</pat:GrantDate></pat:PatentGrantIdentification>
+<pat:CPCClassificationBag>
+<pat:MainCPC>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>29</pat:MainGroup><pat:Subgroup>703</pat:Subgroup><com:SymbolPositionCode>F</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode>
+</pat:CPCClassification>
+</pat:MainCPC>
+<pat:FurtherCPC>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>17</pat:MainGroup><pat:Subgroup>08</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>25</pat:MainGroup><pat:Subgroup>06</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>25</pat:MainGroup><pat:Subgroup>0613</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>25</pat:MainGroup><pat:Subgroup>08</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>29</pat:MainGroup><pat:Subgroup>403</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>29</pat:MainGroup><pat:Subgroup>4206</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>29</pat:MainGroup><pat:Subgroup>4213</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+<pat:CPCClassification><pat:ClassificationVersionDate>2013-01-01</pat:ClassificationVersionDate><pat:CPCSection>F</pat:CPCSection><pat:Class>04</pat:Class><pat:Subclass>D</pat:Subclass><pat:MainGroup>29</pat:MainGroup><pat:Subgroup>4226</pat:Subgroup><com:SymbolPositionCode>L</com:SymbolPositionCode><pat:CPCClassificationValueCode>I</pat:CPCClassificationValueCode></pat:CPCClassification>
+</pat:FurtherCPC>
+</pat:CPCClassificationBag>
+</uspat:CPCMasterClassificationRecord>
+</uspat:CPCMasterClassificationFile>
