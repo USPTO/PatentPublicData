@@ -24,6 +24,30 @@
 	</source>
 
 	<source>
+		<name>CPC</name>
+		<type>CPC_MASTER_GRANT</type>
+		<download>
+			<scrape>https://bulkdata.uspto.gov/data2/patent/classification/cpc/</scrape>
+			<count>1</count>
+			<predicate>
+				<pattern>US_Grant_CPC_MCF_XML_\d{4}-\d\d-\d\d\.zip</pattern>
+			</predicate>
+		</download>
+	</source>
+
+	<source>
+		<name>CPC</name>
+		<type>CPC_MASTER_APPS</type>
+		<download>
+			<scrape>https://bulkdata.uspto.gov/data2/patent/classification/cpc/</scrape>
+			<count>1</count>
+			<predicate>
+				<pattern>US_PGPub_CPC_MCF_XML_\d{4}-\d\d-\d\d\.zip</pattern>
+			</predicate>
+		</download>
+	</source>
+
+	<source>
 		<name>REEDTECH</name>
 		<type>PATENT_APPLICATION</type>
 		<download>
