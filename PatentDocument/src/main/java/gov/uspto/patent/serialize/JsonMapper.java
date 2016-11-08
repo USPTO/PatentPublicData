@@ -20,6 +20,7 @@ import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
 
 import gov.uspto.patent.DateTextType;
+import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.Claim;
@@ -102,10 +103,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
         builder.add("title", valueOrEmpty(patent.getTitle()));
 
-        builder.add("abstract",
-                Json.createObjectBuilder().add("raw", patent.getAbstract().getRawText())
-                        .add("normalized", patent.getAbstract().getSimpleHtml())
-                        .add("plain", patent.getAbstract().getPlainText()));
+        builder.add("abstract", mapAbstract(patent.getAbstract()));
 
         builder.add("description", mapDescription(patent.getDescription()));
         builder.add("claims", mapClaims(patent.getClaims()));
@@ -116,6 +114,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         return builder.build();
     }
 
+    
     public String getPrettyPrint(JsonObject jsonObject) throws IOException {
         Map<String, Boolean> config = new HashMap<String, Boolean>();
         config.put(JsonGenerator.PRETTY_PRINTING, true);
@@ -243,6 +242,23 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         return builder.build();
     }
 
+    private JsonObject mapAbstract(Abstract abstractObj) {
+        JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+        
+        if (abstractObj != null){
+            jsonObj.add("raw", abstractObj.getRawText());
+            jsonObj.add("normalized", abstractObj.getSimpleHtml());
+            jsonObj.add("plain", abstractObj.getPlainText());
+        }
+        else {
+            jsonObj.add("raw", "");
+            jsonObj.add("normalized", "");
+            jsonObj.add("plain", "");            
+        }
+
+        return jsonObj.build();
+    }
+    
     private JsonObject mapDescription(Description patentDescription) {
         JsonObjectBuilder jsonObj = Json.createObjectBuilder();
         jsonObj.add("full_raw", patentDescription.getAllRawText());

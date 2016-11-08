@@ -129,19 +129,23 @@ public class TransformerCli {
     private DumpReader read(File file) {
         PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(file);
 
+        FileFilterChain filters = new FileFilterChain();
+
         DumpReader dumpReader;
         switch (patentDocFormat) {
         case Greenbook:
             dumpReader = new DumpFileAps(file);
+            //filters.addRule(new PathFileFilter(""));
+            //filters.addRule(new SuffixFilter("txt"));
             break;
         default:
             dumpReader = new DumpFileXml(file);
-            FileFilterChain filters = new FileFilterChain();
             //filters.addRule(new PathFileFilter(""));
             filters.addRule(new SuffixFilter("xml"));
-            dumpReader.setFileFilter(filters);
         }
-
+        
+        dumpReader.setFileFilter(filters);
+        
         return dumpReader;
     }
 
