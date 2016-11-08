@@ -259,6 +259,7 @@ public enum CountryCode {
 	UK("United Kingdom"), // Reserved for United Kingdom, official code is GB, mostly used in mailing address.
 	UNKNOWN("unknown"),   // when lookup fails on non-null.
 	UNDEFINED("undefined"), // trying lookup with null.
+	OMITTED("unknown"),
 
 	/*
 	 * Available for individual Use and provisional codes.

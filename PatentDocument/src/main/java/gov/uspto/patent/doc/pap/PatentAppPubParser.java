@@ -79,9 +79,7 @@ public class PatentAppPubParser extends Dom4JParser {
         /*
          * Patent Type from field or from kindCode.
          */
-        String patentTypeStr = Dom4jUtil
-                .getTextOrNull(document, XML_ROOT + "/subdoc-bibliographic-information/publication-filing-type")
-                .replaceFirst("^new-", "");
+        String patentTypeStr = Dom4jUtil.getTextOrEmpty(document, XML_ROOT + "/subdoc-bibliographic-information/publication-filing-type").replaceFirst("^new-", "");
         PatentType patentType = null;
         try {
             patentType = PatentType.fromString(patentTypeStr);

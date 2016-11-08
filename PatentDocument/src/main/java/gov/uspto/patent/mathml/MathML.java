@@ -104,7 +104,8 @@ public class MathML {
             el.attributes();
             for (int i = 0; i < el.attributeCount(); i++) {
                 String attrName = el.attribute(i).getName();
-                sb.append("[").append(attrName).append("=").append(el.getStringValue()).append("]");
+                String value = el.getStringValue();
+                sb.append("[").append(attrName).append("=").append(value).append("]");
             }
         }
 
@@ -180,8 +181,16 @@ public class MathML {
                 + parse(mathNode) + ",\n tokenize()=" + tokenize() + "]";
     }
 
+    
+    /**
+     * @FIXME does not yet work.
+     * 
+     * @param string
+     * @return
+     */
     public static MathML fromText(String string){
         // convert back to XML format.  math(mrow(mi(a)mo(+)msup(mi(b)mn(2))))
+    	
         Pattern pattern = Pattern.compile("(\\w+\\((?:[^()]+)*\\))");
         
         Pattern outerPattern = Pattern.compile("(\\w+\\("+pattern+"*\\))");

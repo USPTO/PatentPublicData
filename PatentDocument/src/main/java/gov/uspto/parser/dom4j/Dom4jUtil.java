@@ -16,6 +16,18 @@ public class Dom4jUtil {
 	}
 
 	/**
+	 * Get Text or Empty if Null
+	 * 
+	 * @param document
+	 * @param xPath
+	 * @return value or empty instead of null
+	 */
+	public static String getTextOrEmpty(Node document, String xPath) {
+		String value = getTextOrNull(document, xPath);
+		return value != null ? value : "";
+	}
+
+	/**
 	 * Pretty Print XML of Dom4j Document
 	 * 
 	 * @param document
