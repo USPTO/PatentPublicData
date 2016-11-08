@@ -45,7 +45,7 @@ Additional sources can be added to sources.xml
           --filename="ipa140109.zip"
             
 ## Extract Patent Documents
-     gov.uspto.bulkdata.cli.ExtractPatent --source="download/ipa150101.zip" --skip 0 --limit 5 --outdir="download"
+     gov.uspto.bulkdata.cli.ExtractPatent --source="download/ipa150101.zip" --skip 0 --limit 5 --outdir="download" --aps=false
 
 ## View single Patent Document
      gov.uspto.bulkdata.cli.Look
