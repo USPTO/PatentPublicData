@@ -21,6 +21,8 @@ import org.dom4j.io.XMLWriter;
 
 import gov.uspto.common.filter.FileFilterChain;
 import gov.uspto.common.filter.SuffixFilter;
+import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
@@ -259,22 +261,32 @@ public class Look {
         String[] fields = ((String) options.valueOf("fields")).split(",");
         Look look = new Look();
 
-        FileFilterChain filter = new FileFilterChain();
-        
+        FileFilterChain filters = new FileFilterChain();
+
         DumpReader dumpReader;
-        if (!aps) {
-            DumpFileXml dumpXml = new DumpFileXml(inputFile);
-            if (addHtmlEntities) {
-                dumpXml.addHTMLEntities();
-            }
-            dumpReader = dumpXml;
-            filter.addRule(new SuffixFileFilter("xml"));
-        } else {
+        if (aps) {
             dumpReader = new DumpFileAps(inputFile);
-           //filter.addRule(new SuffixFileFilter("txt"));
+            //filter.addRule(new SuffixFileFilter("txt"));
+        } else {
+            PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(inputFile);
+            switch (patentDocFormat) {
+            case Greenbook:
+                aps = true;
+                dumpReader = new DumpFileAps(inputFile);
+                //filters.addRule(new PathFileFilter(""));
+                //filters.addRule(new SuffixFilter("txt"));
+                break;
+            default:
+                DumpFileXml dumpXml = new DumpFileXml(inputFile);
+                if (addHtmlEntities) {
+                    dumpXml.addHTMLEntities();
+                }
+                dumpReader = dumpXml;
+                filters.addRule(new SuffixFileFilter("xml"));
+            }
         }
-        
-        dumpReader.setFileFilter(filter);
+
+        dumpReader.setFileFilter(filters);
 
         dumpReader.open();
         dumpReader.skip(skip);

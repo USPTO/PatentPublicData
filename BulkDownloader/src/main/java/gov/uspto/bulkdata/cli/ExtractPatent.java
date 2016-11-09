@@ -21,6 +21,8 @@ import com.google.common.base.Preconditions;
 
 import gov.uspto.common.filter.FileFilterChain;
 import gov.uspto.common.filter.SuffixFilter;
+import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
@@ -172,22 +174,33 @@ public class ExtractPatent {
 		}
 
 		ExtractPatent extract = new ExtractPatent();
-		FileFilterChain filter = new FileFilterChain();
+		
+        FileFilterChain filters = new FileFilterChain();
 
-		DumpReader dumpReader;
-		if (!aps) {
-			DumpFileXml dumpXml = new DumpFileXml(inputFile);
-			if (addHtmlEntities) {
-				dumpXml.addHTMLEntities();
-			}
-			filter.addRule(new SuffixFileFilter("xml"));
-			dumpReader = dumpXml;
-		} else {
-			dumpReader = new DumpFileAps(inputFile);
-			// filter.addRule(new SuffixFileFilter("txt"));
-		}
+        DumpReader dumpReader;
+        if (aps) {
+            dumpReader = new DumpFileAps(inputFile);
+            //filter.addRule(new SuffixFileFilter("txt"));
+        } else {
+            PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(inputFile);
+            switch (patentDocFormat) {
+            case Greenbook:
+                aps = true;
+                dumpReader = new DumpFileAps(inputFile);
+                //filters.addRule(new PathFileFilter(""));
+                //filters.addRule(new SuffixFilter("txt"));
+                break;
+            default:
+                DumpFileXml dumpXml = new DumpFileXml(inputFile);
+                if (addHtmlEntities) {
+                    dumpXml.addHTMLEntities();
+                }
+                dumpReader = dumpXml;
+                filters.addRule(new SuffixFileFilter("xml"));
+            }
+        }
 
-		dumpReader.setFileFilter(filter);
+        dumpReader.setFileFilter(filters);
 
 		dumpReader.open();
 		dumpReader.skip(skip);
