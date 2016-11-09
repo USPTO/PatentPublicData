@@ -186,6 +186,7 @@ public class TransformerCli {
                             dumpReader.getCurrentRecCount());
                     LOGGER.trace("Patent Object: " + patent.toString());
                     write(patent, currentWriter);
+                    currentWriter.flush();
                     MDC.put("DOCID", "");
                 } catch (PatentReaderException e1) {
                     LOGGER.error("Patent Reader error: ", e1);
