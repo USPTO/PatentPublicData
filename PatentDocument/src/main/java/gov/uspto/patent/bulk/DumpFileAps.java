@@ -47,7 +47,12 @@ public class DumpFileAps extends DumpFile {
 			LOGGER.error("Error while reading file: {}:{}", super.getFile(), currentRecCount, e);
 		}
 
-		throw new NoSuchElementException();
+        if (content.length()==0){
+            return null;
+        }
+        else { 
+            return startTag + "\n" + content.toString();
+        }
 	}
 
 	@Override
