@@ -21,7 +21,7 @@ This source code is a work in progress and has not been fully vetted for a produ
 <li><b>Normalize and transform</b> Patent data before loading into a data resource</li>
 <li><b>Patent Claim Tree</b> to facilitate analysis</li>
 <li><b>Update Classifications</b> from <b><a href="https://bulkdata.uspto.gov/data2/patent/classification/cpc/">Master CPC File</a></b> (contains current CPC classification for patents starting a patent number 1)
-<li><b>Include CPC definitions</b> from <a href="http://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/Bulk.html">CPC Scheme</a></b></li>
+<li><b>Include classification definitions</b> from <a href="http://www.cooperativepatentclassification.org/cpcSchemeAndDefinitions/Bulk.html">CPC Scheme</a></b></li>
 <li><b>Build a corpus</b> using Corpus Builder which automates building a corpus by downloading and extracting patent/applications matching specified classifications, one bulk file at a time for a date range.</li>
 </ul>
 
