@@ -246,12 +246,20 @@ public class UspcClassification extends Classification {
 				if (frontRange.matches("^\\d+$") && backRange.matches("^\\d+$") && Integer.valueOf(frontRange) - 100 < Integer.valueOf(backRange) && Integer.valueOf(frontRange) < Integer.valueOf(backRange)){
 						Integer range1 = Integer.valueOf(frontRange);
 						Integer range2 = Integer.valueOf(backRange);
-						Iterator<Integer> range = (Iterator<Integer>) ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers()).iterator();
-						while(range.hasNext()){
-							String subRange = Strings.padStart(String.valueOf(range.next()), 3, '0');
-							subRange = Strings.padEnd(subRange, 9, '0');
-							subClassRange.add(subRange);
+
+						if (range2 - range1 > 0 && range2 - range1 < 100){
+							Iterator<Integer> range = (Iterator<Integer>) ContiguousSet.create(Range.closed(range1, range2), DiscreteDomain.integers()).iterator();
+							while(range.hasNext()){
+								String subRange = Strings.padStart(String.valueOf(range.next()), 3, '0');
+								subRange = Strings.padEnd(subRange, 9, '0');
+								subClassRange.add(subRange);
+							}
+						} else {
+							throw new ParseException(
+									"Failed to parse USPC Classification RANGE: '" + classificationStr + "' Range: '" + range1 + "-" + range2 + "'",
+									0);
 						}
+						
 				} else {
 					subClassRange.add(Strings.padEnd(rangeSubclass, 9, '0'));
 				}
