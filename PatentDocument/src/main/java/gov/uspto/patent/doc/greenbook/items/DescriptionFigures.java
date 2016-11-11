@@ -12,6 +12,12 @@ import org.slf4j.LoggerFactory;
 import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.model.Figure;
 
+/**
+ * DescriptionFigures, read Patent figures from Description Drawing Section.
+ *
+ * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ *
+ */
 public class DescriptionFigures extends ItemReader<List<Figure>>{
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionFigures.class);
 
@@ -30,29 +36,39 @@ public class DescriptionFigures extends ItemReader<List<Figure>>{
 		List<Node> paragraphNodes = itemNode.selectNodes("PAR");
 
 		for(Node paragraphN : paragraphNodes){
-			String ptext = paragraphN.getText();
-			
-			Matcher matchFig = PATENT_FIG.matcher(ptext);
-			if (matchFig.lookingAt()){
-				String id = matchFig.group(1);
-				String text = paragraphN.getText().substring(matchFig.end()+1);
-				Figure fig = new Figure(id, text);
-				figures.add(fig);
-			} else {
-				Matcher matchFigs = PATENT_FIGS.matcher(ptext);
-				if (matchFigs.lookingAt()){
-					String id = matchFigs.group(1);
-					String text = paragraphN.getText().substring(matchFigs.end()+1);
-					Figure fig = new Figure(id, text);
-					figures.add(fig);
-				} else {
-					if (ptext.matches("^FIG")){
-						LOGGER.warn("Unable to Parse Patent Figure ID: '" + paragraphN.getText());
-					}
-				}
-			}
+			String pargraphText = paragraphN.getText();
+			DescriptionFigures.findFigures(pargraphText, figures);
 		}
 
 		return figures;
+	}
+
+	public static void findFigures(String pargraphText, List<Figure> figureList){
+		Matcher matchFig = PATENT_FIG.matcher(pargraphText);
+		if (matchFig.lookingAt()){
+			String id = matchFig.group(1);
+			int end = matchFig.end();
+			if (!id.equals(pargraphText)){
+				String text = pargraphText.substring(end+1);
+				Figure fig = new Figure(text, id);
+				figureList.add(fig);
+			}
+
+		} else {
+			Matcher matchFigs = PATENT_FIGS.matcher(pargraphText);
+			if (matchFigs.lookingAt()){
+				String id = matchFigs.group(1);
+				int end = matchFig.end();
+				if (!id.equals(pargraphText)){
+					String text = pargraphText.substring(end+1);
+					Figure fig = new Figure(text, id);
+					figureList.add(fig);
+				}
+			} else {
+				if (pargraphText.matches("^FIG")){
+					LOGGER.warn("Unable to Parse Patent Figure ID: '" + pargraphText);
+				}
+			}
+		}
 	}
 }
