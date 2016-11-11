@@ -13,14 +13,17 @@ import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 
+/**
+ * Date Range includes the Start, the End Date, and all dates between.
+ */
 public class DateRange {
 
     private final LocalDate startDate;
     private final LocalDate endDate;
 
     public DateRange(Date startDate, Date endDate) {
-        this.startDate = Instant.ofEpochMilli(startDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-        this.endDate = Instant.ofEpochMilli(endDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        this.startDate = Instant.ofEpochMilli(startDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate().minusDays(1);
+        this.endDate = Instant.ofEpochMilli(endDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1);
     }
 
     public DateRange(LocalDate startDate, LocalDate endDate) {
