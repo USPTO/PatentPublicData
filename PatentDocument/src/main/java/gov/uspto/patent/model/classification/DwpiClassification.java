@@ -197,10 +197,10 @@ public class DwpiClassification extends Classification {
 			if (section.equals(dwpi.getSection()) 
 					&& subsection.equals(dwpi.getSubsection()) 
 					&& group.equals(dwpi.getGroup())
-					&& subdivision.equals(dwpi.getSubdivision())
+					&& subgroup.equals(dwpi.getSubgroup())
 					&& division.equals(dwpi.getDivision())
-					&& subdivision.equals(dwpi.getSubgroup()) 
-					&& extra.equals(dwpi.getDivision())){
+					&& subdivision.equals(dwpi.getSubdivision()) 
+					&& extra.equals(dwpi.getExtra())){
 				return true;
 			}
 		}
@@ -208,7 +208,7 @@ public class DwpiClassification extends Classification {
 			if (section.equals(dwpi.getSection()) 
 					&& subsection.equals(dwpi.getSubsection()) 
 					&& group.equals(dwpi.getGroup())
-					&& subdivision.equals(dwpi.getSubdivision())
+					&& subgroup.equals(dwpi.getSubgroup())
 					&& division.equals(dwpi.getDivision())
 					&& subdivision.equals(dwpi.getSubgroup())){
 					return true;
@@ -218,7 +218,7 @@ public class DwpiClassification extends Classification {
 			if (section.equals(dwpi.getSection()) 
 					&& subsection.equals(dwpi.getSubsection()) 
 					&& group.equals(dwpi.getGroup())
-					&& subdivision.equals(dwpi.getSubdivision())
+					&& subgroup.equals(dwpi.getSubgroup())
 					&& division.equals(dwpi.getDivision())){
 					return true;
 			}
@@ -227,7 +227,7 @@ public class DwpiClassification extends Classification {
 			if (section.equals(dwpi.getSection()) 
 					&& subsection.equals(dwpi.getSubsection()) 
 					&& group.equals(dwpi.getGroup())
-					&& subdivision.equals(dwpi.getSubdivision())){
+					&& subgroup.equals(dwpi.getSubgroup())){
 					return true;
 			}
 		}
