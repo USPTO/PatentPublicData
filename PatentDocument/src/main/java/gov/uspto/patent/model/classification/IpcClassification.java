@@ -140,18 +140,99 @@ public class IpcClassification extends Classification {
         return changed;
     }
 
+	/**
+	 * Classification depth 
+	 * 
+	 * (1=section, 2=mainClass, 3=subClass, 4=mainGroup, 5=subGroup)
+	 * 
+	 */
+	public int getDepth(){
+		int classDepth = 0;
+		if (subGroup != null && !subGroup.isEmpty()){
+			classDepth = 5;
+		}
+		else if (mainGroup != null && !mainGroup.isEmpty()){
+			classDepth = 4;
+		}
+		else if (subClass != null && !subClass.isEmpty()){
+			classDepth = 3;
+		}
+		else if (mainClass != null && mainClass.isEmpty()){
+			classDepth = 2;
+		}
+		else if (section != null && section.isEmpty()){
+			classDepth = 1;
+		}
+		return classDepth;
+	}
+
+	public boolean equalOrUnder(CpcClassification cpc){
+		if (cpc == null) {
+			return false;
+		}
+		int depth = getDepth();
+		if (depth == 5){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass()) 
+					&& subClass.equals(cpc.getSubClass()) 
+					&& mainGroup.equals(cpc.getMainGroup()) 
+					&& subGroup.equals(cpc.getSubGroup())){
+				return true;
+			}
+		}
+		else if (depth == 4){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass()) 
+					&& subClass.equals(cpc.getSubClass()) 
+					&& mainGroup.equals(cpc.getMainGroup())){
+					return true;
+			}
+		}
+		else if (depth == 3){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass()) 
+					&& subClass.equals(cpc.getSubClass())){
+					return true;
+			}
+		}
+		else if (depth == 2){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass())){
+					return true;
+			}
+		}
+		else if (depth == 1){
+			if (section.equals(cpc.getSection())){
+					return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final CpcClassification other = (CpcClassification) obj;
+		
+		if (other.getDepth() == getDepth() && equalOrUnder(other)){
+			return true;
+		}
+
+		return false;
+	}
+	
+
 	@Override
 	public String toString() {
-		return "IpcClassification["
-				+ "section=" + section
-				+ ", mainClass=" + mainClass
-				+ ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup
-				+ ", subGroup=" + subGroup
-				+ ", toText()=" + toText()
-				+ ", standardize()=" + standardize()
-				+ ", originalText=" + super.getText()
-				+ "]";
+		return "IpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", toText()=" + toText()
+				+ ", toTextNormalized()=" + toTextNormalized() + ", standardize()=" + standardize() + ", getDepth()="
+				+ getDepth() + ", originalText()=" + super.getText() + "]";
 	}
 
     /**

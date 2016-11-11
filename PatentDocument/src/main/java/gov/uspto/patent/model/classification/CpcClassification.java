@@ -221,42 +221,98 @@ public class CpcClassification extends Classification {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", isMainClassification="
-				+ isMainClassification + ", toFacet()=" + toFacet() + ", toText()=" + toText() + ", toTextNormalized()="
-				+ toTextNormalized() + ", standardize()=" + standardize() + ", originalText=" + super.getText() + "]";
+	/**
+	 * Classification depth 
+	 * 
+	 * (1=section, 2=mainclass, 3=subclass, 4=mainGroup, 5=subGroup)
+	 * 
+	 */
+	public int getDepth(){
+		int classDepth = 0;
+		if (subGroup != null && !subGroup.isEmpty()){
+			classDepth = 5;
+		}
+		else if (mainGroup != null && !mainGroup.isEmpty()){
+			classDepth = 4;
+		}
+		else if (subClass != null && !subClass.isEmpty()){
+			classDepth = 3;
+		}
+		else if (mainClass != null && !mainClass.isEmpty()){
+			classDepth = 2;
+		}
+		else if (section != null && !section.isEmpty()){
+			classDepth = 1;
+		}
+		return classDepth;
+	}
+
+	public boolean equalOrUnder(CpcClassification cpc){
+		if (cpc == null) {
+			return false;
+		}
+		int depth = getDepth();
+		if (depth == 5){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass()) 
+					&& subClass.equals(cpc.getSubClass()) 
+					&& mainGroup.equals(cpc.getMainGroup()) 
+					&& subGroup.equals(cpc.getSubGroup())){
+				return true;
+			}
+		}
+		else if (depth == 4){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass()) 
+					&& subClass.equals(cpc.getSubClass()) 
+					&& mainGroup.equals(cpc.getMainGroup())){
+					return true;
+			}
+		}
+		else if (depth == 3){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass()) 
+					&& subClass.equals(cpc.getSubClass())){
+					return true;
+			}
+		}
+		else if (depth == 2){
+			if (section.equals(cpc.getSection()) 
+					&& mainClass.equals(cpc.getMainClass())){
+					return true;
+			}
+		}
+		else if (depth == 1){
+			if (section.equals(cpc.getSection())){
+					return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
-			System.out.println("null");
 			return false;
 		}
 		if (getClass() != obj.getClass()) {
-			System.out.println("objClass");
 			return false;
 		}
 		final CpcClassification other = (CpcClassification) obj;
-		if ((this.section == null) ? (other.section != null) : !this.section.equals(other.section)) {
-			System.out.println("section");
-			return false;
-		} else if ((this.mainClass == null) ? (other.mainClass != null) : !this.mainClass.equals(other.mainClass)) {
-			System.out.println("mainclass");
-			return false;
-		} else if ((this.subClass == null) ? (other.subClass != null) : !this.subClass.equals(other.subClass)) {
-			System.out.println("subClass");
-			return false;
-		} else if ((this.mainGroup == null) ? (other.mainGroup != null) : !this.mainGroup.equals(other.mainGroup)) {
-			System.out.println("mainGroup");
-			return false;
-		} else if ((this.subGroup == null) ? (other.subGroup != null) : !this.subGroup.equals(other.subGroup)) {
-			System.out.println("subGroup");
-			return false;
+		
+		if (other.getDepth() == getDepth() && equalOrUnder(other)){
+			return true;
 		}
-		return true;
+
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", isMainClassification="
+				+ isMainClassification + ", toTextNormalized()=" + toTextNormalized() + ", standardize()="
+				+ standardize() + ", toText()=" + toText() + ", originalText()=" + super.getText() + "]";
 	}
 
 	/**

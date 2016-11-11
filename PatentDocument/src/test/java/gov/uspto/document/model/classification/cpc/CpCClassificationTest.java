@@ -1,6 +1,7 @@
 package gov.uspto.document.model.classification.cpc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -56,6 +57,20 @@ public class CpCClassificationTest {
 		Collections.sort(cpcClass);
 
 		assertEquals(Arrays.asList(expect), cpcClass);
+	}
+
+	@Test
+	public void testEquals() throws ParseException {
+		CpcClassification cpc1 = CpcClassification.fromText("D07B2201");
+		CpcClassification cpc2 = CpcClassification.fromText("D07B2201");
+		assertEquals(cpc1, cpc2);
+	}
+
+	@Test
+	public void testEqualsUnder() throws ParseException {
+		CpcClassification cpc1 = CpcClassification.fromText("D07B");
+		CpcClassification cpc2 = CpcClassification.fromText("D07B2201");
+		assertTrue(cpc1.equalOrUnder(cpc2));
 	}
 
 	@Test

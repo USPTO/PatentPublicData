@@ -38,9 +38,9 @@ import java.util.regex.Pattern;
  * 
  */
 public class DwpiClassification extends Classification {
+
 	private DWPISection section;
 	private String subsection;
-
 	private String group;
 	private String subgroup;
 	private String division;
@@ -54,7 +54,7 @@ public class DwpiClassification extends Classification {
 	private final static Pattern REGEX_LEN_8 = Pattern.compile("^([A-HJ-NPQS-X])(\\d{2})-([A-Z])(\\d{2})([A-Z])$"); // Section, Subsection, Group, Subgroup, division.
 	private final static Pattern REGEX_LEN_9 = Pattern.compile("^([A-HJ-NPQS-X])(\\d{2})-([A-Z])(\\d{2})([A-Z])(\\d)$"); // Section, Subsection, Group, Subgroup, division, subdivision.
 	private final static Pattern REGEX_LEN_10 = Pattern.compile("^([A-HJ-NPQS-X])(\\d{2})-([A-Z])(\\d{2})([A-Z])(\\d)([A-Z])$"); // Section, Subsection, Group, Subgroup, division, subdivision, extra letter.
-
+	
 	public DwpiClassification(String originalText) {
 		super(ClassificationType.DWPI, originalText);
 	}
@@ -152,6 +152,129 @@ public class DwpiClassification extends Classification {
 				
 				return sb.toString();
 		}
+	}
+
+	/**
+	 * Classification depth 
+	 * 
+	 * ( 1=section, 2=subsection, 3=group, 4=subGroup, 5=division, 6=subdivision, 7=extra)
+	 * 
+	 */
+	public int getDepth(){
+		int classDepth = 0;
+
+		if (extra != null && extra.isEmpty()){
+			classDepth = 7;
+		}
+		else if (subdivision != null && subdivision.isEmpty()){
+			classDepth = 6;
+		}
+		else if (division != null && !division.isEmpty()){
+			classDepth = 5;
+		}
+		else if (subgroup != null && !subgroup.isEmpty()){
+			classDepth = 4;
+		}
+		else if (group != null && !group.isEmpty()){
+			classDepth = 3;
+		}
+		else if (subsection != null && !subsection.isEmpty()){
+			classDepth = 2;
+		}
+		else if (section != null){
+			classDepth = 1;
+		}
+
+		return classDepth;
+	}
+
+	public boolean equalOrUnder(DwpiClassification dwpi){
+		if (dwpi == null) {
+			return false;
+		}
+		int depth = getDepth();
+		if (depth == 7){
+			if (section.equals(dwpi.getSection()) 
+					&& subsection.equals(dwpi.getSubsection()) 
+					&& group.equals(dwpi.getGroup())
+					&& subdivision.equals(dwpi.getSubdivision())
+					&& division.equals(dwpi.getDivision())
+					&& subdivision.equals(dwpi.getSubgroup()) 
+					&& extra.equals(dwpi.getDivision())){
+				return true;
+			}
+		}
+		else if (depth == 6){
+			if (section.equals(dwpi.getSection()) 
+					&& subsection.equals(dwpi.getSubsection()) 
+					&& group.equals(dwpi.getGroup())
+					&& subdivision.equals(dwpi.getSubdivision())
+					&& division.equals(dwpi.getDivision())
+					&& subdivision.equals(dwpi.getSubgroup())){
+					return true;
+			}
+		}
+		else if (depth == 5){
+			if (section.equals(dwpi.getSection()) 
+					&& subsection.equals(dwpi.getSubsection()) 
+					&& group.equals(dwpi.getGroup())
+					&& subdivision.equals(dwpi.getSubdivision())
+					&& division.equals(dwpi.getDivision())){
+					return true;
+			}
+		}
+		else if (depth == 4){
+			if (section.equals(dwpi.getSection()) 
+					&& subsection.equals(dwpi.getSubsection()) 
+					&& group.equals(dwpi.getGroup())
+					&& subdivision.equals(dwpi.getSubdivision())){
+					return true;
+			}
+		}
+		else if (depth == 3){
+			if (section.equals(dwpi.getSection()) 
+					&& subsection.equals(dwpi.getSubsection()) 
+					&& group.equals(dwpi.getGroup())){
+					return true;
+			}
+		}
+		else if (depth == 2){
+			if (section.equals(dwpi.getSection()) 
+					&& subsection.equals(dwpi.getSubsection())){
+					return true;
+			}
+		}
+		else if (depth == 1){
+			if (section.equals(dwpi.getSection())){
+					return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final DwpiClassification other = (DwpiClassification) obj;
+		
+		if (other.getDepth() == getDepth() && equalOrUnder(other)){
+			return true;
+		}
+
+		return false;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "DwpiClassification [section=" + section + ", subsection=" + subsection + ", group=" + group
+				+ ", subgroup=" + subgroup + ", division=" + division + ", subdivision=" + subdivision + ", extra="
+				+ extra + ", toText()=" + toText() + ", getDepth()=" + getDepth() + "]";
 	}
 
 	public static DwpiClassification fromText(final String classificationStr) throws ParseException {
