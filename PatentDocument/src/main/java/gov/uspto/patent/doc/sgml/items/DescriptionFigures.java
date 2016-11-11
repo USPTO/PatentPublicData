@@ -39,7 +39,7 @@ public class DescriptionFigures extends ItemReader<List<Figure>> {
 				String id = firstNode.getText();
 				String text = stb.toString().trim();
 
-				Figure fig = new Figure(id, text);
+				Figure fig = new Figure(text, id);
 				figures.add(fig);
 			}
 		}

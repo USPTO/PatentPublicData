@@ -28,7 +28,7 @@ public class DescriptionFigures extends ItemReader<List<Figure>> {
 				for (Node pWithFigN: figNodes){
 					String id = pWithFigN.selectSingleNode("figref").getText();
 					String text = pWithFigN.getText().trim();
-					Figure fig = new Figure(id, text);
+					Figure fig = new Figure(text, id);
 					figures.add(fig);
 				}
 

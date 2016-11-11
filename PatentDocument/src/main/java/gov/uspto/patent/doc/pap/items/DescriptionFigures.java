@@ -30,7 +30,7 @@ public class DescriptionFigures extends ItemReader<List<Figure>> {
 			if (figN != null && !figN.isEmpty()) {
 				String id = figN.get(0).getText();
 				String text = paragraphN.getText().trim();
-				Figure fig = new Figure(id, text);
+				Figure fig = new Figure(text, id);
 				figures.add(fig);
 			}
 		}
