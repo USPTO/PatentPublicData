@@ -72,17 +72,23 @@ public class DescriptionFigures extends ItemReader<List<Figure>> {
 				if (pargraphText.matches("^FIG")) {
 					LOGGER.warn("Unable to Parse Patent Figure ID: '" + pargraphText);
 				} else {
-					LOGGER.warn("2. Unable to Parse Patent Figure ID: '" + pargraphText);
+					LOGGER.trace("2. Unable to Parse Patent Figure ID: '" + pargraphText);
 				}
 			}
 		}
 
 		if (figure != null) {
+			/* Code correctly finds FIG refs which references another FIG ref; but not currently being utilized.
+			 * 
 			Matcher refFigMatcher = REF_FIGS.matcher(figText);
 			while(refFigMatcher.find()){
 				String id = refFigMatcher.group(1);
-				LOGGER.info("Found {} description mention another {}", figure.getIds().iterator().next(), id);
+				String mainId = figure.getIds().iterator().next();
+				if (!id.equals(mainId)){
+					LOGGER.info("Found {} description mention another {}", mainId, id);
+				}
 			}
+			*/
 
 			figureList.add(figure);
 		}
