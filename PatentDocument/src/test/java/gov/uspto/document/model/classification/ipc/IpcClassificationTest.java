@@ -17,6 +17,8 @@ public class IpcClassificationTest {
 	private static Map<String, String> validFromTo = new LinkedHashMap<String, String>();
 	static {
 		validFromTo.put("C 07D 4 3/02", "C07D 403/02");
+		validFromTo.put("H01S 3/00", "H01S 3/00");
+		validFromTo.put("A47L 700", "A47L 7/00");
 	}
 
 	@Test(expected = ParseException.class)

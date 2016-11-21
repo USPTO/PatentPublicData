@@ -30,8 +30,12 @@ import java.util.regex.Pattern;
  */
 public class IpcClassification extends Classification {
 	
-	private final static Pattern REGEX = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
+	private final static Pattern REGEX_OLD = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
 
+	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$");
+	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])(\\d\\d)$");
+	private final static Pattern REGEX_LEN4 = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])$");
+	
 	private String section;
 	private String mainClass;
 	private String subClass;
@@ -263,7 +267,7 @@ public class IpcClassification extends Classification {
 	 */
 	public static IpcClassification fromText(final String classificationStr) throws ParseException {
 
-		Matcher matcher = REGEX.matcher(classificationStr);
+		Matcher matcher = REGEX_OLD.matcher(classificationStr);
 		if ( matcher.matches() ){
 			String section = matcher.group(1);
 			String mainClass = matcher.group(2);
@@ -279,6 +283,49 @@ public class IpcClassification extends Classification {
 		    classification.setSubGroup(subGroup);
 
 		    return classification;
+		}
+
+		Matcher fullMatch = REGEX.matcher(classificationStr);
+		if (fullMatch.matches()) {
+			String section = fullMatch.group(1);
+			String mainClass = fullMatch.group(2);
+			String subClass = fullMatch.group(3);
+			String mainGroup = fullMatch.group(4);
+			String subGroup = fullMatch.group(5);
+
+			IpcClassification classification = new IpcClassification(classificationStr);
+			classification.setSection(section);
+			classification.setMainClass(mainClass);
+			classification.setSubClass(subClass);
+			classification.setMainGroup(mainGroup);
+			classification.setSubGroup(subGroup);
+
+			return classification;
+		} else if (classificationStr.length() == 3) {
+			Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
+			if (matchL3.matches()) {
+				String section = matchL3.group(1);
+				String mainClass = matchL3.group(2);
+				IpcClassification classification = new IpcClassification(classificationStr);
+				classification.setSection(section);
+				classification.setMainClass(mainClass);
+
+				return classification;
+			}
+		} else if (classificationStr.length() == 4) {
+			Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
+			if (matchL4.matches()) {
+				String section = matchL4.group(1);
+				String mainClass = matchL4.group(2);
+				String subClass = matchL4.group(3);
+
+				IpcClassification classification = new IpcClassification(classificationStr);
+				classification.setSection(section);
+				classification.setMainClass(mainClass);
+				classification.setSubClass(subClass);
+
+				return classification;
+			}
 		}
 		
 		throw new ParseException("Failed to regex parse IPC Classification: " + classificationStr, 0);

@@ -95,6 +95,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		if (ipcN != null) {
 			try {
 				String classStr = ipcN.getText().trim();
+				classStr = classStr.replaceAll("\\s+", " ");
 				IpcClassification ipc = IpcClassification.fromText(classStr);
 				ipc.setIsMainClassification(true);
 				return ipc;
