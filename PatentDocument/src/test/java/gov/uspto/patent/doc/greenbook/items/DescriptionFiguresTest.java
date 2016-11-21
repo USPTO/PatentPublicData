@@ -47,4 +47,16 @@ public class DescriptionFiguresTest {
 		DescriptionFigures.findFigures(pargraphText, figures);
 		assertTrue(figures.isEmpty());
 	}
+	
+	@Test
+	public void mentionalAnother() {
+		String pargraphText = "FIG. 3 is a cross-sectional view similar to that shown in FIG. 2 wherein the";
+		List<Figure> figures = new ArrayList<Figure>();
+		DescriptionFigures.findFigures(pargraphText, figures);
+		Figure fig1 = figures.get(0);
+		Set<String> ids = fig1.getIds();
+		String fig1Text = fig1.getRawText();
+		assertEquals("FIG. 3", ids.iterator().next());
+		assertEquals("is a cross-sectional view similar to that shown in FIG. 2 wherein the", fig1Text);
+	}
 }

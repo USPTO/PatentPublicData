@@ -18,11 +18,13 @@ import gov.uspto.patent.model.Figure;
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
-public class DescriptionFigures extends ItemReader<List<Figure>>{
+public class DescriptionFigures extends ItemReader<List<Figure>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionFigures.class);
 
 	private static final Pattern PATENT_FIG = Pattern.compile("^(FIG\\.? \\(?\\d{1,3}[A-Za-z]?\\)?)\\b");
-	private static final Pattern PATENT_FIGS = Pattern.compile("^(FIGS\\.? \\d{1,3}\\s?\\(?[A-Za-z]?\\)?(?:(?:\\s?\\-\\s?|, | and | to | through )\\d{0,3}\\(?[A-Za-z]?\\)?)+)\\b");
+	private static final Pattern PATENT_FIGS = Pattern.compile(
+			"^(FIGS\\.? \\d{1,3}\\s?\\(?[A-Za-z]?\\)?(?:(?:\\s?\\-\\s?|, | and | to | through )\\d{0,3}\\(?[A-Za-z]?\\)?)+)\\b");
+	private static final Pattern REF_FIGS = Pattern.compile("\\b(FIG\\.? \\(?\\d{1,3}[A-Za-z]?\\)?)\\b");
 
 	public DescriptionFigures(Node itemNode) {
 		super(itemNode);
@@ -35,7 +37,7 @@ public class DescriptionFigures extends ItemReader<List<Figure>>{
 		@SuppressWarnings("unchecked")
 		List<Node> paragraphNodes = itemNode.selectNodes("PAR");
 
-		for(Node paragraphN : paragraphNodes){
+		for (Node paragraphN : paragraphNodes) {
 			String pargraphText = paragraphN.getText();
 			DescriptionFigures.findFigures(pargraphText, figures);
 		}
@@ -43,32 +45,47 @@ public class DescriptionFigures extends ItemReader<List<Figure>>{
 		return figures;
 	}
 
-	public static void findFigures(String pargraphText, List<Figure> figureList){
-		Matcher matchFig = PATENT_FIG.matcher(pargraphText);
-		if (matchFig.lookingAt()){
-			String id = matchFig.group(1);
-			int end = matchFig.end();
-			if (!id.equals(pargraphText)){
-				String text = pargraphText.substring(end+1);
-				Figure fig = new Figure(text, id);
-				figureList.add(fig);
-			}
+	public static void findFigures(String pargraphText, List<Figure> figureList) {
+		Figure figure = null;
+		int figEnd = 0;
+		String figText = "";
 
+		Matcher matchFig = PATENT_FIG.matcher(pargraphText);
+		if (matchFig.lookingAt()) {
+			String id = matchFig.group(1);
+			if (!id.equals(pargraphText)) {
+				figEnd = matchFig.end();
+				figText = pargraphText.substring(figEnd + 1);
+				figure = new Figure(figText, id);
+			}
 		} else {
 			Matcher matchFigs = PATENT_FIGS.matcher(pargraphText);
-			if (matchFigs.lookingAt()){
+			if (matchFigs.lookingAt()) {
 				String id = matchFigs.group(1);
-				int end = matchFig.end();
-				if (!id.equals(pargraphText)){
-					String text = pargraphText.substring(end+1);
-					Figure fig = new Figure(text, id);
+				if (!id.equals(pargraphText)) {
+					figEnd = matchFigs.end();
+					figText = pargraphText.substring(figEnd + 1);
+					Figure fig = new Figure(figText, id);
 					figureList.add(fig);
 				}
 			} else {
-				if (pargraphText.matches("^FIG")){
+				if (pargraphText.matches("^FIG")) {
 					LOGGER.warn("Unable to Parse Patent Figure ID: '" + pargraphText);
+				} else {
+					LOGGER.warn("2. Unable to Parse Patent Figure ID: '" + pargraphText);
 				}
 			}
 		}
+
+		if (figure != null) {
+			Matcher refFigMatcher = REF_FIGS.matcher(figText);
+			while(refFigMatcher.find()){
+				String id = refFigMatcher.group(1);
+				LOGGER.info("Found {} description mention another {}", figure.getIds().iterator().next(), id);
+			}
+
+			figureList.add(figure);
+		}
+
 	}
 }
