@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.greenbook.fragments;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,13 +33,16 @@ import gov.uspto.patent.model.classification.UspcClassification;
  *<p><pre>
  *{@code
  *  <CLAS>
- *   <OCL>214450</OCL>
+ *   <OCL>2940207</OCL>
+ *   <XCL>188 795GE</XCL>
+ *   <XCL>2940213</XCL>
  *   <EDF>2</EDF>
- *   <ICL>B60R 904</ICL>
- *   <FSC>214</FSC>
- *   <FSS>450;517</FSS>
- *   <FSC>224</FSC>
- *   <FSS>42.03 R;42.1 R;42.1 H;42.1 F</FSS>
+ *   <ICL>B23P  700</ICL>
+ *   <ICL>B23P 1518</ICL>
+ *   <FSC>29</FSC>
+ *   <FSS>401 R;401 B;401 D;401 F</FSS>
+ *   <FSC>188</FSC>
+ *   <FSS>196 B;196 BA;79.5 K;79.5 GE;79.5 GC;79.5 GT;79.5 P;79.5 K</FSS>
  * </CLAS>
  *}
  *</pre></p>
@@ -65,11 +70,9 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 			if (uspc != null){
 				classifications.add(uspc);
 			}
-			
-			IpcClassification ipc = getIPC(classN);
-			if (ipc != null){
-				classifications.add(ipc);
-			}
+
+			Set<IpcClassification> ipcClasses = getIPC(classN);
+			classifications.addAll(ipcClasses);
 		}
 
 		return classifications;
@@ -90,19 +93,23 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		return null;
 	}
 
-	public IpcClassification getIPC(Node classN) {
-		Node ipcN = classN.selectSingleNode("ICL");
-		if (ipcN != null) {
-			try {
-				String classStr = ipcN.getText().trim();
-				classStr = classStr.replaceAll("\\s+", " ");
-				IpcClassification ipc = IpcClassification.fromText(classStr);
-				ipc.setIsMainClassification(true);
-				return ipc;
-			} catch (ParseException e) {
-				LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), classN.asXML());
-			}
+	public Set<IpcClassification> getIPC(Node classN) {
+	    Set<IpcClassification> ipcClasses = new HashSet<IpcClassification>();
+		List<Node> ipcNs = classN.selectNodes("ICL");
+		
+		for(Node ipcN: ipcNs){
+    		if (ipcN != null) {
+    			try {
+    				String classStr = ipcN.getText().trim();
+    				classStr = classStr.replaceAll("\\s+", " ");
+    				IpcClassification ipc = IpcClassification.fromText(classStr);
+    				//ipc.setIsMainClassification(true);
+    				ipcClasses.add(ipc);
+    			} catch (ParseException e) {
+    				LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), classN.asXML());
+    			}
+    		}
 		}
-		return null;
+		return ipcClasses;
 	}
 }
