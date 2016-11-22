@@ -14,6 +14,7 @@ import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.keyvalue.KvParser;
 import gov.uspto.patent.PatentReaderException;
+import gov.uspto.patent.PatentValidationError;
 import gov.uspto.patent.doc.greenbook.fragments.AbstractTextNode;
 import gov.uspto.patent.doc.greenbook.fragments.AgentNode;
 import gov.uspto.patent.doc.greenbook.fragments.ApplicationIdNode;
@@ -25,12 +26,14 @@ import gov.uspto.patent.doc.greenbook.fragments.DescriptionNode;
 import gov.uspto.patent.doc.greenbook.fragments.DocumentIdNode;
 import gov.uspto.patent.doc.greenbook.fragments.ExaminerNode;
 import gov.uspto.patent.doc.greenbook.fragments.InventorNode;
+import gov.uspto.patent.doc.greenbook.fragments.PatentTypeNode;
 import gov.uspto.patent.doc.greenbook.fragments.PctRegionalIdNode;
 import gov.uspto.patent.doc.greenbook.fragments.RelatedIdNode;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.ClaimTreeBuilder;
+import gov.uspto.patent.model.DescSection;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
@@ -42,6 +45,12 @@ import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Examiner;
 import gov.uspto.patent.model.entity.Inventor;
+import gov.uspto.patent.validate.ClaimRule;
+import gov.uspto.patent.validate.ClassificationRule;
+import gov.uspto.patent.validate.DescriptionFiguresRule;
+import gov.uspto.patent.validate.PatentValidator;
+import gov.uspto.patent.validate.AbstractRule;
+import gov.uspto.patent.validate.Validator;
 
 /**
  * 
@@ -82,11 +91,7 @@ public class Greenbook extends KvParser {
     public Patent parse(Document document) throws PatentReaderException {
 
         DocumentId documentId = new DocumentIdNode(document).read();
-        PatentType patentType = null;
-        if (documentId != null) {
-            MDC.put("DOCID", documentId.toText());
-            patentType = UsKindCode2PatentType.getInstance().lookupPatentType(documentId.getKindCode());
-        }
+        PatentType patentType = new PatentTypeNode(document).read();
 
         DocumentId applicationId = new ApplicationIdNode(document).read();
 
@@ -112,6 +117,7 @@ public class Greenbook extends KvParser {
         Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
         Description description = new DescriptionNode(document, textProcessor).read();
         List<Claim> claims = new ClaimNode(document, textProcessor).read();
+
         new ClaimTreeBuilder(claims).build();
 
         /*
@@ -188,13 +194,6 @@ public class Greenbook extends KvParser {
                 System.out.println(count++ + " " + subfile.getAbsolutePath());
                 Greenbook greenbook = new Greenbook();
                 Patent patent = greenbook.parse(subfile);
-                if (patent.getAbstract() == null || patent.getAbstract().getPlainText().length() < 90) {
-                    System.err.println("Abstract too small.");
-                }
-                if (patent.getDescription() == null || patent.getDescription().getAllPlainText().length() < 400) {
-                    System.err.println("Description to small.");
-                }
-                //System.out.println(patent.toString());
             }
         } else {
             Greenbook greenbook = new Greenbook();
