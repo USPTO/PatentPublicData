@@ -14,7 +14,6 @@ import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.keyvalue.KvParser;
 import gov.uspto.patent.PatentReaderException;
-import gov.uspto.patent.PatentValidationError;
 import gov.uspto.patent.doc.greenbook.fragments.AbstractTextNode;
 import gov.uspto.patent.doc.greenbook.fragments.AgentNode;
 import gov.uspto.patent.doc.greenbook.fragments.ApplicationIdNode;
@@ -91,6 +90,10 @@ public class Greenbook extends KvParser {
     public Patent parse(Document document) throws PatentReaderException {
 
         DocumentId documentId = new DocumentIdNode(document).read();
+        if (documentId != null) {
+            MDC.put("DOCID", documentId.toText());
+        }
+
         PatentType patentType = new PatentTypeNode(document).read();
 
         DocumentId applicationId = new ApplicationIdNode(document).read();
