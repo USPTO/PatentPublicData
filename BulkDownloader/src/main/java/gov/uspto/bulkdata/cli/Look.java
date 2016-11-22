@@ -100,11 +100,13 @@ public class Look {
                 break;
             }
 
-            try (StringReader rawText = new StringReader(rawDocStr)) {
-                Patent patent = patentReader.read(rawText);
-                if (patent.getDocumentId().toText().equals(docId)) {
-                    show(patent, fields, writer);
-                    break;
+            if (rawDocStr != null){
+                try (StringReader rawText = new StringReader(rawDocStr)) {
+                    Patent patent = patentReader.read(rawText);
+                    if (patent.getDocumentId().toText().equals(docId)) {
+                        show(patent, fields, writer);
+                        break;
+                    }
                 }
             }
         }

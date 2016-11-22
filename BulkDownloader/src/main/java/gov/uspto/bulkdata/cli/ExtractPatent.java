@@ -60,9 +60,11 @@ public class ExtractPatent {
 				break;
 			}
 
-			try (StringReader rawText = new StringReader(xmlDocStr)) {
-				Patent patent = patentReader.read(rawText);
-				write(xmlDocStr, outdir, patent.getDocumentId().toText(), isAps);
+			if (xmlDocStr != null){
+				try (StringReader rawText = new StringReader(xmlDocStr)) {
+					Patent patent = patentReader.read(rawText);
+					write(xmlDocStr, outdir, patent.getDocumentId().toText(), isAps);
+				}
 			}
 
 			// LOGGER.info(xmlDocStr);
