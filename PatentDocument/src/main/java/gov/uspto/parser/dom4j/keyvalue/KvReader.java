@@ -99,6 +99,10 @@ public class KvReader {
             }
         }
 
+        if (currentSection != rootNode) {
+            rootNode.add(currentSection);
+        }
+
         return document;
     }
 
