@@ -1,4 +1,4 @@
-package gov.uspto.document.model.classification.uspc;
+package gov.uspto.document.model.classification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Sets;
 
+import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
 public class UspcClassificationTest {
@@ -32,6 +33,7 @@ public class UspcClassificationTest {
 		validFromTo.put("141 10", "141/010000000");
 		validFromTo.put("141390", "141/390000000");
 		validFromTo.put("PLT101", "PLT/101000000");
+		validFromTo.put("Plt101", "PLT/101000000");
 
 		validFromTo.put("337  2 2902", "337/002029020");
 		validFromTo.put(" 47  101 R", "047/001010R00");
@@ -48,13 +50,45 @@ public class UspcClassificationTest {
 		validFromTo.put("438FOR 363-FOR 385", "438/FOR036300,FOR038500"); // range.
 		validFromTo.put("200 6145 R- 6145 M", "200/061450M00,061450R00"); // range.
 		
+		//validFromTo.put("188 79.5GE", "188/79.5GE");
+		
 		//validFromTo.put("2989003-890054", "298/9003,"); // range.
+	}
+
+	@Test(expected = ParseException.class)
+	public void failLongRange() throws ParseException {
+		UspcClassification.fromText("2989003-890054"); // range too long
 	}
 
 	@Test(expected = ParseException.class)
 	public void failBlank() throws ParseException {
 		UspcClassification.fromText("a");
 	}
+
+	/*
+	@Test
+	public void testEquals() throws ParseException {
+		UspcClassification uspc1 = UspcClassification.fromText(" D2907");
+		UspcClassification uspc2 = UspcClassification.fromText(" D2907");
+		assertEquals(uspc1, uspc2);
+	}
+
+	@Test
+	public void testEqualsUnder() throws ParseException {
+		// D14/314 is subclass of D14/300
+		UspcClassification uspc1 = UspcClassification.fromText("D14300");
+		UspcClassification uspc2 = UspcClassification.fromText("D14314");
+		assertTrue(uspc1.equalOrUnder(uspc2));
+	}
+	
+	@Test
+	public void testEqualsUnder2() throws ParseException {
+		// 417/161.1A
+		UspcClassification uspc1 = UspcClassification.fromText("417160");
+		UspcClassification uspc2 = UspcClassification.fromText("417161.1A");
+		assertTrue(uspc1.equalOrUnder(uspc2));
+	}
+	*/
 
 	@Test
 	public void validParseCheck() throws ParseException {

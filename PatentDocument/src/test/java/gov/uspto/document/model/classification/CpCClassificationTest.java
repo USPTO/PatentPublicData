@@ -1,4 +1,4 @@
-package gov.uspto.document.model.classification.cpc;
+package gov.uspto.document.model.classification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
