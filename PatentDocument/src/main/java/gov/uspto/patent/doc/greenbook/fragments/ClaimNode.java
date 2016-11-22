@@ -17,7 +17,7 @@ import gov.uspto.patent.model.ClaimType;
 
 public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 
-	private static final String CLAIM_CHILDREN_PATH = "/DOCUMENT/CLMS/*";
+	private static final String CLAIM_CHILDREN_PATH = "/DOCUMENT/CLMS/*|/DOCUMENT/DCLM/*";
 
 	// REGEX to Remove number in front of sentence.
 	private static final Pattern LEADING_NUM = Pattern.compile("^[1-9][0-9]?\\.?\\s+(?=[A-Z])");
@@ -30,13 +30,14 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 	@Override
 	public List<Claim> read() {
 		List<Claim> claims = new ArrayList<Claim>();
-
+		
 		@SuppressWarnings("unchecked")
 		List<Node> childNodes = document.selectNodes(CLAIM_CHILDREN_PATH);
 
 		String currentClaimNum = "";
 		StringBuilder stb = new StringBuilder();
 		for (Node childN : childNodes) {
+			
 			if (childN.getName().equals("NUM")) {
 				// Close off claim.
 				if (!currentClaimNum.equals("")) {
