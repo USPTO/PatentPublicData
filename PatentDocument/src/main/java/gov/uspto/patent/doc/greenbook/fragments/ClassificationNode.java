@@ -126,7 +126,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
     						 */
     						LocarnoClassification locarno = LocarnoClassification.fromText(classStr);
     						ipcClasses.add(locarno);
-    						LOGGER.info("Classification: {}", locarno);
 						} catch (ParseException e1) {
 							LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), classN.asXML());
 						}
