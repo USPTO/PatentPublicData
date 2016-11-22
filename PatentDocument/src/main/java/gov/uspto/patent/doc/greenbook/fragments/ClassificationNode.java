@@ -1,11 +1,11 @@
 package gov.uspto.patent.doc.greenbook.fragments;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.IpcClassification;
+import gov.uspto.patent.model.classification.LocarnoClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
 /**
@@ -55,6 +56,14 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 
 	private static final String FRAGMENT_PATH = "/DOCUMENT/CLAS";
 
+	/*
+	 *  IPC Classification for Design Patents:
+	 *  Jan  5, 1971 through March 6, 1984 with leading "D" then 4 numeric.
+	 *  Mar 13, 1984 through Apil 29, 1997 no classification.
+	 *  May 6, 1997 use of LOCARNO Classification
+	 */
+	private static final Pattern DESIGN_ICL_PATTERN = Pattern.compile("^D[0-9]{4}$");
+
 	public ClassificationNode(Document document) {
 		super(document);
 	}
@@ -71,7 +80,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 				classifications.add(uspc);
 			}
 
-			Set<IpcClassification> ipcClasses = getIPC(classN);
+			Set<Classification> ipcClasses = getIPC(classN);
 			classifications.addAll(ipcClasses);
 		}
 
@@ -93,23 +102,39 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		return null;
 	}
 
-	public Set<IpcClassification> getIPC(Node classN) {
-	    Set<IpcClassification> ipcClasses = new HashSet<IpcClassification>();
+	public Set<Classification> getIPC(Node classN) {
+	    Set<Classification> ipcClasses = new HashSet<Classification>();
 		List<Node> ipcNs = classN.selectNodes("ICL");
-		
+
 		for(Node ipcN: ipcNs){
     		if (ipcN != null) {
+				String classStr = ipcN.getText().trim();
+				classStr = classStr.replaceAll("\\s+", " ");
     			try {
-    				String classStr = ipcN.getText().trim();
-    				classStr = classStr.replaceAll("\\s+", " ");
     				IpcClassification ipc = IpcClassification.fromText(classStr);
     				//ipc.setIsMainClassification(true);
     				ipcClasses.add(ipc);
     			} catch (ParseException e) {
-    				LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), classN.asXML());
+    				if (DESIGN_ICL_PATTERN.matcher(classStr).matches()){
+    					// FIXME.. implement.
+    					LOGGER.warn("IPC DESIGN CLASS: {}", classStr);
+    				} else {
+    					try {
+    						/*
+    						 * USPTO Design Patents started LocarnoClassification for International Classification May 6, 1997; only 1 per design patent.
+    						 * US Design Patents are also assigned USPC Classifications. 
+    						 */
+    						LocarnoClassification locarno = LocarnoClassification.fromText(classStr);
+    						ipcClasses.add(locarno);
+    						LOGGER.info("Classification: {}", locarno);
+						} catch (ParseException e1) {
+							LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), classN.asXML());
+						}
+    				}
     			}
     		}
 		}
+
 		return ipcClasses;
 	}
 }
