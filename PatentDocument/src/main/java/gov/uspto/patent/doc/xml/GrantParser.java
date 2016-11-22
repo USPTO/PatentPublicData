@@ -22,6 +22,7 @@ import gov.uspto.patent.doc.xml.fragments.ApplicationIdNode;
 import gov.uspto.patent.doc.xml.fragments.AssigneeNode;
 import gov.uspto.patent.doc.xml.fragments.CitationNode;
 import gov.uspto.patent.doc.xml.fragments.ClaimNode;
+import gov.uspto.patent.doc.xml.fragments.ClassificationNode;
 import gov.uspto.patent.doc.xml.fragments.ClassificationSearchNode;
 import gov.uspto.patent.doc.xml.fragments.DescriptionNode;
 import gov.uspto.patent.doc.xml.fragments.ExaminerNode;
@@ -88,7 +89,8 @@ public class GrantParser extends Dom4JParser {
         List<Assignee> assignees = new AssigneeNode(document).read();
 
         List<Citation> citations = new CitationNode(document).read();
-        Set<Classification> classifications = new ClassificationSearchNode(document).read();
+        Set<Classification> classifications = new ClassificationNode(document).read();
+        //Set<Classification> searchClassifications = new ClassificationSearchNode(document).read(); // TODO integrate search classifications.
 
         /*
          * Formated Text

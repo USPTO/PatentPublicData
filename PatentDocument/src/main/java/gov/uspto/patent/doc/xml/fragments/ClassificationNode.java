@@ -10,10 +10,12 @@ import org.dom4j.Node;
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.doc.xml.items.ClassificationCpcNode;
 import gov.uspto.patent.doc.xml.items.ClassificationIPCNode;
+import gov.uspto.patent.doc.xml.items.ClassificationLocarnoNode;
 import gov.uspto.patent.doc.xml.items.ClassificationNationalNode;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
+import gov.uspto.patent.model.classification.LocarnoClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
 public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
@@ -21,6 +23,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
     private static final String IPC_PATH = "//classification-ipc";
     private static final String CPC_PATH = "//classifications-cpc"; // has sub classification-cpc
     private static final String USPC_PATH = "//classification-national";
+    private static final String LOCARNO_PATH = "//classification-locarno";
 
     public ClassificationNode(Document document) {
         super(document);
@@ -72,6 +75,15 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
         List<Node> ipc2 = document.selectNodes(IPC_PATH2);
         for (Node ipclass : ipc2) {
             IpcClassification classification = (IpcClassification) new ClassificationIPCNode(ipclass).read();
+            if (classification != null) {
+                classifications.add(classification);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Node> locarnos = document.selectNodes(LOCARNO_PATH);
+        for (Node locarnoClass : locarnos) {
+            LocarnoClassification classification = (LocarnoClassification) new ClassificationLocarnoNode(locarnoClass).read();
             if (classification != null) {
                 classifications.add(classification);
             }
