@@ -39,6 +39,12 @@ public enum ClassificationType {
 	DWPI("Derwent World Patent Index"),
 
 	/*
+	 * International classification used for the purposes of the registration of industrial designs
+	 * adopted October 8, 1968
+	 */
+	LOCARNO("Locarno Classification"),
+
+	/*
 	 * Unknown.
 	 */
 	UNKNOWN("Unkown");
