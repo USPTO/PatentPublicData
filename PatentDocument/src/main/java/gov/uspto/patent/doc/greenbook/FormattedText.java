@@ -14,6 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.safety.Whitelist;
@@ -36,7 +37,7 @@ public class FormattedText implements TextProcessor {
     private static final Pattern PATENT_FIG = Pattern
             .compile("\\bFIGS?. ([0-30][()A-z]*(?:(?: to |-)[0-30][()A-z]*)?)\\b");
 
-    private static final String[] HTML_WHITELIST = new String[] { "p", "h2", "table", "tr", "td", "a" }; // "ul", "li"
+    private static final String[] HTML_WHITELIST = new String[] { "p", "h2", "table", "tr", "td", "a", "li" }; // "ul", "li"
     private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref" };
     
     private static final Map<String, String> FREETEXT_REPLACE_DEFAULT = new HashMap<String, String>();
@@ -76,6 +77,9 @@ public class FormattedText implements TextProcessor {
         }
 
         jsoupDoc.select("PAR").prepend("\\n    ");
+        jsoupDoc.select("PA1").prepend("\\n        ");
+        jsoupDoc.select("PA2").prepend("\\n            ");
+        jsoupDoc.select("PAL").prepend("\\n   * ");
 
         /*
          * Remove Elements.
@@ -107,6 +111,10 @@ public class FormattedText implements TextProcessor {
 
         // Rename all "para" tags to "p".
         jsoupDoc.select("PAR").tagName("p");
+        jsoupDoc.select("PA1").tagName("p");
+        jsoupDoc.select("PA2").tagName("p");
+
+        jsoupDoc.select("PAL").tagName("li");
         jsoupDoc.select("TBL").tagName("table");
 
         String textStr = jsoupDoc.html();
