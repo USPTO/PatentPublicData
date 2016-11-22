@@ -198,7 +198,7 @@ public class UspcClassification extends Classification {
 			return null;
 		}
 
-		String input = classificationStr.replace(' ', '0');
+		String input = classificationStr.toUpperCase().replace(' ', '0');
 
 		// Match USPC Classification Range.
 		Matcher rangeMatcher = RANGE_REGEX.matcher(input);
