@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import gov.uspto.patent.PatentValidationError;
 import gov.uspto.patent.model.Patent;
 
 /**
