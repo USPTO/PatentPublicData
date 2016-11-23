@@ -1,15 +1,8 @@
 package gov.uspto.patent.doc.pap;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
-import org.dom4j.DocumentException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Document.OutputSettings;
@@ -19,15 +12,12 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
-import org.xml.sax.SAXException;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableSet;
 
-import gov.uspto.patent.FreetextConfig;
 import gov.uspto.patent.TextProcessor;
-import gov.uspto.patent.FreetextConfig.FieldType;
-import gov.uspto.patent.mathml.MathML;
+import gov.uspto.patent.doc.simplehtml.FreetextConfig;
+import gov.uspto.patent.doc.simplehtml.HtmlToPlainText;
 import gov.uspto.patent.mathml.MathmlEscaper;
 
 /**
@@ -43,109 +33,14 @@ public class FormattedText implements TextProcessor {
     private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "format",
             "type" };
 
-    public static final ImmutableSet<String> HEADER_ELEMENTS = ImmutableSet.of("heading");
-    public static final ImmutableSet<String> TABLE_ELEMENTS = ImmutableSet.of("tr", "entry", "row", "table");
-    public static final ImmutableSet<String> LIST_ELEMENTS = ImmutableSet.of("ul", "ol", "li", "dl", "dt", "dd");
-    
-    private static final Map<String, String> FREETEXT_REPLACE_DEFAULT = new HashMap<String, String>();
-    static {
-        FREETEXT_REPLACE_DEFAULT.put("cross-reference", "Patent-Figure");
-        FREETEXT_REPLACE_DEFAULT.put("dependent-claim-reference", "Patent-Claim");
-    }
+	@Override
+	public String getPlainText(String rawText, FreetextConfig textConfig) {
+		String simpleHtml = getSimpleHtml(rawText);
+		Document simpleDoc = Jsoup.parse(simpleHtml, "", Parser.xmlParser());
 
-    private static final Collection<String> FREETEXT_REMOVE_DEFAULT = new HashSet<String>();
-    static {
-        FREETEXT_REMOVE_DEFAULT.add("cross-reference-to-related-applications");
-        FREETEXT_REMOVE_DEFAULT.add("crossref");
-        FREETEXT_REMOVE_DEFAULT.add("paragraph number:first-child"); // Remove Paragraph Numbers.
-    }
-
-    @Override
-    public String getPlainText(String rawXmlText, FreetextConfig textConfig) {
-        Document jsoupDoc = Jsoup.parse(rawXmlText, "", Parser.xmlParser());
-
-        Collection<String> removeEls = !textConfig.getRemoveElements().isEmpty() ? textConfig.getRemoveElements()
-                : FREETEXT_REMOVE_DEFAULT;
-        
-        Map<String, String> replacEls = !textConfig.getReplaceElements().isEmpty() ? textConfig.getReplaceElements()
-                : FREETEXT_REPLACE_DEFAULT;
-        for (String xmlElementName : replacEls.keySet()) {
-            for (Element element : jsoupDoc.select(xmlElementName)) {
-                element.replaceWith(new TextNode(replacEls.get(xmlElementName), null));
-            }
-        }
-
-        // Remove first paragraph in drawing description if it does not have a figref.
-        for (Element element : jsoupDoc.select("brief-description-of-drawings section paragraph:first-child")) {
-            if (element.select(":has(cross-reference)").isEmpty()) {
-                //System.err.println("Drawing Description without Patent-Figure" + element.html());
-                element.remove();
-            }
-        }
-
-        if (textConfig.keepType(FieldType.HEADER)) {
-            jsoupDoc.select("heading").prepend("\\n").append("\\n");
-        } else {
-            removeEls.addAll(HEADER_ELEMENTS);
-        }
-
-        if (textConfig.keepType(FieldType.TABLE)) {
-            jsoupDoc.select("table").prepend("\\n").append("\\n");
-            jsoupDoc.select("row").append("\\n");
-            jsoupDoc.select("entry").append(" | ");
-        } else {
-            removeEls.addAll(TABLE_ELEMENTS);
-        }
-
-        if (textConfig.keepType(FieldType.LIST)) {
-            jsoupDoc.select("ul").append("\\n\\t");
-            jsoupDoc.select("ol").append("\\n\\t");
-            jsoupDoc.select("li").append("\\n * ");
-        } else {
-            removeEls.addAll(LIST_ELEMENTS);
-        }
-
-        if (textConfig.keepType(FieldType.MATHML)) {
-            /*
-             * MathML in string form.
-             */
-            for (Element element : jsoupDoc.select("math")) {
-                Reader reader = new StringReader(element.outerHtml());
-                try {
-                    MathML mathml = MathML.read(reader);
-                    String stringForm = mathml.getStringForm();
-                    element.replaceWith(new TextNode(stringForm, null));
-                } catch (SAXException | DocumentException e) {
-                    //LOGGER.error("");
-                }
-            }
-        }
-
-        jsoupDoc.select("section").prepend("\\n ---------------- \n").append("\\n");
-        jsoupDoc.select("paragraph").prepend("\\n    ");
-        //jsoupDoc.select("claim-text").prepend("\\n * ");
-        jsoupDoc.select("subscript").prepend("_");
-        jsoupDoc.select("superscript").prepend("^");
-
-        /*
-         * remove elements
-         */
-        for (String xmlElementName : removeEls) {
-            jsoupDoc.select(xmlElementName).remove();
-        }
-        
-        String textStr = jsoupDoc.html();
-        textStr = textStr.replaceAll("\\\\n", "\n");
-
-        OutputSettings outSettings = new Document.OutputSettings();
-        outSettings.charset(Charsets.UTF_8);
-        outSettings.prettyPrint(false);
-        outSettings.escapeMode(EscapeMode.extended);
-
-        String fieldTextCleaned = Jsoup.clean(textStr, "", Whitelist.none(), outSettings);
-
-        return fieldTextCleaned;
-    }
+		HtmlToPlainText htmlConvert = new HtmlToPlainText(textConfig);
+		return htmlConvert.getPlainText(simpleDoc);
+	}
 
     @Override
     public String getSimpleHtml(String rawText) {

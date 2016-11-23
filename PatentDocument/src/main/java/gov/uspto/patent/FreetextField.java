@@ -1,5 +1,7 @@
 package gov.uspto.patent;
 
+import gov.uspto.patent.doc.simplehtml.FreetextConfig;
+
 public abstract class FreetextField implements TextField {
 
     private TextProcessor textProcessor;
@@ -22,7 +24,7 @@ public abstract class FreetextField implements TextField {
     }
 
     public String getPlainText() {
-        return textProcessor.getPlainText(getRawText(), new FreetextConfig());
+        return textProcessor.getPlainText(getRawText(), FreetextConfig.getDefault());
     }
 
     public String getPlainText(FreetextConfig textConfig) {

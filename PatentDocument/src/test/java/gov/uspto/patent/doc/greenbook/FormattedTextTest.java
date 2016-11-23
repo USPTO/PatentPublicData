@@ -36,10 +36,13 @@ public class FormattedTextTest {
                 "PAR  <a class=\"figref\">FIG. 3A</a> is a perspective view");
         validFromToHTML.put("PAR  FIG. 1a-1c is a side view", "PAR  <a class=\"figref\">FIG. 1a-1c</a> is a side view");
         validFromToHTML.put("PAR  FIGS. 1-2 are top views", "PAR  <a class=\"figref\">FIGS. 1-2</a> are top views");
-        //validFromTo.put("illustrated in FIGS. 2 to 5.", "illustrated in Patent-Figure.");
-        //validFromTo.put("as shown in FIG. 1(b) and may be", "as shown in Patent-Figure and may be");
-        //validFromTo.put("PAR  FIGS. 1(a) and 1(b) are graphs showing", "PAR  Patent-Figure are graphs showing");
-        //validFromTo.put("current shown in FIG. 1(a) is", "current shown in Patent-Figure is");
+        validFromToHTML.put("FIG. 4 is a schematic representation", "<a class=\"figref\">FIG. 4</a> is a schematic representation");
+        validFromToHTML.put("FIGS. 5A and 5B together comprise", "<a class=\"figref\">FIGS. 5A and 5B</a> together comprise");
+        validFromToHTML.put("illustrated in FIGS. 2 to 5.", "illustrated in <a class=\"figref\">FIGS. 2 to 5</a>.");
+        
+        //validFromToHTML.put("as shown in FIG. 1(b) and may be", "as shown in <a class=\"figref\">FIG. 1(b)</a> and may be");
+        //validFromToHTML.put("PAR  FIGS. 1(a) and 1(b) are graphs showing", "PAR  <a class=\"figref\">FIGS. 1(a) and 1(b)</a> are graphs showing");
+        validFromToHTML.put("current shown in FIG. 1(a) is", "current shown in <a class=\"figref\">FIG. 1(a)</a> is");
     }
 
     @Test

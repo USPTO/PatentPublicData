@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import gov.uspto.patent.FreetextConfig;
-import gov.uspto.patent.FreetextConfig.FieldType;
+import gov.uspto.patent.doc.simplehtml.FreetextConfig;
+import gov.uspto.patent.doc.simplehtml.HtmlFieldType;
 import gov.uspto.patent.doc.xml.FormattedText;
 
 public class FormattedTextTest {
@@ -62,13 +62,10 @@ public class FormattedTextTest {
                 "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>&InvisibleTimes;</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>");
         stb.append("</maths></p>");
 
-        StringBuilder expectStb = new StringBuilder();
-        expectStb.append("   \n SECTION TITLE\n \n");
-        expectStb.append("  \n");
-        String expect = expectStb.toString();
+        String expect = "\nSECTION TITLE\n\n\n";
 
         FreetextConfig textConfig = new FreetextConfig();
-        textConfig.remove(FieldType.MATHML);
+        textConfig.remove(HtmlFieldType.MATHML);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
         assertEquals(expect, actual);
@@ -82,13 +79,10 @@ public class FormattedTextTest {
         stb.append("<p id=\"h-1\">SECTION TITLE</p>");
         stb.append("<p>Section Text here</p>");
 
-        StringBuilder expectStb = new StringBuilder();
-        expectStb.append("   \n");
-        expectStb.append(" Section Text here \n");
-        String expect = expectStb.toString();
+        String expect = "\nSection Text here\n";
 
         FreetextConfig textConfig = new FreetextConfig();
-        textConfig.remove(FieldType.HEADER);
+        textConfig.remove(HtmlFieldType.HEADER);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
         assertEquals(expect, actual);
@@ -103,11 +97,11 @@ public class FormattedTextTest {
         stb.append("<p><table><row><entry>text</entry></row></table></p>");
 
         StringBuilder expectStb = new StringBuilder();
-        expectStb.append("   \n SECTION TITLE\n \n  \n  \n");
+        expectStb.append("\nSECTION TITLE\n\n\n\n");
         String expect = expectStb.toString();
 
         FreetextConfig textConfig = new FreetextConfig();
-        textConfig.remove(FieldType.TABLE);
+        textConfig.remove(HtmlFieldType.TABLE);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
         assertEquals(expect, actual);

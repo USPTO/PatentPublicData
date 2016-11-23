@@ -1,5 +1,6 @@
-package gov.uspto.patent;
+package gov.uspto.patent.doc.simplehtml;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,11 +16,9 @@ public class FreetextConfig {
 
     private Map<String, String> replacements = new HashMap<String, String>();
     private Collection<String> remove = new HashSet<String>();
-    private Collection<FieldType> removeTypes = new HashSet<FieldType>();
-
-    public enum FieldType {
-        HEADER, TABLE, LIST, MATHML
-    }
+    private Collection<HtmlFieldType> removeTypes = new HashSet<HtmlFieldType>();
+    private boolean wrapText = false;
+    private int wrapWidth = 0;
 
     public FreetextConfig() {
         // empty.
@@ -40,6 +39,20 @@ public class FreetextConfig {
     /**
      * Replace XML/HTML Element with Text
      * 
+     * @param fieldType
+     * @param replacementText
+     * @return
+     */
+    public FreetextConfig replace(HtmlFieldType fieldType, String replacementText) {
+    	for(String key: fieldType.getNodeNames()){
+    		replacements.put(key, replacementText);
+    	}
+        return this;
+    }
+
+    /**
+     * Replace XML/HTML Element with Text
+     * 
      * @param replacements
      * @return
      */
@@ -48,7 +61,7 @@ public class FreetextConfig {
         return this;
     }
 
-    public boolean keepType(FieldType fieldType) {
+    public boolean keepType(HtmlFieldType fieldType) {
         return !removeTypes.contains(fieldType);
     }
 
@@ -58,15 +71,10 @@ public class FreetextConfig {
      * @param fieldType
      * @return
      */
-    public FreetextConfig remove(FieldType... fieldTypes) {
-        for(FieldType fieldType: fieldTypes){
-            switch (fieldType) {
-            case MATHML:
-                remove.add("math");
-                break;
-            }
-            
+    public FreetextConfig remove(HtmlFieldType... fieldTypes) {
+        for(HtmlFieldType fieldType: fieldTypes){
             removeTypes.add(fieldType);
+            remove(Arrays.asList(fieldType.getNodeNames()));
         }
 
         return this;
@@ -101,4 +109,40 @@ public class FreetextConfig {
     public Map<String, String> getReplaceElements() {
         return replacements;
     }
+
+	public boolean isWrapText() {
+		return wrapText;
+	}
+
+	public void setWrapText(boolean wrapText) {
+		this.wrapText = wrapText;
+	}
+
+	public int getWrapWidth() {
+		return wrapWidth;
+	}
+
+	public void setWrapWidth(int wrapWidth) {
+		this.wrapWidth = wrapWidth;
+	}
+
+	/**
+	 * Default Configuration
+	 * 
+	 * @return FreetextConfig
+	 */
+	public static FreetextConfig getDefault(){
+		FreetextConfig config = new FreetextConfig();
+		
+		config.remove(HtmlFieldType.CROSSREF);
+
+		config.replace(HtmlFieldType.FIGREF, "Patent-Figure");
+		config.replace(HtmlFieldType.CLAIMREF, "Patent-Claim");
+		config.replace(HtmlFieldType.PATCITE, "Patent-Citation");
+		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
+		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
+
+		return config;
+	}
+
 }

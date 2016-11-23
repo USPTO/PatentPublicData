@@ -3,8 +3,8 @@ package gov.uspto.patent.doc.css_brs;
 import java.util.Collections;
 import java.util.List;
 
-import gov.uspto.patent.FreetextConfig;
 import gov.uspto.patent.TextProcessor;
+import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 
 public class FormattedText implements TextProcessor {
 

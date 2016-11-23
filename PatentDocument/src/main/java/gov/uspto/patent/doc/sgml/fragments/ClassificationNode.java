@@ -117,6 +117,19 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 						uspcN.asXML());
 			}
 		}
+
+		// Secondary USPC classifications.
+		@SuppressWarnings("unchecked")
+		List<Node> uspcNodes2 = uspcNode.selectNodes("B522US/PDAT");
+		for (Node uspcN : uspcNodes2) {
+			try {
+				UspcClassification uspc = UspcClassification.fromText(uspcN.getText());
+				classifications.add(uspc);
+			} catch (ParseException e) {
+				LOGGER.warn("Failed to Parse Secondary USPC Classification: '{}' from : {}", uspcN.getText(),
+						uspcN.asXML());
+			}
+		}
 		
 		return classifications;
 	}

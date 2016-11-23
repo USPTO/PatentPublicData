@@ -40,11 +40,12 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 
             Node pctFilingDateN = pctGroupN.selectSingleNode("PD3"); // filing date.
             if (pctFilingDateN != null) {
+                String filingDateStr = pctFilingDateN.getText().replaceAll("[^0-9]", "");
                 try {
-                    DocumentDate filingDate = new DocumentDate(pctFilingDateN.getText());
+                    DocumentDate filingDate = new DocumentDate(filingDateStr);
                     filindDocId.setDate(filingDate);
                 } catch (InvalidDataException e) {
-                    LOGGER.warn("Invalid PCT Filing Date: {}", pctFilingDateN.getText());
+                    LOGGER.warn("Invalid PCT Filing Date: {}", filingDateStr);
                 }
             }
             docIds.add(filindDocId);
@@ -56,11 +57,12 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 
             Node pctPubDateN = pctGroupN.selectSingleNode("PCD"); // publication date
             if (pctPubDateN != null) {
+                String pubDateStr = pctPubDateN.getText().replaceAll("[^0-9]", "");
                 try {
-                    DocumentDate pubDate = new DocumentDate(pctPubDateN.getText());
+                    DocumentDate pubDate = new DocumentDate(pubDateStr);
                     pubDocId.setDate(pubDate);
                 } catch (InvalidDataException e) {
-                    LOGGER.warn("Invalid PCT Publication Date: {}", pctPubDateN.getText());
+                    LOGGER.warn("Invalid PCT Publication Date: {}", pubDateStr);
                 }
             }
             docIds.add(pubDocId);
