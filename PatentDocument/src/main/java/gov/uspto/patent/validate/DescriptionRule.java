@@ -10,9 +10,9 @@ import gov.uspto.patent.model.PatentType;
  *
  */
 public class DescriptionRule implements Validator<Patent> {
-	
+
 	private static String NAME = "Description";
-	private static String MESSAGE = "Utility Patent Missing DESCRIPTION";
+	private static String MESSAGE = "Utility Patent DESCRIPTION: missing or failed size constraints";
 
 	@Override
 	public boolean test(Patent patent) {
