@@ -3,6 +3,7 @@ package gov.uspto.patent.doc.greenbook;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -32,24 +33,16 @@ import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.ClaimTreeBuilder;
-import gov.uspto.patent.model.DescSection;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.PatentType;
-import gov.uspto.patent.model.UsKindCode2PatentType;
 import gov.uspto.patent.model.classification.Classification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Examiner;
 import gov.uspto.patent.model.entity.Inventor;
-import gov.uspto.patent.validate.ClaimRule;
-import gov.uspto.patent.validate.ClassificationRule;
-import gov.uspto.patent.validate.DescriptionFiguresRule;
-import gov.uspto.patent.validate.PatentValidator;
-import gov.uspto.patent.validate.AbstractRule;
-import gov.uspto.patent.validate.Validator;
 
 /**
  * 
@@ -60,6 +53,15 @@ import gov.uspto.patent.validate.Validator;
 public class Greenbook extends KvParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(Greenbook.class);
 
+	private static List<String> MAINTAIN_SPACE_FIELDS = Arrays.asList(new String[]{"TBL"});
+	private static List<String> PARAGRAPH_FIELDS = Arrays.asList(new String[]{"PAR", "PA1", "PA2", "PA3", "PA4", "PA5", "PAL"});
+	private static List<String> HEADER_FIELDS = Arrays.asList(new String[]{"PAC"});
+	private static List<String> TABLE_FIELDS = Arrays.asList(new String[]{"TBL"});
+
+    public Greenbook(){
+    	super(MAINTAIN_SPACE_FIELDS, PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
+    }
+    
     /*
     private static final Set<String> SECTIONS = new HashSet<String>(20);
     static {
@@ -88,7 +90,7 @@ public class Greenbook extends KvParser {
 
     @Override
     public Patent parse(Document document) throws PatentReaderException {
-
+    	
         DocumentId documentId = new DocumentIdNode(document).read();
         if (documentId != null) {
             MDC.put("DOCID", documentId.toText());

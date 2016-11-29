@@ -26,6 +26,7 @@ public class GreenbookTest {
         for (File file : dirPath.toFile().listFiles()) {
             Patent patent = greenbook.parse(file);
             ValidatePatent.methodsReturnNonNull(patent);
+            //System.out.println(patent.getDescription().getSimpleHtml());
             //System.out.println(patent.getDocumentId().toText() + " - " + patent.getTitle());
         }
     }

@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
+import com.google.common.base.Strings;
 
 import gov.uspto.parser.dom4j.keyvalue.config.FieldGroup;
 import gov.uspto.parser.dom4j.keyvalue.config.FieldIndex;
@@ -64,6 +67,29 @@ public class KvReader {
     }
     */
 
+	private List<String> maintainSpaceFields = new ArrayList<String>();
+	private List<String> paragraphFields = new ArrayList<String>();
+	private List<String> headerFields = new ArrayList<String>();
+	private List<String> tableFields = new ArrayList<String>();
+
+	private String currentFieldName;
+
+	/**
+	 * Paragraph Fields, used to add num and id.
+	 */
+	public void setFieldsForId(Collection<String> paragraphFields, Collection<String> headerFields, Collection<String> tableFields){
+		this.paragraphFields.addAll(paragraphFields);
+		this.headerFields.addAll(headerFields);
+		this.tableFields.addAll(tableFields);
+	}
+
+	/**
+	 * Fields which space and new lines should be maintained, like HTML pre tag.
+	 */
+	public void setMaintainSpaceFields(Collection<String> capitalizedFieldNames){
+		this.maintainSpaceFields.addAll(capitalizedFieldNames);
+	}
+
     /**
      * Generate XML which is either flat, or sections of matching key which are
      * one level deep.
@@ -80,21 +106,42 @@ public class KvReader {
      * @param keyValues
      * @return
      */
-    public Document genXml(List<KeyValue> keyValues) {
-
+    public Document genXml(List<KeyValue> keyValues) {    	
         Document document = DocumentHelper.createDocument();
         Element rootNode = document.addElement("DOCUMENT");
         Element currentSection = rootNode;
 
+        int pCount = 1;
+        int hCount = 1;
+        int tCount = 1;
+ 
         for (KeyValue kv : keyValues) {
             if (kv.getValue().isEmpty()) { // auto detect section.
                 if (currentSection != rootNode) {
                     rootNode.add(currentSection);
                 }
-                currentSection = DocumentHelper.createElement(kv.getKey());
+                currentSection = DocumentHelper.createElement(kv.getKey());                               
             } else {
                 Element field = DocumentHelper.createElement(kv.getKey());
-                field.setText(kv.getValue());
+ 
+                /*
+                 * Add field ids
+                 */
+                if (paragraphFields.contains(kv.getKey().toUpperCase())){
+                	String idValue = "p-" + Strings.padStart(String.valueOf(pCount), 4, '0');
+                	field.addAttribute("id", idValue);
+                	pCount++;
+                } else if (headerFields.contains(kv.getKey().toUpperCase())){
+                	String idValue = "h-" + Strings.padStart(String.valueOf(hCount), 4, '0');
+                	field.addAttribute("id", idValue);
+                	hCount++;
+                } else if (tableFields.contains(kv.getKey().toUpperCase())){
+                	String idValue = "t-" + Strings.padStart(String.valueOf(tCount), 4, '0');
+                	field.addAttribute("id", idValue);
+                	tCount++;
+                }
+
+               	field.setText(kv.getValue());
                 currentSection.add(field);
             }
         }
@@ -248,6 +295,7 @@ public class KvReader {
      */
     public List<KeyValue> parse(Reader reader) throws PatentReaderException {
         List<KeyValue> keyValues = new ArrayList<KeyValue>();
+        currentFieldName = "";
 
         try (BufferedReader breader = new BufferedReader(reader)) {
 
@@ -269,6 +317,7 @@ public class KvReader {
                     int lastLoc = keyValues.size() - 1;
                     KeyValue lastKv = keyValues.get(lastLoc);
                     lastKv.appendValue(parts[0]);
+                    currentFieldName = lastKv.getKey().toUpperCase();
                 }
             }
 
@@ -300,13 +349,19 @@ public class KvReader {
 
     private String[] processLineLeadingWhiteSpace(final String line) {
         if (line.startsWith("     ")) {
-            return new String[] { line };
+        	String value = line;
+        	if (maintainSpaceFields.contains(currentFieldName)){
+        		value = value + "\n";
+        	} else {
+        		value = StringUtils.strip(value);
+        	}
+        	return new String[] { value };
         } else {
-            String tline = line.trim();
+        	String tline = StringUtils.strip(line);
             //int idx = tline.indexOf(': ');
             int idx = tline.indexOf(' ');
             if (idx < 3) {
-                // System.err.println(" Error: " + tline);
+                //System.err.println(" Error: " + tline);
                 return new String[] { tline };
             }
             String key = tline.substring(0, idx);
@@ -314,7 +369,13 @@ public class KvReader {
                 // System.err.println(" Error: '" + key + "' : " + tline);
                 return new String[] { tline };
             }
+
             String value = tline.substring(idx, tline.length());
+            if (maintainSpaceFields.contains(key.toUpperCase())){
+            	value = value + "\n";
+            } else {
+            	value = StringUtils.strip(value);
+            }
             return new String[] { key, value };
         }
     }

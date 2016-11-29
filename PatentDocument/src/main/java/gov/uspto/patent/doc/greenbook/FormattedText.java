@@ -8,10 +8,13 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Document.OutputSettings;
+import org.jsoup.nodes.Document.OutputSettings.Syntax;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
 import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 
 import com.google.common.base.Charsets;
 
@@ -32,8 +35,7 @@ public class FormattedText implements TextProcessor {
 	private static final Pattern PATENT_FIG = Pattern
 			.compile("\\bFIGS?\\. ([1-9][0-9]?[()A-z]*(?:(?: to | and |-)[1-9][0-9]?[()A-z]*)?)\\b");
 
-	private static final String[] HTML_WHITELIST = new String[] { "p", "h2", "table", "tr", "td", "a", "li", "ul",
-			"span" };
+	private static final String[] HTML_WHITELIST = new String[] { "p", "h2", "pre", "table", "tr", "td", "a", "li", "ul", "span" };
 	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref" };
 
 	@Override
@@ -59,7 +61,7 @@ public class FormattedText implements TextProcessor {
 	}
 
 	@Override
-	public String getSimpleHtml(String rawText) {
+	public String getSimpleHtml(String rawText) {	
 		rawText = createRefs(rawText);
 		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
 
@@ -74,12 +76,25 @@ public class FormattedText implements TextProcessor {
 		}
 
 		jsoupDoc.select("PAL").tagName("p");
-		jsoupDoc.select("TBL").tagName("table");
 
-		String textStr = jsoupDoc.html();
+		/*
+		 * Greenbook tables are just freetext 
+		 * with newline and white space formating
+		 * maintain by using a html "pre" tag.
+		 */
+		//jsoupDoc.select("TBL").tagName("table");
+		for (Element tbl : jsoupDoc.select("TBL")) {
+			tbl.tagName("pre");
+			tbl.attr("class", "freetext-table");
+
+			Element par = jsoupDoc.createElement("p");
+			tbl.replaceWith(par);
+			par.appendChild(tbl);
+		}
+
+		String textStr = jsoupDoc.outerHtml();
 		textStr = textStr.replaceAll("\\\\n", "\n");
 
-		// Whitelist whitelist = Whitelist.simpleText();
 		Whitelist whitelist = Whitelist.none();
 		whitelist.addTags(HTML_WHITELIST);
 		whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
