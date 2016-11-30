@@ -13,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
+import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
@@ -63,7 +64,7 @@ public class FormattedText implements TextProcessor {
 	@Override
 	public String getSimpleHtml(String rawText) {	
 		rawText = createRefs(rawText);
-		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
+		Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
 
 		// rename header to "h2"
 		jsoupDoc.select("PAC").tagName("h2");
@@ -104,9 +105,10 @@ public class FormattedText implements TextProcessor {
 		outSettings.prettyPrint(false);
 		outSettings.escapeMode(EscapeMode.extended);
 
-		String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
-
-		return fieldTextCleaned;
+        Cleaner cleaner = new Cleaner(whitelist);
+        Document clean = cleaner.clean(jsoupDoc);
+        clean.outputSettings(outSettings);
+        return clean.body().html();
 	}
 
 	public String createRefs(String rawText) {
