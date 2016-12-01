@@ -42,7 +42,7 @@ public class FormattedTextTest {
         
         //validFromToHTML.put("as shown in FIG. 1(b) and may be", "as shown in <a class=\"figref\">FIG. 1(b)</a> and may be");
         //validFromToHTML.put("PAR  FIGS. 1(a) and 1(b) are graphs showing", "PAR  <a class=\"figref\">FIGS. 1(a) and 1(b)</a> are graphs showing");
-        validFromToHTML.put("current shown in FIG. 1(a) is", "current shown in <a class=\"figref\">FIG. 1(a)</a> is");
+        //validFromToHTML.put("current shown in FIG. 1(a) is", "current shown in <a class=\"figref\">FIG. 1(a)</a> is");
     }
 
     @Test
@@ -73,9 +73,9 @@ public class FormattedTextTest {
         stb.append("<PAR>More text now referenceing FIG. 2B is a top view</PAR>\n");
 
         StringBuilder expectStb = new StringBuilder();
-        expectStb.append("<h2>SECTION TITLE</h2> \n");
-        expectStb.append("<p>Paragraph text, referenceing <a class=\"figref\">FIG. 1</a> is a side elevational view</p> \n");
-        expectStb.append("<p>More text now referenceing <a class=\"figref\">FIG. 2B</a> is a top view</p>");
+        expectStb.append("<h2>SECTION TITLE</h2>\n");
+        expectStb.append("<p>Paragraph text, referenceing <a class=\"figref\">FIG. 1</a> is a side elevational view</p>\n");
+        expectStb.append("<p>More text now referenceing <a class=\"figref\">FIG. 2B</a> is a top view</p>\n");
         String expect = expectStb.toString();
 
         String actual = format.getSimpleHtml(stb.toString());
