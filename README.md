@@ -30,7 +30,7 @@ Bulk files are not updated once published, updates can be received by indexing a
 
 | field | description |
 | :-------- | ------------|
-| Related Ids | patent family may continue to grow after being published or granted; update through new patent which references prior patent |
+| Related Ids | patent family may continue to grow after being published or granted; update through new patent which references prior patent; using the oldest known (first occurring) document id within family as the family id. |
 | assignee | Update available <u>daily</u> within Patent Assignment XML Dump files |
 | Classifications | Updates available <u>monthly</u> within Master Classification File Dump files |
 
