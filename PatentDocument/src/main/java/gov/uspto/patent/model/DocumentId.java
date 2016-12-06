@@ -17,7 +17,7 @@ import gov.uspto.patent.InvalidDataException;
  * Note that US Patent Id numbers can also have an "X" see: X-Patents https://en.wikipedia.org/wiki/X-Patent
  *
  */
-public class DocumentId {
+public class DocumentId implements Comparable<DocumentId> {
     private DocumentIdType docIdType;
     private CountryCode countryCode;
     private String docNumber;
@@ -210,10 +210,19 @@ public class DocumentId {
         return redIds;
     }
 
+	@Override
+	public int compareTo(DocumentId o) {
+		if (getDate() == null || o.getDate() == null){
+ 	      return 1;
+		}
+		return getDate().getDate().compareTo(o.getDate().getDate());
+	}
+
     @Override
     public String toString() {
         return "DocumentId [docIdType=" + docIdType + ", countryCode=" + countryCode + ", docNumber=" + docNumber
                 + ", name=" + name + ", kindCode=" + kindCode + ", date=" + date + ", patentType=" + patentType
                 + ", getId()=" + getId() + "]";
     }
+
 }

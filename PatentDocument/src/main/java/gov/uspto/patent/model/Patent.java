@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.classification.Classification;
@@ -36,9 +36,9 @@ public abstract class Patent {
 
     private PatentCorpus patentCorpus;
     private DocumentId documentId;
-    private Set<DocumentId> otherIds = new LinkedHashSet<DocumentId>(); // store regional filing id, or other ids referencing this unique Patent.
-    private Set<DocumentId> relationIds = new LinkedHashSet<DocumentId>(); // Cross Reference to related Applications or Publications.
-    private Set<DocumentId> referenceIds = new LinkedHashSet<DocumentId>();
+    private Set<DocumentId> otherIds = new TreeSet<DocumentId>(); // store regional filing id, or other ids referencing this unique Patent; sorted by date.
+    private Set<DocumentId> relationIds = new TreeSet<DocumentId>(); // Cross Reference to related Applications or Publications.
+    private Set<DocumentId> referenceIds = new TreeSet<DocumentId>();
 
     private DocumentDate datePublished;
     private DocumentDate dateProduced;
