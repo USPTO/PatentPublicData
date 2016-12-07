@@ -296,7 +296,9 @@ public abstract class Patent {
     }
 
     public void addOtherId(DocumentId otherId) {
-        this.otherIds.add(otherId);
+        if (otherId != null){
+            this.otherIds.add(otherId);
+        }
     }
 
     public void addOtherId(Collection<DocumentId> otherIds) {

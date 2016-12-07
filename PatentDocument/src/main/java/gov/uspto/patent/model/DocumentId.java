@@ -94,7 +94,7 @@ public class DocumentId implements Comparable<DocumentId> {
      */
     public String getId(int zeroPadMinLen) {
         StringBuilder strb = new StringBuilder().append(countryCode);
-                
+
         strb.append(Strings.padStart(docNumber, zeroPadMinLen, '0'));
 
         if (kindCode != null) {
@@ -178,7 +178,7 @@ public class DocumentId implements Comparable<DocumentId> {
             String country = matcher.group(1);
 
             CountryCode cntyCode = CountryCode.fromString(country);
-            if (CountryCode.UNKNOWN == cntyCode || year < 1978){
+            if (CountryCode.UNKNOWN == cntyCode || year < 1978) {
                 cntyCode = CountryCodeHistory.getCurrentCode(country, year);
             }
 
@@ -210,13 +210,13 @@ public class DocumentId implements Comparable<DocumentId> {
         return redIds;
     }
 
-	@Override
-	public int compareTo(DocumentId o) {
-		if (getDate() == null || o.getDate() == null){
- 	      return 1;
-		}
-		return getDate().getDate().compareTo(o.getDate().getDate());
-	}
+    @Override
+    public int compareTo(DocumentId o) {
+        if (getDate() == null || o.getDate() == null || getDate().getDate() == null || o.getDate().getDate() == null) {
+            return 1;
+        }
+        return getDate().getDate().compareTo(o.getDate().getDate());
+    }
 
     @Override
     public String toString() {
