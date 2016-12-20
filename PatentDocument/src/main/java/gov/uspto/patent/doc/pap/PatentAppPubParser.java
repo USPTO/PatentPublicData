@@ -23,6 +23,7 @@ import gov.uspto.patent.doc.pap.fragments.ClaimNode;
 import gov.uspto.patent.doc.pap.fragments.ClassificationNode;
 import gov.uspto.patent.doc.pap.fragments.DescriptionNode;
 import gov.uspto.patent.doc.pap.fragments.InventorNode;
+import gov.uspto.patent.doc.pap.fragments.PriorityClaimNode;
 import gov.uspto.patent.doc.pap.fragments.PublicationIdNode;
 import gov.uspto.patent.doc.pap.fragments.RelatedIdNode;
 import gov.uspto.patent.model.Abstract;
@@ -87,6 +88,7 @@ public class PatentAppPubParser extends Dom4JParser {
             patentType = UsKindCode2PatentType.getInstance().lookupPatentType(publicationId.getKindCode());
         }
 
+        List<DocumentId> priorityIds = new PriorityClaimNode(document).read();
         List<DocumentId> relatedIds = new RelatedIdNode(document).read();
 
         List<Inventor> inventors = new InventorNode(document).read();
@@ -116,6 +118,9 @@ public class PatentAppPubParser extends Dom4JParser {
         }
 
         patent.setApplicationId(applicationId);
+        patent.addPriorityId(priorityIds);
+        patent.addRelationIds(priorityIds);
+        patent.addOtherId(priorityIds);
         patent.addOtherId(applicationId);
         patent.addOtherId(relatedIds);
 
