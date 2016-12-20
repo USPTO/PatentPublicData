@@ -30,10 +30,8 @@ Bulk files are not updated once published, updates can be received by indexing a
 
 | field | description |
 | :-------- | ------------|
-| Related Ids | patent family may continue to grow after being published or granted; update through new patent which references prior patent; using the oldest known (first occurring) document id within family as the family id. |
 | assignee | Update available <u>daily</u> within Patent Assignment XML Dump files |
 | Classifications | Updates available <u>monthly</u> within Master Classification File Dump files |
-
 
 ## Other Information
 The United States Department of Commerce (DOC)and the United States Patent and Trademark Office (USPTO) GitHub project code is provided on an ‘as is’ basis without any warranty of any kind, either expressed, implied or statutory, including but not limited to any warranty that the subject software will conform to specifications, any implied warranties of merchantability, fitness for a particular purpose, or freedom from infringement, or any warranty that the documentation, if provided, will conform to the subject software.  DOC and USPTO disclaim all warranties and liabilities regarding third party software, if present in the original software, and distribute it as is.  The user or recipient assumes responsibility for its use. DOC and USPTO have relinquished control of the information and no longer have responsibility to protect the integrity, confidentiality, or availability of the information. 
