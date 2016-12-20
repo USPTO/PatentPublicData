@@ -2,8 +2,6 @@ package gov.uspto.patent.doc.greenbook.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -64,30 +62,4 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 
 		return docIds;
 	}
-
-	private static final Pattern PCT_ID_PATTERN = Pattern.compile("^(?:PCT/)?([A-Z]{2})([0-9]{2}/[0-9]{4,})$");
-
-	private DocumentId buildDocId(String pctDocIdString) {
-		Matcher matcher = PCT_ID_PATTERN.matcher(pctDocIdString);
-
-		if (matcher.matches()) {
-			String countryCodeStr = matcher.group(1);
-			String docId = matcher.group(2).replaceAll("/", "");
-
-			CountryCode countryCode = CountryCode.UNKNOWN;
-
-			try {
-				countryCode = CountryCode.fromString(countryCodeStr);
-			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to lookup CountryCode: {}", countryCodeStr);
-			}
-
-			return new DocumentId(countryCode, docId);
-		}
-
-		LOGGER.warn("PCT DocID did not pattern: {}", pctDocIdString);
-
-		return null;
-	}
-
 }
