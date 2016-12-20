@@ -27,6 +27,7 @@ import gov.uspto.patent.doc.xml.fragments.DescriptionNode;
 import gov.uspto.patent.doc.xml.fragments.InventorNode;
 import gov.uspto.patent.doc.xml.fragments.PublicationIdNode;
 import gov.uspto.patent.doc.xml.fragments.PctRegionalIdNode;
+import gov.uspto.patent.doc.xml.fragments.PriorityClaims;
 import gov.uspto.patent.doc.xml.fragments.RelatedIdNode;
 import gov.uspto.patent.doc.xml.fragments.Relations;
 import gov.uspto.patent.model.Abstract;
@@ -95,6 +96,7 @@ public class ApplicationParser extends Dom4JParser {
 
         DocumentId applicationId = new ApplicationIdNode(document).read();
 
+        List<DocumentId> priorityIds = new PriorityClaims(document).read();
         List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
         DocumentId relatedId = new RelatedIdNode(document).read();
         List<DocumentId> relationIds = new Relations(document).read();
@@ -124,15 +126,18 @@ public class ApplicationParser extends Dom4JParser {
         } else {
             patent.reset();
         }
-   
+
         patent.setDateProduced(dateProducedDate);
         patent.setDatePublished(datePublishedDate);
         patent.setDocumentId(publicationId);
         patent.setApplicationId(applicationId);
+        patent.addPriorityId(priorityIds);
+        patent.addOtherId(priorityIds);
         patent.addOtherId(applicationId);
         patent.addOtherId(pctRegionalIds);
         patent.addOtherId(relatedId);
         patent.addRelationIds(relationIds);
+        patent.addRelationIds(priorityIds);
         patent.setTitle(title);
         patent.setAbstract(abstractText);
         patent.setDescription(description);
