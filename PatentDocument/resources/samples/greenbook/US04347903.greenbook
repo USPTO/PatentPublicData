@@ -1,0 +1,393 @@
+PATN
+WKU  043479030
+SRC  6
+APN  1925296
+APT  1
+ART  211
+APD  19800310
+TTL  Electronic reading balance
+ISD  19820907
+NCL  3
+ECL  1
+EXP  Miller, Jr.; George H.
+NDR  1
+NFG  2
+INVT
+NAM  Yano; Shozo
+CTY  Kyoto
+CNT  JPX
+INVT
+NAM  Miyake; Toshiyuki
+CTY  Kyoto
+CNT  JPX
+INVT
+NAM  Fujinaga; Yasuhiro
+CTY  Kyoto
+CNT  JPX
+INVT
+NAM  Koomoto; Akira
+CTY  Kyoto
+CNT  JPX
+INVT
+NAM  Kawara; Toshio
+CTY  Kyoto
+CNT  JPX
+INVT
+NAM  Yagi; Akio
+CTY  Kyoto
+CNT  JPX
+INVT
+NAM  Tsuji; Tomohiro
+CTY  Kyoto
+CNT  JPX
+INVT
+NAM  Nagaoka; Tadashi
+CTY  Kyoto
+CNT  JPX
+ASSG
+NAM  Shimadzu Corporation
+CTY  Kyoto
+CNT  JPX
+COD  03
+PRIR
+CNT  JPX
+APD  19780710
+APN  53/84696
+CLAS
+OCL  177 25
+XCL  177185
+XCL  364734
+EDF  3
+ICL  G01G 1904
+ICL  G01G 2310
+ICL  G06F  728
+FSC  177
+FSS  25;185;DIG. 8
+FSC  364
+FSS  734
+UREF
+PNO  4102421
+ISD  19780700
+NAM  Ozaki et al.
+OCL  177185
+UREF
+PNO  4137568
+ISD  19790100
+NAM  Dlugos
+XCL  177 25
+UREF
+PNO  4231439
+ISD  19801100
+NAM  Hall, Jr. et al.
+XCL  177185
+LREP
+FR2  Oujevolk; George B.
+PCTA
+PCN  PCT/JP79/00178
+PD1  19800310
+PD2  19800205
+PD3  19790705
+PCP  WO80/00272
+PCD  19800221
+ABST
+PAR  A weighing balance to provide an average weight to an object which tends to
+      move while being weighed such as a laboratory animal. The object to be
+      weighed is placed on a receiving pan which provides an electrical analog
+      output signal corresponding to the weight of the object. This signal after
+      passing through an amplifier is converted to a digital electrical signal
+      fed to a data input control means. A level detector setting means allows
+      an output from said control means only when the weight on the balance
+      reaches a predetermined level. The output from the control means is fed to
+      a memory having a plurality of registers which store this information.
+      Coupled on one side to this memory is a comparator which is also coupled
+      on a second side to said control means. Also coupled to said comparator
+      means is an allowable range means, sampling time means, and average
+      calculating means. The average calculating means feeds an output to a
+      printer.
+BSUM
+PAC  BACKGROUND OF THE INVENTION
+PAR  This invention relates to an improved electronic reading balance composed
+      of an electronic weight detector, a weight measuring amplifier, and other
+      electronic units, capable of electronically processing any measuring data.
+PAC  BRIEF DESCRIPTION OF THE PRIOR ART
+PAR  Electronic reading balances are now broadly used in many fields of testing
+      and studying and are also actively used in the fields of medical science
+      and pharmacy for measuring the body weight of experimental animals such as
+      mice in toxic tests, etc.
+PAR  In this case, however, occasionally an experimental animal whose body
+      weight is being measured moves on the pan of a balance, preventing
+      accurate measurement of its body weight due to vibration caused thereby,
+      so that a combination of weighing means such as an integrator and a
+      voltage/pulse counter are used to take a sampling of data every 0.2 second
+      totalling 10 times in 2 seconds as an example of measuring data and to
+      integrate the information in the output circuit of an electronic reading
+      balance and then a digital average calculating means is used to average
+      the data of 10 times which has been integrated. This information is what
+      is used to measure the body weight of experimental animals.
+PAR  The movements of animals, however, are random and not suitable for this
+      purpose and their movements fluctuate considerably especially just after
+      giving them medication, causing variations of measurements. For this
+      reason, even if the varying measurements are taken by sampling 10 times
+      per 0.2 second and then averaged to obtain the integrated values as
+      hereinbefore, it is impossible to prevent variations of measurements.
+      Thus, as extremely large values and extremely small values are to be
+      included in the sampling of 10 times, the calculated average value may
+      possibly have a large error.
+PAR  It has therefore been proposed to take a varying level detection control
+      means with band/pass filters which functions to cut away any measurements
+      over an allowable range of value of variation. Such means, however, may
+      possible be of complicated construction with expensive costs. Further, it
+      is not determining the true average value statistically to cut away the
+      maximum and minimum values without respect of stability of indication.
+      Therefore, adopting the control means does not perform the function as
+      desired.
+PAR  In electronic reading balances used as quality-control instruments in
+      production lines of factories except for the aforementioned electronic
+      reading balance for weighing the weight of animals, some average
+      calculating means like that aforementioned is provided to prevent the
+      values from being affected by vibration and wind depending on the
+      installation conditions in the factory. Thus, the average calculating
+      means is used to indicate the average value in case the indicative
+      measurement of balance is subject to vibration which will not be settled
+      in a short time, preventing proper reading out and printing out. Also in
+      this case, however, a large error may be involved depending on the degree
+      of external disturbances.
+PAC  OBJECTS OF THE INVENTION
+PAR  Accordingly, it is a primary object of the present invention to provide an
+      electronic reading balance capable of solving problems that conventional
+      electronic reading balances have which inevitably indicate erroneous
+      average value differing from the true average value due to some variance
+      of data because the devices contemplated herein function to integrate all
+      the data subjected to sampling of varying measurements caused by any
+      external disturbances such as vibration, etc. during an averaging time and
+      average them to provide the arithmetic average, thus improving the
+      accuracy of measurement of electronic reading balance.
+PAR  Furthermore, it is other object of the present invention to provide an
+      electronic reading balance capable of making it easier to read out the
+      measurements with higher accuracy.
+PAR  The electronic reading balance of the present invention functions to make
+      the sampling of measurements in a definite interval of time, memorize
+      them, and compare the newest sampling data with previous sampling data
+      memorized up to the number of units set in advance. In case there are any
+      differences between them over the allowable range of value previously set,
+      it functions to eliminate all the memorized sampling data and repeat the
+      sequence of sampling and comparison, and that during the time a unit sign
+      such as "g" blinks on the indicator. When the difference between all the
+      sampling data of the previously set has come into the allowable range of
+      values, that is, when the variance between the data taken has settled into
+      the allowable range of values and the comparing means has detected that
+      the amount of vibration of the balance has settled within the stabilizing
+      condition, it functions to start to integrate the memorized sampling data
+      for the first time, calculate the average of them, and indicate the
+      calculated average value as the true measured value.
+PAR  As mentioned above, the electronic reading balance relating to the present
+      invention differs from that of conventional ones which function to
+      calculate the arithmetic average only, that is, it functions to start to
+      calculate the average of the measurements of sampling data immediately
+      when the vibration of balance has got into the allowable range of value
+      stably and the variance of data has been decreased within the allowable
+      range of value previously set, and then it averages the measurements of
+      data, so that it is capable of obtaining nearly a true average value and
+      it increases the accuracy of measurement of electronic reading balance.
+PAR  As another advantage, it functions to keep a unit sign such as "g" blinking
+      on the indicator during the waiting time from starting of sampling to
+      finishing of calculating the average, which prevents erroneously reading
+      out varying values and easily allows only the read out indicating the
+      average value, that is, the measured value.
+DRWD
+PAC  BRIEF DESCRIPTION OF THE DRAWINGS
+PAR  FIG. 1 is a block diagram of the electronic reading balance of an
+      embodiment of the present invention, and
+PAR  FIG. 2 is a response graph obtained when the electronic reading balance
+      which has been used for measurement of the body weight of an experimental
+      animal.
+DETD
+PAC  DETAILED DESCRIPTION OF THE INVENTION
+PAR  Referring to FIG. 1, there is a weighing means 1 with electromagnetic force
+      automatic balancing means and W is the weighing detection signal of DC
+      current which has been measured by means of the weighing means. The signal
+      W is converted into an analog signal A of DC voltage by means of the
+      weight measuring amplifier 2 and then converted into a digital signal D by
+      means of the A/D converter 3. Then, the measurements obtained by means of
+      the weighing means 1 are taken as sampling data at a definite interval of
+      time and then are transmitted to the data input control means 6. A
+      detection level setting means 7 allows automatic printing only at the time
+      of weighing. The level setting means 7 functions to set an optional
+      detecting level for weighing, for example, 20 to 30% of the range of
+      measurement corresponding to the range of measurement. When the digital
+      signal D has come up to the detection level, that is, when detects that a
+      sample for measurement has been placed on the pan (not illustrated) of
+      balance, the input control means 6 immediately turns the printing
+      permission signal to the ON side and stands by.
+PAR  For example, in case the interval of time for sampling is set at 100 m
+      sec., the data D.sub.1 to D.sub.n taken every 100 m sec. are to be
+      memorized by means of a group of the memory registers M.sub.1 to M.sub.n
+      of the memory means 8 in the order of sampling. In the means 8
+      hereinbefore mentioned, the group of memory registers M.sub.1 to M.sub.n,
+      for example, 16 pieces, are to be given as much capacity of memory as
+      capable of meeting the maximum times to be set for sampling. In this case,
+      the number of memory registers to be operated is to be varied depending on
+      the number of times set and the memorized values are to be renewed per
+      sampling. A comparator 9 functions to compare each data in the order of
+      (D.sub.n-1), (D.sub.n-2) . . . with the data D.sub.n, if the newest data
+      among the data D.sub.1 to D.sub.n memorized by means of the memory means 8
+      is, for example, data D.sub.n, wherein the condition of comparison is as
+      follows. First the number of times N of sampling is to be set to be, for
+      example, 4, 8, or 16 by means of the sampling times setting means 10
+      depending on how many times samplings are taken to determine their
+      average, considering the stability of measurements, and then the maximum
+      allowable difference between the newest data and the previous data
+      memorized being followed to sampling, that is, the allowable range of
+      value of variance of data is to be set within the range of 2 to 40 of
+      digit mode (Minimum indication unit) by means of the allowable range of
+      value setting means 11 within the number of times N of sampling. For
+      example, the value is to be set within the range of 12 to 40 at the time
+      of measurement of the body weight of an experimental animal and is to be
+      set within around the range of 2 to 9 in case there is little vibration. A
+      description of the setting and the function of the comparator 9 is made,
+      referring to the response graph of FIG. 2, as follows.
+PAR  In the FIG. 2, the axis of ordinate W indicates the variation of
+      measurement (g) of balance and P is the allowable range of value set. If
+      this is set, for example, to 30 digits (for example, to be equivalent to
+      30 mg in case of 0 to 99.99 g of measuring range), the 30 digits (30 mg)
+      is constant without respect of the indicated measurement W. Wc is the
+      aforementioned detection level, which is to be set, for example, to be
+      within the range of 20 to 30 g. The axis of abscissa T indicates passing
+      time (seconds) in measurement, and 1 to 13 are the number of times N of
+      sampling per 100 m sec. T.sub.A is the time point when an experimental
+      animal has been placed on the pan of the balance and T.sub.B is the time
+      point when the signal D in FIG. 1 has come up to the detection level Wc in
+      FIG. 2, when the printing permission signal turns to the ON side and
+      stands by.
+PAR  In the FIG. 1, if the number of times N is set to 4 by means of the
+      sampling times setting means 10, the sampling values are to be memorized
+      in sequence to be Data D.sub.2, D.sub.3, D.sub.4 . . . in the memory
+      registers M.sub.1 to M.sub.4, wherein when the newest data D.sub.4 has
+      entered therein, the comparator 9 immediately starts the comparing
+      operation on the basis of the data D.sub.4 as Standard I in such a way as
+      comparing the data D.sub.4 with the data D.sub.3, D.sub.4 with D.sub.2,
+      and D.sub.4 with D.sub.1 as many times as 3 times in total, and any
+      differences between them which have been found over 30 digits are to be
+      judged rejective and any ones which have been found less than or
+      equivalent to 30 digits are to be judged passed (Refer to FIG. 2).
+      Consequently, any other differences except that between the data D.sub.4
+      and the data D.sub.2 are to be rejected because of the response transition
+      stage of balance. Therefore, the comparator 9 transmits the signal S to
+      the control means 6 so that only the data D.sub.4 is to be left and other
+      data D.sub.3 to D.sub.1 are to be eliminated from the memory register
+      M.sub.3 to M.sub.1. Receiving the signal S, the control means 6 eliminates
+      the data D.sub.3 to D.sub.1, transfers the data D.sub.4 to the memory
+      register M.sub.1, and transmits the next new data D.sub.5, D.sub.6, and
+      D.sub.7 taken by sampling to the memory means 8. During the time, the
+      average calculating means 12 is not actuated and the digital indicator 13
+      does not indicate any numeral indications. For example, the indicator 13
+      is so arranged that the unit sign (g) and/or the decimal point are made to
+      blink so as to inform the operator of the continuation of the sampling,
+      which is other feature of the present invention. Of course, in this case
+      it is also possible to indicate the value when a sample (that is, an
+      experimental animal) is not placed on the pan of balance yet, which value
+      is generally "zero", or blank. Further, the printer 14 is not actuated to
+      operate and stands by.
+PAR  In the FIG. 2, when the sampling of data D.sub.7 is made, comparison is
+      made between the data D.sub.7 with the previous data on the basis of
+      D.sub.7 as Standard II, and the result of comparison is that the
+      difference between D.sub.7 and D.sub.4 is larger than the allowable range
+      of value and is judged to be rejected although the difference between
+      D.sub.7 and D.sub.6 and that between D.sub.7 and D.sub.5 are smaller than
+      the allowable range of value and are judged to be passed. Also in this
+      case, therefore, these data D.sub.6 to D.sub.4 are to be eliminated.
+      Successively, the new data D.sub.8, D.sub.9, and D.sub.10 are to be taken
+      as sampling data, and comparison is made between D.sub.10 and the previous
+      ones on the basis of D.sub.10 as Standard III, wherein the experimental
+      animal moves violently and consequently the data D.sub.8 and D.sub.9
+      located near the maximum point "a" and the minimum point "b" are taken as
+      sampling data, and in this case the difference between D.sub.10 and
+      D.sub.9 is far over the allowable range of value P and therefore D.sub.9
+      is to be rejected. Then no comparison of D.sub.10 with the previous data
+      D.sub.8 and D.sub.7 is made and these data are to be eliminated. Following
+      the sampling mentioned above, the next new data D.sub.11, D.sub.12, and
+      D.sub.13 are taken as sampling data and comparison of D.sub.13 with the
+      previous data on the basis of D.sub.13 as Standard IV. As the result the
+      difference between D.sub.13 and D.sub.12, that between D.sub.13 and
+      D.sub.11, and that between D.sub.13 and D.sub.10 are all passed. In other
+      words, in this stage the comparator 9 detects that the movement of the
+      experimental animal has settled and consequently the variation of balance
+      has been settled. Therefore, as the average value W.sub.T nearly located
+      to the true average value can be obtained by integrating the measurements
+      of the data D.sub.10 to D.sub.13 totalling 4 pieces taken as sampling data
+      in this stage, immediately the average calculating means 12 is to be
+      actuated to operate, the average value W.sub.T rounded to the nearest
+      whole value at its smallest place is to be transmitted to the indicator 13
+      and the printer 14, and thus the value is to be indicated and printed out
+      as the measurement.
+PAR  Where printing is not required it is not necessary to provide a printer 14.
+PAR  In the FIG. 2, T.sub.D is the time point of data indication and printing
+      out, the time between T.sub.C and T.sub.D is the preparation time required
+      to take down the experimental animal subjected to the measurement from the
+      pan of balance, the time between T.sub.D to T.sub.E is the time required
+      for the pan of balance to return to its no-load position, D.sub.F is the
+      weight of any dung and urine of the animal still left on the pan of
+      balance even after the measurement, and T.sub.F is the time point when the
+      weight D.sub.F has been adjusted by zeroing.
+PAR  At this step, the preparation for placing the next sample (a new
+      experimental animal) on the pan of balance is finished.
+PAC  INDUSTRIAL APPLICABILITY
+PAR  As the electronic reading balance relating to the present invention is
+      capable of considerably improving of the measuring accuracy of electronic
+      balance in case the measurement is apt to be affected by vibration of a
+      sample to be measured and accounts for any external disturbances which may
+      disturb the measurement, the electronic reading balance can be utilized
+      very effectively in these fields such as medical science and pharmacy for
+      measurement of the body weight of animals and also in the field of
+      industry for making the quality control in production lines in factory
+      when it is installed in the site thereof. Further, it is effective as a
+      weighing means for use in vibrating objects such as ships and automobiles,
+      etc.
+CLMS
+STM  We claim:
+NUM  1.
+PAR  1. A weighing balance device designed to provide an average weight to a
+      weighed object which moves such as a laboratory animal, comprising, in
+      combination:
+PA1  (a) balance means (1) disposed to receive an object to be weighed and
+      provide an electrical analog output signal corresponding to the weight of
+      the object;
+PA1  (b) an amplifier (2) electrically coupled to said balance means (1) so as
+      to receive said analog output signal and convert said analog signal to a
+      value useable by the subsequent circuitry;
+PA1  (c) an analog-to-digital converter (3) coupled to said amplifier (2) for
+      receiving said useable signal in analog form and convert it to information
+      in digital form;
+PA1  (d) data input control means (6) coupled to said analog-to-digital
+      converter (3) disposed to receive said digital information;
+PA1  (e) detector level setting means (7) coupled to said data input control
+      means (6) allowing an output from said control means (6) only when the
+      weight on said balance means (1) reaches a predetermined level;
+PA1  (f) memory register means (8) coupled to said control means (6) including a
+      plurality of registers fed by the digital information passing through said
+      control means to store said information;
+PA1  (g) comparator means (9) coupled on a first side to said control means (6),
+      on a second side to said memory; and also having third, fourth and fifth
+      sides;
+PA1  (h) allowable range means (11) coupled to the third side of said
+      comparator;
+PA1  (i) sampling time means (10) coupled to said fourth side;
+PA1  (j) average calculating means (12) coupled to said fifth side to average
+      the information provided by said comparator; and,
+PA1  (l) utilization means (14) coupled to said average calculator means (12).
+NUM  2.
+PAR  2. A device as claimed in claim 1 wherein said utilization means includes
+      printing means (14).
+NUM  3.
+PAR  3. A device as claimed in claim 1, said comparator means (9) including
+      elimination means for eliminating all the memorized values when at least
+      one of the differences between the last memorized information value is
+      greater than a predetermined maximum allowable difference so as to allow
+      the transmitting to said memory register means (8) a new group of sampling
+      information values; and, wherein said average calculating means (12) will
+      average all the memorized information values of a group of information
+      values when all said information values are lower than or equal to a
+      maximum allowable set of values predetermined by said elimination means;
+      and, said utilization means (14) being indicating and/or recording means
+      for recording the average value of a group of sampled information values
+      transmitted from said average calculating means.

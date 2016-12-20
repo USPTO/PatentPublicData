@@ -28,6 +28,7 @@ import gov.uspto.patent.doc.greenbook.fragments.ExaminerNode;
 import gov.uspto.patent.doc.greenbook.fragments.InventorNode;
 import gov.uspto.patent.doc.greenbook.fragments.PatentTypeNode;
 import gov.uspto.patent.doc.greenbook.fragments.PctRegionalIdNode;
+import gov.uspto.patent.doc.greenbook.fragments.PriorityClaimNode;
 import gov.uspto.patent.doc.greenbook.fragments.RelatedIdNode;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
@@ -110,6 +111,7 @@ public class Greenbook extends KvParser {
 
         Set<Classification> classifications = new ClassificationNode(document).read();
 
+        List<DocumentId> priorityIds = new PriorityClaimNode(document).read();
         List<DocumentId> relatedIds = new RelatedIdNode(document).read();
         List<Citation> citations = new CitationNode(document).read();
 
@@ -139,6 +141,10 @@ public class Greenbook extends KvParser {
         }
 
         patent.setApplicationId(applicationId);
+        patent.addPriorityId(priorityIds);
+        patent.addOtherId(priorityIds);
+        patent.addRelationIds(priorityIds);
+
         patent.addOtherId(applicationId);
         patent.addOtherId(pctRegionalIds);
         patent.addRelationIds(relatedIds);
