@@ -55,7 +55,7 @@ public class DocNode extends ItemReader<DocumentId> {
      */
     public DocNode(Node itemNode, CountryCode fallbackCountryCode) {
         super(itemNode);
-        this.fallbackCountryCode = fallbackCountryCode;
+        this.fallbackCountryCode = fallbackCountryCode != null ? fallbackCountryCode : DEFAULT_COUNTRYCODE;
     }
 
     @Override

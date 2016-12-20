@@ -26,6 +26,7 @@ import gov.uspto.patent.doc.sgml.fragments.DocumentIdNode;
 import gov.uspto.patent.doc.sgml.fragments.ExaminerNode;
 import gov.uspto.patent.doc.sgml.fragments.InventorNode;
 import gov.uspto.patent.doc.sgml.fragments.PctRegionalIdNode;
+import gov.uspto.patent.doc.sgml.fragments.PriorityClaimsNode;
 import gov.uspto.patent.doc.sgml.fragments.RelatedIdNode;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
@@ -67,6 +68,7 @@ public class Sgml extends Dom4JParser {
 		
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
+	    List<DocumentId> priorityIds = new PriorityClaimsNode(document).read();
 	    List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
         List<DocumentId> relatedIds = new RelatedIdNode(document).read();
 
@@ -105,10 +107,13 @@ public class Sgml extends Dom4JParser {
 		if (applicationId != null && applicationId.getDate() != null) {
 				patent.setDateProduced(applicationId.getDate());
 		}
-				
+
 		patent.setApplicationId(applicationId);
+		patent.addPriorityId(priorityIds);
+		patent.addOtherId(priorityIds);
 		patent.addOtherId(applicationId);
 		patent.addOtherId(pctRegionalIds);
+		patent.addRelationIds(priorityIds);
 		patent.addRelationIds(relatedIds);
 
 		patent.setTitle(title);
