@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -134,7 +135,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         @SuppressWarnings("unchecked")
-        List<IpcClassification> ipcClasses = (List<IpcClassification>) PatentClassification.filterByType(classes,
+        Set<IpcClassification> ipcClasses = (Set<IpcClassification>) PatentClassification.filterByType(classes,
                 ClassificationType.IPC);
         JsonArrayBuilder ipcAr = Json.createArrayBuilder();
         for (IpcClassification claz : ipcClasses) {
@@ -158,7 +159,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("ipc", ipcAr.build());
 
         @SuppressWarnings("unchecked")
-        List<UspcClassification> uspcClasses = (List<UspcClassification>) PatentClassification.filterByType(classes,
+        Set<UspcClassification> uspcClasses = (Set<UspcClassification>) PatentClassification.filterByType(classes,
                 ClassificationType.USPC);
         JsonArrayBuilder uspcAr = Json.createArrayBuilder();
         for (UspcClassification claz : uspcClasses) {
@@ -182,7 +183,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("uspc", uspcAr.build());
 
         @SuppressWarnings("unchecked")
-        List<CpcClassification> cpcClasses = (List<CpcClassification>) PatentClassification.filterByType(classes,
+        Set<CpcClassification> cpcClasses = (Set<CpcClassification>) PatentClassification.filterByType(classes,
                 ClassificationType.CPC);
         JsonArrayBuilder cpcAr = Json.createArrayBuilder();
         for (CpcClassification claz : cpcClasses) {

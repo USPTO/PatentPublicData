@@ -54,7 +54,7 @@ public class JsonMapperTest {
         JsonMapper json = new JsonMapper(false, false);
         JsonObject jsonObj = json.buildJson(patent);
         
-        System.out.println(jsonObj.toString());
+        //System.out.println(jsonObj.toString());
 
         //System.out.println(json.getPrettyPrint(jsonObj));
     }
