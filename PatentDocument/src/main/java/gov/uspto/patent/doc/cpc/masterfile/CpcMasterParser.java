@@ -5,17 +5,25 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.util.List;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TransferQueue;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Splitter;
+
 import gov.uspto.common.filter.SuffixFilter;
 import gov.uspto.patent.bulk.BulkArchive;
 import gov.uspto.patent.bulk.DumpFile;
+import gov.uspto.patent.model.classification.ClassificationPredicate;
+import gov.uspto.patent.model.classification.CpcClassification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.serialize.DocumentBuilder;
 import gov.uspto.patent.thread.DumpFileProcessThread;
 
@@ -48,7 +56,8 @@ public class CpcMasterParser extends BulkArchive {
 
     private DocumentBuilder<MasterClassificationRecord> docBuilder;
     private Path outputDir;
-
+    private Predicate<?> predicate;
+    
     private TransferQueue<Runnable> recordQueue;
 
     public CpcMasterParser(File file, DocumentBuilder<MasterClassificationRecord> docBuilder, Path outputDir) {
@@ -57,6 +66,13 @@ public class CpcMasterParser extends BulkArchive {
         this.docBuilder = docBuilder;
     }
 
+    public CpcMasterParser(File file, Predicate<?> predicate, DocumentBuilder<MasterClassificationRecord> docBuilder, Path outputDir) {
+        super(file, fileFilter);
+        this.outputDir = outputDir;
+        this.docBuilder = docBuilder;
+        this.predicate = predicate;
+    }
+    
     public void skipMasterDoc(int skip) {
         skip(skip);
     }
@@ -74,7 +90,7 @@ public class CpcMasterParser extends BulkArchive {
                 DumpFile dumpFile = next();
                 File outputFile = outputDir.resolve("cpc_master_" + dumpFile.getFile().getName() + ".csv").toFile();
 
-                DumpFileProcessThread workThread = new DumpFileProcessThread(dumpFile, reader, docBuilder, outputFile);
+                DumpFileProcessThread workThread = new DumpFileProcessThread(dumpFile, reader, docBuilder, outputFile); // @TODO add predicate.
 
                 if (recordQueue.size() < maxThreads * 3) {
                     recordQueue.add(workThread);
@@ -112,6 +128,7 @@ public class CpcMasterParser extends BulkArchive {
                         .defaultsTo(0);
                 accepts("threads").withOptionalArg().ofType(Integer.class).describedAs("Threads to spawn").defaultsTo(5);
                 accepts("outdir").withOptionalArg().ofType(String.class).describedAs("directory").defaultsTo("output");
+                accepts("cpc").withOptionalArg().ofType(String.class).describedAs("comma separated list of CPC Classifications");
             }
         };
 
@@ -134,6 +151,30 @@ public class CpcMasterParser extends BulkArchive {
         int threads = (Integer) options.valueOf("threads");
         String outDir = (String) options.valueOf("outdir");
         Path outputPath = Paths.get(outDir);
+
+        /*
+         * Cpc Predicates
+         */
+        String cpcInput = (String) options.valueOf("cpc");
+        Predicate<PatentClassification> predicate = null;
+        if (cpcInput != null){
+        	Iterable<String> wantedCpcClasses = Splitter.on(',').trimResults().omitEmptyStrings().split(cpcInput);
+        	for(String wantedCpc: wantedCpcClasses){
+        		
+				try {
+					CpcClassification cpcClass = new CpcClassification();
+					cpcClass.parseText(wantedCpc);
+	        		if (predicate == null){
+	        			predicate = ClassificationPredicate.isContained(cpcClass);
+	        		}
+	        		else {
+	        			predicate.or(ClassificationPredicate.isContained(cpcClass));
+	        		}
+				} catch (ParseException e) {
+					LOGGER.error("Failed to parse provided CPC Classification: " + wantedCpc, e);
+				}
+        	}
+        }
 
         if (!outputPath.toFile().isDirectory()) {
             outputPath.toFile().mkdir();

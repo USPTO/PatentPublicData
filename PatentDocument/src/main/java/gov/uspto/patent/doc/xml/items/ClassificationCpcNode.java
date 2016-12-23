@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.CpcClassification;
 
 /*
@@ -38,7 +38,7 @@ import gov.uspto.patent.model.classification.CpcClassification;
 	</classifications-cpc>	
 */
 
-public class ClassificationCpcNode extends ItemReader<Classification> {
+public class ClassificationCpcNode extends ItemReader<PatentClassification> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationCpcNode.class);
 
 	public ClassificationCpcNode(Node itemNode){
@@ -46,7 +46,7 @@ public class ClassificationCpcNode extends ItemReader<Classification> {
 	}
 
 	@Override
-	public Classification read() {
+	public PatentClassification read() {
 
 		Node cpcN = itemNode.selectSingleNode("classification-cpc");
 		if (cpcN != null){
@@ -57,7 +57,7 @@ public class ClassificationCpcNode extends ItemReader<Classification> {
 			String mainGroup = cpcN.selectSingleNode("main-group").getText();
 			String subgroup = cpcN.selectSingleNode("subgroup").getText();
 
-			CpcClassification cpcClass = new CpcClassification(null);
+			CpcClassification cpcClass = new CpcClassification();
 			cpcClass.setSection(section);
 			cpcClass.setMainClass(mainClass);
 			cpcClass.setSubClass(subclass);
@@ -74,7 +74,8 @@ public class ClassificationCpcNode extends ItemReader<Classification> {
 			
 			CpcClassification classification = null;
 			try {
-				classification = CpcClassification.fromText(classTxt.getText());
+				classification = new CpcClassification();
+				classification.parseText(classTxt.getText());
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to parse CPC classification: {}", classTxt.asXML());
 
@@ -88,7 +89,8 @@ public class ClassificationCpcNode extends ItemReader<Classification> {
 			
 			CpcClassification classification;
 			try {
-				classification = CpcClassification.fromText(mainClass.getText());
+				classification = new CpcClassification();
+				classification.parseText(mainClass.getText());
 			} catch (ParseException e1) {
 				LOGGER.warn("Failed to parse CPC classification: {}", mainClass.asXML());
 				return null;
@@ -99,7 +101,8 @@ public class ClassificationCpcNode extends ItemReader<Classification> {
 			for (Node subclass: furtherClasses){
 				
 				try {
-					CpcClassification cpcClass = CpcClassification.fromText(subclass.getText());
+					CpcClassification cpcClass = new CpcClassification();
+					cpcClass.parseText(subclass.getText());
 					classification.addChild( cpcClass  );
 				} catch (ParseException e) {
 					LOGGER.warn("Failed to parse CPC classification: {}", subclass.asXML());

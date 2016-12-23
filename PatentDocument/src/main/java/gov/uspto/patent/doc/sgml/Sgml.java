@@ -38,7 +38,7 @@ import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.PatentType;
 import gov.uspto.patent.model.UsKindCode2PatentType;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Examiner;
@@ -78,7 +78,7 @@ public class Sgml extends Dom4JParser {
 			title = titleN.getText();
 		}
 
-		Set<Classification> classifications = new ClassificationNode(document).read();
+		Set<PatentClassification> classifications = new ClassificationNode(document).read();
 		List<Inventor> inventors = new InventorNode(document).read();
 		List<Assignee> assignees = new AssigneeNode(document).read();
 		List<Agent> agents = new AgentNode(document).read();
@@ -118,7 +118,7 @@ public class Sgml extends Dom4JParser {
 
 		patent.setTitle(title);
 		if (classifications != null) {
-			patent.addClassification(new ArrayList<Classification>(classifications));
+			patent.addClassification(new ArrayList<PatentClassification>(classifications));
 		}
 		patent.setInventor(inventors);
 		patent.setAssignee(assignees);

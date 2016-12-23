@@ -11,11 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
-public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
+public class ClassificationNode extends DOMFragmentReader<Set<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNode.class);
 
 	private final String IPC_SECTION = "/PATDOC/SDOBI/B500/B510";
@@ -26,14 +26,14 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 	}
 
 	@Override
-	public Set<Classification> read() {
+	public Set<PatentClassification> read() {
 		Node ipcNode = document.selectSingleNode(IPC_SECTION);
-		Set<Classification> ipcClasses = readIPC(ipcNode);
+		Set<PatentClassification> ipcClasses = readIPC(ipcNode);
 
 		Node uspcNode = document.selectSingleNode(USPC_SECTION);
-		Set<Classification> uspcClasses = readUSPC(uspcNode);
+		Set<PatentClassification> uspcClasses = readUSPC(uspcNode);
 
-		Set<Classification> classifications = new LinkedHashSet<Classification>();
+		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 		if (ipcClasses != null) {
 			classifications.addAll(ipcClasses);
 		}
@@ -45,12 +45,12 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		return classifications;
 	}
 
-	public Set<Classification> readIPC(Node ipcNode) {
+	public Set<PatentClassification> readIPC(Node ipcNode) {
 		if (ipcNode == null) {
 			return null;
 		}
 
-		Set<Classification> classifications = new LinkedHashSet<Classification>();
+		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
 		//Node ipcEditionN = ipcClassNode.selectSingleNode("B516/PDAT");
 
@@ -59,7 +59,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		Node ipcPrimaryN = ipcNode.selectSingleNode("B511/PDAT");
 		if (ipcPrimaryN != null) {
 			try {
-				IpcClassification ipc = IpcClassification.fromText(ipcPrimaryN.getText());
+				IpcClassification ipc = new IpcClassification();
+				ipc.parseText(ipcPrimaryN.getText());
 				ipc.setIsMainClassification(true);
 				classifications.add(ipc);
 			} catch (ParseException e) {
@@ -73,7 +74,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		List<Node> ipcSecondaryNodes = ipcNode.selectNodes("B516/PDAT");
 		for (Node ipcN : ipcSecondaryNodes) {
 			try {
-				IpcClassification ipc = IpcClassification.fromText(ipcN.getText());
+				IpcClassification ipc = new IpcClassification();
+				ipc.parseText(ipcN.getText());
 				classifications.add(ipc);
 			} catch (ParseException e) {
 				LOGGER.debug("Failed to Parse Secondary IPC Classification: '{}' from : {}", ipcN.getText(),
@@ -84,19 +86,20 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		return classifications;
 	}
 
-	public Set<Classification> readUSPC(Node uspcNode) {
+	public Set<PatentClassification> readUSPC(Node uspcNode) {
 		if (uspcNode == null) {
 			return null;
 		}
 
-		Set<Classification> classifications = new LinkedHashSet<Classification>();
+		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
 		// Primary USPC classification.
 		@SuppressWarnings("unchecked")
 		Node uspcPrimaryN = uspcNode.selectSingleNode("B521/PDAT");
 		if (uspcPrimaryN != null) {
 			try {
-				UspcClassification uspc = UspcClassification.fromText(uspcPrimaryN.getText());
+				UspcClassification uspc = new UspcClassification();
+				uspc.parseText(uspcPrimaryN.getText());
 				uspc.setIsMainClassification(true);
 				classifications.add(uspc);
 			} catch (ParseException e) {
@@ -110,7 +113,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		List<Node> uspcNodes = uspcNode.selectNodes("B522/PDAT");
 		for (Node uspcN : uspcNodes) {
 			try {
-				UspcClassification uspc = UspcClassification.fromText(uspcN.getText());
+				UspcClassification uspc = new UspcClassification();
+				uspc.parseText(uspcN.getText());
 				classifications.add(uspc);
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to Parse Secondary USPC Classification: '{}' from : {}", uspcN.getText(),
@@ -123,7 +127,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		List<Node> uspcNodes2 = uspcNode.selectNodes("B522US/PDAT");
 		for (Node uspcN : uspcNodes2) {
 			try {
-				UspcClassification uspc = UspcClassification.fromText(uspcN.getText());
+				UspcClassification uspc = new UspcClassification();
+				uspc.parseText(uspcN.getText());
 				classifications.add(uspc);
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to Parse Secondary USPC Classification: '{}' from : {}", uspcN.getText(),

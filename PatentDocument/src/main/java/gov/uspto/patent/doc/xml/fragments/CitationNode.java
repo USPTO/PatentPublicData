@@ -15,7 +15,7 @@ import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
 import gov.uspto.patent.model.PatCitation;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 
 /**
  * 
@@ -107,17 +107,17 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 			PatCitation citation = new PatCitation(num, documentId, examinerCited);
 
-			Classification mainClassNational = new ClassificationNationalNode(patcit.getParent()).read();
+			PatentClassification mainClassNational = new ClassificationNationalNode(patcit.getParent()).read();
 			if (mainClassNational != null){
 			    citation.setClassification(mainClassNational);
 			}
 
-	        Classification mainClassCpc = new ClassificationCpcNode(patcit.getParent()).read();
+	        PatentClassification mainClassCpc = new ClassificationCpcNode(patcit.getParent()).read();
 	        if (mainClassCpc != null){
 	            citation.setClassification(mainClassCpc);
 	        }
 	        
-            Classification mainClassIpc = new ClassificationIPCNode(patcit.getParent()).read();
+            PatentClassification mainClassIpc = new ClassificationIPCNode(patcit.getParent()).read();
             if (mainClassCpc != null){
                 citation.setClassification(mainClassIpc);
             }

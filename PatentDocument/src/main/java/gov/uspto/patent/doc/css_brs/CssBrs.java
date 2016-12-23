@@ -39,7 +39,7 @@ import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.PatentType;
 import gov.uspto.patent.model.UsKindCode2PatentType;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Examiner;
@@ -74,7 +74,7 @@ public class CssBrs extends KvParser {
         List<Assignee> assignees = new AssigneeNode(document).read();
         List<Agent> agents = new AgentNode(document).read();
 
-        Set<Classification> classifications = new ClassificationNode(document).read();
+        Set<PatentClassification> classifications = new ClassificationNode(document).read();
 
         List<DocumentId> relatedIds = new RelatedIdNode(document).read();
         List<Citation> citations = new CitationNode(document).read();
@@ -112,7 +112,7 @@ public class CssBrs extends KvParser {
         // patent.setReferenceIds(referencedIds);
 
         if (classifications != null) {
-            patent.addClassification(new ArrayList<Classification>(classifications));
+            patent.addClassification(new ArrayList<PatentClassification>(classifications));
         }
 
         //patent.setAbstract(abstractText);

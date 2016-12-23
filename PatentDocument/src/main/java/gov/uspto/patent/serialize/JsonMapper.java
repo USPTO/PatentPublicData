@@ -32,7 +32,7 @@ import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
 import gov.uspto.patent.model.PatCitation;
 import gov.uspto.patent.model.Patent;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.ClassificationType;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
@@ -130,27 +130,27 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         return output;
     }
 
-    private JsonObject mapClassifications(Collection<? extends Classification> classes) {
+    private JsonObject mapClassifications(Collection<? extends PatentClassification> classes) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         @SuppressWarnings("unchecked")
-        List<IpcClassification> ipcClasses = (List<IpcClassification>) Classification.getByType(classes,
+        List<IpcClassification> ipcClasses = (List<IpcClassification>) PatentClassification.filterByType(classes,
                 ClassificationType.IPC);
         JsonArrayBuilder ipcAr = Json.createArrayBuilder();
         for (IpcClassification claz : ipcClasses) {
             JsonObjectBuilder ipcObj = Json.createObjectBuilder();
             ipcObj.add("type", "main");
             ipcObj.add("raw", claz.toText());
-            ipcObj.add("normalized", claz.toTextNormalized());
+            ipcObj.add("normalized", claz.getTextNormalized());
             ipcObj.add("facets", toJsonArray(claz.toFacet()));
             ipcAr.add(ipcObj.build());
 
             JsonObjectBuilder ipcObj2 = Json.createObjectBuilder();
-            for (Classification furtherClassification : claz.getChildren()) {
+            for (PatentClassification furtherClassification : claz.getChildren()) {
                 IpcClassification furtherIpc = (IpcClassification) furtherClassification;
                 ipcObj2.add("type", "further");
                 ipcObj2.add("raw", furtherIpc.toText());
-                ipcObj2.add("normalized", furtherIpc.toTextNormalized());
+                ipcObj2.add("normalized", furtherIpc.getTextNormalized());
                 ipcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
             }
             ipcAr.add(ipcObj2.build());
@@ -158,23 +158,23 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("ipc", ipcAr.build());
 
         @SuppressWarnings("unchecked")
-        List<UspcClassification> uspcClasses = (List<UspcClassification>) Classification.getByType(classes,
+        List<UspcClassification> uspcClasses = (List<UspcClassification>) PatentClassification.filterByType(classes,
                 ClassificationType.USPC);
         JsonArrayBuilder uspcAr = Json.createArrayBuilder();
         for (UspcClassification claz : uspcClasses) {
             JsonObjectBuilder uspcObj = Json.createObjectBuilder();
             uspcObj.add("type", "main");
             uspcObj.add("raw", claz.toText());
-            uspcObj.add("normalized", claz.toTextNormalized());
+            uspcObj.add("normalized", claz.getTextNormalized());
             uspcObj.add("facets", toJsonArray(claz.toFacet()));
             uspcAr.add(uspcObj.build());
 
             JsonObjectBuilder uspcObj2 = Json.createObjectBuilder();
-            for (Classification furtherClassification : claz.getChildren()) {
+            for (PatentClassification furtherClassification : claz.getChildren()) {
                 UspcClassification furtherIpc = (UspcClassification) furtherClassification;
                 uspcObj2.add("type", "further");
                 uspcObj2.add("raw", furtherIpc.toText());
-                uspcObj2.add("normalized", furtherIpc.toTextNormalized());
+                uspcObj2.add("normalized", furtherIpc.getTextNormalized());
                 uspcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
             }
             uspcAr.add(uspcObj2.build());
@@ -182,23 +182,23 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("uspc", uspcAr.build());
 
         @SuppressWarnings("unchecked")
-        List<CpcClassification> cpcClasses = (List<CpcClassification>) Classification.getByType(classes,
+        List<CpcClassification> cpcClasses = (List<CpcClassification>) PatentClassification.filterByType(classes,
                 ClassificationType.CPC);
         JsonArrayBuilder cpcAr = Json.createArrayBuilder();
         for (CpcClassification claz : cpcClasses) {
             JsonObjectBuilder cpcObj = Json.createObjectBuilder();
             cpcObj.add("type", "main");
             cpcObj.add("raw", claz.toText());
-            cpcObj.add("normalized", claz.toTextNormalized());
+            cpcObj.add("normalized", claz.getTextNormalized());
             cpcObj.add("facets", toJsonArray(claz.toFacet()));
             cpcAr.add(cpcObj.build());
 
             JsonObjectBuilder cpcObj2 = Json.createObjectBuilder();
-            for (Classification furtherClassification : claz.getChildren()) {
+            for (PatentClassification furtherClassification : claz.getChildren()) {
                 CpcClassification furtherIpc = (CpcClassification) furtherClassification;
                 cpcObj2.add("type", "further");
                 cpcObj2.add("raw", furtherIpc.toText());
-                cpcObj2.add("normalized", furtherIpc.toTextNormalized());
+                cpcObj2.add("normalized", furtherIpc.getTextNormalized());
                 cpcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
             }
             cpcAr.add(cpcObj2.build());

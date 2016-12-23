@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import gov.uspto.patent.InvalidDataException;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
 import gov.uspto.patent.model.entity.Assignee;
@@ -71,7 +71,7 @@ public abstract class Patent {
 	private Description description;
 
 	private List<Citation> citations = new ArrayList<Citation>();
-	private Set<Classification> classifications = new HashSet<Classification>();
+	private Set<PatentClassification> classifications = new HashSet<PatentClassification>();
 	private List<Claim> claims = new ArrayList<Claim>();
 
 	private List<Inventor> inventors = new ArrayList<Inventor>();
@@ -197,19 +197,19 @@ public abstract class Patent {
 		this.description = description;
 	}
 
-	public Set<Classification> getClassification() {
+	public Set<PatentClassification> getClassification() {
 		return classifications;
 	}
 
-	public void setClassification(Set<Classification> classifications) {
+	public void setClassification(Set<PatentClassification> classifications) {
 		this.classifications = classifications;
 	}
 
-	public void addClassification(List<Classification> classification) {
+	public void addClassification(List<PatentClassification> classification) {
 		classifications.addAll(classification);
 	}
 
-	public void addClassification(Classification classification) {
+	public void addClassification(PatentClassification classification) {
 		classifications.add(classification);
 	}
 

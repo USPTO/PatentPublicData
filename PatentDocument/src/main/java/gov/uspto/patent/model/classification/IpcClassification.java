@@ -1,8 +1,6 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +26,7 @@ import java.util.regex.Pattern;
  * @see http://www.wipo.int/export/sites/www/classifications/ipc/en/guide/guide_ipc.pdf}
  * @see http://web2.wipo.int/ipcpub}
  */
-public class IpcClassification extends Classification {
+public class IpcClassification extends PatentClassification {
 	
 	private final static Pattern REGEX_OLD = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
 
@@ -42,8 +40,9 @@ public class IpcClassification extends Classification {
 	private String mainGroup;
 	private String subGroup;
 	
-	public IpcClassification(String originalText) {
-		super(ClassificationType.IPC, originalText);
+	@Override
+	public ClassificationType getType() {
+		return ClassificationType.IPC;
 	}
 
 	public String getSection() {
@@ -85,26 +84,14 @@ public class IpcClassification extends Classification {
 	public void setSubGroup(String subGroup) {
 		this.subGroup = subGroup;
 	}
-
-	/**
-	 * Facets used for Search
-	 * 
-	 * D07B2201/2051 => [0/D, 1/D/D07, 2/D/D07/D07B, 3/D/D07/D07B/D07B2201, 4/D/D07/D07B/D07B2201/D07B22012051]
-	 * 
-	 */
-	public List<String> toFacet() {
-		return Classification.partsToFacet(section, mainClass, subClass, mainGroup, subGroup);
+	
+	@Override
+	public String[] getParts() {
+		return new String[]{section, mainClass, subClass, mainGroup, subGroup};
 	}
 
-	public String toText(){
-		if (super.getText() != null && super.getText().length() > 3){
-			return super.getText();
-		} else {
-			return toTextNormalized();
-		}
-	}
-
-	public String toTextNormalized(){
+	@Override
+	public String getTextNormalized(){
 		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
 		
 		if (subClass != null){
@@ -170,10 +157,17 @@ public class IpcClassification extends Classification {
 		return classDepth;
 	}
 
-	public boolean equalOrUnder(CpcClassification cpc){
-		if (cpc == null) {
+	@Override
+	public boolean isContained(PatentClassification check){
+		if (check == null) {
 			return false;
 		}
+		if (getClass() != check.getClass()) {
+			return false;
+		}
+		
+		IpcClassification cpc = (IpcClassification) check;
+
 		int depth = getDepth();
 		if (depth == 5){
 			if (section.equals(cpc.getSection()) 
@@ -223,41 +217,13 @@ public class IpcClassification extends Classification {
 		}
 		final CpcClassification other = (CpcClassification) obj;
 		
-		if (other.getDepth() == getDepth() && equalOrUnder(other)){
+		if (other.getDepth() == getDepth() && isContained(other)){
 			return true;
 		}
 
 		return false;
 	}
-	
 
-	@Override
-	public String toString() {
-		return "IpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", toText()=" + toText()
-				+ ", toTextNormalized()=" + toTextNormalized() + ", standardize()=" + standardize() + ", getDepth()="
-				+ getDepth() + ", originalText()=" + super.getText() + "]";
-	}
-
-    /**
-     * Generate List of IpcClassifications from list of Facets.
-     * 
-     * @param classificationFacets
-     */
-    public static List<IpcClassification> fromFacets(final List<String> classificationFacets) {
-        List<String> specificClasses = getMostSpecificClasses(classificationFacets);
-        List<IpcClassification> retClasses = new ArrayList<IpcClassification>();
-        for (String textClass : specificClasses) {
-            try {
-                IpcClassification ipcClass = fromText(textClass);
-                retClasses.add(ipcClass);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return retClasses;
-    }
-	
 	/**
 	 * Parse classification text to create IpcClassification
 	 * 
@@ -265,7 +231,8 @@ public class IpcClassification extends Classification {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static IpcClassification fromText(final String classificationStr) throws ParseException {
+	public void parseText(final String classificationStr) throws ParseException {
+		super.setTextOriginal(classificationStr);
 
 		Matcher matcher = REGEX_OLD.matcher(classificationStr);
 		if ( matcher.matches() ){
@@ -275,14 +242,12 @@ public class IpcClassification extends Classification {
 			String mainGroup = matcher.group(4).replace(' ', '0');
 			String subGroup = matcher.group(5);
 
-			IpcClassification classification = new IpcClassification(classificationStr);
-		    classification.setSection(section);
-		    classification.setMainClass(mainClass);
-		    classification.setSubClass(subClass);
-		    classification.setMainGroup(mainGroup);
-		    classification.setSubGroup(subGroup);
-
-		    return classification;
+		    setSection(section);
+		    setMainClass(mainClass);
+		    setSubClass(subClass);
+		    setMainGroup(mainGroup);
+		    setSubGroup(subGroup);
+		    return;
 		}
 
 		Matcher fullMatch = REGEX.matcher(classificationStr);
@@ -293,24 +258,20 @@ public class IpcClassification extends Classification {
 			String mainGroup = fullMatch.group(4);
 			String subGroup = fullMatch.group(5);
 
-			IpcClassification classification = new IpcClassification(classificationStr);
-			classification.setSection(section);
-			classification.setMainClass(mainClass);
-			classification.setSubClass(subClass);
-			classification.setMainGroup(mainGroup);
-			classification.setSubGroup(subGroup);
-
-			return classification;
+			setSection(section);
+			setMainClass(mainClass);
+			setSubClass(subClass);
+			setMainGroup(mainGroup);
+			setSubGroup(subGroup);
+			return;
 		} else if (classificationStr.length() == 3) {
 			Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
 			if (matchL3.matches()) {
 				String section = matchL3.group(1);
 				String mainClass = matchL3.group(2);
-				IpcClassification classification = new IpcClassification(classificationStr);
-				classification.setSection(section);
-				classification.setMainClass(mainClass);
-
-				return classification;
+				setSection(section);
+				setMainClass(mainClass);
+				return;
 			}
 		} else if (classificationStr.length() == 4) {
 			Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
@@ -319,16 +280,21 @@ public class IpcClassification extends Classification {
 				String mainClass = matchL4.group(2);
 				String subClass = matchL4.group(3);
 
-				IpcClassification classification = new IpcClassification(classificationStr);
-				classification.setSection(section);
-				classification.setMainClass(mainClass);
-				classification.setSubClass(subClass);
-
-				return classification;
+				setSection(section);
+				setMainClass(mainClass);
+				setSubClass(subClass);
+				return;
 			}
+		} else {
+			throw new ParseException("Failed to regex parse IPC Classification: " + classificationStr, 0);
 		}
-		
-		throw new ParseException("Failed to regex parse IPC Classification: " + classificationStr, 0);
-	}	
-	
+	}
+
+	@Override
+	public String toString() {
+		return "IpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", toText()=" + toText()
+				+ ", getTextNormalized()=" + getTextNormalized() + ", standardize()=" + standardize() + ", getDepth()="
+				+ getDepth() + ", getTextOriginal()=" + super.getTextOriginal() + "]";
+	}
 }

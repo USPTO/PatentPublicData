@@ -10,9 +10,9 @@ import org.dom4j.Node;
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.doc.xml.items.ClassificationCpcNode;
 import gov.uspto.patent.doc.xml.items.ClassificationNationalNode;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 
-public class ClassificationSearchNode extends DOMFragmentReader<Set<Classification>> {
+public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassification>> {
 		private static final String FRAGMENT_PATH = "//us-field-of-classification-search"; // Only PGPub.
 
 		private Node parentPath;
@@ -29,8 +29,8 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<Classificati
 		}
 
 		@Override
-		public Set<Classification> read() {
-			Set<Classification> classifications = new HashSet<Classification>();
+		public Set<PatentClassification> read() {
+			Set<PatentClassification> classifications = new HashSet<PatentClassification>();
 			
 			@SuppressWarnings("unchecked")
 			List<Node> nationalN = parentPath.selectNodes("classification-national");
@@ -38,7 +38,7 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<Classificati
 				classifications.add( new ClassificationNationalNode(classNode).read() );
 			}
 	
-			Classification classification = new ClassificationCpcNode(parentPath).read();
+			PatentClassification classification = new ClassificationCpcNode(parentPath).read();
 			if (classification != null){
 				classifications.add( classification );
 			}

@@ -1,22 +1,22 @@
 package gov.uspto.patent.model;
 
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 
 public class PatCitation extends Citation {
 
 	private final DocumentId documentId;
-	private Classification mainClassification;
+	private PatentClassification mainClassification;
 
 	public PatCitation(String num, DocumentId documentId, boolean examinerCited) {
 		super(num, CitationType.PATCIT, examinerCited);
 		this.documentId = documentId;
 	}
 
-	public void setClassification(Classification mainClassification) {
+	public void setClassification(PatentClassification mainClassification) {
 		this.mainClassification = mainClassification;
 	}
 
-	public Classification getClassification() {
+	public PatentClassification getClassification() {
 		return mainClassification;
 	}
 

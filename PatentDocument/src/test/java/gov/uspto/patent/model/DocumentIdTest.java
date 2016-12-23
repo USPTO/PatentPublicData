@@ -1,4 +1,4 @@
-package gov.uspto.document.model;
+package gov.uspto.patent.model;
 
 import static org.junit.Assert.*;
 

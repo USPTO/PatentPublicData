@@ -33,7 +33,7 @@ import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
@@ -301,16 +301,18 @@ public class Corpus {
 
         LOGGER.info("Request: {}", yearMap);
 
-		List<Classification> wantedClasses = new ArrayList<Classification>();
+		List<PatentClassification> wantedClasses = new ArrayList<PatentClassification>();
 		List<String> cpcs = Splitter.on(',').omitEmptyStrings().trimResults().splitToList(cpc);
 		for (String cpcStr : cpcs) {
-			CpcClassification cpcClass = CpcClassification.fromText(cpcStr);
+			CpcClassification cpcClass = new CpcClassification();
+			cpcClass.parseText(cpcStr);
 			wantedClasses.add(cpcClass);
 		}
 
 		List<String> uspcs = Splitter.on(',').omitEmptyStrings().trimResults().splitToList(uspc);
 		for (String uspcStr : uspcs) {
-			UspcClassification usClass = UspcClassification.fromText(uspcStr);
+			UspcClassification usClass = new UspcClassification();
+			usClass.parseText(uspcStr);
 			wantedClasses.add(usClass);
 		}
 

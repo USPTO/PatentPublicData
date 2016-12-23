@@ -1,6 +1,7 @@
 package gov.uspto.bulkdata.corpusbuilder;
 
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -10,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import gov.uspto.bulkdata.find.PatternMatcher;
 import gov.uspto.bulkdata.find.PatternXPath;
 import gov.uspto.patent.PatentDocFormat;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.ClassificationType;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
@@ -24,13 +25,13 @@ import gov.uspto.patent.model.classification.UspcClassification;
 public class MatchClassificationXPath implements CorpusMatch<MatchClassificationXPath> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatchClassificationXPath.class);
 
-	private final List<Classification> wantedClasses;
+	private final List<PatentClassification> wantedClasses;
 	private PatternMatcher matcher;
 	private String xmlDocStr;
 
 	private PatentDocFormat patentDocFormat;
 
-	public MatchClassificationXPath(List<Classification> wantedClasses){
+	public MatchClassificationXPath(List<PatentClassification> wantedClasses){
 		this.wantedClasses = wantedClasses;
 	}
 
@@ -39,18 +40,20 @@ public class MatchClassificationXPath implements CorpusMatch<MatchClassification
 		matcher = new PatternMatcher();
 
 		@SuppressWarnings("unchecked")
-        List<CpcClassification> cpcClasses = (List<CpcClassification>) Classification.getByType(wantedClasses, ClassificationType.CPC);
-		for (CpcClassification cpcClass : cpcClasses) {
-			String CPCXpathStr = buildCPCxPathString(cpcClass);
+		SortedSet<PatentClassification> cpcClasses = PatentClassification.filterByType(wantedClasses, ClassificationType.CPC);
+		for (PatentClassification cpcClass : cpcClasses) {
+			CpcClassification cpc = (CpcClassification) cpcClass;
+			String CPCXpathStr = buildCPCxPathString(cpc);
 			LOGGER.debug("CPC xPath: {}", CPCXpathStr);
 			PatternXPath CPC = new PatternXPath(CPCXpathStr);
 			matcher.add(CPC);
 		}
 
 		@SuppressWarnings("unchecked")
-        List<UspcClassification> uspcClasses = (List<UspcClassification>) Classification.getByType(wantedClasses, ClassificationType.USPC);
-		for (UspcClassification uspcClass : uspcClasses) {
-			String UspcXpathStr = buildUSPCxPathString(uspcClass);
+		SortedSet<PatentClassification> uspcClasses = PatentClassification.filterByType(wantedClasses, ClassificationType.USPC);
+		for (PatentClassification uspcClass : uspcClasses) {
+			UspcClassification uspc = (UspcClassification) uspcClass;
+			String UspcXpathStr = buildUSPCxPathString(uspc);
 			LOGGER.debug("USPC xPath: {}", UspcXpathStr);
 			PatternXPath USPC = new PatternXPath(UspcXpathStr);
 			matcher.add(USPC);

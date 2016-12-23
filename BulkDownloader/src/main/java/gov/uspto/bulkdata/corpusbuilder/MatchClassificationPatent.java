@@ -3,6 +3,7 @@ package gov.uspto.bulkdata.corpusbuilder;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -13,7 +14,7 @@ import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.ClassificationType;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
@@ -27,23 +28,22 @@ import gov.uspto.patent.model.classification.UspcClassification;
 public class MatchClassificationPatent implements CorpusMatch<MatchClassificationPatent> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatchClassificationPatent.class);
 
-	private final List<Classification> wantedClasses;
+	private final List<PatentClassification> wantedClasses;
 
-	private List<CpcClassification> wantedCPC;
-	private List<UspcClassification> wantedUSPC;
+	private SortedSet<PatentClassification> wantedCPC;
+	private SortedSet<PatentClassification> wantedUSPC;
 	private Patent patent;
 	private String lastPatternMatch;
 
-	public MatchClassificationPatent(List<Classification> wantedClasses) {
+	public MatchClassificationPatent(List<PatentClassification> wantedClasses) {
 		this.wantedClasses = wantedClasses;
 	}
 
 	@SuppressWarnings("unchecked")
     @Override
 	public void setup() throws XPathExpressionException {
-		wantedCPC = (List<CpcClassification>) Classification.getByType(wantedClasses, ClassificationType.CPC);
-		wantedUSPC = (List<UspcClassification>) Classification.getByType(wantedClasses, ClassificationType.USPC);
-
+		wantedCPC = PatentClassification.filterByType(wantedClasses, ClassificationType.CPC);
+		wantedUSPC = PatentClassification.filterByType(wantedClasses, ClassificationType.USPC);
 	}
 
 	@Override
@@ -67,11 +67,11 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 		}
 
 		@SuppressWarnings("unchecked")
-        List<CpcClassification> patentCPC = (List<CpcClassification>) Classification.getByType(patent.getClassification(), ClassificationType.CPC);
-		for (Classification wantedCpcClass : wantedCPC) {
+		SortedSet<PatentClassification> patentCPC = PatentClassification.filterByType(patent.getClassification(), ClassificationType.CPC);
+		for (PatentClassification wantedCpcClass : wantedCPC) {
 			CpcClassification wantedCpc = (CpcClassification) wantedCpcClass;
 
-			for (Classification cpcClass : patentCPC) {
+			for (PatentClassification cpcClass : patentCPC) {
 				CpcClassification cpc = (CpcClassification) cpcClass;
 				if (cpc.getSection() == wantedCpc.getSection() && cpc.getMainClass() == wantedCpc.getMainClass()
 						&& cpc.getSubClass() == wantedCpc.getSubClass()
@@ -83,11 +83,11 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 		}
 
 		@SuppressWarnings("unchecked")
-        List<UspcClassification> patentUSPC = (List<UspcClassification>) Classification.getByType(patent.getClassification(), ClassificationType.USPC);
-		for (Classification wantedUspcClass : wantedUSPC) {
+        SortedSet<PatentClassification> patentUSPC = PatentClassification.filterByType(patent.getClassification(), ClassificationType.USPC);
+		for (PatentClassification wantedUspcClass : wantedUSPC) {
 			UspcClassification wantedUspc = (UspcClassification) wantedUspcClass;
 
-			for (Classification usclass : patentUSPC) {
+			for (PatentClassification usclass : patentUSPC) {
 				UspcClassification uspc = (UspcClassification) usclass;
 
 				if (uspc.getMainClass().equals(wantedUspc.getMainClass())) {

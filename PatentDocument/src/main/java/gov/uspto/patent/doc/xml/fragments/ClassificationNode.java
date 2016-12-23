@@ -12,13 +12,13 @@ import gov.uspto.patent.doc.xml.items.ClassificationCpcNode;
 import gov.uspto.patent.doc.xml.items.ClassificationIPCNode;
 import gov.uspto.patent.doc.xml.items.ClassificationLocarnoNode;
 import gov.uspto.patent.doc.xml.items.ClassificationNationalNode;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 import gov.uspto.patent.model.classification.LocarnoClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
-public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
+public class ClassificationNode extends DOMFragmentReader<Set<PatentClassification>> {
     private static final String IPC_PATH2 = "//classifications-ipcr/classification-ipcr";
     private static final String IPC_PATH = "//classification-ipc";
     private static final String CPC_PATH = "//classifications-cpc"; // has sub classification-cpc
@@ -30,8 +30,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
     }
 
     @Override
-    public Set<Classification> read() {
-        Set<Classification> classifications = new LinkedHashSet<Classification>();
+    public Set<PatentClassification> read() {
+        Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
         @SuppressWarnings("unchecked")
         List<Node> uspc = document.selectNodes(USPC_PATH);

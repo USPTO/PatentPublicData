@@ -1,21 +1,13 @@
-package gov.uspto.document.model.classification;
+package gov.uspto.patent.model.classification;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.junit.Test;
-
-import com.google.common.collect.Sets;
-
-import gov.uspto.patent.model.classification.CpcClassification;
-import gov.uspto.patent.model.classification.UspcClassification;
 
 public class UspcClassificationTest {
 
@@ -57,12 +49,14 @@ public class UspcClassificationTest {
 
 	@Test(expected = ParseException.class)
 	public void failLongRange() throws ParseException {
-		UspcClassification.fromText("2989003-890054"); // range too long
+		UspcClassification uspc = new UspcClassification();
+		uspc.parseText("2989003-890054"); // range too long
 	}
 
 	@Test(expected = ParseException.class)
 	public void failBlank() throws ParseException {
-		UspcClassification.fromText("a");
+		UspcClassification uspc = new UspcClassification();
+		uspc.parseText("");
 	}
 
 	/*
@@ -92,31 +86,10 @@ public class UspcClassificationTest {
 
 	@Test
 	public void validParseCheck() throws ParseException {
-		for (Entry<String, String> uspc : validFromTo.entrySet()) {
-			UspcClassification uspcClass = UspcClassification.fromText(uspc.getKey());
-			assertEquals(uspc.getValue(), uspcClass.toTextNormalized());
+		for (Entry<String, String> check : validFromTo.entrySet()) {
+			UspcClassification uspc = new UspcClassification();
+			uspc.parseText(check.getKey());
+			assertEquals(check.getValue(), uspc.getTextNormalized());
 		}
-	}
-
-	@Test
-	public void testFacet() throws ParseException {
-		UspcClassification uspcClass = UspcClassification.fromText("PLT101");
-		List<String> facets = uspcClass.toFacet();
-		//System.out.println(facets);
-		
-		Set<String> expect = Sets.newHashSet("0/PLT", "1/PLT/PLT101000000");
-
-		assertTrue(facets.containsAll(expect));
-	}
-
-	@Test
-	public void testRangeFacet() throws ParseException {
-		UspcClassification uspcClass = UspcClassification.fromText("707  3-  5");
-		List<String> facets = uspcClass.toFacet();
-		//System.out.println(facets);
-
-		Set<String> expect = Sets.newHashSet("0/707", "1/707/707003000000", "1/707/707004000000", "1/707/707005000000");
-
-		assertTrue(facets.containsAll(expect));
 	}
 }

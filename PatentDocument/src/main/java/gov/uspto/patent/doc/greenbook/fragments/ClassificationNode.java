@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 import gov.uspto.patent.model.classification.LocarnoClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
@@ -51,7 +51,7 @@ import gov.uspto.patent.model.classification.UspcClassification;
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
-public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
+public class ClassificationNode extends DOMFragmentReader<Set<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNode.class);
 
 	private static final String FRAGMENT_PATH = "/DOCUMENT/CLAS";
@@ -69,8 +69,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 	}
 
 	@Override
-	public Set<Classification> read() {
-		Set<Classification> classifications = new LinkedHashSet<Classification>();
+	public Set<PatentClassification> read() {
+		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
 		@SuppressWarnings("unchecked")
 		List<Node> classNodes = document.selectNodes(FRAGMENT_PATH);
@@ -80,7 +80,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 				classifications.add(uspc);
 			}
 
-			Set<Classification> ipcClasses = getIPC(classN);
+			Set<PatentClassification> ipcClasses = getIPC(classN);
 			classifications.addAll(ipcClasses);
 		}
 
@@ -92,7 +92,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		if (uspcN != null) {
 			try {
 				String classStr = uspcN.getText().trim();
-				UspcClassification uspc = UspcClassification.fromText(classStr);
+				UspcClassification uspc = new UspcClassification();
+				uspc.parseText(classStr);
 				uspc.setIsMainClassification(true);
 				return uspc;
 			} catch (ParseException e) {
@@ -102,8 +103,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 		return null;
 	}
 
-	public Set<Classification> getIPC(Node classN) {
-	    Set<Classification> ipcClasses = new HashSet<Classification>();
+	public Set<PatentClassification> getIPC(Node classN) {
+	    Set<PatentClassification> ipcClasses = new HashSet<PatentClassification>();
 		List<Node> ipcNs = classN.selectNodes("ICL");
 
 		for(Node ipcN: ipcNs){
@@ -111,7 +112,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 				String classStr = ipcN.getText().trim();
 				classStr = classStr.replaceAll("\\s+", " ");
     			try {
-    				IpcClassification ipc = IpcClassification.fromText(classStr);
+    				IpcClassification ipc = new IpcClassification();
+    				ipc.parseText(classStr);
     				//ipc.setIsMainClassification(true);
     				ipcClasses.add(ipc);
     			} catch (ParseException e) {
@@ -124,7 +126,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
     						 * USPTO Design Patents started LocarnoClassification for International Classification May 6, 1997; only 1 per design patent.
     						 * US Design Patents are also assigned USPC Classifications. 
     						 */
-    						LocarnoClassification locarno = LocarnoClassification.fromText(classStr);
+    						LocarnoClassification locarno = new LocarnoClassification();
+    						locarno.parseText(classStr);
     						ipcClasses.add(locarno);
 						} catch (ParseException e1) {
 							LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), classN.asXML());

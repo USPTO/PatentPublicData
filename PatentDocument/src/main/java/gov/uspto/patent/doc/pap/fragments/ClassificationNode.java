@@ -11,24 +11,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
-public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
+public class ClassificationNode extends DOMFragmentReader<Set<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNode.class);
 
 	private static final String IPC_PATH = "/patent-application-publication/subdoc-bibliographic-information/technical-information/classification-ipc";
 	private static final String USPC_PATH = "/patent-application-publication/subdoc-bibliographic-information/technical-information/classification-us";
 
-	private Set<Classification> classifications = new LinkedHashSet<Classification>();
+	private Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
 	public ClassificationNode(Document document) {
 		super(document);
 	}
 
 	@Override
-	public Set<Classification> read() {
+	public Set<PatentClassification> read() {
 		readUSPC();
 		readIPC();
 		return classifications;
@@ -44,7 +44,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 				String mainClass = uspcPrimaryClassN.getText();
 				String subClass = uspcPrimarySubClassN.getText();
 
-				UspcClassification uspc = new UspcClassification(mainClass + subClass);
+				UspcClassification uspc = new UspcClassification();
+				uspc.setTextOriginal(mainClass + subClass);
 				uspc.setMainClass(mainClass);
 				uspc.setSubClass(subClass);
 				uspc.setIsMainClassification(true);
@@ -62,7 +63,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 					String mainClass = uspcPrimaryClassN.getText();
 					String subClass = subClassN.getText();
 					
-					UspcClassification uspc = new UspcClassification(mainClass + subClass);
+					UspcClassification uspc = new UspcClassification();
+					uspc.setTextOriginal(mainClass + subClass);
 					uspc.setMainClass(mainClass);
 					uspc.setSubClass(subClass);
 					classifications.add(uspc);
@@ -78,7 +80,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 			if (ipcPrimaryClassN != null){
 				String ipcPrimaryClassStr = ipcPrimaryClassN != null ? ipcPrimaryClassN.getText() : null;
 				try {
-					IpcClassification ipcPrimaryClass = IpcClassification.fromText(ipcPrimaryClassStr);
+					IpcClassification ipcPrimaryClass = new IpcClassification();
+					ipcPrimaryClass.parseText(ipcPrimaryClassStr);
 					ipcPrimaryClass.setIsMainClassification(true);
 					classifications.add(ipcPrimaryClass);
 				} catch (ParseException e) {
@@ -91,7 +94,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<Classification>> {
 			for(Node ipcSecoundary: ipcSecondaries){
 				String ipcSecondaryClassStr = ipcSecoundary != null ? ipcSecoundary.getText() : null;
 				try {
-					IpcClassification ipcSecondaryClass = IpcClassification.fromText(ipcSecondaryClassStr);
+					IpcClassification ipcSecondaryClass = new IpcClassification();
+					ipcSecondaryClass.parseText(ipcSecondaryClassStr);
 					classifications.add(ipcSecondaryClass);
 				} catch (ParseException e) {
 					LOGGER.error("Invalid classification-ipc-secondary", ipcSecoundary.asXML(), e);

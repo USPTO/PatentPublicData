@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
@@ -20,7 +20,7 @@ import gov.uspto.patent.model.classification.UspcClassification;
  * <!ELEMENT B580 (B581*,(B582|B583US)+) >
  *
  */
-public class ClassificationSearchNode extends DOMFragmentReader<Set<Classification>> {
+public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationSearchNode.class);
 
 	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B500/B580";
@@ -39,15 +39,16 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<Classificati
 	}
 
 	@Override
-	public Set<Classification> read() {
-		Set<Classification> classifications = new HashSet<Classification>();
+	public Set<PatentClassification> read() {
+		Set<PatentClassification> classifications = new HashSet<PatentClassification>();
 
 		// IPC classification.
 		@SuppressWarnings("unchecked")
 		Node ipcN = parentPath.selectSingleNode("B581/PDAT");
 		if (ipcN != null) {
 			try {
-				IpcClassification ipc = IpcClassification.fromText(ipcN.getText());
+				IpcClassification ipc = new IpcClassification();
+				ipc.parseText(ipcN.getText());
 				classifications.add(ipc);
 			} catch (ParseException e) {
 				LOGGER.debug("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(),
@@ -60,7 +61,8 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<Classificati
 		Node uspcN = parentPath.selectSingleNode("B582/PDAT");
 		if (uspcN != null) {
 			try {
-				UspcClassification uspc = UspcClassification.fromText(uspcN.getText());
+				UspcClassification uspc = new UspcClassification();
+				uspc.parseText(uspcN.getText());
 				classifications.add(uspc);
 			} catch (ParseException e) {
 				LOGGER.debug("Failed to Parse USPC Classification: '{}' from : {}", uspcN.getText(), uspcN.asXML());

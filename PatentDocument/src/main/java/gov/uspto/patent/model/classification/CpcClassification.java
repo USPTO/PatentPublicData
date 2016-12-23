@@ -1,10 +1,6 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,7 +48,7 @@ import java.util.regex.Pattern;
  *<h3>Create Classification by its individual parts:</h3>
  *<pre>
  * {@code
- * CpcClassification cpc = new CpcClassification(originalText);
+ * CpcClassification cpc = new CpcClassification();
  * cpc.setSection(section);
  * cpc.setMainClass(mainClass);
  * cpc.setSubClass(subClass);
@@ -67,7 +63,7 @@ import java.util.regex.Pattern;
  *
  * @see http://www.cooperativepatentclassification.org/index.html
  */
-public class CpcClassification extends Classification {
+public class CpcClassification extends PatentClassification {
 
 	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$"); // test added ?-mark to  /?
 
@@ -82,9 +78,11 @@ public class CpcClassification extends Classification {
 	private String subGroup;
 	private Boolean isMainClassification = false;
 
-	public CpcClassification(String originalText) {
-		super(ClassificationType.CPC, originalText);
+	@Override
+	public ClassificationType getType() {
+		return ClassificationType.CPC;
 	}
+
 
 	public String getSection() {
 		return section;
@@ -126,38 +124,9 @@ public class CpcClassification extends Classification {
 		this.subGroup = subGroup;
 	}
 
-	/**
-	 * Facets used for Search
-	 * 
-	 * D07B2201/2051 => [0/D, 1/D/D07, 2/D/D07/D07B, 3/D/D07/D07B/D07B2201, 4/D/D07/D07B/D07B2201/D07B22012051]
-	 * 
-	 */
-	public List<String> toFacet() {
-		return Classification.partsToFacet(section, mainClass, subClass, mainGroup, subGroup);
-	}
-
-	/**
-	 * Classification Tree, permutation of all classification parts.
-	 * 
-	 * D07B2201/2051 => ["D", "D07", "D07B", "D07B2201/00", "D07B2201/2051"] 
-	 * 
-	 */
-	public Set<String> getClassTree() {
-		Set<String> cpcClasses = new LinkedHashSet<String>();
-		cpcClasses.add(section);
-		cpcClasses.add(section + mainClass);
-		cpcClasses.add(section + mainClass + subClass);
-
-		if (mainGroup != null) {
-			//cpcClasses.add(section + mainClass + subClass + mainGroup);
-			cpcClasses.add(section + mainClass + subClass + mainGroup + "/00");
-
-			if (subGroup != null) {
-				cpcClasses.add(section + mainClass + subClass + mainGroup + "/" + subGroup);
-			}
-		}
-
-		return cpcClasses;
+	@Override
+	public String[] getParts() {
+		return new String[]{section, mainClass, subClass, mainGroup, subGroup};
 	}
 
 	/**
@@ -166,7 +135,8 @@ public class CpcClassification extends Classification {
 	 * "D07B2201/2051" => "D07B 2201/2051"
 	 * 
 	 */
-	public String toTextNormalized() {
+	@Override
+	public String getTextNormalized() {
 		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
 
 		if (subClass != null) {
@@ -207,26 +177,12 @@ public class CpcClassification extends Classification {
 	}
 
 	/**
-	 * Text Representation
-	 * 
-	 * Either the original text when created from parsing of text else generates normalized form from calling toTextNormalized().
-	 * 
-	 * @return
-	 */
-	public String toText() {
-		if (super.getText() != null && super.getText().length() > 3) {
-			return super.getText();
-		} else {
-			return toTextNormalized();
-		}
-	}
-
-	/**
 	 * Classification depth 
 	 * 
 	 * (1=section, 2=mainclass, 3=subclass, 4=mainGroup, 5=subGroup)
 	 * 
 	 */
+	@Override
 	public int getDepth(){
 		int classDepth = 0;
 		if (subGroup != null && !subGroup.isEmpty()){
@@ -247,11 +203,23 @@ public class CpcClassification extends Classification {
 		return classDepth;
 	}
 
-	public boolean equalOrUnder(CpcClassification cpc){
-		if (cpc == null) {
+	@Override
+	public boolean isContained(PatentClassification check){
+		if (check == null || !(check instanceof CpcClassification)) {
 			return false;
 		}
+		CpcClassification cpc = (CpcClassification) check;
+			
 		int depth = getDepth();
+
+		if (depth == cpc.getDepth()){
+			if (this.getTextNormalized().equals(cpc.getTextNormalized())){
+				return true;
+			} else {
+				System.out.println("false");
+				return false;
+			}
+		}
 		if (depth == 5){
 			if (section.equals(cpc.getSection()) 
 					&& mainClass.equals(cpc.getMainClass()) 
@@ -300,62 +268,11 @@ public class CpcClassification extends Classification {
 		}
 		final CpcClassification other = (CpcClassification) obj;
 		
-		if (other.getDepth() == getDepth() && equalOrUnder(other)){
+		if (other.getDepth() == getDepth() && isContained(other)){
 			return true;
 		}
 
 		return false;
-	}
-
-	@Override
-	public String toString() {
-		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", isMainClassification="
-				+ isMainClassification + ", toTextNormalized()=" + toTextNormalized() + ", standardize()="
-				+ standardize() + ", toText()=" + toText() + ", originalText()=" + super.getText() + "]";
-	}
-
-	/**
-	 * Generate List of CpcClassifications from list of Facets.
-	 * 
-	 * @param classificationFacets
-	 */
-	public static List<CpcClassification> fromFacets(final List<String> classificationFacets) {
-		List<String> specificClasses = getMostSpecificClasses(classificationFacets);
-		List<CpcClassification> retClasses = new ArrayList<CpcClassification>();
-		for (String textClass : specificClasses) {
-			CpcClassification cpcClass;
-			try {
-				cpcClass = fromText(textClass);
-				retClasses.add(cpcClass);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		return retClasses;
-	}
-
-	/**
-	 * Collapse Classification Facets to list of Specific Classifications
-	 * 
-	 * Returns the classification list extracted from the faceted string stored in solr
-	 * 
-	 * @param cpcVal // e.g. {0/A45B, 0/E04H, 1/A45B/A45B17, 1/E04H/E04H12, 2/A45B/A45B17/A45B1700, 2/E04H/E04H12/E04H122284 }
-	 * @return       // {A45B1700, E04H122284}
-	 */
-	public static List<String> getMostSpecificClasses(List<String> cpcFacets) {
-		List<String> leafClasses = new ArrayList<String>();
-
-		String largestNode = cpcFacets.get(cpcFacets.size() - 1).split("/")[0];
-		for (int i = cpcFacets.size() - 1; i > 0; i--) {
-			String nodes[] = cpcFacets.get(i).split("/");
-			if (!nodes[0].equals(largestNode)) {
-				break;
-			}
-			leafClasses.add(nodes[nodes.length - 1]);
-		}
-
-		return leafClasses;
 	}
 
 	/**
@@ -365,8 +282,11 @@ public class CpcClassification extends Classification {
 	 * @return
 	 * @throws ParseException
 	 */
-	public static CpcClassification fromText(final String classificationStr) throws ParseException {
+	@Override
+	public void parseText(final String classificationStr) throws ParseException {
 
+		super.setTextOriginal(classificationStr);
+		
 		Matcher matcher = REGEX.matcher(classificationStr);
 		if (matcher.matches()) {
 			String section = matcher.group(1);
@@ -375,24 +295,18 @@ public class CpcClassification extends Classification {
 			String mainGroup = matcher.group(4);
 			String subGroup = matcher.group(5);
 
-			CpcClassification classification = new CpcClassification(classificationStr);
-			classification.setSection(section);
-			classification.setMainClass(mainClass);
-			classification.setSubClass(subClass);
-			classification.setMainGroup(mainGroup);
-			classification.setSubGroup(subGroup);
-
-			return classification;
+			setSection(section);
+			setMainClass(mainClass);
+			setSubClass(subClass);
+			setMainGroup(mainGroup);
+			setSubGroup(subGroup);
 		} else if (classificationStr.length() == 3) {
 			Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
 			if (matchL3.matches()) {
 				String section = matchL3.group(1);
 				String mainClass = matchL3.group(2);
-				CpcClassification classification = new CpcClassification(classificationStr);
-				classification.setSection(section);
-				classification.setMainClass(mainClass);
-
-				return classification;
+				setSection(section);
+				setMainClass(mainClass);
 			}
 		} else if (classificationStr.length() == 4) {
 			Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
@@ -401,15 +315,20 @@ public class CpcClassification extends Classification {
 				String mainClass = matchL4.group(2);
 				String subClass = matchL4.group(3);
 
-				CpcClassification classification = new CpcClassification(classificationStr);
-				classification.setSection(section);
-				classification.setMainClass(mainClass);
-				classification.setSubClass(subClass);
-
-				return classification;
+				setSection(section);
+				setMainClass(mainClass);
+				setSubClass(subClass);
 			}
+		} else {
+			throw new ParseException("Failed to regex parse USPC Classification: " + classificationStr, 0);
 		}
+	}
 
-		throw new ParseException("Failed to regex parse USPC Classification: " + classificationStr, 0);
+	@Override
+	public String toString() {
+		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", isMainClassification="
+				+ isMainClassification + ", getTextNormalized()=" + getTextNormalized() + ", standardize()="
+				+ standardize() + ", toText()=" + toText() + ", originalText()=" + super.getTextOriginal() + "]";
 	}
 }

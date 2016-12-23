@@ -40,7 +40,7 @@ import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentApplication;
 import gov.uspto.patent.model.PatentType;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
 import gov.uspto.patent.model.entity.Assignee;
@@ -107,7 +107,7 @@ public class ApplicationParser extends Dom4JParser {
         List<Assignee> assignees = new AssigneeNode(document).read();
         
         List<Citation> citations = new CitationNode(document).read();
-        Set<Classification> classifications = new ClassificationNode(document).read();
+        Set<PatentClassification> classifications = new ClassificationNode(document).read();
 
         /*
          * Formated Text

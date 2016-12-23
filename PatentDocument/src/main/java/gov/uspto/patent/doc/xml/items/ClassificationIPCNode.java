@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
-import gov.uspto.patent.model.classification.Classification;
+import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 
-public class ClassificationIPCNode extends ItemReader<Classification> {
+public class ClassificationIPCNode extends ItemReader<PatentClassification> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationIPCNode.class);
 
     public ClassificationIPCNode(Node itemNode) {
@@ -19,7 +19,7 @@ public class ClassificationIPCNode extends ItemReader<Classification> {
     }
 
     @Override
-    public Classification read() {
+    public PatentClassification read() {
         if ("classification-ipcr".equals(itemNode.getName())){
             return readSectionedFormat();
         }
@@ -52,14 +52,14 @@ public class ClassificationIPCNode extends ItemReader<Classification> {
      * 
      * @return
      */
-    public Classification readSectionedFormat() {
+    public PatentClassification readSectionedFormat() {
         String section = itemNode.selectSingleNode("section").getText();
         String mainClass = itemNode.selectSingleNode("class").getText();
         String subclass = itemNode.selectSingleNode("subclass").getText();
         String mainGroup = itemNode.selectSingleNode("main-group").getText();
         String subgroup = itemNode.selectSingleNode("subgroup").getText();
 
-        IpcClassification ipcClass = new IpcClassification(null);
+        IpcClassification ipcClass = new IpcClassification();
         ipcClass.setSection(section);
         ipcClass.setMainClass(mainClass);
         ipcClass.setSubClass(subclass);
@@ -82,7 +82,7 @@ public class ClassificationIPCNode extends ItemReader<Classification> {
     * 
     * @return
     */    
-    public Classification readFlatFormat() {
+    public PatentClassification readFlatFormat() {
         Node mainClass = itemNode.selectSingleNode("main-classification");
         if (mainClass == null) {
             return null;
@@ -96,7 +96,8 @@ public class ClassificationIPCNode extends ItemReader<Classification> {
 
         IpcClassification classification;
         try {
-            classification = IpcClassification.fromText(mainClass.getText());
+            classification = new IpcClassification();
+            classification.parseText(mainClass.getText());
             classification.setIsMainClassification(true);
         } catch (ParseException e1) {
             LOGGER.warn("Failed to parse IPC classification 'main-classification': {}", mainClass.asXML(), e1);
@@ -107,7 +108,8 @@ public class ClassificationIPCNode extends ItemReader<Classification> {
         List<Node> furtherClasses = itemNode.selectNodes("further-classification");
         for (Node subclass : furtherClasses) {
             try {
-                IpcClassification usClass = IpcClassification.fromText(subclass.getText());
+                IpcClassification usClass = new IpcClassification();
+                usClass.parseText(subclass.getText());
                 classification.addChild(usClass);
             } catch (ParseException e) {
                 LOGGER.warn("Failed to parse IPC classification 'further-classification': {}", subclass.asXML(), e);

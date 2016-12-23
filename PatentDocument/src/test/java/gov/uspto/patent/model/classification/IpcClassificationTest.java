@@ -1,4 +1,4 @@
-package gov.uspto.document.model.classification;
+package gov.uspto.patent.model.classification;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 
 public class IpcClassificationTest {
@@ -22,15 +21,17 @@ public class IpcClassificationTest {
 	}
 
 	@Test(expected = ParseException.class)
-	public void failBlank() throws ParseException {
-		CpcClassification.fromText("");
+	public void failBlank() throws ParseException {		
+		IpcClassification ipc = new IpcClassification();
+		ipc.parseText("");
 	}
 
 	@Test
 	public void validParseCheck() throws ParseException {
-		for (Entry<String,String> ipc: validFromTo.entrySet()){
-			IpcClassification ipcClass = IpcClassification.fromText(ipc.getKey());
-			assertEquals( ipc.getValue(), ipcClass.toTextNormalized());
+		for (Entry<String,String> check: validFromTo.entrySet()){
+			IpcClassification ipc = new IpcClassification();
+			ipc.parseText(check.getKey());
+			assertEquals( check.getValue(), ipc.getTextNormalized());
 		}
 	}
 }

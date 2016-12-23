@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +48,8 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
         }
       
         String rawRecord = stb.toString();
-        //LOGGER.info(rawRecord);
-        //System.exit(1);
+        LOGGER.info(rawRecord);
+        System.exit(1);
         
         return new StringReader(rawRecord);
     }
@@ -127,7 +126,7 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
         Node cpcMainGroupN = classN.selectSingleNode("pat:MainGroup");
         Node cpcSubGroupN = classN.selectSingleNode("pat:Subgroup");
 
-        CpcClassification cpcClass = new CpcClassification("");
+        CpcClassification cpcClass = new CpcClassification();
         cpcClass.setSection(cpcSectionN.getText());
         cpcClass.setMainClass(cpcClassN.getText());
         cpcClass.setSubClass(cpcSubClassN.getText());
