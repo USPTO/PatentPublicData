@@ -90,7 +90,11 @@ public class FormattedText implements TextProcessor {
 		}
 
 		// Paragraph headers.
-		jsoupDoc.select("H").tagName("h2");
+		//jsoupDoc.select("H").tagName("h2");
+        for (Element heading : jsoupDoc.select("H")) {
+        	heading.attr("level", heading.attr("LVL")).tagName("h2");
+        	//heading.removeAttr("lvl");
+        }
 
 		// Remove any paragraph headers.
 		for (Element element : jsoupDoc.select("TBLREF")) {
@@ -118,7 +122,12 @@ public class FormattedText implements TextProcessor {
 		jsoupDoc.select("CLM CLMSTEP").tagName("li");
 
 		// Rename all "para" tags to "p".
-		jsoupDoc.select("PARA").tagName("p");
+		//jsoupDoc.select("PARA").tagName("p");
+        for (Element par : jsoupDoc.select("PARA")) {
+        	par.attr("level", par.attr("lvl"));
+        	par.removeAttr("lvl");
+        	par.tagName("p");
+        }
 
 		jsoupDoc.select("SB").prepend("_");
 		jsoupDoc.select("SP").prepend("^");
