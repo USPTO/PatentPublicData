@@ -31,7 +31,7 @@ public class FormattedText implements TextProcessor {
     private static final String[] HTML_WHITELIST_TAGS = new String[] { "bold", "h1", "h2", "h3", "h4", "h5", "h6", "p",
             "table", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a", "span" };
     private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "format",
-            "type" };
+            "type", "level" };
 
 	@Override
 	public String getPlainText(String rawText, FreetextConfig textConfig) {
@@ -52,9 +52,14 @@ public class FormattedText implements TextProcessor {
         }
 
         // Heading tags to H2.
-        jsoupDoc.select("heading").tagName("h2");
-
+        //jsoupDoc.select("heading").tagName("h2");
+        for (Element heading : jsoupDoc.select("heading")) {
+        	heading.attr("level", heading.attr("lvl")).tagName("h2");
+        	//heading.removeAttr("lvl");
+        }
+ 
         // Remove first paragraph in drawing description if it does not have a figref.
+        /*
         for (Element element : jsoupDoc.select("brief-description-of-drawings section paragraph:first-child")) {
             if (element.select(":has(cross-reference)").isEmpty()) {
                 // System.err.println("Drawing Description without
@@ -62,6 +67,7 @@ public class FormattedText implements TextProcessor {
                 element.remove();
             }
         }
+        */
 
         for (Element element : jsoupDoc.select("cross-reference")) {
             //String target = element.attr("target");
@@ -99,7 +105,12 @@ public class FormattedText implements TextProcessor {
         jsoupDoc.select("paragraph number:first-child").remove();
 
         // Rename all "paragraph" tags to "p".
-        jsoupDoc.select("paragraph").tagName("p");
+        //jsoupDoc.select("paragraph").tagName("p");
+        for (Element par : jsoupDoc.select("paragraph")) {
+        	par.attr("level", par.attr("lvl"));
+        	par.removeAttr("lvl");
+        	par.tagName("p");
+        }
 
         // Table Elements.
         jsoupDoc.select("row").tagName("tr");
