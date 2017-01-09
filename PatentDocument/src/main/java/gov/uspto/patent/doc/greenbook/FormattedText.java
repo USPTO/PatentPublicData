@@ -32,12 +32,13 @@ import gov.uspto.patent.doc.simplehtml.HtmlToPlainText;
  */
 public class FormattedText implements TextProcessor {
 
-	private static final Pattern CLAIM_REF = Pattern.compile("\\bclaim ([0-9](?:(?: or |-)[0-9])?)\\b");
+	private static final Pattern CLAIM_REF = Pattern.compile("\\bclaim (([0-9])(?:( or |-)([0-9]))?)\\b");
 	private static final Pattern PATENT_FIG = Pattern
-			.compile("\\bFIGS?\\. ([1-9][0-9]?[()A-z]*(?:(?: to | and |-)[1-9][0-9]?[()A-z]*)?)\\b");
+			.compile("\\b(FIGS?\\. )(?:([1-9][0-9]?[()A-z]*)(?:( to | and |-)([1-9][0-9]?[()A-z]*))?)\\b");
 
-	private static final String[] HTML_WHITELIST = new String[] { "p", "h2", "pre", "table", "tr", "td", "a", "li", "ul", "span" };
-	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref" };
+	private static final String[] HTML_WHITELIST = new String[] { "p", "h2", "pre", "table", "tr", "td", "a", "li",
+			"ul", "span" };
+	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "level" };
 
 	@Override
 	public String getPlainText(String rawText, FreetextConfig textConfig) {
@@ -63,7 +64,7 @@ public class FormattedText implements TextProcessor {
 
 	@Override
 	public String getSimpleHtml(String rawText) {	
-		rawText = createRefs(rawText);
+		rawText = markRefs(rawText);
 		Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
 
 		// rename header to "h2"
@@ -73,7 +74,7 @@ public class FormattedText implements TextProcessor {
 		jsoupDoc.select("PAR").tagName("p");
 
 		for (int j = 0; j < 4; j++) {
-			jsoupDoc.select("PA" + j).tagName("p");
+			jsoupDoc.select("PA" + j).tagName("p").attr("level", String.valueOf(j));
 		}
 
 		jsoupDoc.select("PAL").tagName("p");
@@ -111,24 +112,59 @@ public class FormattedText implements TextProcessor {
         return clean.body().html();
 	}
 
-	public String createRefs(String rawText) {
+	public String markRefs(String rawText) {
 		StringBuilder stb = new StringBuilder(rawText);
 		Matcher clmMatcher = CLAIM_REF.matcher(rawText);
 		int additionalChars = 0;
 		while (clmMatcher.find()) {
 			String fullMatch = clmMatcher.group(0);
-			String newStr = "<a class=\"claim\">" + fullMatch + "</a>";
+
+			StringBuilder claimStb = new StringBuilder();
+			claimStb.append("<a class=\"claim\" idref=\"CLM-").append(clmMatcher.group(2));
+
+			if (" or ".equals(clmMatcher.group(3))) {
+				// claim 1 or 2  BECOMES  CLM-1 or CLM-2 
+				claimStb.append("\">").append("CLM-").append(clmMatcher.group(2)).append("</a>");
+				claimStb.append(clmMatcher.group(3)).append("<a class=\"claim\" idref=\"CLM-").append(clmMatcher.group(4));
+				claimStb.append("\">").append("CLM-").append(clmMatcher.group(4)).append("</a>");
+			} else if (clmMatcher.group(3) != null) {
+				// claim 1 to 2  OR  claim 1 - 2  BECOMES  CLM-1 - CLM-2 
+				claimStb.append(" - ").append("CLM-").append(clmMatcher.group(4));
+				claimStb.append("\">").append(fullMatch).append("</a>");
+			} else {
+				claimStb.append("\">").append("CLM-").append(clmMatcher.group(2)).append("</a>");
+			}
+			String newStr = claimStb.toString();
+
 			stb.replace(clmMatcher.start() + additionalChars, clmMatcher.end() + additionalChars, newStr);
 			additionalChars = additionalChars + (newStr.length() - fullMatch.length());
 		}
-		String htmlText = stb.toString();
 
+		String htmlText = stb.toString();
 		stb = new StringBuilder(htmlText);
 		Matcher figMatcher = PATENT_FIG.matcher(htmlText);
 		additionalChars = 0;
 		while (figMatcher.find()) {
 			String fullMatch = figMatcher.group(0);
-			String newStr = "<a class=\"figref\">" + fullMatch + "</a>";
+
+			StringBuilder figStb = new StringBuilder();
+			figStb.append("<a class=\"figref\" idref=\"FIG-").append(figMatcher.group(2));
+
+			if (" and ".equals(figMatcher.group(3))) {
+				// FIGS. 1 and 2  BECOMES  FIG-1 and FIG-2 
+				figStb.append("\">").append("FIG-").append(figMatcher.group(2)).append("</a>");
+				figStb.append(figMatcher.group(3)).append("<a class=\"figref\" idref=\"FIG-").append(figMatcher.group(4));
+				figStb.append("\">").append("FIG-").append(figMatcher.group(4)).append("</a>");
+			} else if (figMatcher.group(3) != null) {
+				// FIGS. 1 to 2  OR  FIGS. 1 - 2  BECOMES  FIG-1 - FIG-2 
+				figStb.append(" - ").append("FIG-").append(figMatcher.group(4));
+				figStb.append("\">").append(fullMatch).append("</a>");
+			} else {
+				figStb.append("\">").append("FIG-").append(figMatcher.group(2)).append("</a>");
+			}
+
+			String newStr = figStb.toString();
+
 			stb.replace(figMatcher.start() + additionalChars, figMatcher.end() + additionalChars, newStr);
 			additionalChars = additionalChars + (newStr.length() - fullMatch.length());
 		}

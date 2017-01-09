@@ -28,17 +28,17 @@ public class FormattedTextTest {
 
     private static Map<String, String> validFromToHTML = new LinkedHashMap<String, String>();
     static {
-        validFromToHTML.put("in claim 1 or 2", "in <a class=\"claim\">claim 1 or 2</a>");
-        validFromToHTML.put("of claim 2-3", "of <a class=\"claim\">claim 2-3</a>");
+        validFromToHTML.put("in claim 1 or 2", "in <a class=\"claim\" idref=\"CLM-1\">CLM-1</a> or <a class=\"claim\" idref=\"CLM-2\">CLM-2</a>");
+        validFromToHTML.put("of claim 2-3", "of <a class=\"claim\" idref=\"CLM-2 - CLM-3\">claim 2-3</a>");
         validFromToHTML.put("PAR  FIG. 1 is a side elevational view",
-                "PAR  <a class=\"figref\">FIG. 1</a> is a side elevational view");
+                "PAR  <a class=\"figref\" idref=\"FIG-1\">FIG-1</a> is a side elevational view");
         validFromToHTML.put("PAR  FIG. 3A is a perspective view",
-                "PAR  <a class=\"figref\">FIG. 3A</a> is a perspective view");
-        validFromToHTML.put("PAR  FIG. 1a-1c is a side view", "PAR  <a class=\"figref\">FIG. 1a-1c</a> is a side view");
-        validFromToHTML.put("PAR  FIGS. 1-2 are top views", "PAR  <a class=\"figref\">FIGS. 1-2</a> are top views");
-        validFromToHTML.put("FIG. 4 is a schematic representation", "<a class=\"figref\">FIG. 4</a> is a schematic representation");
-        validFromToHTML.put("FIGS. 5A and 5B together comprise", "<a class=\"figref\">FIGS. 5A and 5B</a> together comprise");
-        validFromToHTML.put("illustrated in FIGS. 2 to 5.", "illustrated in <a class=\"figref\">FIGS. 2 to 5</a>.");
+                "PAR  <a class=\"figref\" idref=\"FIG-3A\">FIG-3A</a> is a perspective view");
+        validFromToHTML.put("PAR  FIG. 1a-1c is a side view", "PAR  <a class=\"figref\" idref=\"FIG-1a - FIG-1c\">FIG. 1a-1c</a> is a side view");
+        validFromToHTML.put("PAR  FIGS. 1-2 are top views", "PAR  <a class=\"figref\" idref=\"FIG-1 - FIG-2\">FIGS. 1-2</a> are top views");
+        validFromToHTML.put("FIG. 4 is a schematic representation", "<a class=\"figref\" idref=\"FIG-4\">FIG-4</a> is a schematic representation");
+        validFromToHTML.put("FIGS. 5A and 5B together comprise", "<a class=\"figref\" idref=\"FIG-5A\">FIG-5A</a> and <a class=\"figref\" idref=\"FIG-5B\">FIG-5B</a> together comprise");
+        validFromToHTML.put("illustrated in FIGS. 2 to 5.", "illustrated in <a class=\"figref\" idref=\"FIG-2 - FIG-5\">FIGS. 2 to 5</a>.");
         
         //validFromToHTML.put("as shown in FIG. 1(b) and may be", "as shown in <a class=\"figref\">FIG. 1(b)</a> and may be");
         //validFromToHTML.put("PAR  FIGS. 1(a) and 1(b) are graphs showing", "PAR  <a class=\"figref\">FIGS. 1(a) and 1(b)</a> are graphs showing");
@@ -58,7 +58,7 @@ public class FormattedTextTest {
     public void createRefs() {
         FormattedText format = new FormattedText();
         for (Entry<String, String> entry : validFromToHTML.entrySet()) {
-            String actual = format.createRefs(entry.getKey());
+            String actual = format.markRefs(entry.getKey());
             assertEquals(entry.getValue(), actual);
         }
     }
@@ -74,8 +74,8 @@ public class FormattedTextTest {
 
         StringBuilder expectStb = new StringBuilder();
         expectStb.append("<h2>SECTION TITLE</h2>\n");
-        expectStb.append("<p>Paragraph text, referenceing <a class=\"figref\">FIG. 1</a> is a side elevational view</p>\n");
-        expectStb.append("<p>More text now referenceing <a class=\"figref\">FIG. 2B</a> is a top view</p>\n");
+        expectStb.append("<p>Paragraph text, referenceing <a class=\"figref\" idref=\"FIG-1\">FIG-1</a> is a side elevational view</p>\n");
+        expectStb.append("<p>More text now referenceing <a class=\"figref\" idref=\"FIG-2B\">FIG-2B</a> is a top view</p>\n");
         String expect = expectStb.toString();
 
         String actual = format.getSimpleHtml(stb.toString());
