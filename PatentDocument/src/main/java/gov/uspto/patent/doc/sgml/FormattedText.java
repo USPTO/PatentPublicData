@@ -32,7 +32,7 @@ public class FormattedText implements TextProcessor {
 	private static final String[] HTML_WHITELIST_TAGS = new String[] { "bold", "h1", "h2", "h3", "h4", "h5", "h6", "p",
 			"table", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a", "span" };
 	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "format",
-			"type" };
+			"type", "level" };
 
 	@Override
 	public String getPlainText(String rawText, FreetextConfig textConfig) {
