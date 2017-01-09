@@ -49,234 +49,253 @@ import joptsimple.OptionSet;
  *
  */
 public class TransformerCli {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransformerCli.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TransformerCli.class);
 
-    private final DocumentBuilder<Patent> fileBuilder;
-    private Path outputDir;
-    private boolean stdout;
-    private boolean outputBulkFile;
+	private final DocumentBuilder<Patent> fileBuilder;
+	private Path outputDir;
+	private boolean stdout = false;
+	private boolean insertHtmlEntities = false;
+	private boolean outputBulkFile;
+	private File inputFile;
+	private Iterator<File> fileIterator;
+	private long totalLimit = Long.MAX_VALUE;
+	private long totalCount = 0;
+	private Writer currentWriter;
+	private String currentFileName;
 
-    private File inputFile;
-    private Iterator<File> fileIterator;
-    private long totalLimit = Long.MAX_VALUE;
-    private long totalCount = 0;
-    private Writer currentWriter;
-    private String currentFileName;
+	public TransformerCli(DocumentBuilder<Patent> fileBuilder, Path outputDir, boolean outputBulkFile) {
+		this.fileBuilder = fileBuilder;
+		this.outputDir = outputDir;
+		this.outputBulkFile = outputBulkFile;
+	}
 
-    public TransformerCli(DocumentBuilder<Patent> fileBuilder, Path outputDir, boolean outputBulkFile) {
-        this.fileBuilder = fileBuilder;
-        this.outputDir = outputDir;
-        this.outputBulkFile = outputBulkFile;
-        this.stdout = false;
-    }
+	public TransformerCli(DocumentBuilder<Patent> fileBuilder) {
+		this.fileBuilder = fileBuilder;
+		this.stdout = true;
+	}
 
-    public TransformerCli(DocumentBuilder<Patent> fileBuilder) {
-        this.fileBuilder = fileBuilder;
-        this.stdout = true;
-    }
+	/**
+	 * Add HTML Entities to XML; Only needed for patents within PAP format.
+	 */
+	public void addHtmlEntities() {
+		this.insertHtmlEntities = true;
+	}
 
-    public void setup(Path intputPath, int limit) throws FileNotFoundException {
-        if (limit > 0) {
-            this.totalLimit = limit;
-        }
-        setup(intputPath);
-    }
+	public void setup(Path intputPath, int limit) throws FileNotFoundException {
+		if (limit > 0) {
+			this.totalLimit = limit;
+		}
+		setup(intputPath);
+	}
 
-    public void setup(Path intputPath) throws FileNotFoundException {
-        Preconditions.checkNotNull(intputPath, "Input File can not be null");
-        this.inputFile = intputPath.toFile();
-        fileIterator = FileIterator.getFileIterator(inputFile, new String[] { "zip" }, true);
+	public void setup(Path intputPath) throws FileNotFoundException {
+		Preconditions.checkNotNull(intputPath, "Input File can not be null");
+		this.inputFile = intputPath.toFile();
+		fileIterator = FileIterator.getFileIterator(inputFile, new String[] { "zip" }, true);
 
-        if (outputDir != null) {
-            outputDir.toFile().mkdir();
-        }
-    }
+		if (outputDir != null) {
+			outputDir.toFile().mkdir();
+		}
+	}
 
-    public void process() throws FileNotFoundException {
-        for (int i = 1; fileIterator.hasNext() && totalCount < totalLimit; i++) {
-            File file = fileIterator.next();
+	public void process() throws FileNotFoundException {
+		for (int i = 1; fileIterator.hasNext() && totalCount < totalLimit; i++) {
+			File file = fileIterator.next();
 
-            MDC.put("DOCID", file.getName());
-            LOGGER.info("Dump File[{}]: {}", i, file.getAbsoluteFile());
+			MDC.put("DOCID", file.getName());
+			LOGGER.info("Dump File[{}]: {}", i, file.getAbsoluteFile());
 
-            if (outputBulkFile) {
-                if (currentWriter != null) {
-                    try {
-                        currentWriter.close();
-                    } catch (IOException e) {
-                        // close quiet.
-                    }
-                }
-                currentWriter = null;
-                currentFileName = file.getName().replaceFirst(".zip$", ".bulk");
-            }
+			if (outputBulkFile) {
+				if (currentWriter != null) {
+					try {
+						currentWriter.close();
+					} catch (IOException e) {
+						// close quiet.
+					}
+				}
+				currentWriter = null;
+				currentFileName = file.getName().replaceFirst(".zip$", ".bulk");
+			}
 
-            try {
-                DumpReader dumpReader = read(file);
-                processDumpFile(dumpReader);
-            } catch (IOException e) {
-                LOGGER.error("Failed processing Dump file: {}", file.getAbsolutePath(), e);
-            }
-        }
+			try {
+				DumpReader dumpReader = read(file);
+				processDumpFile(dumpReader);
+			} catch (IOException e) {
+				LOGGER.error("Failed processing Dump file: {}", file.getAbsolutePath(), e);
+			}
+		}
 
-        if (totalCount >= totalLimit) {
-            LOGGER.info("Process Complete, Total Record Limit Reached [{}]", totalCount);
-        } else {
-            LOGGER.info("Process Complete, Total Records [{}]", totalCount);
-        }
-    }
+		if (totalCount >= totalLimit) {
+			LOGGER.info("Process Complete, Total Record Limit Reached [{}]", totalCount);
+		} else {
+			LOGGER.info("Process Complete, Total Records [{}]", totalCount);
+		}
+	}
 
-    private DumpReader read(File file) {
-        PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(file);
+	private DumpReader read(File file) {
+		PatentDocFormat patentDocFormat = new PatentDocFormatDetect().fromFileName(file);
 
-        FileFilterChain filters = new FileFilterChain();
+		FileFilterChain filters = new FileFilterChain();
 
-        DumpReader dumpReader;
-        switch (patentDocFormat) {
-        case Greenbook:
-            dumpReader = new DumpFileAps(file);
-            //filters.addRule(new PathFileFilter(""));
-            //filters.addRule(new SuffixFilter("txt"));
-            break;
-        default:
-            dumpReader = new DumpFileXml(file);
-            //filters.addRule(new PathFileFilter(""));
-            filters.addRule(new SuffixFilter("xml"));
-        }
-        
-        dumpReader.setFileFilter(filters);
-        
-        return dumpReader;
-    }
+		DumpReader dumpReader;
+		switch (patentDocFormat) {
+		case Greenbook:
+			dumpReader = new DumpFileAps(file);
+			// filters.addRule(new PathFileFilter(""));
+			// filters.addRule(new SuffixFilter("txt"));
+			break;
+		default:
+			dumpReader = new DumpFileXml(file);
 
-    private void processDumpFile(DumpReader dumpReader) throws IOException {
+			if (PatentDocFormat.Pap.equals(patentDocFormat) || insertHtmlEntities) {
+				((DumpFileXml) dumpReader).addHTMLEntities();
+			}
 
-        try {
-            dumpReader.open();
-            PatentReader patentReader = new PatentReader(dumpReader.getPatentDocFormat());
+			// filters.addRule(new PathFileFilter(""));
+			filters.addRule(new SuffixFilter("xml"));
+		}
 
-            for (; dumpReader.hasNext() && totalCount < totalLimit; totalCount++) {
+		dumpReader.setFileFilter(filters);
 
-                String xmlDocStr = dumpReader.next();
-                if (xmlDocStr == null) {
-                    currentWriter.close();
-                    break;
-                }
+		return dumpReader;
+	}
 
-                try (StringReader rawText = new StringReader(xmlDocStr)) {
-                    Patent patent = patentReader.read(rawText);
-                    String patentId = patent.getDocumentId().toText();
-                    MDC.put("DOCID", patentId);
+	private void processDumpFile(DumpReader dumpReader) throws IOException {
 
-                    if (!stdout && !outputBulkFile || outputBulkFile && currentWriter == null) {
-                        if (!outputBulkFile) {
-                            currentFileName = patentId + ".json";
-                            if (currentWriter != null) {
-                                currentWriter.close();
-                            }
-                        }
-                        currentWriter = new BufferedWriter(new FileWriter(outputDir.resolve(currentFileName).toFile()));
-                    } else {
-                        if (!outputBulkFile) {
-                            currentWriter = new StringWriter();
-                        }
-                    }
+		try {
+			dumpReader.open();
+			PatentReader patentReader = new PatentReader(dumpReader.getPatentDocFormat());
 
-                    LOGGER.info("Record: '{}' from {}:{}", patentId, dumpReader.getFile(),
-                            dumpReader.getCurrentRecCount());
-                    LOGGER.trace("Patent Object: " + patent.toString());
-                    write(patent, currentWriter);
-                    currentWriter.flush();
-                    MDC.put("DOCID", "");
-                } catch (PatentReaderException e1) {
-                    LOGGER.error("Patent Reader error: ", e1);
-                } catch (IOException e) {
-                    LOGGER.error("Writer error: ", e);
-                }
-            }
+			for (; dumpReader.hasNext() && totalCount < totalLimit; totalCount++) {
 
-        } finally {
-            dumpReader.close();
-        }
-    }
+				String xmlDocStr = dumpReader.next();
+				if (xmlDocStr == null) {
+					currentWriter.close();
+					break;
+				}
 
-    private void write(Patent patent, Writer writer) throws IOException {
-        fileBuilder.write(patent, writer);
-        if (outputBulkFile) {
-            writer.write("\n");
-        } else if (stdout) {
-            System.out.println("JSON: " + writer.toString());
-        }
-    }
+				try (StringReader rawText = new StringReader(xmlDocStr)) {
+					Patent patent = patentReader.read(rawText);
+					String patentId = patent.getDocumentId().toText();
+					MDC.put("DOCID", patentId);
 
-    public static void main(String... args) throws PatentReaderException, IOException {
+					if (!stdout && !outputBulkFile || outputBulkFile && currentWriter == null) {
+						if (!outputBulkFile) {
+							currentFileName = patentId + ".json";
+							if (currentWriter != null) {
+								currentWriter.close();
+							}
+						}
+						currentWriter = new BufferedWriter(new FileWriter(outputDir.resolve(currentFileName).toFile()));
+					} else {
+						if (!outputBulkFile) {
+							currentWriter = new StringWriter();
+						}
+					}
 
-        LOGGER.info("--- Start ---");
+					LOGGER.info("Record: '{}' from {}:{}", patentId, dumpReader.getFile(),
+							dumpReader.getCurrentRecCount());
+					LOGGER.trace("Patent Object: " + patent.toString());
+					write(patent, currentWriter);
+					currentWriter.flush();
+					MDC.put("DOCID", "");
+				} catch (PatentReaderException e1) {
+					LOGGER.error("Patent Reader error: ", e1);
+				} catch (IOException e) {
+					LOGGER.error("Writer error: ", e);
+				}
+			}
 
-        OptionParser parser = new OptionParser() {
-            {
-                accepts("input").withRequiredArg().ofType(String.class).describedAs("Input File or Direcory of Files")
-                        .required();
-                accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("skip records").defaultsTo(0);
-                accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("total record limit")
-                        .defaultsTo(0);
-                accepts("outdir").withOptionalArg().ofType(String.class).describedAs("output directory")
-                        .defaultsTo("output");
-                accepts("outBulk").withOptionalArg().ofType(Boolean.class).describedAs("Single file record per line")
-                        .defaultsTo(true);
-                accepts("flat").withOptionalArg().ofType(Boolean.class).describedAs("Flat json else hierarcy")
-                        .defaultsTo(false);
-                accepts("prettyPrint").withOptionalArg().ofType(Boolean.class).describedAs("Pretty Print JSON")
-                        .defaultsTo(true);
-                accepts("stdout").withOptionalArg().ofType(Boolean.class)
-                        .describedAs("Output to Terminal instead of File").defaultsTo(false);
-            }
-        };
+		} finally {
+			dumpReader.close();
+		}
+	}
 
-        OptionSet options = parser.parse(args);
-        if (!options.hasOptions()) {
-            parser.printHelpOn(System.out);
-            System.exit(1);
-        }
+	private void write(Patent patent, Writer writer) throws IOException {
+		fileBuilder.write(patent, writer);
+		if (outputBulkFile) {
+			writer.write("\n");
+		} else if (stdout) {
+			System.out.println("JSON: " + writer.toString());
+		}
+	}
 
-        String inFileStr = (String) options.valueOf("input");
-        Path inputPath = Paths.get(inFileStr);
+	public static void main(String... args) throws PatentReaderException, IOException {
 
-        String outdir = (String) options.valueOf("outdir");
-        Path outDirPath = Paths.get(outdir);
+		LOGGER.info("--- Start ---");
 
-        int skip = (Integer) options.valueOf("skip"); // SKIP not yet supported.
-        int limit = (Integer) options.valueOf("limit");
+		OptionParser parser = new OptionParser() {
+			{
+				accepts("input").withRequiredArg().ofType(String.class).describedAs("Input File or Direcory of Files")
+						.required();
+				accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("skip records").defaultsTo(0);
+				accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("total record limit")
+						.defaultsTo(0);
+				accepts("outdir").withOptionalArg().ofType(String.class).describedAs("output directory")
+						.defaultsTo("output");
+				accepts("outBulk").withOptionalArg().ofType(Boolean.class).describedAs("Single file record per line")
+						.defaultsTo(true);
+				accepts("flat").withOptionalArg().ofType(Boolean.class).describedAs("Flat json else hierarcy")
+						.defaultsTo(false);
+				accepts("prettyPrint").withOptionalArg().ofType(Boolean.class).describedAs("Pretty Print JSON")
+						.defaultsTo(true);
+				accepts("stdout").withOptionalArg().ofType(Boolean.class)
+						.describedAs("Output to Terminal instead of File").defaultsTo(false);
+				accepts("addHtmlEntities").withOptionalArg().ofType(Boolean.class)
+						.describedAs("Add Html Entities DTD to XML; Needed when reading Patents in PAP format.")
+						.defaultsTo(false);
+			}
+		};
 
-        boolean flatJson = (Boolean) options.valueOf("flat");
-        boolean prettyPrint = (Boolean) options.valueOf("prettyPrint");
-        boolean stdout = (Boolean) options.valueOf("stdout");
-        boolean outBulk = (Boolean) options.valueOf("outBulk");
-        if (outBulk) {
-            prettyPrint = false;
-        }
+		OptionSet options = parser.parse(args);
+		if (!options.hasOptions()) {
+			parser.printHelpOn(System.out);
+			System.exit(1);
+		}
 
-        // ... Add Your Custom DocumentBuilder here ...
+		String inFileStr = (String) options.valueOf("input");
+		Path inputPath = Paths.get(inFileStr);
 
-        DocumentBuilder<Patent> fileBuilder;
-        if (flatJson) {
-            fileBuilder = new JsonMapperFlat(prettyPrint, false);
-        } else {
-            fileBuilder = new JsonMapper(prettyPrint, false);
-        }
+		String outdir = (String) options.valueOf("outdir");
+		Path outDirPath = Paths.get(outdir);
 
-        TransformerCli transform;
-        if (stdout) {
-            transform = new TransformerCli(fileBuilder);
-        } else {
-            transform = new TransformerCli(fileBuilder, outDirPath, outBulk);
-        }
+		int skip = (Integer) options.valueOf("skip"); // SKIP not yet supported.
+		int limit = (Integer) options.valueOf("limit");
 
-        transform.setup(inputPath, limit);
+		boolean flatJson = (Boolean) options.valueOf("flat");
+		boolean prettyPrint = (Boolean) options.valueOf("prettyPrint");
+		boolean stdout = (Boolean) options.valueOf("stdout");
+		boolean addHtmlEntities = (Boolean) options.valueOf("addHtmlEntities");
+		boolean outBulk = (Boolean) options.valueOf("outBulk");
+		if (outBulk) {
+			prettyPrint = false;
+		}
 
-        transform.process();
+		// ... Add Your Custom DocumentBuilder here ...
 
-        LOGGER.info("--- Done ---");
-    }
+		DocumentBuilder<Patent> fileBuilder;
+		if (flatJson) {
+			fileBuilder = new JsonMapperFlat(prettyPrint, false);
+		} else {
+			fileBuilder = new JsonMapper(prettyPrint, false);
+		}
+
+		TransformerCli transform;
+		if (stdout) {
+			transform = new TransformerCli(fileBuilder);
+		} else {
+			transform = new TransformerCli(fileBuilder, outDirPath, outBulk);
+		}
+
+		if (addHtmlEntities) {
+			transform.addHtmlEntities();
+		}
+
+		transform.setup(inputPath, limit);
+
+		transform.process();
+
+		LOGGER.info("--- Done ---");
+	}
 
 }

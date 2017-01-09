@@ -280,9 +280,9 @@ public class Look {
                 break;
             default:
                 DumpFileXml dumpXml = new DumpFileXml(inputFile);
-                if (addHtmlEntities) {
-                    dumpXml.addHTMLEntities();
-                }
+    			if (PatentDocFormat.Pap.equals(patentDocFormat) || addHtmlEntities) {
+    				dumpXml.addHTMLEntities();
+    			}
                 dumpReader = dumpXml;
                 filters.addRule(new SuffixFileFilter("xml"));
             }
