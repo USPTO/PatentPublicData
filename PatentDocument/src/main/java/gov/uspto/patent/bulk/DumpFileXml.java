@@ -3,7 +3,6 @@ package gov.uspto.patent.bulk;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +45,7 @@ public class DumpFileXml extends DumpFile {
 
                 if (isStartTag(line)) {
                     content = new StringBuilder();
+                    content.append(header);
                 } else if (isEndTag(line)) {
                     // Fix for Patent PAP with trailing XML tag.  '</patent-application-publication><?xml version="1.0" encoding="UTF-8"?>'
                     if (line.contains("<?xml")) {
@@ -56,7 +56,11 @@ public class DumpFileXml extends DumpFile {
                     content.append(line).append('\n');
                     currentRecCount++;
 
-                    return content.toString();
+                    String docString = content.toString();
+                    
+                    //LOGGER.trace(docString);
+                    
+                    return docString;
                 }
 
                 content.append(line).append('\n');
@@ -87,7 +91,9 @@ public class DumpFileXml extends DumpFile {
      * Fix for Patent PAP document formats (years 2001-2004).
      */
     public void addHTMLEntities() {
-        header = DEFAULT_HEADER + "\n<!DOCTYPE simple SYSTEM \"html-entities.dtd\">\n";
+    	LOGGER.info("Inserting HTML Entities DTD");
+        //header = DEFAULT_HEADER + "\n<!DOCTYPE simple SYSTEM \"html-entities.dtd\">\n";
+        header = DEFAULT_HEADER + "<!DOCTYPE simple PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
     }
 
     private boolean isStartTag(String line) {
