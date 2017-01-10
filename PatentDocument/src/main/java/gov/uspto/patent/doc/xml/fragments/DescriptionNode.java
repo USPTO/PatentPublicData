@@ -35,13 +35,13 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 
 	@Override
 	public Description read() {
+		Description desc = new Description();
+
 		Node descN = document.selectSingleNode(FRAGMENT_PATH);
 		if (descN == null) {
 			LOGGER.warn("Patent does not have a Description.");
-			return null;
+			return desc;
 		}
-
-		Description desc = new Description();
 
 		String relAppDesc = getSectionText(descN, new String[]{"cross-reference-to-related-applications", "RELAPP"});
 		if (relAppDesc != null && relAppDesc.length() > 20) {

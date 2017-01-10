@@ -1,7 +1,6 @@
 package gov.uspto.patent.doc.greenbook.fragments;
 
 import java.util.List;
-import java.util.Set;
 
 import org.dom4j.Document;
 import org.dom4j.Node;

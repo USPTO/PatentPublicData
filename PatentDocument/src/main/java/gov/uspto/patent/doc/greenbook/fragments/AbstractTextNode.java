@@ -19,7 +19,7 @@ public class AbstractTextNode extends DOMFragmentReader<Abstract> {
 	public Abstract read() {
 		Node abstractN = document.selectSingleNode(FRAGMENT_PATH);
 		if (abstractN == null) {
-			return null;
+			return new Abstract("", textProcessor);
 		}
 
 		return new Abstract(abstractN.asXML(), textProcessor);
