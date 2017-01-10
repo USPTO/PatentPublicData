@@ -2,7 +2,6 @@ package gov.uspto.patent.doc.greenbook;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +37,6 @@ import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
-import gov.uspto.patent.model.PatentApplication;
 import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.PatentType;
 import gov.uspto.patent.model.classification.PatentClassification;

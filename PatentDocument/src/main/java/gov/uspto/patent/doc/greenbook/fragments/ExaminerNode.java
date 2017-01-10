@@ -18,6 +18,7 @@ import gov.uspto.patent.model.entity.Name;
 public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NameNode.class);
 
+	private static final String ARTUNIT = "/DOCUMENT/PATN/ART";
 	private static final String PRIMARY = "/DOCUMENT/PATN/EXP";
 	private static final String ASSISTANT = "/DOCUMENT/PATN/EXA";
 
@@ -29,7 +30,9 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 	public List<Examiner> read() {
 		List<Examiner> examinerList = new ArrayList<Examiner>();
 
-		Examiner primary = getPrimaryExaminer();
+		String artUnit = getArtUnit();
+
+		Examiner primary = getPrimaryExaminer(artUnit);
 		if (primary != null){
 			examinerList.add(primary);
 		}
@@ -42,13 +45,18 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 		return examinerList;
 	}
 
-	public Examiner getPrimaryExaminer(){
+	public String getArtUnit(){
+		Node artN = document.selectSingleNode(ARTUNIT);
+		return artN != null ? artN.getText() : null;
+	}
+
+	public Examiner getPrimaryExaminer(String artUnit){
 		Node primaryN = document.selectSingleNode(PRIMARY);
 		if (primaryN != null) {
 			String fullName = primaryN != null ? primaryN.getText() : null;
 			try {
 				Name name = new NameNode(primaryN).createName(fullName);
-				return new Examiner(name, null, ExaminerType.PRIMARY);
+				return new Examiner(name, artUnit, ExaminerType.PRIMARY);
 			} catch (InvalidDataException e) {
 				LOGGER.warn("Invalid Name: {}", fullName, e);
 			}
