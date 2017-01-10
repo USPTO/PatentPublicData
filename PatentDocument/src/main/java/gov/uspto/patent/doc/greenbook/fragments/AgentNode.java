@@ -50,7 +50,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 
 		Node legalRep = document.selectSingleNode(FRAGMENT_PATH);
 		if (legalRep == null){
-			return null;
+			return agentList;
 		}
 
 		Address address = new AddressNode(legalRep).read();

@@ -1,6 +1,7 @@
 package gov.uspto.patent.doc.sgml.fragments;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 
 	public Set<PatentClassification> readIPC(Node ipcNode) {
 		if (ipcNode == null) {
-			return null;
+			return Collections.emptySet();
 		}
 
 		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
@@ -88,9 +89,9 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 
 	public Set<PatentClassification> readUSPC(Node uspcNode) {
 		if (uspcNode == null) {
-			return null;
+			return Collections.emptySet();
 		}
-
+		
 		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
 		// Primary USPC classification.
