@@ -34,6 +34,7 @@ import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.ClaimTreeBuilder;
+import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
@@ -85,6 +86,38 @@ public class Greenbook extends KvParser {
 		}
 
 		PatentType patentType = new PatentTypeNode(document).read();
+		publicationId.setPatentType(patentType);
+
+		/*
+		 * Assign Kind Code from PatentType
+		 */
+		if (CountryCode.US.equals(publicationId.getCountryCode())) {
+			switch (patentType) {
+			case UTILITY:
+				// Utility Patent Grant issued prior to January 2, 2001.
+				publicationId.setKindCode("A");
+				break;
+			case PLANT:
+				// Plant Patent Grant issued prior to January 2, 2001.
+				publicationId.setKindCode("P");
+				break;
+			case DESIGN:
+				publicationId.setKindCode("S");
+				break;
+			case REISSUE:
+				publicationId.setKindCode("E");
+				break;
+			case STATUTORY_INVENTION_REGISTRATION:
+				publicationId.setKindCode("H");
+				break;
+			case DEFENSIVE_PUBLICATION:
+				break;
+			case UNDEFINED:
+				break;
+			default:
+				break;
+			}
+		}
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
@@ -132,7 +165,7 @@ public class Greenbook extends KvParser {
 		patent.addOtherId(pctRegionalIds);
 		patent.addRelationIds(relatedIds);
 
-        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getApplicationId());
 		patent.addOtherId(patent.getPriorityIds());
 		patent.addRelationIds(patent.getOtherIds());
 
