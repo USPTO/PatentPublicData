@@ -27,7 +27,7 @@ import gov.uspto.patent.model.classification.PatentClassification;
  */
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
-	private static final String FRAGMENT_PATH = "//us-references-cited|//references-cited"; // current us-patent-grants. 
+	private static final String FRAGMENT_PATH = "//us-references-cited|//references-cited"; // current us-references-cited. 
 
 	private Node citationNode;
 

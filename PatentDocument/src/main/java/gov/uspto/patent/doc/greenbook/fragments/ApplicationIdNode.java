@@ -31,7 +31,7 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 	public DocumentId read() {
 		Node docNumN = document.selectSingleNode("/DOCUMENT/PATN/APN");
 		if (docNumN == null) {
-			LOGGER.warn("Invalid document-id can not be Null.");
+			LOGGER.warn("Invalid application-id 'APN' field not found");
 			return null;
 		}
 
