@@ -1,7 +1,6 @@
 package gov.uspto.patent.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -178,16 +177,16 @@ public abstract class Patent {
 		return classifications;
 	}
 
-	public void setClassification(Set<PatentClassification> classifications) {
-		this.classifications = classifications;
-	}
-
-	public void addClassification(List<PatentClassification> classification) {
-		classifications.addAll(classification);
+	public void setClassification(Iterable<PatentClassification> classifications) {
+		for(PatentClassification clazz: classifications){
+			addClassification(clazz);
+		}
 	}
 
 	public void addClassification(PatentClassification classification) {
-		classifications.add(classification);
+		if (classification != null){
+			classifications.add(classification);
+		}
 	}
 
 	public PatentCorpus getPatentCorpus() {

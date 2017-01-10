@@ -56,6 +56,11 @@ public class ApplicationParser extends Dom4JParser {
     @Override
     public Patent parse(Document document) {
 
+        DocumentId publicationId = new PublicationIdNode(document).read();
+        if (publicationId != null) {
+            MDC.put("DOCID", publicationId.toText());
+        }
+        
         String title = Dom4jUtil.getTextOrNull(document,
                 XML_ROOT + "/us-bibliographic-data-application/invention-title");
         title = StringCaseUtil.toTitleCase(title);
@@ -79,11 +84,6 @@ public class ApplicationParser extends Dom4JParser {
             } catch (InvalidDataException e) {
                 LOGGER.warn("Invalid Date Published: '{}'", datePublished, e);
             }
-        }
-
-        DocumentId publicationId = new PublicationIdNode(document).read();
-        if (publicationId != null) {
-            MDC.put("DOCID", publicationId.toText());
         }
 
         String patentTypeStr = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-application/application-reference/@appl-type");
@@ -121,23 +121,27 @@ public class ApplicationParser extends Dom4JParser {
         /*
          * Start Building Patent Object.
          */
-        if (patent == null) {
+        //if (patent == null) {
             patent = new PatentApplication(publicationId, patentType);
-        } else {
-            patent.reset();
-        }
+        //} else {
+        //    patent.reset();
+		//	  patent.setDocumentId(publicationId);
+		//	  patent.setPatentType(patentType);
+        //}
 
         patent.setDateProduced(dateProducedDate);
         patent.setDatePublished(datePublishedDate);
+
         patent.setDocumentId(publicationId);
         patent.setApplicationId(applicationId);
-        patent.addPriorityId(priorityIds);
-        patent.addOtherId(priorityIds);
-        patent.addOtherId(applicationId);
-        patent.addOtherId(pctRegionalIds);
-        patent.addOtherId(relatedId);
+		patent.addPriorityId(priorityIds);
+		patent.addOtherId(pctRegionalIds);
         patent.addRelationIds(relationIds);
-        patent.addRelationIds(priorityIds);
+
+        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getPriorityIds());
+		patent.addRelationIds(patent.getOtherIds());
+
         patent.setTitle(title);
         patent.setAbstract(abstractText);
         patent.setDescription(description);
@@ -149,6 +153,8 @@ public class ApplicationParser extends Dom4JParser {
         patent.setClaim(claims);
         patent.setClassification(classifications);
 
+		LOGGER.trace(patent.toString());
+        
         return patent;
     }
 

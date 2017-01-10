@@ -2,7 +2,6 @@ package gov.uspto.patent.doc.sgml;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -59,12 +58,12 @@ public class Sgml extends Dom4JParser {
 	@Override
 	public Patent parse(Document document) throws PatentReaderException {
 
-		DocumentId documentId = new DocumentIdNode(document).read();
-		if (documentId != null){
-			MDC.put("DOCID", documentId.toText());
+		DocumentId publicationId = new DocumentIdNode(document).read();
+		if (publicationId != null){
+			MDC.put("DOCID", publicationId.toText());
 		}
 
-		PatentType patentType = UsKindCode2PatentType.getInstance().lookupPatentType(documentId.getKindCode());
+		PatentType patentType = UsKindCode2PatentType.getInstance().lookupPatentType(publicationId.getKindCode());
 		
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
@@ -97,10 +96,10 @@ public class Sgml extends Dom4JParser {
 		/*
 		 * Start Building Patent Object.
 		 */
-		Patent patent = new PatentGranted(documentId, patentType);
+		Patent patent = new PatentGranted(publicationId, patentType);
 
-		if (documentId != null && documentId.getDate() != null) {
-			patent.setDatePublished(documentId.getDate());
+		if (publicationId != null && publicationId.getDate() != null) {
+			patent.setDatePublished(publicationId.getDate());
 		}
 
 
@@ -110,15 +109,16 @@ public class Sgml extends Dom4JParser {
 
 		patent.setApplicationId(applicationId);
 		patent.addPriorityId(priorityIds);
-		patent.addOtherId(priorityIds);
-		patent.addOtherId(applicationId);
 		patent.addOtherId(pctRegionalIds);
-		patent.addRelationIds(priorityIds);
 		patent.addRelationIds(relatedIds);
 
+        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getPriorityIds());
+		patent.addRelationIds(patent.getOtherIds());
+		
 		patent.setTitle(title);
 		if (classifications != null) {
-			patent.addClassification(new ArrayList<PatentClassification>(classifications));
+			patent.setClassification(classifications);
 		}
 		patent.setInventor(inventors);
 		patent.setAssignee(assignees);

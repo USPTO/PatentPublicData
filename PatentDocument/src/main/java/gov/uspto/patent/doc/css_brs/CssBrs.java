@@ -100,21 +100,23 @@ public class CssBrs extends KvParser {
             patent.setDateProduced(applicationId.getDate());
         }
 
-        patent.setApplicationId(applicationId);
+		patent.setApplicationId(applicationId);
+		//patent.addPriorityId(priorityIds);
+		//patent.addOtherId(pctRegionalIds);
+		patent.addRelationIds(relatedIds);
+
+        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getPriorityIds());
+		patent.addRelationIds(patent.getOtherIds());
+
         patent.setTitle(title);
         patent.setInventor(inventors);
         patent.setAssignee(assignees);
         patent.setExaminer(examiners);
         patent.setAgent(agents);
-        patent.addRelationIds(relatedIds);
-        patent.setCitation(citations);
+        patent.setCitation(citations);		
 
-        // patent.setReferenceIds(referencedIds);
-
-        if (classifications != null) {
-            patent.addClassification(new ArrayList<PatentClassification>(classifications));
-        }
-
+        patent.setClassification(classifications);
         //patent.setAbstract(abstractText);
         patent.setDescription(description);
         patent.setClaim(claims);

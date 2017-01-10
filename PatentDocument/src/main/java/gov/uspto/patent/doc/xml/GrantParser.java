@@ -37,6 +37,7 @@ import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.ClaimTreeBuilder;
 import gov.uspto.patent.model.Description;
+import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
@@ -58,15 +59,33 @@ public class GrantParser extends Dom4JParser {
     @Override
     public Patent parse(Document document) {
 
+        DocumentId publicationId = new PublicationIdNode(document).read();
+        if (publicationId != null) {
+            MDC.put("DOCID", publicationId.toText());
+        }
+
         String title = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-grant/invention-title");
         title = StringCaseUtil.toTitleCase(title);
 
         String dateProduced = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-produced");
         String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");
 
-        DocumentId publicationId = new PublicationIdNode(document).read();
-        if (publicationId != null) {
-            MDC.put("DOCID", publicationId.toText());
+        DocumentDate dateProducedDate = null;
+        if (dateProduced != null) {
+            try {
+                dateProducedDate = new DocumentDate(dateProduced);
+            } catch (InvalidDataException e) {
+                LOGGER.warn("Invalid Date Produced: '{}'", dateProduced, e);
+            }
+        }
+
+        DocumentDate datePublishedDate = null;
+        if (datePublished != null) {
+            try {
+                datePublishedDate = new DocumentDate(datePublished);
+            } catch (InvalidDataException e) {
+                LOGGER.warn("Invalid Date Published: '{}'", datePublished, e);
+            }
         }
 
         String patentTypeStr = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-grant/application-reference/@appl-type");
@@ -110,16 +129,22 @@ public class GrantParser extends Dom4JParser {
         patent = new PatentGranted(publicationId, patentType);
         //} else {
         //	patent.reset();
+		// patent.setDocumentId(publicationId);
+		// patent.setPatentType(patentType);
         //}
+
+        patent.setDateProduced(dateProducedDate);
+        patent.setDatePublished(datePublishedDate);
 
         patent.setDocumentId(publicationId);
         patent.setApplicationId(applicationId);
-        patent.addPriorityId(priorityIds);
-        patent.addOtherId(priorityIds);
-        patent.addOtherId(applicationId);
-        patent.addOtherId(pctRegionalIds);
-        patent.addRelationIds(priorityIds);
+		patent.addPriorityId(priorityIds);
+		patent.addOtherId(pctRegionalIds);
         patent.addRelationIds(relationIds);
+
+        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getPriorityIds());
+		patent.addRelationIds(patent.getOtherIds());
 
         patent.setTitle(title);
         patent.setAbstract(abstractText);
@@ -134,27 +159,11 @@ public class GrantParser extends Dom4JParser {
         if (citations != null) {
             patent.setCitation(citations);
         } else {
-            LOGGER.warn("Patent Grant did not read any citations: {}", publicationId.toText());
+            LOGGER.warn("Patent Grant did not read any citations: {}", patent.getDocumentId().toText());
         }
 
         patent.setClaim(claims);
         patent.setClassification(classifications);
-
-        if (dateProduced != null) {
-            try {
-                patent.setDateProduced(dateProduced);
-            } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Produced: '{}'", dateProduced, e);
-            }
-        }
-
-        if (datePublished != null) {
-            try {
-                patent.setDatePublished(datePublished);
-            } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Published: '{}'", datePublished, e);
-            }
-        }
 
         LOGGER.trace(patent.toString());
 

@@ -37,6 +37,7 @@ import gov.uspto.patent.model.ClaimTreeBuilder;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.model.PatentApplication;
 import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.PatentType;
 import gov.uspto.patent.model.classification.PatentClassification;
@@ -52,165 +53,140 @@ import gov.uspto.patent.model.entity.Inventor;
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  */
 public class Greenbook extends KvParser {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Greenbook.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Greenbook.class);
 
-	private static List<String> MAINTAIN_SPACE_FIELDS = Arrays.asList(new String[]{"TBL"});
-	private static List<String> PARAGRAPH_FIELDS = Arrays.asList(new String[]{"PAR", "PA1", "PA2", "PA3", "PA4", "PA5", "PAL"});
-	private static List<String> HEADER_FIELDS = Arrays.asList(new String[]{"PAC"});
-	private static List<String> TABLE_FIELDS = Arrays.asList(new String[]{"TBL"});
+	private static List<String> MAINTAIN_SPACE_FIELDS = Arrays.asList(new String[] { "TBL" });
+	private static List<String> PARAGRAPH_FIELDS = Arrays
+			.asList(new String[] { "PAR", "PA1", "PA2", "PA3", "PA4", "PA5", "PAL" });
+	private static List<String> HEADER_FIELDS = Arrays.asList(new String[] { "PAC" });
+	private static List<String> TABLE_FIELDS = Arrays.asList(new String[] { "TBL" });
 
-    public Greenbook(){
-    	super(MAINTAIN_SPACE_FIELDS, PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
-    }
-    
-    /*
-    private static final Set<String> SECTIONS = new HashSet<String>(20);
-    static {
-    	SECTIONS.add("PATN");
-    	SECTIONS.add("INVT");
-    	SECTIONS.add("ASSG");
-    	SECTIONS.add("PRIR");
-    	SECTIONS.add("REIS");
-    	SECTIONS.add("RLAP");
-    	SECTIONS.add("CLAS");
-    	SECTIONS.add("UREF");
-    	SECTIONS.add("FREF");
-    	SECTIONS.add("OREF");
-    	SECTIONS.add("LREP");
-    	SECTIONS.add("PCTA");
-    	SECTIONS.add("ABST");
-    	SECTIONS.add("GOVT");
-    	SECTIONS.add("PARN");
-    	SECTIONS.add("BSUM");
-    	SECTIONS.add("DRWD");
-    	SECTIONS.add("DETD");
-    	SECTIONS.add("CLMS");
-    	SECTIONS.add("DCLM");
-    }
-    */
+	public Greenbook() {
+		super(MAINTAIN_SPACE_FIELDS, PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
+	}
 
-    @Override
-    public Patent parse(Document document) throws PatentReaderException {
-    	
-        DocumentId documentId = new DocumentIdNode(document).read();
-        if (documentId != null) {
-            MDC.put("DOCID", documentId.toText());
-        }
+	/*
+	 * private static final Set<String> SECTIONS = new HashSet<String>(20);
+	 * static { SECTIONS.add("PATN"); SECTIONS.add("INVT");
+	 * SECTIONS.add("ASSG"); SECTIONS.add("PRIR"); SECTIONS.add("REIS");
+	 * SECTIONS.add("RLAP"); SECTIONS.add("CLAS"); SECTIONS.add("UREF");
+	 * SECTIONS.add("FREF"); SECTIONS.add("OREF"); SECTIONS.add("LREP");
+	 * SECTIONS.add("PCTA"); SECTIONS.add("ABST"); SECTIONS.add("GOVT");
+	 * SECTIONS.add("PARN"); SECTIONS.add("BSUM"); SECTIONS.add("DRWD");
+	 * SECTIONS.add("DETD"); SECTIONS.add("CLMS"); SECTIONS.add("DCLM"); }
+	 */
 
-        PatentType patentType = new PatentTypeNode(document).read();
+	@Override
+	public Patent parse(Document document) throws PatentReaderException {
 
-        DocumentId applicationId = new ApplicationIdNode(document).read();
+		DocumentId publicationId = new DocumentIdNode(document).read();
+		if (publicationId != null) {
+			MDC.put("DOCID", publicationId.toText());
+		}
 
-        Node titleN = document.selectSingleNode("/DOCUMENT/PATN/TTL");
-        String title = titleN != null ? titleN.getText() : null;
+		PatentType patentType = new PatentTypeNode(document).read();
 
-        List<Examiner> examiners = new ExaminerNode(document).read();
-        List<Inventor> inventors = new InventorNode(document).read();
-        List<Assignee> assignees = new AssigneeNode(document).read();
-        List<Agent> agents = new AgentNode(document).read();
+		DocumentId applicationId = new ApplicationIdNode(document).read();
 
-        Set<PatentClassification> classifications = new ClassificationNode(document).read();
+		Node titleN = document.selectSingleNode("/DOCUMENT/PATN/TTL");
+		String title = titleN != null ? titleN.getText() : null;
 
-        List<DocumentId> priorityIds = new PriorityClaimNode(document).read();
-        List<DocumentId> relatedIds = new RelatedIdNode(document).read();
-        List<Citation> citations = new CitationNode(document).read();
+		List<Examiner> examiners = new ExaminerNode(document).read();
+		List<Inventor> inventors = new InventorNode(document).read();
+		List<Assignee> assignees = new AssigneeNode(document).read();
+		List<Agent> agents = new AgentNode(document).read();
 
-        List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
+		Set<PatentClassification> classifications = new ClassificationNode(document).read();
 
-        /*
-         * Formatted Text.
-         */
-        FormattedText textProcessor = new FormattedText();
-        Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
-        Description description = new DescriptionNode(document, textProcessor).read();
-        List<Claim> claims = new ClaimNode(document, textProcessor).read();
+		List<DocumentId> priorityIds = new PriorityClaimNode(document).read();
+		List<DocumentId> relatedIds = new RelatedIdNode(document).read();
+		List<Citation> citations = new CitationNode(document).read();
 
-        new ClaimTreeBuilder(claims).build();
+		List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
 
-        /*
-         * Building Patent Object.
-         */
-        Patent patent = new PatentGranted(documentId, patentType);
+		/*
+		 * Formatted Text.
+		 */
+		FormattedText textProcessor = new FormattedText();
+		Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
+		Description description = new DescriptionNode(document, textProcessor).read();
+		List<Claim> claims = new ClaimNode(document, textProcessor).read();
 
-        if (documentId != null && documentId.getDate() != null) {
-            patent.setDatePublished(documentId.getDate());
-        }
+		new ClaimTreeBuilder(claims).build();
 
-        if (applicationId != null && applicationId.getDate() != null) {
-            patent.setDateProduced(applicationId.getDate());
-        }
+		/*
+		 * Building Patent Object.
+		 */
+		Patent patent = new PatentGranted(publicationId, patentType);
 
-        patent.setApplicationId(applicationId);
-        patent.addPriorityId(priorityIds);
-        patent.addOtherId(priorityIds);
-        patent.addRelationIds(priorityIds);
+		if (publicationId != null && publicationId.getDate() != null) {
+			patent.setDatePublished(publicationId.getDate());
+		}
 
-        patent.addOtherId(applicationId);
-        patent.addOtherId(pctRegionalIds);
-        patent.addRelationIds(relatedIds);
+		if (applicationId != null && applicationId.getDate() != null) {
+			patent.setDateProduced(applicationId.getDate());
+		}
 
-        patent.setTitle(title);
-        patent.setInventor(inventors);
-        patent.setAssignee(assignees);
-        patent.setExaminer(examiners);
-        patent.setAgent(agents);
-        patent.setCitation(citations);
+		patent.setApplicationId(applicationId);
+		patent.addPriorityId(priorityIds);
+		patent.addOtherId(pctRegionalIds);
+		patent.addRelationIds(relatedIds);
 
-        //patent.setReferenceIds(referencedIds);
+        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getPriorityIds());
+		patent.addRelationIds(patent.getOtherIds());
 
-        if (classifications != null) {
-            patent.addClassification(new ArrayList<PatentClassification>(classifications));
-        }
+		patent.setTitle(title);
+		patent.setInventor(inventors);
+		patent.setAssignee(assignees);
+		patent.setExaminer(examiners);
+		patent.setAgent(agents);
+		patent.setCitation(citations);
 
-        patent.setAbstract(abstractText);
-        patent.setDescription(description);
-        patent.setClaim(claims);
+		// patent.setReferenceIds(referencedIds);
 
-        LOGGER.trace(patent.toString());
+		patent.setClassification(classifications);
+		patent.setAbstract(abstractText);
+		patent.setDescription(description);
+		patent.setClaim(claims);
 
-        return patent;
-    }
+		LOGGER.trace(patent.toString());
 
-    public static void main(String[] args) throws PatentReaderException, IOException {
+		return patent;
+	}
 
-        String filename = args[0];
+	public static void main(String[] args) throws PatentReaderException, IOException {
 
-        File file = new File(filename);
+		String filename = args[0];
 
-        /*if(file.getName().endsWith("\\.zip")){
-        
-        	ZipFindFile find = new ZipFindFile();
-        	find.setFileSuffix("xml");
-        	find.setParentPath("corpus/patents/ST32-US-Grant-025xml.dtd/");
-        	
-        	ZipReader fileInZip = new ZipReader(file, find);
-        	fileInZip.open();
-        	
-        	int count = 0;
-        	while(fileInZip.hasNext()){
-        		Reader docTxtStr = fileInZip.next();
-        		if (docTxtStr == null){
-        			break;
-        		}
-        		count++;
-        		Sgml sgml = new Sgml();
-        		Patent patent = sgml.parse(docTxtStr);
-        		System.out.println(count + " :: " + patent.toString());
-        	}
-        	fileInZip.close();
-        } else */
-        if (file.isDirectory()) {
-            int count = 1;
-            for (File subfile : file.listFiles()) {
-                System.out.println(count++ + " " + subfile.getAbsolutePath());
-                Greenbook greenbook = new Greenbook();
-                Patent patent = greenbook.parse(subfile);
-            }
-        } else {
-            Greenbook greenbook = new Greenbook();
-            Patent patent = greenbook.parse(file);
-            System.out.println(patent.toString());
-        }
-    }
+		File file = new File(filename);
+
+		/*
+		 * if(file.getName().endsWith("\\.zip")){
+		 * 
+		 * ZipFindFile find = new ZipFindFile(); find.setFileSuffix("xml");
+		 * find.setParentPath("corpus/patents/ST32-US-Grant-025xml.dtd/");
+		 * 
+		 * ZipReader fileInZip = new ZipReader(file, find); fileInZip.open();
+		 * 
+		 * int count = 0; while(fileInZip.hasNext()){ Reader docTxtStr =
+		 * fileInZip.next(); if (docTxtStr == null){ break; } count++; Sgml sgml
+		 * = new Sgml(); Patent patent = sgml.parse(docTxtStr);
+		 * System.out.println(count + " :: " + patent.toString()); }
+		 * fileInZip.close(); } else
+		 */
+		if (file.isDirectory()) {
+			int count = 1;
+			for (File subfile : file.listFiles()) {
+				System.out.println(count++ + " " + subfile.getAbsolutePath());
+				Greenbook greenbook = new Greenbook();
+				Patent patent = greenbook.parse(subfile);
+			}
+		} else {
+			Greenbook greenbook = new Greenbook();
+			Patent patent = greenbook.parse(file);
+			System.out.println(patent.toString());
+		}
+	}
 
 }
