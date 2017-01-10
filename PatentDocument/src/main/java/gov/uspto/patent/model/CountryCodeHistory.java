@@ -113,7 +113,7 @@ public class CountryCodeHistory {
         COUNTRY_MAP.put("TA", new CountryCodeHistoric("Tanzania", 1961, FORMAT_CHANGE_DATE, CountryCode.TZ));
         COUNTRY_MAP.put("TD", new CountryCodeHistoric("Trinidad and Tobago", 1962, FORMAT_CHANGE_DATE, CountryCode.TT));
         COUNTRY_MAP.put("TI", new CountryCodeHistoric("Tonga", 1970, FORMAT_CHANGE_DATE, CountryCode.TO));
-        COUNTRY_MAP.put("TP", new CountryCodeHistoric("Timor–Leste", 1975, FORMAT_CHANGE_DATE, CountryCode.TL));
+        COUNTRY_MAP.put("TP", new CountryCodeHistoric("Timor-Leste", 1975, FORMAT_CHANGE_DATE, CountryCode.TL));
         COUNTRY_MAP.put("TO", new CountryCodeHistoric("Togo", 1960, FORMAT_CHANGE_DATE, CountryCode.TG));
         COUNTRY_MAP.put("TS", new CountryCodeHistoric("Chad", 1960, FORMAT_CHANGE_DATE, CountryCode.TD));      
         COUNTRY_MAP.put("WL", new CountryCodeHistoric("Sierra Leone", 1961, FORMAT_CHANGE_DATE, CountryCode.SL));
