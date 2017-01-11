@@ -108,6 +108,10 @@ public class DocumentId implements Comparable<DocumentId> {
         return countryCode;
     }
 
+    public void setKindCode(String kindCode) {
+        this.kindCode = kindCode;
+    }
+
     public String getKindCode() {
         return kindCode;
     }
