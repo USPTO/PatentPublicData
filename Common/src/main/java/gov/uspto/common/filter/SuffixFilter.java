@@ -14,7 +14,7 @@ public class SuffixFilter implements FileFilter, StringFilter {
     @Override
     public boolean accept(String valueStr) {
         for (String suffix : suffixes) {
-            if (valueStr.endsWith(suffix)) {
+            if (valueStr.toLowerCase().endsWith(suffix)) {
                 return true;
             }
         }
