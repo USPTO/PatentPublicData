@@ -162,20 +162,28 @@ public class CpcClassification extends PatentClassification {
 	 */
 	public String standardize() {
 
-		StringBuilder sb = new StringBuilder().append(section).append(mainClass).append(subClass).append("0");
+		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
 
-		if (Integer.valueOf(mainGroup) < 10) {
-			sb.append("0");
+		if (subClass != null) {
+			sb.append(subClass).append("0");
+
+			if (mainGroup != null) {
+				if (Integer.valueOf(mainGroup) < 10) {
+					sb.append("0");
+				}
+				sb.append(mainGroup);
+
+				if (subGroup != null) {
+					sb.append(subGroup);
+				}
+			}
 		}
-
-		sb.append(mainGroup).append(subGroup);
-
 		String changed = sb.toString();
 		changed = String.format("%1$-9s", changed);
 
 		return changed;
 	}
-
+	
 	/**
 	 * Classification depth 
 	 * 
