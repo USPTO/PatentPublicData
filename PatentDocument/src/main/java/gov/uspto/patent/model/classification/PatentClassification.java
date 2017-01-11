@@ -141,8 +141,8 @@ public abstract class PatentClassification implements Classification {
 	
 	@Override
 	public int compareTo(Classification other) {
-		int last = this.originalText.compareTo(other.getTextOriginal());
-		return last == 0 ? this.originalText.compareTo(other.getTextOriginal()) : last;
+		int last = this.toText().compareTo(other.toText());
+		return last == 0 ? this.toText().compareTo(other.toText()) : last;
 	}
 
 	public static <T extends PatentClassification> SortedSet<T> filter(Collection<T> classes,
