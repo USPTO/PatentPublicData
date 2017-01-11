@@ -11,16 +11,6 @@ import gov.uspto.patent.PatentReaderException;
 
 public class PatentParserTest {
 
-    @Test(expected = PatentReaderException.class)
-    public void parseFailUnknownXMLType() throws PatentReaderException, IOException {
-        String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><application><BAD></application>";
-
-        PatentReader patentReader = new PatentReader(PatentDocFormat.Pap);
-        try (StringReader rawText = new StringReader(xmlString)) {
-            patentReader.read(rawText);
-        }
-    }
-
     @Test
     public void parsePatentApplication() throws PatentReaderException, IOException {
         String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><us-patent-application><us-bibliographic-data-application><publication-reference><document-id><country-code>US</country-code><doc-number>1234567</doc-number></document-id></publication-reference><application-reference><document-id><doc-number>7654321</doc-number></document-id></application-reference></us-bibliographic-data-application></us-patent-application>";
