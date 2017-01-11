@@ -152,7 +152,7 @@ public class TransformerCli {
 			}
 
 			// filters.addRule(new PathFileFilter(""));
-			filters.addRule(new SuffixFilter("xml", "sgml"));
+			filters.addRule(new SuffixFilter("xml", "sgml", "sgm"));
 		}
 
 		dumpReader.setFileFilter(filters);
