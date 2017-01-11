@@ -1,8 +1,6 @@
 package gov.uspto.patent;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -10,6 +8,9 @@ import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.jsoup.Jsoup;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
 import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
@@ -33,7 +34,7 @@ public class PatentReader implements PatentDocReader<Patent> {
 
 	/**
 	 * Load Reader
-	 *  
+	 * 
 	 * @param reader
 	 * @param PatentType
 	 */
@@ -48,11 +49,9 @@ public class PatentReader implements PatentDocReader<Patent> {
 	 * @param document
 	 */
 	/*
-	public PatentReader(Document document) {
-		this.document = document;
-		this.reader = new StringReader(document.asXML());
-	}
-	*/
+	 * public PatentReader(Document document) { this.document = document;
+	 * this.reader = new StringReader(document.asXML()); }
+	 */
 
 	/**
 	 * Parse Document and Return Patent Object.
@@ -60,11 +59,11 @@ public class PatentReader implements PatentDocReader<Patent> {
 	 * @param reader
 	 * @return
 	 * @throws PatentReaderException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@Override
-    public Patent read(Reader reader) throws PatentReaderException, IOException {
-        Preconditions.checkNotNull(reader, "reader can not be Null");
+	public Patent read(Reader reader) throws PatentReaderException, IOException {
+		Preconditions.checkNotNull(reader, "reader can not be Null");
 
 		switch (patentDocFormat) {
 		case Greenbook:
@@ -95,8 +94,34 @@ public class PatentReader implements PatentDocReader<Patent> {
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 			return sax.read(reader);
 		} catch (DocumentException | SAXException e) {
-			throw new PatentReaderException("Failed to load XML", e);
+			try {
+				reader.reset();
+				return fixTagsJDOM(IOUtils.toString(reader));
+			} catch (IOException e1) {
+				throw new PatentReaderException(e1);
+			}
 		}
 	}
-	
+
+	/**
+	 * Fix unclosed tags by loading into and out of JSoup
+	 * 
+	 * @param badXml
+	 * @return
+	 * @throws IOException
+	 * @throws PatentReaderException
+	 */
+	public static Document fixTagsJDOM(String badXml) throws IOException, PatentReaderException {
+		org.jsoup.nodes.Document jsoupDoc = Jsoup.parse("<body>" + badXml + "</body>", "",
+				Parser.xmlParser().settings(ParseSettings.preserveCase));
+		jsoupDoc.outputSettings().prettyPrint(false);
+		String doc = jsoupDoc.select("body").html();
+		try {
+			SAXReader sax = new SAXReader(false);
+			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			return sax.read(new StringReader(doc));
+		} catch (DocumentException | SAXException e) {
+			throw new PatentReaderException("Failed to Fix and Parse Docuemnt", e);
+		}
+	}
 }
