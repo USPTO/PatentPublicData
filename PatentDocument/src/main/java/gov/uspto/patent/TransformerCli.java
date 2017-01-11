@@ -176,7 +176,7 @@ public class TransformerCli {
 
 				try (StringReader rawText = new StringReader(xmlDocStr)) {
 					Patent patent = patentReader.read(rawText);
-					String patentId = patent.getDocumentId().toText();
+					String patentId = patent.getDocumentId() != null ? patent.getDocumentId().toText() : "";
 					MDC.put("DOCID", patentId);
 
 					if (!stdout && !outputBulkFile || outputBulkFile && currentWriter == null) {

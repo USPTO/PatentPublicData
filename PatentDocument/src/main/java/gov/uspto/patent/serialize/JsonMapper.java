@@ -85,7 +85,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("productionDate", mapDate(patent.getDateProduced()));
         builder.add("publishedDate", mapDate(patent.getDatePublished()));
 
-        builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
+        builder.add("documentId", patent.getDocumentId() != null ? patent.getDocumentId().toText() : ""); // Patent ID or Public Application ID.
         builder.add("documentDate", mapDate(patent.getDocumentDate()));
 
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");

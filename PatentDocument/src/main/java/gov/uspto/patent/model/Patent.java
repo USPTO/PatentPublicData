@@ -106,7 +106,11 @@ public abstract class Patent {
 	}
 
 	public DocumentDate getApplicationDate() {
-		return applicationId.getDate();
+		if (applicationId != null){
+			return applicationId.getDate();
+		} else {
+			return null;
+		}
 	}
 
 	public void setDocumentId(DocumentId documentId) {
@@ -118,7 +122,11 @@ public abstract class Patent {
 	}
 
 	public DocumentDate getDocumentDate() {
-		return documentId.getDate();
+		if (documentId != null){
+			return documentId.getDate();
+		} else {
+			return null;
+		}
 	}
 
 	public PatentType getPatentType() {
