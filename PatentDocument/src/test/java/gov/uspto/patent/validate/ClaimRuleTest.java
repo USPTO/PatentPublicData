@@ -27,13 +27,6 @@ public class ClaimRuleTest {
 	}
 
 	@Test
-	public void nullClaimListFail() {
-		PatentApplication patent = new PatentApplication(new DocumentId(CountryCode.US, "99999"), PatentType.UTILITY);
-		patent.setClaim(null);
-		assertFalse(claimRule.test(patent));
-	}
-
-	@Test
 	public void smallFirstClaimFail() {
 		PatentApplication patent = new PatentApplication(new DocumentId(CountryCode.US, "99999"), PatentType.UTILITY);
 		List<Claim> claims = new ArrayList<Claim>();
