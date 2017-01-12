@@ -33,7 +33,9 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
 		for (Node assigneeN : assignees) {
 			Assignee assignee = readAssignee(assigneeN);
-			assigneeList.add(assignee);
+			if (assignee != null){
+				assigneeList.add(assignee);
+			}
 		}
 
 		return assigneeList;
@@ -41,6 +43,9 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 	public Assignee readAssignee(Node assigneeN){
 		Name name = new NameNode(assigneeN).read();
+		if (name == null){
+			return null;
+		}
 
 		Address address = new AddressNode(assigneeN).read();
 
