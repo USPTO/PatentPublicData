@@ -256,10 +256,17 @@ public enum CountryCode {
 	ZA("South Africa"),
 	ZM("Zambia"),
 	ZW("Zimbabwe"),
-	UK("United Kingdom"), // Reserved for United Kingdom, official code is GB, mostly used in mailing address.
+    XP("NOT PROVIDED or Non-patent literature NPL"),
 	UNKNOWN("unknown"),   // when lookup fails on non-null.
 	UNDEFINED("undefined"), // trying lookup with null.
 	OMITTED("unknown"),
+
+	/*
+	 * Mail Address Codes
+	 */
+	UK("United Kingdom"), // Reserved for United Kingdom, official code is GB, mostly used in mailing address.
+	AN("Netherlands Antilles"), // mailing address only.
+	XH("Niue"), // mailing address only.
 
 	/*
 	 * Available for individual Use and provisional codes.
