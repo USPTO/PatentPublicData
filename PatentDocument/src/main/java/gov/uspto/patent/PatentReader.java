@@ -116,6 +116,8 @@ public class PatentReader implements PatentDocReader<Patent> {
 				Parser.xmlParser().settings(ParseSettings.preserveCase));
 		jsoupDoc.outputSettings().prettyPrint(false);
 		String doc = jsoupDoc.select("body").html();
+		// Add HTML DTD to ensure HTML entities do not cause any problems.
+        doc = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" + doc; 
 		try {
 			SAXReader sax = new SAXReader(false);
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
