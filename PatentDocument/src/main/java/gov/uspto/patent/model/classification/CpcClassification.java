@@ -167,7 +167,7 @@ public class CpcClassification extends PatentClassification {
 		if (subClass != null) {
 			sb.append(subClass).append("0");
 
-			if (mainGroup != null) {
+			if (mainGroup != null && mainGroup.matches("^[0-9]+$")) {
 				if (Integer.valueOf(mainGroup) < 10) {
 					sb.append("0");
 				}
