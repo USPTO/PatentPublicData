@@ -1,10 +1,10 @@
-package gov.uspto.patent.doc.xml;
+package gov.uspto.patent.doc.sgml;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import gov.uspto.patent.doc.xml.FormattedText;
+import gov.uspto.patent.doc.sgml.FormattedText;
 
 public class FormattedTextTest {
 
@@ -13,13 +13,14 @@ public class FormattedTextTest {
 	@Test
 	public void headingAndParagraphs() {
 		StringBuilder stb = new StringBuilder();
-		stb.append("<heading lvl=2>HEADING TEXT</heading>\n");
-		stb.append("<p lvl=1>pargraph text.</p>");
+
+		stb.append("<H LVL=\"1\"><STEXT><PDAT>HEADING TEXT</PDAT></STEXT></H>\n");
+		stb.append("<PARA ID=\"P-00003\" LVL=\"0\"><PTEXT><PDAT>pargraph text.</PDAT></PTEXT></PARA>");
 		String input = stb.toString();
 
 		StringBuilder expectStb = new StringBuilder();
-		expectStb.append("<h2 level=\"2\">HEADING TEXT</h2>\n");
-		expectStb.append("<p level=\"1\">pargraph text.</p>");
+		expectStb.append("<h2 level=\"1\">HEADING TEXT</h2>\n");
+		expectStb.append("<p id=\"P-00003\" level=\"0\">pargraph text.</p>");
 		String expect = expectStb.toString();
 
 		String actual = format.getSimpleHtml(input);
@@ -29,9 +30,9 @@ public class FormattedTextTest {
 
 	@Test
 	public void figRef() {
-		String input = "<figref idref=\"DRAWINGS\">FIG. 1</figref>";
+		String input = "<FGREF ID=\"DRAWINGS\"><PDAT>FIG. 1</PDAT></FGREF>";
 
-		String expect = "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1</a>";
+		String expect = "<a id=\"FR-0001\" idref=\"FIG-1\" class=\"figref\">FIG. 1</a>";
 
 		String actual = format.getSimpleHtml(input);
 
@@ -40,9 +41,9 @@ public class FormattedTextTest {
 
 	@Test
 	public void ClaimRef() {
-		String input = "<claim-ref idref=\"CLM-00001\">claim 1</claim-ref>";
+		String input = "<CLREF ID=\"CLM-00001\"><PDAT>claim 1</PDAT></CLREF>";
 
-		String expect = "<a idref=\"CLM-00001\" id=\"CR-0001\" class=\"claim\">claim 1</a>";
+		String expect = "<a id=\"CR-0001\" idref=\"CLM-00001\" class=\"claim\">claim 1</a>";
 
 		String actual = format.getSimpleHtml(input);
 
@@ -62,6 +63,7 @@ public class FormattedTextTest {
 	}
 	*/
 
+	/*
 	@Test
 	public void table() {
 		String input = "<table><tbody><row><entry>cell1</entry></row></tbody></table>";
@@ -72,10 +74,11 @@ public class FormattedTextTest {
 
 		assertEquals(expect, actual);
 	}
+	*/
 
 	@Test
 	public void subsup() {
-		String input = "H<sub>2</sub>O<sup>3</sup>";
+		String input = "H<SB>2</SB>O<SP>3</SP>";
 
 		String expect = "H<sub>2</sub>O<sup>3</sup>";
 

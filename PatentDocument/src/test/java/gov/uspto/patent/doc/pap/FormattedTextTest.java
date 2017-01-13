@@ -1,10 +1,10 @@
-package gov.uspto.patent.doc.xml;
+package gov.uspto.patent.doc.pap;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import gov.uspto.patent.doc.xml.FormattedText;
+import gov.uspto.patent.doc.pap.FormattedText;
 
 public class FormattedTextTest {
 
@@ -14,7 +14,7 @@ public class FormattedTextTest {
 	public void headingAndParagraphs() {
 		StringBuilder stb = new StringBuilder();
 		stb.append("<heading lvl=2>HEADING TEXT</heading>\n");
-		stb.append("<p lvl=1>pargraph text.</p>");
+		stb.append("<paragraph lvl=1>pargraph text.</paragraph>");
 		String input = stb.toString();
 
 		StringBuilder expectStb = new StringBuilder();
@@ -29,9 +29,9 @@ public class FormattedTextTest {
 
 	@Test
 	public void figRef() {
-		String input = "<figref idref=\"DRAWINGS\">FIG. 1</figref>";
+		String input = "<cross-reference target=\"DRAWINGS\">FIG. 1</cross-reference>";
 
-		String expect = "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1</a>";
+		String expect = "<a id=\"FR-0001\" idref=\"FIG-1\" class=\"figref\">FIG. 1</a>";
 
 		String actual = format.getSimpleHtml(input);
 
@@ -40,16 +40,15 @@ public class FormattedTextTest {
 
 	@Test
 	public void ClaimRef() {
-		String input = "<claim-ref idref=\"CLM-00001\">claim 1</claim-ref>";
+		String input = "<dependent-claim-reference depends_on=\"CLM-00001\"><claim-text>claim 1</claim-text></dependent-claim-reference>";
 
-		String expect = "<a idref=\"CLM-00001\" id=\"CR-0001\" class=\"claim\">claim 1</a>";
+		String expect = "<a id=\"CR-0001\" idref=\"CLM-00001\" class=\"claim\">claim 1</a>";
 
 		String actual = format.getSimpleHtml(input);
 
 		assertEquals(expect, actual);
 	}
 
-	/*
 	@Test
 	public void formula() {
 		String input = "<in-line-formula>c=a+b</in-line-formula>";
@@ -60,7 +59,6 @@ public class FormattedTextTest {
 
 		assertEquals(expect, actual);
 	}
-	*/
 
 	@Test
 	public void table() {
@@ -75,7 +73,7 @@ public class FormattedTextTest {
 
 	@Test
 	public void subsup() {
-		String input = "H<sub>2</sub>O<sup>3</sup>";
+		String input = "H<subscript>2</subscript>O<superscript>3</superscript>";
 
 		String expect = "H<sub>2</sub>O<sup>3</sup>";
 

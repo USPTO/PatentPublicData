@@ -12,26 +12,30 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 
+import gov.uspto.patent.ReferenceTagger;
 import gov.uspto.patent.TextProcessor;
 import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 import gov.uspto.patent.doc.simplehtml.HtmlToPlainText;
 import gov.uspto.patent.mathml.MathmlEscaper;
 
 /**
- * Parse and Clean Formated Text Fields, such as Description, Abstract and Claims.
+ * Parse and Clean Formated Text Fields, such as Description, Abstract and
+ * Claims.
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class FormattedText implements TextProcessor {
 
-    private static final String[] HTML_WHITELIST_TAGS = new String[] { "bold", "h1", "h2", "h3", "h4", "h5", "h6", "p",
-            "table", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a", "span" };
-    private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "format",
-            "type", "level" };
+	private static final String[] HTML_WHITELIST_TAGS = new String[] { "br", "b", "sub", "sup", "h1", "h2", "h3", "h4",
+			"h5", "h6", "p", "table", "tbody", "tgroup", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a", "span" };
+	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "idref", "num", "format",
+			"type", "level", "align", "frame" };
 
 	@Override
 	public String getPlainText(String rawText, FreetextConfig textConfig) {
@@ -42,115 +46,130 @@ public class FormattedText implements TextProcessor {
 		return htmlConvert.getPlainText(simpleDoc);
 	}
 
-    @Override
-    public String getSimpleHtml(String rawText) {
+	@Override
+	public String getSimpleHtml(String rawText) {
 
-        Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
+		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
+		jsoupDoc.outputSettings().prettyPrint(false);
 
-        for (Element element : jsoupDoc.select("cross-reference-to-related-applications")) {
-            element.remove();
-        }
+		jsoupDoc.select("bold").tagName("b");
 
-        // Heading tags to H2.
-        //jsoupDoc.select("heading").tagName("h2");
-        for (Element heading : jsoupDoc.select("heading")) {
-        	heading.attr("level", heading.attr("lvl")).tagName("h2");
-        	//heading.removeAttr("lvl");
-        }
- 
-        // Remove first paragraph in drawing description if it does not have a figref.
-        /*
-        for (Element element : jsoupDoc.select("brief-description-of-drawings section paragraph:first-child")) {
-            if (element.select(":has(cross-reference)").isEmpty()) {
-                // System.err.println("Drawing Description without
-                // Patent-Figure" + element.html());
-                element.remove();
-            }
-        }
-        */
+		// Heading tags to H2.
+		// jsoupDoc.select("heading").tagName("h2");
+		for (Element heading : jsoupDoc.select("heading")) {
+			heading.attr("level", heading.attr("lvl")).tagName("h2");
+			// heading.removeAttr("lvl");
+		}
 
-        for (Element element : jsoupDoc.select("cross-reference")) {
-            //String target = element.attr("target");
-            //if ("drawings".equals(target.toLowerCase().trim()){
-            element.tagName("a");
-            element.addClass("figref");
-            //}
-        }
+		Elements figRefEls = jsoupDoc.select("cross-reference[target=DRAWINGS]");
+		for (int i = 1; i <= figRefEls.size(); i++) {
+			Element element = figRefEls.get(i - 1);
+			element.attr("id", "FR-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			element.attr("idref", ReferenceTagger.createFigId(element.text()));
+			element.tagName("a");
+			element.addClass("figref");
+		}
 
-        for (Element element : jsoupDoc.select("dependent-claim-reference")) {
-            element.tagName("a");
-            element.addClass("claim");
-        }
+		/*
+		 * Patent Claim Reference
+		 * 
+		 * <dependent-claim-reference depends_on="CLM-00001"><claim-text>claim
+		 * 1</claim-text></dependent-claim-reference>
+		 * 
+		 * <a idref="CLM-00001" class="claim">claim 1</a>
+		 */
+		Elements clmRefEls = jsoupDoc.select("dependent-claim-reference");
+		for (int i = 1; i <= clmRefEls.size(); i++) {
+			Element element = clmRefEls.get(i - 1);
+			element.attr("id", "CR-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			element.attr("idref", element.attr("depends_on"));
+			element.tagName("a");
+			element.addClass("claim");
+			element.removeAttr("depends_on");
+		}
 
-        /*
-         * Math, change mathml to text to maintain all nodes after sending through Cleaner.
-         */
-        boolean mathFound = false;
-        for (Element element : jsoupDoc.select("math")) {
-            mathFound = true;
-            String mathml = MathmlEscaper.escape(element.html());
+		Elements forEls = jsoupDoc.select("in-line-formula");
+		for (int i = 1; i <= forEls.size(); i++) {
+			Element element = forEls.get(i - 1);
+			element.attr("id", "FOR-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			element.tagName("span");
+			element.addClass("formula");
+		}
 
-            Element newEl = new Element(Tag.valueOf("span"), "");
-            newEl.addClass("math");
-            newEl.attr("format", "mathml");
-            newEl.appendChild(new TextNode(mathml, null));
-            element.replaceWith(newEl);
-        }
+		/*
+		 * Math, change mathml to text to maintain all nodes after sending
+		 * through Cleaner.
+		 */
+		boolean mathFound = false;
+		Elements mathEls = jsoupDoc.select("math");
+		for (int i = 1; i <= mathEls.size(); i++) {
+			Element element = mathEls.get(i - 1);
+			mathFound = true;
+			String mathml = MathmlEscaper.escape(element.html());
 
-        jsoupDoc.select("subscript").prepend("_");
-        jsoupDoc.select("superscript").prepend("^");
-        jsoupDoc.select("section").prepend("\\n\\n    ");
+			Element newEl = new Element(Tag.valueOf("span"), "");
+			newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			newEl.addClass("math");
+			newEl.attr("format", "mathml");
+			newEl.appendChild(new TextNode(mathml, null));
+			element.replaceWith(newEl);
+		}
 
-        // Remove Paragraph Numbers.
-        jsoupDoc.select("paragraph number:first-child").remove();
+		// Remove Paragraph Numbers.
+		jsoupDoc.select("paragraph number:first-child").remove();
 
-        // Rename all "paragraph" tags to "p".
-        //jsoupDoc.select("paragraph").tagName("p");
-        for (Element par : jsoupDoc.select("paragraph")) {
-        	par.attr("level", par.attr("lvl"));
-        	par.removeAttr("lvl");
-        	par.tagName("p");
-        }
+		for (Element par : jsoupDoc.select("paragraph")) {
+			par.tagName("p").attr("level", par.attr("lvl"));
+			//par.removeAttr("lvl");
+		}
 
-        // Table Elements.
-        jsoupDoc.select("row").tagName("tr");
-        jsoupDoc.select("entry").append("td");
+		jsoupDoc.select("subscript").tagName("sub");
+		jsoupDoc.select("superscript").tagName("sup");
 
-        // handle nested claim-text similar as paragraphs.
-        //jsoupDoc.select("claim-text").tagName("li");
+		/*
+		 * Table
+		 */
+		Elements tableEls = jsoupDoc.select("table");
+		for (int i = 1; i <= tableEls.size(); i++) {
+			Element element = tableEls.get(i - 1);
+			element.attr("id", "TBL-" + Strings.padStart(String.valueOf(i), 4, '0'));
 
-        String textStr = jsoupDoc.html();
-        textStr = textStr.replaceAll("\\\\n", "\n");
+			element.select("entry").tagName("td");
+			element.select("row").tagName("tr");
+		}
 
-        // Whitelist whitelist = Whitelist.simpleText();
-        Whitelist whitelist = Whitelist.none();
-        whitelist.addTags(HTML_WHITELIST_TAGS);
-        whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
+		String textStr = jsoupDoc.html();
+		textStr = textStr.replaceAll("\\\\n", "\n");
 
-        OutputSettings outSettings = new Document.OutputSettings();
-        outSettings.charset(Charsets.UTF_8);
-        outSettings.prettyPrint(false);
-        outSettings.escapeMode(EscapeMode.extended);
+		// Whitelist whitelist = Whitelist.simpleText();
+		Whitelist whitelist = Whitelist.none();
+		whitelist.addTags(HTML_WHITELIST_TAGS);
+		whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
 
-        String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
+		OutputSettings outSettings = new Document.OutputSettings();
+		outSettings.charset(Charsets.UTF_8);
+		outSettings.prettyPrint(false);
+		outSettings.escapeMode(EscapeMode.extended);
 
-        if (mathFound) {
-            fieldTextCleaned = MathmlEscaper.unescape(fieldTextCleaned);
-        }
+		String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
 
-        return fieldTextCleaned;
-    }
+		if (mathFound) {
+			fieldTextCleaned = MathmlEscaper.unescape(fieldTextCleaned);
+		}
 
-    @Override
-    public List<String> getParagraphText(String rawText) {
-        String textWithPMarks = getSimpleHtml(rawText);
-        Document jsoupDoc = Jsoup.parse(textWithPMarks, "", Parser.xmlParser());
+		return fieldTextCleaned;
+	}
 
-        List<String> paragraphs = new ArrayList<String>();
-        for (Element element : jsoupDoc.select("p")) {
-            paragraphs.add(element.html());
-        }
+	@Override
+	public List<String> getParagraphText(String rawText) {
+		String textWithPMarks = getSimpleHtml(rawText);
+		Document jsoupDoc = Jsoup.parse(textWithPMarks, "", Parser.xmlParser());
 
-        return paragraphs;
-    }
+		List<String> paragraphs = new ArrayList<String>();
+		for (Element element : jsoupDoc.select("p")) {
+			paragraphs.add(element.html());
+		}
+
+		return paragraphs;
+	}
 }

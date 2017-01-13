@@ -13,26 +13,30 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 
+import gov.uspto.patent.ReferenceTagger;
 import gov.uspto.patent.TextProcessor;
 import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 import gov.uspto.patent.doc.simplehtml.HtmlToPlainText;
 import gov.uspto.patent.mathml.MathmlEscaper;
 
 /**
- * Parse and Clean Formated Text Fields, such as Description, Abstract and Claims.
+ * Parse and Clean Formated Text Fields, such as Description, Abstract and
+ * Claims.
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class FormattedText implements TextProcessor {
 
-	private static final String[] HTML_WHITELIST_TAGS = new String[] { "bold", "h1", "h2", "h3", "h4", "h5", "h6", "p",
+	private static final String[] HTML_WHITELIST_TAGS = new String[] { "b", "sub", "sup", "h1", "h2", "h3", "h4", "h5", "h6", "p",
 			"table", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a", "span" };
-	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "format",
-			"type", "level" };
+	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "idref", "num", "format",
+			"type", "level", "align", "frame" };
 
 	@Override
 	public String getPlainText(String rawText, FreetextConfig textConfig) {
@@ -57,13 +61,24 @@ public class FormattedText implements TextProcessor {
 	@Override
 	public String getSimpleHtml(String rawText) {
 		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
+		jsoupDoc.outputSettings().prettyPrint(false);
 
-		for (Element element : jsoupDoc.select("FGREF")) {
+		jsoupDoc.select("bold").tagName("b");
+
+		Elements figRefEls = jsoupDoc.select("FGREF");
+		for (int i = 1; i <= figRefEls.size(); i++) {
+			Element element = figRefEls.get(i - 1);
+			element.attr("id", "FR-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			element.attr("idref", ReferenceTagger.createFigId(element.select("PDAT").text()));
 			element.tagName("a");
 			element.addClass("figref");
 		}
 
-		for (Element element : jsoupDoc.select("CLREF")) {
+		Elements clmRefEls = jsoupDoc.select("CLREF");
+		for (int i = 1; i <= clmRefEls.size(); i++) {
+			Element element = clmRefEls.get(i - 1);
+			element.attr("idref", element.attr("id"));
+			element.attr("id", "CR-" + Strings.padStart(String.valueOf(i), 4, '0'));
 			element.tagName("a");
 			element.addClass("claim");
 		}
@@ -75,26 +90,12 @@ public class FormattedText implements TextProcessor {
 		 * //element.tagName("claim-text"); }
 		 */
 
-		// Remove paragraph in drawing description which does not have a figref.
-		for (Element element : jsoupDoc.select("DRWDESC BTEXT PARA:first-child")) {
-			if (element.select(":has(FGREF)").isEmpty()) {
-				System.err.println("Drawing Descriptino without FGREF" + element.html());
-				element.remove();
-			}
-		}
-
-		// Remove boiler plate section, first paragraph talking about related
-		// application, which are already being captured within other fields.
-		for (Element element : jsoupDoc.select("RELAPP")) {
-			element.remove();
-		}
-
 		// Paragraph headers.
-		//jsoupDoc.select("H").tagName("h2");
-        for (Element heading : jsoupDoc.select("H")) {
-        	heading.attr("level", heading.attr("LVL")).tagName("h2");
-        	//heading.removeAttr("lvl");
-        }
+		// jsoupDoc.select("H").tagName("h2");
+		for (Element heading : jsoupDoc.select("H")) {
+			heading.attr("level", heading.attr("LVL")).tagName("h2");
+			// heading.removeAttr("lvl");
+		}
 
 		// Remove any paragraph headers.
 		for (Element element : jsoupDoc.select("TBLREF")) {
@@ -106,11 +107,14 @@ public class FormattedText implements TextProcessor {
 		 * through Cleaner.
 		 */
 		boolean mathFound = false;
-		for (Element element : jsoupDoc.select("math")) {
+		Elements mathEls = jsoupDoc.select("math");
+		for (int i = 1; i <= mathEls.size(); i++) {
+			Element element = mathEls.get(i - 1);
 			mathFound = true;
 			String mathml = MathmlEscaper.escape(element.html());
 
 			Element newEl = new Element(Tag.valueOf("span"), "");
+			newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
 			newEl.addClass("math");
 			newEl.attr("format", "mathml");
 			newEl.appendChild(new TextNode(mathml, null));
@@ -122,15 +126,15 @@ public class FormattedText implements TextProcessor {
 		jsoupDoc.select("CLM CLMSTEP").tagName("li");
 
 		// Rename all "para" tags to "p".
-		//jsoupDoc.select("PARA").tagName("p");
-        for (Element par : jsoupDoc.select("PARA")) {
-        	par.attr("level", par.attr("lvl"));
-        	par.removeAttr("lvl");
-        	par.tagName("p");
-        }
+		// jsoupDoc.select("PARA").tagName("p");
+		for (Element par : jsoupDoc.select("PARA")) {
+			par.attr("level", par.attr("lvl"));
+			par.removeAttr("lvl");
+			par.tagName("p");
+		}
 
-		jsoupDoc.select("SB").prepend("_");
-		jsoupDoc.select("SP").prepend("^");
+		jsoupDoc.select("SB").tagName("sub");
+		jsoupDoc.select("SP").tagName("sup");
 
 		String textStr = jsoupDoc.html();
 		textStr = textStr.replaceAll("\\\\n", "\n");
