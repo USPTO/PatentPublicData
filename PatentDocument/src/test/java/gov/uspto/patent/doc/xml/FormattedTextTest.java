@@ -50,17 +50,15 @@ public class FormattedTextTest {
 	}
 
 	/*
-	@Test
-	public void formula() {
-		String input = "<in-line-formula>c=a+b</in-line-formula>";
-
-		String expect = "<span id=\"FOR-0001\" class=\"formula\">c=a+b</span>";
-
-		String actual = format.getSimpleHtml(input);
-
-		assertEquals(expect, actual);
-	}
-	*/
+	 * @Test public void formula() { String input =
+	 * "<in-line-formula>c=a+b</in-line-formula>";
+	 * 
+	 * String expect = "<span id=\"FOR-0001\" class=\"formula\">c=a+b</span>";
+	 * 
+	 * String actual = format.getSimpleHtml(input);
+	 * 
+	 * assertEquals(expect, actual); }
+	 */
 
 	@Test
 	public void table() {
@@ -86,12 +84,25 @@ public class FormattedTextTest {
 
 	@Test
 	public void MathML_html() {
-		String intput = "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>";
+		String input = "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>";
 
 		String expect = "<span id=\"MTH-0001\" class=\"math\" format=\"mathml\"><math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math></span>";
 
-		String actual = format.getSimpleHtml(intput);
+		String actual = format.getSimpleHtml(input);
 
 		assertEquals(expect, actual);
 	}
+
+	@Test
+	public void formulae() {
+
+		String input = "<?in-line-formulae description=\"In-line Formulae\" end=\"lead\"?>CH<sub>4</sub><?in-line-formulae description=\"In-line Formulae\" end=\"tail\"?>";
+
+		String expect = "<span id=\"FOR-0001\" class=\"formula\">CH<sub>4</sub></span>";
+
+		String actual = format.getSimpleHtml(input);
+
+		assertEquals(expect, actual);
+	}
+
 }

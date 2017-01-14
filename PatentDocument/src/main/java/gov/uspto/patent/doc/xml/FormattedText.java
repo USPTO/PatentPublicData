@@ -54,10 +54,28 @@ public class FormattedText implements TextProcessor {
 
 	@Override
 	public String getSimpleHtml(String rawText) {
+
+		/*
+		 * Change xml processing instruction "in-line-formulae" 
+		 * to normal xml node, as it was in the Patent PAP format; also making it searchable within jsoup.
+		 */
+		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"lead\"\\?>",
+				"<in-line-formula>");
+		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"end\"\\?>",
+				"</in-line-formula>");
+
 		Document document = Jsoup.parse(rawText, "", Parser.xmlParser());
 		document.outputSettings().prettyPrint(false);
 
 		document.select("bold").tagName("b");
+
+		Elements forEls = document.select("in-line-formula");
+		for (int i = 1; i <= forEls.size(); i++) {
+			Element element = forEls.get(i - 1);
+			element.attr("id", "FOR-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			element.tagName("span");
+			element.addClass("formula");
+		}
 
 		/*
 		 * HEADING tags
@@ -71,7 +89,7 @@ public class FormattedText implements TextProcessor {
 
 		for (Element par : document.select("p")) {
 			par.attr("level", par.attr("lvl"));
-			//par.removeAttr("lvl");
+			// par.removeAttr("lvl");
 		}
 
 		/*
@@ -129,13 +147,6 @@ public class FormattedText implements TextProcessor {
 			element.tagName("a");
 			element.addClass("crossref");
 		}
-
-		/*
-		 * TODO handle "in-line-formulae" processing instructions. for (Element
-		 * element : document.select("?in-line-formulae")) {
-		 * System.out.println("in-line-formuale FOUND !!!!!!!!");
-		 * element.tagName("span"); element.addClass("formula"); }
-		 */
 
 		/*
 		 * Escape MathML math elements, to maintain all xml elements after
