@@ -147,7 +147,7 @@ public class FormattedText implements TextProcessor {
 			Element element = mathEls.get(i - 1);
 			mathFound = true;
 
-			String mathml = MathmlEscaper.escape(element.html());
+			String mathml = MathmlEscaper.escape(element.outerHtml());
 
 			Element newEl = new Element(Tag.valueOf("span"), "");
 			newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
