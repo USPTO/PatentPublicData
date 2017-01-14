@@ -8,6 +8,27 @@ public class UnicodeUtil {
 
 	public static final Character PARAGRAPH = '\u2029';
 
+	/*
+	private static final HashMap<String, Character> FRACTION_TO_UNICODE = new HashMap<String, Character>();
+	static {
+		FRACTION_TO_UNICODE.put("1/4", '\u00BC'); 
+		FRACTION_TO_UNICODE.put("1/2", '\u00BD'); 
+		FRACTION_TO_UNICODE.put("3/4", '\u00BE');
+		FRACTION_TO_UNICODE.put("1/3", '\u2153');
+		FRACTION_TO_UNICODE.put("2/3", '\u2154');
+		FRACTION_TO_UNICODE.put("1/5", '\u2155');
+		FRACTION_TO_UNICODE.put("2/5", '\u2156'); 
+		FRACTION_TO_UNICODE.put("3/5", '\u2157'); 
+		FRACTION_TO_UNICODE.put("4/5", '\u2158');
+		FRACTION_TO_UNICODE.put("1/6", '\u2159');
+		FRACTION_TO_UNICODE.put("5/6", '\u215A');
+		FRACTION_TO_UNICODE.put("1/8", '\u215b'); 
+		FRACTION_TO_UNICODE.put("3/8", '\u215c'); 
+		FRACTION_TO_UNICODE.put("5/8", '\u215d'); 
+		FRACTION_TO_UNICODE.put("7/8", '\u215e');
+	}
+	*/
+
 	private static Map<Character, Character> SUBSCRIPT = new HashMap<Character, Character>();
 	static {
 		SUBSCRIPT.put('0', '\u2080');
