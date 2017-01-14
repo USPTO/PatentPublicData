@@ -72,10 +72,21 @@ public class FormattedTextTest {
 	}
 
 	@Test
-	public void subsup() {
-		String input = "H<subscript>2</subscript>O<superscript>3</superscript>";
+	public void subSupUnicode() {
+		String input = "H<subscript>2</subscript>O <superscript>1 + 2</superscript>";
 
-		String expect = "H<sub>2</sub>O<sup>3</sup>";
+		String expect = "H\u2082O \u00B9 \u207A \u00B2";
+
+		String actual = format.getSimpleHtml(input);
+
+		assertEquals(expect, actual);
+	}
+
+	@Test
+	public void subSupNonUnicode() {
+		String input = "<subscript>Z+1</subscript> <superscript>Z - 1</superscript>";
+
+		String expect = "<sub>Z+1</sub> <sup>Z - 1</sup>";
 
 		String actual = format.getSimpleHtml(input);
 

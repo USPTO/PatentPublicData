@@ -72,17 +72,6 @@ public class FormattedTextTest {
 	}
 
 	@Test
-	public void subsup() {
-		String input = "H<sub>2</sub>O<sup>3</sup>";
-
-		String expect = "H<sub>2</sub>O<sup>3</sup>";
-
-		String actual = format.getSimpleHtml(input);
-
-		assertEquals(expect, actual);
-	}
-
-	@Test
 	public void MathML_html() {
 		String input = "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>";
 
@@ -98,7 +87,29 @@ public class FormattedTextTest {
 
 		String input = "<?in-line-formulae description=\"In-line Formulae\" end=\"lead\"?>CH<sub>4</sub><?in-line-formulae description=\"In-line Formulae\" end=\"tail\"?>";
 
-		String expect = "<span id=\"FOR-0001\" class=\"formula\">CH<sub>4</sub></span>";
+		String expect = "<span id=\"FOR-0001\" class=\"formula\">CH\u2084</span>";
+
+		String actual = format.getSimpleHtml(input);
+
+		assertEquals(expect, actual);
+	}
+
+	@Test
+	public void subSupUnicode() {
+		String input = "H<sub>2</sub>O <sup>1 + 2</sup>";
+
+		String expect = "H\u2082O \u00B9 \u207A \u00B2";
+
+		String actual = format.getSimpleHtml(input);
+
+		assertEquals(expect, actual);
+	}
+
+	@Test
+	public void subSupNonUnicode() {
+		String input = "<sub>Z+1</sub> <sup>Z - 1</sup>";
+
+		String expect = "<sub>Z+1</sub> <sup>Z - 1</sup>";
 
 		String actual = format.getSimpleHtml(input);
 

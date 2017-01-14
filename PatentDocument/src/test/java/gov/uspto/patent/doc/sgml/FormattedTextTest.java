@@ -77,16 +77,27 @@ public class FormattedTextTest {
 	*/
 
 	@Test
-	public void subsup() {
-		String input = "H<SB>2</SB>O<SP>3</SP>";
+	public void subSupUnicode() {
+		String input = "H<SB>2</SB>O <SP>1 + 2</SP>";
 
-		String expect = "H<sub>2</sub>O<sup>3</sup>";
+		String expect = "H\u2082O \u00B9 \u207A \u00B2";
 
 		String actual = format.getSimpleHtml(input);
 
 		assertEquals(expect, actual);
 	}
 
+	@Test
+	public void subSupNonUnicode() {
+		String input = "<SB>Z+1</SB> <SP>Z - 1</SP>";
+
+		String expect = "<sub>Z+1</sub> <sup>Z - 1</sup>";
+
+		String actual = format.getSimpleHtml(input);
+
+		assertEquals(expect, actual);
+	}
+	
 	@Test
 	public void MathML_html() {
 		String intput = "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>";

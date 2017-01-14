@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.pap;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.jsoup.select.Elements;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 
+import gov.uspto.common.text.UnicodeUtil;
 import gov.uspto.patent.ReferenceTagger;
 import gov.uspto.patent.TextProcessor;
 import gov.uspto.patent.doc.simplehtml.FreetextConfig;
@@ -123,8 +125,31 @@ public class FormattedText implements TextProcessor {
 			//par.removeAttr("lvl");
 		}
 
-		jsoupDoc.select("subscript").tagName("sub");
-		jsoupDoc.select("superscript").tagName("sup");
+		/*
+		 * Subscript use unicode if able to convert
+		 */
+		for (Element el : jsoupDoc.select("subscript")) {
+			try {
+				String unicode = UnicodeUtil.toSubscript(el.text());
+				el.text(unicode);
+				el.unwrap();
+			} catch (ParseException e) {
+				el.tagName("sub");
+			}
+		}
+
+		/*
+		 * Superscript use unicode if able to convert
+		 */
+		for (Element el : jsoupDoc.select("superscript")) {
+			try {
+				String unicode = UnicodeUtil.toSuperscript(el.text());
+				el.text(unicode);
+				el.unwrap();
+			} catch (ParseException e) {
+				el.tagName("sup");
+			}
+		}
 
 		/*
 		 * Table

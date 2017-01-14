@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.sgml;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.jsoup.select.Elements;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 
+import gov.uspto.common.text.UnicodeUtil;
 import gov.uspto.patent.ReferenceTagger;
 import gov.uspto.patent.TextProcessor;
 import gov.uspto.patent.doc.simplehtml.FreetextConfig;
@@ -133,8 +135,31 @@ public class FormattedText implements TextProcessor {
 			par.tagName("p");
 		}
 
-		jsoupDoc.select("SB").tagName("sub");
-		jsoupDoc.select("SP").tagName("sup");
+		/*
+		 * Subscript use unicode if able to convert
+		 */
+		for (Element el : jsoupDoc.select("SB")) {
+			try {
+				String unicode = UnicodeUtil.toSubscript(el.text());
+				el.text(unicode);
+				el.unwrap();
+			} catch (ParseException e) {
+				el.tagName("sub");
+			}
+		}
+
+		/*
+		 * Superscript use unicode if able to convert
+		 */
+		for (Element el : jsoupDoc.select("SP")) {
+			try {
+				String unicode = UnicodeUtil.toSuperscript(el.text());
+				el.text(unicode);
+				el.unwrap();
+			} catch (ParseException e) {
+				el.tagName("sup");
+			}
+		}
 
 		String textStr = jsoupDoc.html();
 		textStr = textStr.replaceAll("\\\\n", "\n");

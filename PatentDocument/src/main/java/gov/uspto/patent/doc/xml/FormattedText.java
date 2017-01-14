@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.xml;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
+import gov.uspto.common.text.UnicodeUtil;
 import gov.uspto.patent.ReferenceTagger;
 import gov.uspto.patent.TextProcessor;
 import gov.uspto.patent.doc.simplehtml.FreetextConfig;
@@ -168,9 +170,36 @@ public class FormattedText implements TextProcessor {
 			element.replaceWith(newEl);
 		}
 
+		/*
+		 * Subscript use unicode if able to convert
+		 */
+		for (Element el : document.select("sub")) {
+			try {
+				String unicode = UnicodeUtil.toSubscript(el.text());
+				el.text(unicode);
+				el.unwrap();
+			} catch (ParseException e) {
+				// ignore.
+			}
+		}
+
+		/*
+		 * Superscript use unicode if able to convert
+		 */
+		for (Element el : document.select("sup")) {
+			try {
+				String unicode = UnicodeUtil.toSuperscript(el.text());
+				el.text(unicode);
+				el.unwrap();
+			} catch (ParseException e) {
+				// ignore.
+			}
+		}		
+
 		// document.select("sub2").prepend("_");
 		// document.select("sup2").prepend("^");
-
+		
+		
 		/*
 		 * List
 		 */
