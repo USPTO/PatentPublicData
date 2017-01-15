@@ -37,9 +37,10 @@ import gov.uspto.patent.mathml.MathmlEscaper;
 public class FormattedText implements TextProcessor {
 
 	private static final String[] HTML_WHITELIST_TAGS = new String[] { "br", "b", "sub", "sup", "h1", "h2", "h3", "h4",
-			"h5", "h6", "p", "table", "tbody", "tgroup", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a", "span" };
+			"h5", "h6", "p", "table", "tbody", "thead", "th", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a",
+			"span", "colgroup", "col" };
 	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "idref", "num", "format",
-			"type", "level", "align", "frame" };
+			"type", "level", "width", "align", "valign", "rowspan" };
 
 	public static final ImmutableSet<String> HEADER_ELEMENTS = ImmutableSet.of("heading", "p[id^=h-]");
 	public static final ImmutableSet<String> TABLE_ELEMENTS = ImmutableSet.of("tr", "entry", "row", "table");
@@ -58,15 +59,16 @@ public class FormattedText implements TextProcessor {
 	public String getSimpleHtml(String rawText) {
 
 		/*
-		 * Change xml processing instruction "in-line-formulae" 
-		 * to normal xml node, as it was in the Patent PAP format; also making it searchable within jsoup.
+		 * Change xml processing instruction "in-line-formulae" to normal xml
+		 * node, as it was in the Patent PAP format; also making it searchable
+		 * within jsoup.
 		 */
 		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"lead\"\\?>",
 				"<in-line-formula>");
 		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"end\"\\?>",
 				"</in-line-formula>");
 
-		Document document = Jsoup.parse(rawText, "", Parser.xmlParser());
+		Document document = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
 		document.outputSettings().prettyPrint(false);
 
 		document.select("bold").tagName("b");
@@ -194,27 +196,47 @@ public class FormattedText implements TextProcessor {
 			} catch (ParseException e) {
 				// ignore.
 			}
-		}		
+		}
 
 		// document.select("sub2").prepend("_");
 		// document.select("sup2").prepend("^");
-		
-		
+
 		/*
 		 * List
 		 */
 		document.select("ol").tagName("ul");
 
 		/*
-		 * Table
+		 * Tables: Convert CALS Table to HTML Table
 		 */
 		Elements tableEls = document.select("table");
 		for (int i = 1; i <= tableEls.size(); i++) {
 			Element element = tableEls.get(i - 1);
 			element.attr("id", "TBL-" + Strings.padStart(String.valueOf(i), 4, '0'));
 
-			element.select("row").tagName("tr");
-			element.select("entry").tagName("td");
+			Element colGroup = element.prependElement("colgroup");
+			for (Element spec : element.select("colspec")) {
+				colGroup.appendElement("col").attr("width", spec.attr("colwidth")).attr("align", spec.attr("align"));
+			}
+
+			for (Element row : element.select("thead row")) {
+				for (Element cell : row.select("entry")) {
+					cell.tagName("th");
+				}
+				row.tagName("tr");
+			}
+
+			for (Element row : element.select("tbody row")) {
+				for (Element cell : row.select("entry")) {
+					String rowSpanSt = cell.attr("morerows");
+					int rowspan = !rowSpanSt.isEmpty() ? Integer.parseInt(rowSpanSt) + 1 : 1;
+					if (rowspan > 1) {
+						cell.attr("rowspan", String.valueOf(rowspan));
+					}
+					cell.tagName("td");
+				}
+				row.tagName("tr");
+			}
 		}
 
 		// document.select("p:matchesOwn((?is) +?)").remove(); // remove
