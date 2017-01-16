@@ -59,12 +59,14 @@ public class Sgml extends Dom4JParser {
 	public Patent parse(Document document) throws PatentReaderException {
 
 		DocumentId publicationId = new DocumentIdNode(document).read();
+		PatentType patentType = PatentType.UNDEFINED;
 		if (publicationId != null){
 			MDC.put("DOCID", publicationId.toText());
+			patentType = UsKindCode2PatentType.getInstance().lookupPatentType(publicationId.getKindCode());
+		} else {
+			LOGGER.warn("Publication Id is Null: {}", document.toString());
 		}
 
-		PatentType patentType = UsKindCode2PatentType.getInstance().lookupPatentType(publicationId.getKindCode());
-		
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
 	    List<DocumentId> priorityIds = new PriorityClaimsNode(document).read();

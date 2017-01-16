@@ -46,6 +46,11 @@ import gov.uspto.patent.model.entity.Examiner;
 import gov.uspto.patent.model.entity.Inventor;
 
 /**
+ * Greenbook (APS) Patent Format
+ * 
+ *<p>
+ * APS was the acronym for the USPTO's Automated Patent System
+ *</p>
  * 
  * @see http://www.uspto.gov/sites/default/files/products/PatentFullTextAPSGreenBook-Documentation.pdf
  * 

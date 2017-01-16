@@ -13,10 +13,12 @@ public class DotCodesTest {
 	private static Map<String, String> dotCodes = new LinkedHashMap<String, String>();
 	static {
 		dotCodes.put(".-+.", "\u2213");
-		dotCodes.put(".[.", "[");
 		dotCodes.put(".dblquote.", "\"");
 		dotCodes.put("Java (.TM.)", "Java (\u2122)");
-		dotCodes.put(".alpha. .beta. .-+. .0.", "\u03B1 \u03B2 \u2213 \u00F8");
+		dotCodes.put(".alpha. .beta. .-+. .0.", "\u03B1 \u03B2 \u2213 \u2205");
+		dotCodes.put("CTY Verneuil.En.Halatte", "CTY Verneuil\u2025Halatte");
+		dotCodes.put("endo-.alpha.-1", "endo-\u03B1-1");
+		dotCodes.put("6-.beta.-glucanase", "6-\u03B2-glucanase");
 	}
 
 	private static Map<String, String> dotSubCodes = new LinkedHashMap<String, String>();

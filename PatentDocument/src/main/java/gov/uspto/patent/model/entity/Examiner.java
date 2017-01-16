@@ -4,20 +4,24 @@ import gov.uspto.patent.model.ExaminerType;
 
 public class Examiner extends Entity {
 
-	private final String department;
 	private final ExaminerType type;
+	private String department;
 
-	public Examiner(Name name, String department, ExaminerType type){
+	public Examiner(Name name, String department, ExaminerType type) {
 		super(EntityType.EXAMINER, name, null);
 		this.department = department;
 		this.type = type;
+	}
+
+	public void setDepartment(String artUnit) {
+		this.department = artUnit;
 	}
 
 	public String getDepartment() {
 		return department;
 	}
 
-	public ExaminerType getExaminerType(){
+	public ExaminerType getExaminerType() {
 		return type;
 	}
 
