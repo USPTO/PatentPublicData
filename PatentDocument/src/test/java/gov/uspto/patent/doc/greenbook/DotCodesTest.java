@@ -25,8 +25,11 @@ public class DotCodesTest {
 		dotSubCodes.put("D.sub.2, D.sub.3, D.sub.4 .", "D<sub>2</sub>, D<sub>3</sub>, D<sub>4</sub> .");
 		dotSubCodes.put("between D.sub.13 and D.sub.12, ", "between D<sub>13</sub> and D<sub>12</sub>, ");
 		dotSubCodes.put(" (D.sub.n-1), (D.sub.n-2)", " (D<sub>n-1</sub>), (D<sub>n-2</sub>)");
-		dotSubCodes.put(" (D.sub.n-1), (D.sub.n-2)", " (D<sub>n-1</sub>), (D<sub>n-2</sub>)");
 		dotSubCodes.put("QUERY.sub.-- STRING PATH.sub.-- INFO", "QUERY<sub>--</sub> STRING PATH<sub>--</sub> INFO");
+		dotSubCodes.put(" .sub.3/4 ", " <sub>3/4</sub> ");
+		dotSubCodes.put(".sup.\" ", "<sup>\"</sup> ");
+		dotSubCodes.put(".sup.( ", "<sup>(</sup> ");
+		dotSubCodes.put(".sup.1+2 ", "<sup>1+2</sup> ");
 	}
 
 	private static Map<String, String> combined = new LinkedHashMap<String, String>();
