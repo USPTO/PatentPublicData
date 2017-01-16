@@ -41,7 +41,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		}
 
 		Node countryN = itemNode.selectSingleNode("country-code");
-		CountryCode countryCode = null;
+		CountryCode countryCode = CountryCode.UNKNOWN;
 		if (countryN == null){
 		    countryCode = fallbackCountryCode;
 		} else {
