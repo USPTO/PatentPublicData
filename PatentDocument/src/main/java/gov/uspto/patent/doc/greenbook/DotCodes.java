@@ -26,13 +26,12 @@ import java.util.regex.Pattern;
 public class DotCodes {
 
 	private static final Pattern ENTITY_PATTERN = Pattern
-			.compile("\\.(?:[0\\[\\]]|[A-z0-9_\\-\\+]{2,18})(?:\\.|(?=[ ,;)]))");
+			.compile("\\.(?:[0\\[\\]]|[^\\p{Z},;\\.)]{2,18})(?:\\.|(?=[\\p{Z},;)]))", Pattern.UNICODE_CHARACTER_CLASS);
 
 	private static final Pattern SUBSUP_PATTERN = Pattern
-			.compile("\\.(su[bp]|s[bp]s[bp])\\.{1,2}([A-z0-9_\\-\\+]{1,10})(?:\\.|(?=[ ,;)]))");
+			.compile("\\.(su[bp]|s[bp]s[bp])\\.{1,2}([^\\p{Z},;\\.)]{1,10})(?:\\.|(?=[\\p{Z},;)]))", Pattern.UNICODE_CHARACTER_CLASS);
 
-	// private static final Pattern FRACTION_PATTERN =
-	// Pattern.compile("\\b[1-9]/[1-9][0-9]*\\b");
+	// private static final Pattern FRACTION_PATTERN = Pattern.compile("\\b[1-9]/[1-9][0-9]*\\b");
 
 	public static String fraction2number(String fraction) {
 		DecimalFormat df = new DecimalFormat("#.####");
@@ -47,7 +46,7 @@ public class DotCodes {
 	private static final HashMap<String, Character> NAME_TO_UNICODE = new HashMap<String, Character>();
 	static {
 		// Trademark and Copywrite
-		NAME_TO_UNICODE.put(".TM.", '\u8482'); // trademark
+		NAME_TO_UNICODE.put(".TM.", '\u2122'); // trademark
 		NAME_TO_UNICODE.put(".SM.", '\u2120'); // service mark
 		NAME_TO_UNICODE.put(".RTM.", '\u00AE'); // registered trademark
 		NAME_TO_UNICODE.put(".COPYRG.", '\u00A9'); // copyright
@@ -382,7 +381,7 @@ public class DotCodes {
 		int additionalChars = 0;
 		while (matcher.find()) {
 			String fullMatch = matcher.group(0);
-			// System.out.println("subsup pattern match: " + fullMatch);
+			//System.out.println("subsup pattern match: " + fullMatch);
 
 			String subSupMatch = matcher.group(1);
 

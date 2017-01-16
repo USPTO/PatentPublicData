@@ -12,10 +12,13 @@ public class DotCodesTest {
 
 	private static Map<String, String> dotCodes = new LinkedHashMap<String, String>();
 	static {
-		dotCodes.put("Java (.TM.)", "Java (\u8482)");
+		dotCodes.put(".-+.", "\u2213");
+		dotCodes.put(".[.", "[");
+		dotCodes.put(".dblquote.", "\"");
+		dotCodes.put("Java (.TM.)", "Java (\u2122)");
 		dotCodes.put(".alpha. .beta. .-+. .0.", "\u03B1 \u03B2 \u2213 \u00F8");
 	}
-	
+
 	private static Map<String, String> dotSubCodes = new LinkedHashMap<String, String>();
 	static {
 		dotSubCodes.put("h.sub.2.O", "h<sub>2</sub>O");
@@ -26,19 +29,35 @@ public class DotCodesTest {
 		dotSubCodes.put("QUERY.sub.-- STRING PATH.sub.-- INFO", "QUERY<sub>--</sub> STRING PATH<sub>--</sub> INFO");
 	}
 
+	private static Map<String, String> combined = new LinkedHashMap<String, String>();
+	static {
+		combined.put(".sup..TM. ", "<sup>\u2122</sup> ");
+		combined.put(".sup..alpha. ", "<sup>\u03B1</sup> ");
+		combined.put(".sup..fwdarw. ", "<sup>\u2192</sup> ");
+	}
+
 	@Test
-	public void replace(){
-		for (Entry<String,String> check: dotCodes.entrySet()){
+	public void replace() {
+		for (Entry<String, String> check : dotCodes.entrySet()) {
 			String actual = DotCodes.replace(check.getKey());
-			assertEquals( check.getValue(), actual);
+			assertEquals(check.getValue(), actual);
 		}
 	}
-	
+
 	@Test
 	public void replaceSubSupHTML() {
-		for (Entry<String,String> check: dotSubCodes.entrySet()){
+		for (Entry<String, String> check : dotSubCodes.entrySet()) {
 			String actual = DotCodes.replaceSubSupHTML(check.getKey());
-			assertEquals( check.getValue(), actual);
+			assertEquals(check.getValue(), actual);
+		}
+	}
+
+	@Test
+	public void combined() {
+		for (Entry<String, String> check : combined.entrySet()) {
+			String update1 = DotCodes.replace(check.getKey());
+			String update2 = DotCodes.replaceSubSupHTML(update1);
+			assertEquals(check.getValue(), update2);
 		}
 	}
 
