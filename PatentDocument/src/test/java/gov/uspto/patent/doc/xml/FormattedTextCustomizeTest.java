@@ -22,9 +22,9 @@ public class FormattedTextCustomizeTest {
         stb.append("</maths></p>");
 
         StringBuilder expectStb = new StringBuilder();
-        expectStb.append("   <h4 id=\"h-1\">SECTION TITLE</h4> ");
-        expectStb.append(
-                "<p>  <span id=\"MTH-0001\" class=\"math\" format=\"mathml\"><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></span> </p> \n");
+        expectStb.append("<h4 id=\"h-1\">SECTION TITLE</h4>");
+        expectStb.append("<p level=\"\"><span id=\"MTH-0001\" class=\"math\" format=\"mathml\">");
+        expectStb.append("<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math></span></p>");
         String expect = expectStb.toString();
 
         String actual = format.getSimpleHtml(stb.toString());
