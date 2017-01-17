@@ -227,7 +227,7 @@ public class FormattedText implements TextProcessor {
                     e.printStackTrace();
                 }
             }
-            fieldTextCleaned = jsoupDoc.html();
+            fieldTextCleaned = jsoupDoc.select("body").html();
         }
 
 		return fieldTextCleaned;

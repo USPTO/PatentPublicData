@@ -281,7 +281,7 @@ public class FormattedText implements TextProcessor {
                     e.printStackTrace();
                 }
 		    }
-		    docStr = document.html();
+		    docStr = document.select("body").html();
 		}
 
 		return docStr;
