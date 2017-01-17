@@ -4,29 +4,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.google.common.base.Preconditions;
-
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.classification.CpcClassification;
 
 public class MasterClassificationRecord {
 
-    private final DocumentId grantId;
     private final DocumentId appId;
+    private final DocumentId pubId;
     private final Collection<CpcClassification> cpcList;
 
-    public MasterClassificationRecord(DocumentId grantId, DocumentId appId, Collection<CpcClassification> cpcList) {
-        this.grantId = grantId;
+    public MasterClassificationRecord(DocumentId appId, DocumentId pubId, Collection<CpcClassification> cpcList) {
         this.appId = appId;
+        this.pubId = pubId;
         this.cpcList = cpcList;
-    }
-
-    public DocumentId getGrantId() {
-        return grantId;
     }
 
     public DocumentId getAppId() {
         return appId;
+    }
+
+    public DocumentId getPubId() {
+        return pubId;
     }
 
     public Collection<CpcClassification> getCpcList() {
@@ -54,6 +52,6 @@ public class MasterClassificationRecord {
 
     @Override
     public String toString() {
-        return "MasterClassificationRecord [\n\tgrantId=" + grantId + ",\n\t appId=" + appId + ",\n\t cpcList=" + cpcList + "\n\t]";
+        return "MasterClassificationRecord [appId=" + appId + ", pubId=" + pubId + ", cpcList=" + cpcList + "]";
     }
 }

@@ -23,32 +23,23 @@ public class MasterCpcCsvBuilder implements DocumentBuilder<MasterClassification
     public List<String> build(MasterClassificationRecord record) {
         List<String> ret = new ArrayList<String>();
 
-        String grantFullIdStr = record.getGrantId().toText(7);
-        String grantCC = record.getGrantId().getCountryCode().toString();
-        String grantIdNum = record.getGrantId().getDocNumber();
-        String grantKind = record.getGrantId().getKindCode();
+        String appNum = record.getAppId().getDocNumber();
+        String appCC = record.getAppId().getCountryCode().toString();
+        String appKindCode = record.getAppId().getKindCode();
+        String appIdFull = !appNum.isEmpty() ? record.getAppId().toText() : "";
 
-        String appIdNum = record.getAppId().getDocNumber();
-        String appFullIdStr = "";
-        String appIdCC;
-        String appKind;
-        if (appIdNum != "") {
-            appFullIdStr = record.getAppId().toText();
-            appIdCC = record.getAppId().getCountryCode().toString();
-            appKind = record.getAppId().getKindCode();
-        } else {
-            appIdCC = "";
-            appKind = "";
-        }
-
+        String pubIdFull = record.getPubId().toText(7);
+        String pubCC =    record.getPubId().getCountryCode().toString();
+        String pubNumId = record.getPubId().getDocNumber();
+        String pubKindCode = record.getPubId().getKindCode();
+        
         String classLevel;
         String classText;
         if (record.getMainCPC() != null) {
             classLevel = "main";
             classText = record.getMainCPC().toText();
 
-            String[] rowEls = new String[] { grantFullIdStr, grantCC, grantIdNum, grantKind, appFullIdStr, appIdCC,
-                    appIdNum, appKind, classLevel, classText };
+            String[] rowEls = new String[] { pubIdFull, pubCC, pubNumId, pubKindCode,  appIdFull, appCC, appNum,  appKindCode,  classLevel, classText };
             ret.add(toCSV(rowEls));
         }
 
@@ -58,8 +49,7 @@ public class MasterCpcCsvBuilder implements DocumentBuilder<MasterClassification
                 classLevel = "further";
                 classText = cpcClass.toText();
 
-                String[] rowEls = new String[] { grantFullIdStr, grantCC, grantIdNum, grantKind, appFullIdStr, appIdCC,
-                        appIdNum, appKind, classLevel, classText };
+                String[] rowEls = new String[] { pubIdFull, pubCC, pubNumId, pubKindCode,  appIdFull, appCC, appNum,  appKindCode,  classLevel, classText };
                 ret.add(toCSV(rowEls));
             }
         }

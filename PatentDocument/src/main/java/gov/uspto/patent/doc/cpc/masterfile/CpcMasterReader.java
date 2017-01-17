@@ -48,8 +48,8 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
         }
       
         String rawRecord = stb.toString();
-        LOGGER.info(rawRecord);
-        System.exit(1);
+        //LOGGER.info(rawRecord);
+        //System.exit(1);
         
         return new StringReader(rawRecord);
     }
@@ -72,16 +72,23 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
     public MasterClassificationRecord parse(Document document) {
 
         Node root = document.selectSingleNode("/uspat:CPCMasterClassificationFile/uspat:CPCMasterClassificationRecord");
-        Node appIdN = root.selectSingleNode("pat:ApplicationIdentification");
-        DocumentId appId = readDocumentId(appIdN);
-
-        Node grantIdN = root.selectSingleNode("pat:PatentGrantIdentification");
-        DocumentId grantId = readDocumentId(grantIdN);
+        
+        DocumentId appId = null;
+        Node appNode = root.selectSingleNode("pat:ApplicationIdentification");
+        if (appNode != null){
+            appId = readDocumentId(appNode);
+        }
+        
+        Node pubNode = root.selectSingleNode("pat:PatentPublicationIdentification|pat:PatentGrantIdentification");
+        DocumentId pubId = null;
+        if (pubNode != null){
+            pubId = readDocumentId(pubNode);
+        }
 
         Node cpcN = root.selectSingleNode("pat:CPCClassificationBag");
         List<CpcClassification> cpcClass = readCPC(cpcN);
 
-        return new MasterClassificationRecord(grantId, appId, cpcClass);
+        return new MasterClassificationRecord(appId, pubId, cpcClass);
     }
 
     public List<CpcClassification> readCPC(Node node) {
@@ -137,9 +144,9 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
 
     public DocumentId readDocumentId(Node node) {
         Node countryN = node.selectSingleNode("com:IPOfficeCode");
-        Node idN = node.selectSingleNode("pat:PatentNumber|ApplicationNumber/ApplicationNumberText");
+        Node idN = node.selectSingleNode("pat:PublicationNumber|com:ApplicationNumber/com:ApplicationNumberText|pat:PatentNumber");
         Node kindN = node.selectSingleNode("com:PatentDocumentKindCode");
-        Node dateN = node.selectSingleNode("pat:GrantDate");
+        Node dateN = node.selectSingleNode("com:PublicationDate");
 
         String countryTxt = countryN != null ? countryN.getText() : "";
         String idTxt = idN != null ? idN.getText() : "";
