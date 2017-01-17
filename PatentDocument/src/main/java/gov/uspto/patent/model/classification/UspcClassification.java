@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -93,7 +94,7 @@ public class UspcClassification extends PatentClassification {
 		//return new String[]{mainClass, subClass}; // multiple nesting.
 		return null;
 	}
-	
+
 	@Override
 	public int getDepth() {
 		int classDepth = 0;
@@ -281,7 +282,7 @@ public class UspcClassification extends PatentClassification {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return "UspcClassification [mainClass=" + mainClass + ", subClass=" + subClass + ", toText()=" + toText()
@@ -290,4 +291,11 @@ public class UspcClassification extends PatentClassification {
 				// + ", range=" + range
 				+ "]";
 	}
+
+    /**
+     * Parse Facet back into Classifications
+     */
+    public static List<UspcClassification> fromFacets(List<String> facets) {
+        return ClassificationTokenizer.fromFacets(facets, UspcClassification.class);
+    }
 }

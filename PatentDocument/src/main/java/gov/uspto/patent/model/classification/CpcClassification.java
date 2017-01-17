@@ -1,6 +1,7 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -339,4 +340,11 @@ public class CpcClassification extends PatentClassification {
 				+ isMainClassification + ", getTextNormalized()=" + getTextNormalized() + ", standardize()="
 				+ standardize() + ", toText()=" + toText() + ", originalText()=" + super.getTextOriginal() + "]";
 	}
+
+    /**
+     * Parse Facet back into Classifications
+     */
+    public static List<CpcClassification> fromFacets(List<String> facets) {
+        return ClassificationTokenizer.fromFacets(facets, CpcClassification.class);
+    }
 }

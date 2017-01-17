@@ -1,6 +1,7 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -142,7 +143,8 @@ public class IpcClassification extends PatentClassification {
 	 * (1=section, 2=mainClass, 3=subClass, 4=mainGroup, 5=subGroup)
 	 * 
 	 */
-	public int getDepth() {
+	@Override
+    public int getDepth() {
 		int classDepth = 0;
 		if (subGroup != null && !subGroup.isEmpty()) {
 			classDepth = 5;
@@ -222,7 +224,8 @@ public class IpcClassification extends PatentClassification {
 	 * @return
 	 * @throws ParseException
 	 */
-	public void parseText(final String classificationStr) throws ParseException {
+	@Override
+    public void parseText(final String classificationStr) throws ParseException {
 		super.setTextOriginal(classificationStr);
 
 		Matcher matcher = REGEX_OLD.matcher(classificationStr);
@@ -288,4 +291,11 @@ public class IpcClassification extends PatentClassification {
 				+ ", getTextNormalized()=" + getTextNormalized() + ", standardize()=" + standardize() + ", getDepth()="
 				+ getDepth() + ", getTextOriginal()=" + super.getTextOriginal() + "]";
 	}
+
+    /**
+     * Parse Facet back into Classifications
+     */
+    public static List<IpcClassification> fromFacets(List<String> facets) {
+        return ClassificationTokenizer.fromFacets(facets, IpcClassification.class);
+    }
 }

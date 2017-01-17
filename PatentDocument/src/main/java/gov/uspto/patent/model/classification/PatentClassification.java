@@ -4,6 +4,9 @@ import static gov.uspto.patent.model.classification.ClassificationPredicate.isTy
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -138,7 +141,7 @@ public abstract class PatentClassification implements Classification {
 	public String[] getTree() {
 		return ClassificationTokenizer.partsToTree(getParts());
 	}
-	
+
 	@Override
 	public int compareTo(Classification other) {
 		int last = this.toText().compareTo(other.toText());
@@ -154,4 +157,13 @@ public abstract class PatentClassification implements Classification {
 			ClassificationType wantedType) {
 		return filter(classes, isType(wantedType));
 	}
+
+    public static Set<String> getFacetByType(Collection<PatentClassification> classes, ClassificationType wantedType) {
+        Set<PatentClassification> filtered = filter(classes, isType(wantedType));
+        Set<String> facets = new LinkedHashSet<String>();
+        for(PatentClassification clazz: filtered){
+            facets.addAll(Arrays.asList(clazz.toFacet()));
+        }
+        return facets;
+    }
 }
