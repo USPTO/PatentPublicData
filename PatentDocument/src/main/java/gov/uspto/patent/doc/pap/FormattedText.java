@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.pap;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Document.OutputSettings;
+import org.jsoup.nodes.Document.OutputSettings.Syntax;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.nodes.TextNode;
@@ -52,8 +54,8 @@ public class FormattedText implements TextProcessor {
 	@Override
 	public String getSimpleHtml(String rawText) {
 
-		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
-		jsoupDoc.outputSettings().prettyPrint(false);
+        Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
+        jsoupDoc.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
 
 		jsoupDoc.select("bold").tagName("b");
 
@@ -193,10 +195,12 @@ public class FormattedText implements TextProcessor {
 		whitelist.addTags(HTML_WHITELIST_TAGS);
 		whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
 
-		OutputSettings outSettings = new Document.OutputSettings();
-		outSettings.charset(Charsets.UTF_8);
-		outSettings.prettyPrint(false);
-		outSettings.escapeMode(EscapeMode.extended);
+        OutputSettings outSettings = new Document.OutputSettings();
+        outSettings.charset(Charsets.UTF_8);
+        outSettings.syntax(Syntax.xml);
+        outSettings.outline(true);
+        outSettings.prettyPrint(false);
+        outSettings.escapeMode(EscapeMode.extended);
 
 		String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
 

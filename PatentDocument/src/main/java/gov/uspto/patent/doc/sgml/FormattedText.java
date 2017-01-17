@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.sgml;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +64,8 @@ public class FormattedText implements TextProcessor {
 
 	@Override
 	public String getSimpleHtml(String rawText) {
-		Document jsoupDoc = Jsoup.parse(rawText, "", Parser.xmlParser());
-		jsoupDoc.outputSettings().prettyPrint(false);
+        Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
+		jsoupDoc.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
 
 		jsoupDoc.select("bold").tagName("b");
 
@@ -204,7 +205,7 @@ public class FormattedText implements TextProcessor {
 
 		OutputSettings outSettings = new Document.OutputSettings();
 		outSettings.charset(Charsets.UTF_8);
-		outSettings.syntax(Syntax.html);
+		outSettings.syntax(Syntax.xml);
 		outSettings.outline(true);
 		outSettings.prettyPrint(false);
 		outSettings.escapeMode(EscapeMode.extended);

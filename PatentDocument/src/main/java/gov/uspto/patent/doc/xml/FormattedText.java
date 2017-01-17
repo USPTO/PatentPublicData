@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.xml;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,7 @@ public class FormattedText implements TextProcessor {
 				"</in-line-formula>");
 
 		Document document = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
-		document.outputSettings().prettyPrint(false);
+		document.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
 
 		document.select("bold").tagName("b");
 
@@ -251,7 +252,7 @@ public class FormattedText implements TextProcessor {
 
 		OutputSettings outSettings = new Document.OutputSettings();
 		outSettings.charset(Charsets.UTF_8);
-		outSettings.syntax(Syntax.html);
+		outSettings.syntax(Syntax.xml);
 		outSettings.outline(true);
 		outSettings.prettyPrint(false);
 		outSettings.escapeMode(EscapeMode.extended);
