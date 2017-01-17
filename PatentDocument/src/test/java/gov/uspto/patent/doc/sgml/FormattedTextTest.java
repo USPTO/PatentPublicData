@@ -77,7 +77,7 @@ public class FormattedTextTest {
 
 		StringBuilder expectStb = new StringBuilder();
 		expectStb.append("\n\n\n<table id=\"TBL-0001\">");
-		expectStb.append("<colgroup><col width=\"21pt\" align=\"left\"><col width=\"196pt\" align=\"left\"></colgroup>\n");
+		expectStb.append("<colgroup><col width=\"21pt\" align=\"left\" /><col width=\"196pt\" align=\"left\" /></colgroup>\n");
 		expectStb.append("<thead><tr><th>head1</th><th align=\"center\">head2</th></tr></thead>\n");
 		expectStb.append("<tbody valign=\"top\"><tr><td></td><td rowspan=\"2\">cell data</td></tr></tbody>\n");
 		expectStb.append("</table>");
@@ -87,6 +87,7 @@ public class FormattedTextTest {
 
 		assertEquals(expect, actual);
 	}
+
 
 	@Test
 	public void subSupUnicode() {
