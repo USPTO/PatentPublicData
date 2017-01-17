@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
+ * @deprecated use java.util.Base64
+ *
  */
 public class MathmlEscaper {
 

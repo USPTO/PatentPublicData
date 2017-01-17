@@ -1,8 +1,10 @@
 package gov.uspto.patent.doc.xml;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -153,25 +155,31 @@ public class FormattedText implements TextProcessor {
 			element.addClass("crossref");
 		}
 
-		/*
-		 * Escape MathML math elements, to maintain all xml elements after
-		 * sending through Cleaner.
-		 */
-		boolean mathFound = false;
-		Elements mathEls = document.select("math");
-		for (int i = 1; i <= mathEls.size(); i++) {
-			Element element = mathEls.get(i - 1);
-			mathFound = true;
+        /*
+         * Escape MathML math elements, to maintain all xml elements after
+         * sending through Cleaner.
+         */
+        boolean mathFound = false;
+        Elements mathEls = document.select("math");
+        for (int i = 1; i <= mathEls.size(); i++) {
+            Element element = mathEls.get(i - 1);
+            mathFound = true;
 
-			String mathml = MathmlEscaper.escape(element.outerHtml());
+            //String mathml = MathmlEscaper.escape(element.outerHtml());
+            String mathml = "";
+            try {
+                mathml = Base64.getEncoder().encodeToString(element.outerHtml().getBytes("utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
-			Element newEl = new Element(Tag.valueOf("span"), "");
-			newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
-			newEl.addClass("math");
-			newEl.attr("format", "mathml");
-			newEl.appendChild(new TextNode(mathml, null));
-			element.replaceWith(newEl);
-		}
+            Element newEl = new Element(Tag.valueOf("span"), "");
+            newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
+            newEl.addClass("math");
+            newEl.attr("format", "mathml");
+            newEl.appendChild(new TextNode(mathml, null));
+            element.replaceWith(newEl);         
+        }
 
 		/*
 		 * Subscript use unicode if able to convert
@@ -260,7 +268,20 @@ public class FormattedText implements TextProcessor {
 		docStr = Jsoup.clean(docStr, "", whitelist, outSettings);
 
 		if (mathFound) {
-			docStr = MathmlEscaper.unescape(docStr);
+		    // Reload document and un-base64 the mathml sections.
+		    document = Jsoup.parse("<body>" + docStr + "</body>", "", Parser.xmlParser());
+		    document.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
+
+		    for (Element el : document.select("span[class=math]")) {
+                try {
+                    String html = new String(Base64.getDecoder().decode(el.html()), "utf-8");
+                    el.text("");
+                    el.append(html);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+		    }
+		    docStr = document.html();
 		}
 
 		return docStr;
