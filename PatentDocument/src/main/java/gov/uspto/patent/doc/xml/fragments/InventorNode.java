@@ -14,6 +14,7 @@ import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Inventor;
+import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.RelationshipType;
 
 public class InventorNode extends DOMFragmentReader<List<Inventor>> {
@@ -122,7 +123,8 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
         }
 
         try {
-            Inventor inventor = new Inventor(addressBook.getPersonName(), addressBook.getAddress());
+        	Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();
+            Inventor inventor = new Inventor(name, addressBook.getAddress());
             inventor.setNationality(nationlityCC);
             inventor.setResidency(residenceCC);
             if (addressBook.getOrgName() != null) {
