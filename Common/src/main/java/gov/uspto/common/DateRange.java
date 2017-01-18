@@ -31,6 +31,14 @@ public class DateRange {
         this.endDate = endDate;
     }
 
+    public boolean between(Date date) {
+        LocalDate checkDate = null;
+        if (date != null){
+            checkDate = Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate().minusDays(1);
+        }
+        return between(checkDate);
+    }
+ 
     public boolean between(LocalDate checkDate) {
         // return a.compareTo(d) * d.compareTo(b) > 0;
         return checkDate != null && startDate.isBefore(checkDate) && endDate.isAfter(checkDate);
