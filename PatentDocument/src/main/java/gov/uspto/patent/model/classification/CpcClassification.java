@@ -225,7 +225,6 @@ public class CpcClassification extends PatentClassification {
 			if (this.getTextNormalized().equals(cpc.getTextNormalized())){
 				return true;
 			} else {
-				System.out.println("false");
 				return false;
 			}
 		}
