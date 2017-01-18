@@ -82,7 +82,7 @@ public class ClassificationTokenizer {
 	public static <T extends PatentClassification> List<T> fromFacets(final List<String> classificationFacets,
 			Class<T> classificationClass) {
 		List<String> specificClasses = ClassificationTokenizer.getMostSpecificClasses(classificationFacets);
-		return PatentClassification.fromText(classificationFacets, classificationClass);
+		return PatentClassification.fromText(specificClasses, classificationClass);
 	}
 
 	/**
