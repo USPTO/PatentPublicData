@@ -10,7 +10,7 @@ import gov.uspto.patent.serialize.DocumentBuilder;
 
 public class MasterCpcCsvBuilder implements DocumentBuilder<MasterClassificationRecord> {
 
-    //private static final String CSV_HEADER = "grantIdFull,grantCC,grantId,grantKind,appIdFull,appCC,appId,appKind,cpcLevel,cpcClass\n";
+    //private static final String CSV_HEADER = "pubIdFull,pubCC,pubNumId,pubKindCode,appIdFull,appCC,appNum cpcLevel,cpcClass\n";
 
     @Override
     public void write(MasterClassificationRecord record, Writer writer) throws IOException {
@@ -25,21 +25,21 @@ public class MasterCpcCsvBuilder implements DocumentBuilder<MasterClassification
 
         String appNum = record.getAppId().getDocNumber();
         String appCC = record.getAppId().getCountryCode().toString();
-        String appKindCode = record.getAppId().getKindCode();
         String appIdFull = !appNum.isEmpty() ? record.getAppId().toText() : "";
 
         String pubIdFull = record.getPubId().toText(7);
-        String pubCC =    record.getPubId().getCountryCode().toString();
+        String pubCC = record.getPubId().getCountryCode().toString();
         String pubNumId = record.getPubId().getDocNumber();
         String pubKindCode = record.getPubId().getKindCode();
-        
+
         String classLevel;
         String classText;
         if (record.getMainCPC() != null) {
             classLevel = "main";
             classText = record.getMainCPC().toText();
 
-            String[] rowEls = new String[] { pubIdFull, pubCC, pubNumId, pubKindCode,  appIdFull, appCC, appNum,  appKindCode,  classLevel, classText };
+            String[] rowEls = new String[] { pubIdFull, pubCC, pubNumId, pubKindCode, appIdFull, appCC, appNum,
+                    classLevel, classText };
             ret.add(toCSV(rowEls));
         }
 
@@ -49,7 +49,8 @@ public class MasterCpcCsvBuilder implements DocumentBuilder<MasterClassification
                 classLevel = "further";
                 classText = cpcClass.toText();
 
-                String[] rowEls = new String[] { pubIdFull, pubCC, pubNumId, pubKindCode,  appIdFull, appCC, appNum,  appKindCode,  classLevel, classText };
+                String[] rowEls = new String[] { pubIdFull, pubCC, pubNumId, pubKindCode, appIdFull, appCC, appNum,
+                        classLevel, classText };
                 ret.add(toCSV(rowEls));
             }
         }
