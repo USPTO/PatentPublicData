@@ -1,12 +1,8 @@
 package gov.uspto.patent.model.classification;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import gov.uspto.patent.model.Patent;
 
 /**
  * Classification Predicate
@@ -30,26 +26,28 @@ import gov.uspto.patent.model.Patent;
  */
 public class ClassificationPredicate {
 
-	public static Predicate<PatentClassification> isContained(PatentClassification wantedClass) {
-		return p -> p.getType() == wantedClass.getType() && wantedClass.isContained(p);
-	}
+    public static <T extends PatentClassification> Predicate<PatentClassification> isContained(T wantedClass) {
+        return p -> p.getType() == wantedClass.getType() && wantedClass.isContained(p);
+    }
 
-	public static Predicate<PatentClassification> isType(ClassificationType wantedType) {
-		return p -> p.getType() == wantedType;
-	}
+    public static <T extends PatentClassification> Predicate<PatentClassification> isContained(Iterable<T> wantedClasses) {
+        Predicate<PatentClassification> predicate = null;
+        Iterator<T> classIt = wantedClasses.iterator();
+        if (classIt.hasNext()) {
+            predicate = isContained(classIt.next());
+        }
+        while (classIt.hasNext()) {
+            predicate.or(isContained(classIt.next()));
+        }
+        return predicate;
+    }
 
-	public static Set<PatentClassification> filterType(Collection<PatentClassification> list, Predicate<PatentClassification> predicate) {
-		return list.stream().filter(predicate).collect(Collectors.toCollection(TreeSet::new));
-	}
+    public static <T extends PatentClassification> Predicate<PatentClassification> isContained(Iterable<String> wantedClassStrs, Class<T> classificationClass) {
+        List<T> patentClasses = PatentClassification.fromText(wantedClassStrs, classificationClass);
+        return isContained(patentClasses);
+    }
 
-	public static boolean matchList(Collection<PatentClassification> list, Predicate<PatentClassification> predicate) {
-		return list.stream().anyMatch(predicate);
-	}
-
-	public static boolean matchPatent(Patent patent, Predicate<PatentClassification> predicate) {
-		if (patent == null || patent.getClassification() == null){
-			return false;
-		}
-		return patent.getClassification().parallelStream().anyMatch(predicate);
-	}
+    public static Predicate<PatentClassification> isType(ClassificationType wantedType) {
+        return p -> p.getType() == wantedType;
+    }
 }

@@ -2,10 +2,10 @@ package gov.uspto.patent.model.classification;
 
 import static gov.uspto.patent.model.classification.ClassificationPredicate.isType;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +15,11 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class PatentClassification implements Classification {
+    private static Logger LOGGER = LoggerFactory.getLogger(PatentClassification.class);
 
 	private String originalText;
 	private Set<PatentClassification> children = new TreeSet<PatentClassification>();
@@ -123,7 +127,7 @@ public abstract class PatentClassification implements Classification {
 	public <T extends PatentClassification> List<T> fromFacets(List<String> facets, Class<T> classificationClass) {
 		return ClassificationTokenizer.fromFacets(facets, classificationClass);
 	}
-
+	
 	/**
 	 * Classification Tree, permutation of all classification parts.
 	 * 
@@ -147,6 +151,24 @@ public abstract class PatentClassification implements Classification {
 		int last = this.toText().compareTo(other.toText());
 		return last == 0 ? this.toText().compareTo(other.toText()) : last;
 	}
+
+    public static <T extends PatentClassification> List<T> fromText(Iterable<String> classificationStrings, Class<T> classificationClass) {
+        List<T> retClasses = new ArrayList<T>();
+        for (String textClass : classificationStrings) {
+            try {
+                T classification = classificationClass.newInstance();
+                classification.parseText(textClass);
+                retClasses.add(classification);
+            } catch (ParseException | InstantiationException | IllegalAccessException e) {
+                LOGGER.error("Failed to parse provided Classification: " + textClass, e);
+            }
+        }
+        return retClasses;
+    }
+
+    public static <T extends PatentClassification> boolean match(Collection<T> classes, Predicate<PatentClassification> predicate) {
+        return classes.stream().anyMatch(predicate);
+    }
 
 	public static <T extends PatentClassification> SortedSet<T> filter(Collection<T> classes,
 			Predicate<PatentClassification> predicate) {

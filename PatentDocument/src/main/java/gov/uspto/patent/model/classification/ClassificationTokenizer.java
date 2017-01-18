@@ -1,6 +1,5 @@
 package gov.uspto.patent.model.classification;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -66,9 +65,7 @@ public class ClassificationTokenizer {
 		String[] subc = facet.split("/");
 		subc[0] = ""; // clear off the leading number.
 		for (int i = 0; i < subc.length - 1; i++) {
-			sections.add(i + Joiner.on("/").join(subc, 0, i + 2)); // StringUtils.join(subc,
-																	// "/", 0, i
-																	// + 2));
+			sections.add(i + Joiner.on("/").join(subc, 0, i + 2));
 		}
 		return sections;
 	}
@@ -83,19 +80,9 @@ public class ClassificationTokenizer {
 	 * @param classificationFacets
 	 */
 	public static <T extends PatentClassification> List<T> fromFacets(final List<String> classificationFacets,
-			Class<T> clazz) {
+			Class<T> classificationClass) {
 		List<String> specificClasses = ClassificationTokenizer.getMostSpecificClasses(classificationFacets);
-		List<T> retClasses = new ArrayList<T>();
-		for (String textClass : specificClasses) {
-			try {
-				T classification = clazz.newInstance();
-				classification.parseText(textClass);
-				retClasses.add(classification);
-			} catch (ParseException | InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
-		return retClasses;
+		return PatentClassification.fromText(classificationFacets, classificationClass);
 	}
 
 	/**
