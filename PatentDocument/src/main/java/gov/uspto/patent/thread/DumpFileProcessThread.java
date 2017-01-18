@@ -43,7 +43,8 @@ public class DumpFileProcessThread<T> implements Runnable {
         }
         
         int recordNumber = 1;
-        
+        int writeCount = 0;
+  
         try (Writer writer = new BufferedWriter(new FileWriter(outputFile))) {
             for(; dumpFile.hasNext(); recordNumber++){
             //while (dumpFile.hasNext()) {
@@ -65,6 +66,7 @@ public class DumpFileProcessThread<T> implements Runnable {
 
                 if (obj != null) {
                     docBuilder.write(obj, writer);
+                    writeCount++;
                 }
             }
         } catch (IOException e1) {
@@ -77,6 +79,6 @@ public class DumpFileProcessThread<T> implements Runnable {
             }
         }
 
-        LOGGER.info("Completed {}, records:[{}]", dumpFile.getFile().getName(), recordNumber);
+        LOGGER.info("Completed {}, records:[{}], written:[{}]", dumpFile.getFile().getName(), recordNumber, writeCount);
     }
 }

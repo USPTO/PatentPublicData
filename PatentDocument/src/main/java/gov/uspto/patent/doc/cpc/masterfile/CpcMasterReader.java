@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -22,156 +23,168 @@ import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.classification.CpcClassification;
+import gov.uspto.patent.model.classification.PatentClassification;
 
 public class CpcMasterReader implements PatentDocReader<MasterClassificationRecord> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CpcMasterReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CpcMasterReader.class);
 
-    private static final String header = "<?xml version=\"1.0\" ?>\n<uspat:CPCMasterClassificationFile xmlns:uspat=\"patent:uspto:doc:us:gov\" xmlns:com=\"http://www.wipo.int/standards/XMLSchema/ST96/Common\" xmlns:pat=\"http://www.wipo.int/standards/XMLSchema/ST96/Patent\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"patent:uspto:doc:us:gov CPCMasterClassificationFile.xsd\">";
-    private static final String footer = "</uspat:CPCMasterClassificationFile>";
+	private static final String header = "<?xml version=\"1.0\" ?>\n<uspat:CPCMasterClassificationFile xmlns:uspat=\"patent:uspto:doc:us:gov\" xmlns:com=\"http://www.wipo.int/standards/XMLSchema/ST96/Common\" xmlns:pat=\"http://www.wipo.int/standards/XMLSchema/ST96/Patent\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"patent:uspto:doc:us:gov CPCMasterClassificationFile.xsd\">";
+	private static final String footer = "</uspat:CPCMasterClassificationFile>";
 
-    public Reader wrap(Reader reader) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(reader);
+	private Predicate<PatentClassification> classPredicate;
 
-        StringBuilder stb = new StringBuilder();
-        stb.append(header);
+	public void setClassificationPredicate(Predicate<PatentClassification> predicate) {
+		this.classPredicate = predicate;
+	}
 
-        String line;
-        String lastLine = "";
-        while ((line = bufferedReader.readLine()) != null) {
-            stb.append(line).append("\n");
-            lastLine = line;
-        }
-        reader.close();
+	public Reader wrap(Reader reader) throws IOException {
+		BufferedReader bufferedReader = new BufferedReader(reader);
 
-        if (!lastLine.contains("CPCMasterClassificationFile")){
-            stb.append(footer);
-        }
-      
-        String rawRecord = stb.toString();
-        //LOGGER.info(rawRecord);
-        //System.exit(1);
-        
-        return new StringReader(rawRecord);
-    }
+		StringBuilder stb = new StringBuilder();
+		stb.append(header);
 
-    public MasterClassificationRecord read(Reader reader) throws PatentReaderException, IOException {
-        Reader reader2 = wrap(reader);
+		String line;
+		String lastLine = "";
+		while ((line = bufferedReader.readLine()) != null) {
+			stb.append(line).append("\n");
+			lastLine = line;
+		}
+		reader.close();
 
-        try {
-            SAXReader sax = new SAXReader(false);
-            sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            Document document = sax.read(reader2);
-            return parse(document);
-        } catch (SAXException e) {
-            throw new PatentReaderException(e);
-        } catch (DocumentException e) {
-            throw new PatentReaderException(e);
-        }
-    }
+		if (!lastLine.contains("CPCMasterClassificationFile")) {
+			stb.append(footer);
+		}
 
-    public MasterClassificationRecord parse(Document document) {
+		String rawRecord = stb.toString();
+		// LOGGER.info(rawRecord);
+		// System.exit(1);
 
-        Node root = document.selectSingleNode("/uspat:CPCMasterClassificationFile/uspat:CPCMasterClassificationRecord");
-        
-        DocumentId appId = null;
-        Node appNode = root.selectSingleNode("pat:ApplicationIdentification");
-        if (appNode != null){
-            appId = readDocumentId(appNode);
-        }
-        
-        Node pubNode = root.selectSingleNode("pat:PatentPublicationIdentification|pat:PatentGrantIdentification");
-        DocumentId pubId = null;
-        if (pubNode != null){
-            pubId = readDocumentId(pubNode);
-        }
+		return new StringReader(rawRecord);
+	}
 
-        Node cpcN = root.selectSingleNode("pat:CPCClassificationBag");
-        List<CpcClassification> cpcClass = readCPC(cpcN);
+	public MasterClassificationRecord read(Reader reader) throws PatentReaderException, IOException {
+		Reader reader2 = wrap(reader);
 
-        return new MasterClassificationRecord(appId, pubId, cpcClass);
-    }
+		try {
+			SAXReader sax = new SAXReader(false);
+			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			Document document = sax.read(reader2);
+			return parse(document);
+		} catch (SAXException e) {
+			throw new PatentReaderException(e);
+		} catch (DocumentException e) {
+			throw new PatentReaderException(e);
+		}
+	}
 
-    public List<CpcClassification> readCPC(Node node) {
-        List<CpcClassification> cpcClasses = new ArrayList<CpcClassification>();
-        Node mainN = node.selectSingleNode("pat:MainCPC");
+	public MasterClassificationRecord parse(Document document) {
 
-        CpcClassification mainCpc = readClass(mainN);
+		Node root = document.selectSingleNode("/uspat:CPCMasterClassificationFile/uspat:CPCMasterClassificationRecord");
 
-        if (mainCpc == null) {
-            //LOGGER.error("Failed to read 'pat:MainCPC': {}", node.asXML());
-            return cpcClasses;
-        }
+		Node cpcN = root.selectSingleNode("pat:CPCClassificationBag");
+		List<CpcClassification> cpcClass = readCPC(cpcN);
 
-        mainCpc.setIsMainClassification(true);
-        cpcClasses.add(mainCpc);
+		if (classPredicate != null && !cpcClass.stream().anyMatch(classPredicate)){
+			return null;
+		}
 
-        @SuppressWarnings("unchecked")
-        List<Node> furtherCpcN = node.selectNodes("pat:FurtherCPC");
-        for (Node futherN : furtherCpcN) {
-            CpcClassification cpcClass = readClass(futherN);
-            if (cpcClass != null) {
-                cpcClass.setIsMainClassification(false);
-                mainCpc.addChild(cpcClass);
-                cpcClasses.add(cpcClass);
-                LOGGER.debug("FURTHER CPC: {}", cpcClass.toText());
-            }
-        }
+		DocumentId appId = null;
+		Node appNode = root.selectSingleNode("pat:ApplicationIdentification");
+		if (appNode != null) {
+			appId = readDocumentId(appNode);
+		}
 
-        return cpcClasses;
-    }
+		Node pubNode = root.selectSingleNode("pat:PatentPublicationIdentification|pat:PatentGrantIdentification");
+		DocumentId pubId = null;
+		if (pubNode != null) {
+			pubId = readDocumentId(pubNode);
+		}
 
-    private CpcClassification readClass(Node node) {
-        Node classN = node.selectSingleNode("pat:CPCClassification");
-        if (classN == null) {
-            return null;
-        }
+		return new MasterClassificationRecord(appId, pubId, cpcClass);
+	}
 
-        Node dateVersionN = classN.selectSingleNode("pat:ClassificationVersionDate");
-        Node cpcSectionN = classN.selectSingleNode("pat:CPCSection");
-        Node cpcClassN = classN.selectSingleNode("pat:Class");
-        Node cpcSubClassN = classN.selectSingleNode("pat:Subclass");
-        Node cpcMainGroupN = classN.selectSingleNode("pat:MainGroup");
-        Node cpcSubGroupN = classN.selectSingleNode("pat:Subgroup");
+	public List<CpcClassification> readCPC(Node node) {
+		List<CpcClassification> cpcClasses = new ArrayList<CpcClassification>();
+		Node mainN = node.selectSingleNode("pat:MainCPC");
 
-        CpcClassification cpcClass = new CpcClassification();
-        cpcClass.setSection(cpcSectionN.getText());
-        cpcClass.setMainClass(cpcClassN.getText());
-        cpcClass.setSubClass(cpcSubClassN.getText());
-        cpcClass.setMainGroup(cpcMainGroupN.getText());
-        cpcClass.setSubGroup(cpcSubGroupN.getText());
-        return cpcClass;
-    }
+		CpcClassification mainCpc = readClass(mainN);
 
-    public DocumentId readDocumentId(Node node) {
-        Node countryN = node.selectSingleNode("com:IPOfficeCode");
-        Node idN = node.selectSingleNode("pat:PublicationNumber|com:ApplicationNumber/com:ApplicationNumberText|pat:PatentNumber");
-        Node kindN = node.selectSingleNode("com:PatentDocumentKindCode");
-        Node dateN = node.selectSingleNode("com:PublicationDate");
+		if (mainCpc == null) {
+			// LOGGER.error("Failed to read 'pat:MainCPC': {}", node.asXML());
+			return cpcClasses;
+		}
 
-        String countryTxt = countryN != null ? countryN.getText() : "";
-        String idTxt = idN != null ? idN.getText() : "";
-        String kindTxt = kindN != null ? kindN.getText() : "";
-        String dateTxt = dateN != null ? dateN.getText() : "";
-        dateTxt = dateTxt.replaceAll("-", "");
+		mainCpc.setIsMainClassification(true);
+		cpcClasses.add(mainCpc);
 
-        DocumentDate docDate = null;
-        if (!dateTxt.isEmpty()) {
-            try {
-                docDate = new DocumentDate(dateTxt);
-            } catch (InvalidDataException e1) {
-                LOGGER.error("Failed to parse date: {}", dateTxt, e1);
-            }
-        }
+		@SuppressWarnings("unchecked")
+		List<Node> furtherCpcN = node.selectNodes("pat:FurtherCPC");
+		for (Node futherN : furtherCpcN) {
+			CpcClassification cpcClass = readClass(futherN);
+			if (cpcClass != null) {
+				cpcClass.setIsMainClassification(false);
+				mainCpc.addChild(cpcClass);
+				cpcClasses.add(cpcClass);
+				LOGGER.debug("FURTHER CPC: {}", cpcClass.toText());
+			}
+		}
 
-        try {
-            CountryCode countryCode = CountryCode.fromString(countryTxt);
-            DocumentId docId = new DocumentId(countryCode, idTxt, kindTxt);
-            docId.setDate(docDate);
-            return docId;
-        } catch (InvalidDataException e) {
-            LOGGER.error("Invalid CountryCode: {}", countryTxt, e);
-        }
-        return null;
-    }
+		return cpcClasses;
+	}
+
+	private CpcClassification readClass(Node node) {
+		Node classN = node.selectSingleNode("pat:CPCClassification");
+		if (classN == null) {
+			return null;
+		}
+
+		Node dateVersionN = classN.selectSingleNode("pat:ClassificationVersionDate");
+		Node cpcSectionN = classN.selectSingleNode("pat:CPCSection");
+		Node cpcClassN = classN.selectSingleNode("pat:Class");
+		Node cpcSubClassN = classN.selectSingleNode("pat:Subclass");
+		Node cpcMainGroupN = classN.selectSingleNode("pat:MainGroup");
+		Node cpcSubGroupN = classN.selectSingleNode("pat:Subgroup");
+
+		CpcClassification cpcClass = new CpcClassification();
+		cpcClass.setSection(cpcSectionN.getText());
+		cpcClass.setMainClass(cpcClassN.getText());
+		cpcClass.setSubClass(cpcSubClassN.getText());
+		cpcClass.setMainGroup(cpcMainGroupN.getText());
+		cpcClass.setSubGroup(cpcSubGroupN.getText());
+		return cpcClass;
+	}
+
+	public DocumentId readDocumentId(Node node) {
+		Node countryN = node.selectSingleNode("com:IPOfficeCode");
+		Node idN = node.selectSingleNode(
+				"pat:PublicationNumber|com:ApplicationNumber/com:ApplicationNumberText|pat:PatentNumber");
+		Node kindN = node.selectSingleNode("com:PatentDocumentKindCode");
+		Node dateN = node.selectSingleNode("com:PublicationDate");
+
+		String countryTxt = countryN != null ? countryN.getText() : "";
+		String idTxt = idN != null ? idN.getText() : "";
+		String kindTxt = kindN != null ? kindN.getText() : "";
+		String dateTxt = dateN != null ? dateN.getText() : "";
+		dateTxt = dateTxt.replaceAll("-", "");
+
+		DocumentDate docDate = null;
+		if (!dateTxt.isEmpty()) {
+			try {
+				docDate = new DocumentDate(dateTxt);
+			} catch (InvalidDataException e1) {
+				LOGGER.error("Failed to parse date: {}", dateTxt, e1);
+			}
+		}
+
+		try {
+			CountryCode countryCode = CountryCode.fromString(countryTxt);
+			DocumentId docId = new DocumentId(countryCode, idTxt, kindTxt);
+			docId.setDate(docDate);
+			return docId;
+		} catch (InvalidDataException e) {
+			LOGGER.error("Invalid CountryCode: {}", countryTxt, e);
+		}
+		return null;
+	}
 
 }

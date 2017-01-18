@@ -5,8 +5,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.util.List;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +42,10 @@ import joptsimple.OptionSet;
  *    on a laptop with 8 threads, at 97% cpu, takes approximately 10 minutes.
  * </pre>
  * 
+ * <p>
+ * --input="..\download\US_Grant_CPC_MCF_XML_2016-12-31.zip" --cpc="H04N,H04H,G06F"
+ * <p>
+ * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
@@ -56,8 +58,8 @@ public class CpcMasterParser extends BulkArchive {
 
     private DocumentBuilder<MasterClassificationRecord> docBuilder;
     private Path outputDir;
-    private Predicate<?> predicate;
-    
+    private Predicate<PatentClassification> classPredicate;
+
     private TransferQueue<Runnable> recordQueue;
 
     public CpcMasterParser(File file, DocumentBuilder<MasterClassificationRecord> docBuilder, Path outputDir) {
@@ -66,13 +68,10 @@ public class CpcMasterParser extends BulkArchive {
         this.docBuilder = docBuilder;
     }
 
-    public CpcMasterParser(File file, Predicate<?> predicate, DocumentBuilder<MasterClassificationRecord> docBuilder, Path outputDir) {
-        super(file, fileFilter);
-        this.outputDir = outputDir;
-        this.docBuilder = docBuilder;
-        this.predicate = predicate;
+    public void setClassificationPredicate(Predicate<PatentClassification> predicate) {
+        this.classPredicate = predicate;
     }
-    
+
     public void skipMasterDoc(int skip) {
         skip(skip);
     }
@@ -86,21 +85,25 @@ public class CpcMasterParser extends BulkArchive {
 
         CpcMasterReader reader = new CpcMasterReader();
 
+        if (classPredicate != null) {
+            reader.setClassificationPredicate(classPredicate);
+        }
+
         while (hasNext()) {
-                DumpFile dumpFile = next();
-                File outputFile = outputDir.resolve("cpc_master_" + dumpFile.getFile().getName() + ".csv").toFile();
+            DumpFile dumpFile = next();
+            File outputFile = outputDir.resolve("cpc_master_" + dumpFile.getFile().getName() + ".csv").toFile();
 
-                DumpFileProcessThread workThread = new DumpFileProcessThread(dumpFile, reader, docBuilder, outputFile); // @TODO add predicate.
+            DumpFileProcessThread workThread = new DumpFileProcessThread(dumpFile, reader, docBuilder, outputFile); // @TODO add predicate.
 
-                if (recordQueue.size() < maxThreads * 3) {
-                    recordQueue.add(workThread);
-                } else {
-                    try {
-                        recordQueue.transfer(workThread);
-                    } catch (InterruptedException e) {
-                        LOGGER.error("LinkedTransferQueue Interrupted", e);
-                    }
+            if (recordQueue.size() < maxThreads * 3) {
+                recordQueue.add(workThread);
+            } else {
+                try {
+                    recordQueue.transfer(workThread);
+                } catch (InterruptedException e) {
+                    LOGGER.error("LinkedTransferQueue Interrupted", e);
                 }
+            }
         }
 
         executor.shutdown();
@@ -126,9 +129,11 @@ public class CpcMasterParser extends BulkArchive {
                         .defaultsTo(0);
                 accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("limit master cpc files to parse")
                         .defaultsTo(0);
-                accepts("threads").withOptionalArg().ofType(Integer.class).describedAs("Threads to spawn").defaultsTo(5);
+                accepts("threads").withOptionalArg().ofType(Integer.class).describedAs("Threads to spawn")
+                        .defaultsTo(5);
                 accepts("outdir").withOptionalArg().ofType(String.class).describedAs("directory").defaultsTo("output");
-                accepts("cpc").withOptionalArg().ofType(String.class).describedAs("comma separated list of CPC Classifications");
+                accepts("cpc").withOptionalArg().ofType(String.class)
+                        .describedAs("comma separated list of wanted CPC Classifications");
             }
         };
 
@@ -156,24 +161,12 @@ public class CpcMasterParser extends BulkArchive {
          * Cpc Predicates
          */
         String cpcInput = (String) options.valueOf("cpc");
-        Predicate<PatentClassification> predicate = null;
-        if (cpcInput != null){
-        	Iterable<String> wantedCpcClasses = Splitter.on(',').trimResults().omitEmptyStrings().split(cpcInput);
-        	for(String wantedCpc: wantedCpcClasses){
-        		
-				try {
-					CpcClassification cpcClass = new CpcClassification();
-					cpcClass.parseText(wantedCpc);
-	        		if (predicate == null){
-	        			predicate = ClassificationPredicate.isContained(cpcClass);
-	        		}
-	        		else {
-	        			predicate.or(ClassificationPredicate.isContained(cpcClass));
-	        		}
-				} catch (ParseException e) {
-					LOGGER.error("Failed to parse provided CPC Classification: " + wantedCpc, e);
-				}
-        	}
+        Predicate<PatentClassification> classPredicate = null;
+        if (cpcInput != null) {
+            Iterable<String> wantedCpcClasses = Splitter.on(',').trimResults().omitEmptyStrings().split(cpcInput);
+            LOGGER.info("Classifications wanted: {}", wantedCpcClasses);
+            classPredicate = ClassificationPredicate.isContained(wantedCpcClasses, CpcClassification.class);
+            LOGGER.info("Classification predicate built");
         }
 
         if (!outputPath.toFile().isDirectory()) {
@@ -183,6 +176,11 @@ public class CpcMasterParser extends BulkArchive {
         MasterCpcCsvBuilder docBuilder = new MasterCpcCsvBuilder();
 
         CpcMasterParser cpcMaster = new CpcMasterParser(zipFile, docBuilder, outputPath);
+
+        if (classPredicate != null) {
+            cpcMaster.setClassificationPredicate(classPredicate);
+        }
+
         cpcMaster.open();
 
         if (skip > 0) {
