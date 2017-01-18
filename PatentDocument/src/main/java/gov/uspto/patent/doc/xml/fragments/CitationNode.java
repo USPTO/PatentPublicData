@@ -67,8 +67,9 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			String citeTxt = citeTxtN != null ? citeTxtN.getText() : "";
 
 			// <category>cited by examiner</category>
-			Node category = nplcit.getParent().selectSingleNode("category");
-			boolean examinerCited = (category.getText().equals("cited by examiner"));
+			Node categoryN = nplcit.getParent().selectSingleNode("category");
+			String categoryTxt = categoryN != null ? categoryN.getText() : "";
+			boolean examinerCited = (categoryTxt.equals("cited by examiner"));
 
 			Citation citation = new NplCitation(num, citeTxt, examinerCited);
 			nplCitations.add(citation);
