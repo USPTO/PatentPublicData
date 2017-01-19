@@ -168,6 +168,8 @@ public class TransformerCli {
 
 			for (; dumpReader.hasNext() && totalCount < totalLimit; totalCount++) {
 
+				MDC.put("DOCID", dumpReader.getFile().getName() + ":" + dumpReader.getCurrentRecCount());
+
 				String xmlDocStr = dumpReader.next();
 				if (xmlDocStr == null) {
 					currentWriter.close();

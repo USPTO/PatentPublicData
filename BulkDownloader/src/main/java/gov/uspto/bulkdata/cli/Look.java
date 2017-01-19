@@ -18,6 +18,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.MDC;
 
 import gov.uspto.common.filter.FileFilterChain;
 import gov.uspto.common.filter.SuffixFilter;
@@ -58,6 +59,8 @@ public class Look {
         PatentReader patentReader = new PatentReader(dumpReader.getPatentDocFormat());
 
         for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
+			MDC.put("DOCID", dumpReader.getFile().getName() + ":" + dumpReader.getCurrentRecCount());
+        	
             System.out.println(dumpReader.getCurrentRecCount() + 1 + " --------------------------");
 
             try {
