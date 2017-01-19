@@ -84,43 +84,44 @@ public class Greenbook extends KvParser {
 	public Patent parse(Document document) throws PatentReaderException {
 
 		DocumentId publicationId = new DocumentIdNode(document).read();
-		if (publicationId != null) {
+		PatentType patentType = PatentType.UNDEFINED;
+		if (publicationId != null){
 			MDC.put("DOCID", publicationId.toText());
-		}
-
-		PatentType patentType = new PatentTypeNode(document).read();
-		publicationId.setPatentType(patentType);
-
-		/*
-		 * Assign Kind Code from PatentType
-		 */
-		if (CountryCode.US.equals(publicationId.getCountryCode())) {
-			switch (patentType) {
-			case UTILITY:
-				// Utility Patent Grant issued prior to January 2, 2001.
-				publicationId.setKindCode("A");
-				break;
-			case PLANT:
-				// Plant Patent Grant issued prior to January 2, 2001.
-				publicationId.setKindCode("P");
-				break;
-			case DESIGN:
-				publicationId.setKindCode("S");
-				break;
-			case REISSUE:
-				publicationId.setKindCode("E");
-				break;
-			case STATUTORY_INVENTION_REGISTRATION:
-				publicationId.setKindCode("H");
-				break;
-			case DEFENSIVE_PUBLICATION:
-				break;
-			case UNDEFINED:
-				break;
-			default:
-				break;
+			patentType = new PatentTypeNode(document).read();
+			publicationId.setPatentType(patentType);
+			
+			/*
+			 * Assign Kind Code from PatentType
+			 */
+			if (CountryCode.US.equals(publicationId.getCountryCode())) {
+				switch (patentType) {
+				case UTILITY:
+					// Utility Patent Grant issued prior to January 2, 2001.
+					publicationId.setKindCode("A");
+					break;
+				case PLANT:
+					// Plant Patent Grant issued prior to January 2, 2001.
+					publicationId.setKindCode("P");
+					break;
+				case DESIGN:
+					publicationId.setKindCode("S");
+					break;
+				case REISSUE:
+					publicationId.setKindCode("E");
+					break;
+				case STATUTORY_INVENTION_REGISTRATION:
+					publicationId.setKindCode("H");
+					break;
+				case DEFENSIVE_PUBLICATION:
+					break;
+				case UNDEFINED:
+					break;
+				default:
+					break;
+				}
 			}
 		}
+
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 

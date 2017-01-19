@@ -31,7 +31,7 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 	public DocumentId read() {
 		Node docNumN = document.selectSingleNode("/DOCUMENT/PATN/WKU");
 		if (docNumN == null) {
-			LOGGER.warn("Invalid document-id, field 'WKU' not found");
+			LOGGER.warn("Invalid document-id, field 'WKU' not found: {}", document.asXML());
 			return null;
 		}
 
