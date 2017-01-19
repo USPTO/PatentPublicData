@@ -116,7 +116,10 @@ public class KvReader {
         int tCount = 1;
  
         for (KeyValue kv : keyValues) {
-            if (kv.getValue().isEmpty()) { // auto detect section.
+        	if (kv.getKey().trim().isEmpty()){
+        		continue;
+        	}
+            if (kv.getValue().trim().isEmpty()) { // auto detect section.
                 if (currentSection != rootNode) {
                     rootNode.add(currentSection);
                 }
@@ -229,7 +232,7 @@ public class KvReader {
              */
             else if (!entry.getFieldGroup().isMultivalued()){
                 if (currentFieldGroup != entry.getFieldGroup()){
-                    
+                	
                     if (currentSection != rootNode) {
                         rootNode.add(currentSection);
                         currentFieldGroup = null;
