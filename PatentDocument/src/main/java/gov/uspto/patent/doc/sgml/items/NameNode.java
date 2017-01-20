@@ -1,5 +1,7 @@
 package gov.uspto.patent.doc.sgml.items;
 
+import java.util.List;
+
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,29 +53,53 @@ public class NameNode extends ItemReader<Name> {
 
 		Node nameNode = itemNode.selectSingleNode("NAM");
 
-		Node orgNameN = nameNode.selectSingleNode("ONM/STEXT/PDAT");
+		Node orgNameN = nameNode.selectSingleNode("ONM/STEXT");
 		if (orgNameN != null) {
-			String orgName = orgNameN != null ? orgNameN.getText() : null;
-
+			String orgName = readSTEXT(orgNameN);
 			try {
 				name = new NameOrg(orgName);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("NameOrg Invalid", e);
+				LOGGER.warn("NameOrg Invalid: {}", nameNode.asXML(), e);
 			}
 		} else {
 			Node firstNameN = nameNode.selectSingleNode("FNM/PDAT");
-			String firstName = firstNameN != null ? firstNameN.getText() : null;
+			String firstName = firstNameN != null ? firstNameN.getText() : "";
 
-			Node lastNameN = nameNode.selectSingleNode("SNM/STEXT/PDAT");
-			String lastName = lastNameN != null ? lastNameN.getText() : null;
+			Node lastNameN = nameNode.selectSingleNode("SNM/STEXT");
+			String lastName = readSTEXT(lastNameN);
 
 			try {
 				name = new NamePerson(firstName, lastName);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("NamePerson Invalid", e);
+				LOGGER.warn("NamePerson Invalid: {}", nameNode.asXML(), e);
 			}
 		}
 
 		return name;
+	}
+
+	/**
+	 * Get plain text from STEXT , ignore stylized tags (bold, italic, superscript, subscript)
+	 * 
+	 * @param stextNode
+	 * @return
+	 */
+	public String readSTEXT(Node stextNode){
+		@SuppressWarnings("unchecked")
+		List<Node> namePartN = stextNode.selectNodes("descendant::PDAT");
+
+		String orgName;
+		if (namePartN.size() == 1){
+			orgName = namePartN.get(0).getText();
+		} else {
+			// Multiple PDATs when text has styling.
+			StringBuilder stb = new StringBuilder();
+			for(Node node: namePartN){
+				stb.append(node.getText());
+			}
+			orgName = stb.toString();
+		}
+
+		return orgName;
 	}
 }
