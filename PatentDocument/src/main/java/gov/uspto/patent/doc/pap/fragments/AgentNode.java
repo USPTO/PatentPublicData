@@ -5,11 +5,8 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.pap.items.AddressNode;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
@@ -18,7 +15,6 @@ import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.NameOrg;
 
 public class AgentNode extends DOMFragmentReader<List<Agent>> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AgentNode.class);
 
     private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-bibliographic-information/correspondence-address";
 
@@ -30,7 +26,6 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
     public List<Agent> read() {
         List<Agent> agents = new ArrayList<Agent>();
 
-        @SuppressWarnings("unchecked")
         Node correspondenceN = document.selectSingleNode(FRAGMENT_PATH);
         if (correspondenceN == null){
         	return agents;
@@ -56,11 +51,10 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
         String addressName = name2Str.isEmpty() ? name1Str : name1Str + "; " + name2Str; // using semi-colon since commas may occur within name.
 
         Address address = new AddressNode(correspondenceN).read();
-        try {
-            Name name = new NameOrg(addressName); // FIXME, need to disambiguate between Person and Organization.
+        
+        Name name = new NameOrg(addressName); // FIXME, need to disambiguate between Person and Organization.
+        if (name != null){
             agents.add(new Agent(name, address, AgentRepType.AGENT));
-        } catch (InvalidDataException e) {
-            LOGGER.warn("Invalid Name: {}", name1Str);
         }
 
         return agents;

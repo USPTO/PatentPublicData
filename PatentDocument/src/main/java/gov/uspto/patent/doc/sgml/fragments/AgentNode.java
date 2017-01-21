@@ -13,10 +13,13 @@ import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Name;
 
-public class AgentNode extends DOMFragmentReader<List<Agent>>{
-	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B700/B740";
+public class AgentNode extends DOMFragmentReader<List<Agent>> {
 
-	public AgentNode(Document document){
+	private static final String AGENT_LIST = "/PATDOC/SDOBI/B700/B740";
+
+	private static final String AGENT = "B741/PARTY-US";
+
+	public AgentNode(Document document) {
 		super(document);
 	}
 
@@ -25,24 +28,29 @@ public class AgentNode extends DOMFragmentReader<List<Agent>>{
 		List<Agent> agentList = new ArrayList<Agent>();
 
 		@SuppressWarnings("unchecked")
-		List<Node> agents = document.selectNodes(FRAGMENT_PATH);
-		for(Node agentNode: agents){
+		List<Node> agents = document.selectNodes(AGENT_LIST);
+		for (Node agentNode : agents) {
 
-			Node dataNode = agentNode.selectSingleNode("B741/PARTY-US");
+			Node dataNode = agentNode.selectSingleNode(AGENT);
 
 			Agent agent = readAgent(dataNode);
-			agentList.add(agent);
+			if (agent != null) {
+				agentList.add(agent);
+			}
 		}
 
 		return agentList;
 	}
 
-	public Agent readAgent(Node agentNode){
+	public Agent readAgent(Node agentNode) {
 		Name name = new NameNode(agentNode).read();
 
-		Address address = new AddressNode(agentNode).read();
+		if (name != null) {
+			Address address = new AddressNode(agentNode).read();
+			return new Agent(name, address, null);
+		}
 
-		return new Agent(name, address, null);
+		return null;
 	}
-	
+
 }

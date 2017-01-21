@@ -11,11 +11,12 @@ import gov.uspto.patent.model.CountryCodeHistory;
 import gov.uspto.patent.model.entity.Address;
 
 /**
- *<h3>ADR Individual or organization address</h3>
- *<p>
- *</p>
- *<p>
- *<pre>
+ * <h3>ADR Individual or organization address</h3>
+ * <p>
+ * </p>
+ * <p>
+ * 
+ * <pre>
  *{@code
  *   <STR>1 Main St</STR>
  *   <CTY>Somecity</CTY>
@@ -23,8 +24,8 @@ import gov.uspto.patent.model.entity.Address;
  *   <ZIP>60544</ZIP>
  *   <CNT>US</CNT>
  *}
- *</pre>
- *</p>
+ * </pre>
+ * </p>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
@@ -46,8 +47,6 @@ public class AddressNode extends ItemReader<Address> {
 
 	@Override
 	public Address read() {
-		Address address = null;
-
 		Node streetN = itemNode.selectSingleNode("STR");
 		String street = streetN != null ? streetN.getText() : null;
 
@@ -65,10 +64,12 @@ public class AddressNode extends ItemReader<Address> {
 
 		CountryCode countryCode = getCountryCode(countryCodeStr);
 
+		Address address = new Address(street, city, state, zipcode, countryCode);
+
 		try {
-			address = new Address(street, city, state, zipcode, countryCode);
+			address.validate();
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Address from: {}", itemNode.asXML(), e);
+			LOGGER.warn("Invalid Address: {}", itemNode.getParent().asXML(), e);
 		}
 
 		return address;
@@ -77,7 +78,9 @@ public class AddressNode extends ItemReader<Address> {
 	/**
 	 * Country Code
 	 * 
-	 * Fix 3 digit country codes, in two digit country code field, by removing the trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
+	 * Fix 3 digit country codes, in two digit country code field, by removing
+	 * the trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1,
+	 * GB2).
 	 * 
 	 * @param country
 	 * @return
@@ -98,7 +101,7 @@ public class AddressNode extends ItemReader<Address> {
 			LOGGER.warn("Invalid Country Code: '{}'", country);
 		}
 
-		if (countryCode == CountryCode.UNKNOWN){
+		if (countryCode == CountryCode.UNKNOWN) {
 			countryCode = AddressNode.getCountryCodeHistoric(country);
 		}
 
@@ -108,7 +111,9 @@ public class AddressNode extends ItemReader<Address> {
 	/**
 	 * Country Code
 	 * 
-	 * Fix 3 digit country codes, in two digit country code field, by removing the trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
+	 * Fix 3 digit country codes, in two digit country code field, by removing
+	 * the trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1,
+	 * GB2).
 	 * 
 	 * @param country
 	 * @return

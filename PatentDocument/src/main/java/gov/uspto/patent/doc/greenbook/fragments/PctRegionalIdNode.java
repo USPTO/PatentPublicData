@@ -84,7 +84,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 						DocumentDate filingDate = new DocumentDate(filingDateStr);
 						filindDocId.setDate(filingDate);
 					} catch (InvalidDataException e) {
-						LOGGER.warn("Invalid PCT Filing Date: {}", filingDateStr);
+						LOGGER.warn("Invalid PCT Filing Date: '{}'", pctFilingDateN.getText());
 					}
 				}
 
@@ -115,7 +115,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 			return new DocumentId(countryCode, docId);
 		}
 
-		LOGGER.warn("PCT DocID did not pattern: {}", pctDocIdString);
+		LOGGER.warn("PCT DocID did not match pattern: {}", pctDocIdString);
 
 		return null;
 	}

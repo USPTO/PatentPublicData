@@ -44,16 +44,17 @@ public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
 
 	public NameOrg getOrgName(Node node) {
 		Node orgNameN = node.selectSingleNode("organization-name");
-		String orgName = orgNameN != null ? orgNameN.getText() : null;
+		NameOrg name = orgNameN != null ? new NameOrg(orgNameN.getText()) : null;
 
-		if (orgName != null) {
+		if (name != null) {
 			try {
-				return new NameOrg(orgName);
+				name.validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Unable to create NameOrg from {}", itemNode.asXML(), e);
+				LOGGER.warn("Org Name Invalid: {}", node.getParent().asXML(), e);
 			}
 		}
-		return null;
+
+		return name;
 	}
 
 	public NamePerson getPersonName(Node node) {
@@ -74,10 +75,12 @@ public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
 
 		NamePerson name = null;
 		if (lastName != null || firstName != null) {
+			name = new NamePerson(firstName, middleName, lastName);
+			name.setPrefix(prefix);
+			name.setSuffix(suffix);
+
 			try {
-				name = new NamePerson(firstName, middleName, lastName);
-				name.setPrefix(prefix);
-				name.setSuffix(suffix);
+				name.validate();
 			} catch (InvalidDataException e) {
 				LOGGER.warn("Unable to create NamePerson from {}", node.asXML(), e);
 			}

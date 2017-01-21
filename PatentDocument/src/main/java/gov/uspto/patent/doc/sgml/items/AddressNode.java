@@ -91,14 +91,15 @@ public class AddressNode extends ItemReader<Address> {
 		Node faxN = addrNode.selectSingleNode("FAX/PDAT");
 		String fax = faxN != null ? faxN.getText() : null;
 
-		Address address = null;
+		Address address = new Address(street, city, state, zipcode, countryCode);
+		address.setEmail(email);
+		address.setPhoneNumber(tel);
+		address.setFaxNumber(fax);
+
 		try {
-			address = new Address(street, city, state, zipcode, countryCode);
-			address.setEmail(email);
-			address.setPhoneNumber(tel);
-			address.setFaxNumber(fax);
+			address.validate();
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Address Invalid", e);
+			LOGGER.warn("Address Invalid: {}", addrNode.getParent().asXML(), e);
 		}
 
 		return address;

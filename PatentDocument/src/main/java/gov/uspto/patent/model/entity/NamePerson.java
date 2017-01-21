@@ -6,23 +6,6 @@ import com.google.common.base.Strings;
 import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.InvalidDataException;
 
-/*
-* TODO: need more research... name and entity disambiguation.
-* 	Does the middle name or initial sometimes appear in the first-name field?
-* 
-* 		Function to get a list of name variants:
-* 			first word in first name field,  with lastname field.
-* 			first name last name
-* 			first name, last name joined no space.
-* 			first initial last name.
-* 
-* 		Function to get normalized "best guess" name.
-* 
-* 		Function to score uniqueness of names, need to create a domain name dictionary which contains uniqueness score within the corpus.
-* 			john  0.0875
-* 			doe	  0.0093
-*			likely hood of word being lastname or first name... likely hood of finding first name and last name together...
-*/
 public class NamePerson extends Name {
 
     private String prefix; // Title: Mr., Mrs., Dr.
@@ -30,18 +13,16 @@ public class NamePerson extends Name {
     private final String middleName;
     private final String lastName;
 
-    public NamePerson(String firstName, String lastName) throws InvalidDataException {
+    public NamePerson(String firstName, String lastName) {
         this(firstName, null, lastName);
     }
 
-    public NamePerson(String firstName, String middleName, String lastName) throws InvalidDataException {
+    public NamePerson(String firstName, String middleName, String lastName) {
         super(buildFullName(firstName, middleName, lastName));
 
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
-
-        validate();
     }
 
     public String getLastName() {
@@ -56,11 +37,11 @@ public class NamePerson extends Name {
         String fullName = super.getName();
 
         if (Strings.isNullOrEmpty(lastName)) {
-            throw new InvalidDataException("Invalid PersonName, lastname can not be blank");
+            throw new InvalidDataException("Invalid NamePerson, lastname can not be blank");
         }
 
         if (Strings.isNullOrEmpty(fullName) || fullName.length() < 2) {
-            throw new InvalidDataException("Invalid PersonName, fullName can not be blank or smaller than 2.");
+            throw new InvalidDataException("Invalid NamePerson, fullName can not be blank or smaller than 2.");
         }
 
         return true;

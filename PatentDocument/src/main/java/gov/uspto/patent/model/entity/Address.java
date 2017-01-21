@@ -24,19 +24,16 @@ public class Address {
 	private String faxNumber;
 	private String email;
 
-	public Address(String city, String state, CountryCode country) throws InvalidDataException {
+	public Address(String city, String state, CountryCode country) {
 		this(null, city, state, null, country);
 	}
 
-	public Address(String street, String city, String state, String zipcode, CountryCode country)
-			throws InvalidDataException {
+	public Address(String street, String city, String state, String zipcode, CountryCode country) {
 		this.street = street;
 		this.city = city;
 		this.state = state;
 		this.zipcode = zipcode;
 		this.country = country;
-
-		validate();
 	}
 
 	public String getStreet() {

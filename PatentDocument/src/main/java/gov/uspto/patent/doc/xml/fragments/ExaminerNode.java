@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
 import gov.uspto.patent.model.ExaminerType;
 import gov.uspto.patent.model.entity.Examiner;
@@ -51,14 +50,10 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 		Node departmentN = primaryN.selectSingleNode("department");
 		String department = departmentN != null ? departmentN.getText() : null;
 
-		Name name;
-		try {
-			name = new AddressBookNode(primaryN).getPersonName();
+		Name name = new AddressBookNode(primaryN).getPersonName();
+		if (name != null){
 			return new Examiner(name, department, ExaminerType.PRIMARY);
-		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Examiner, primary: {}", primaryN.asXML(), e);
 		}
-
 		return null;
 	}
 
@@ -71,13 +66,10 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 		Node departmentN = assistantN.selectSingleNode("department");
 		String department = departmentN != null ? departmentN.getText() : null;
 
-		try {
-			Name name = new AddressBookNode(assistantN).getPersonName();
+		Name name = new AddressBookNode(assistantN).getPersonName();
+		if (name != null){
 			return new Examiner(name, department, ExaminerType.ASSISTANT);
-		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Examiner, assistant: {}", assistantN.asXML(), e);
 		}
-
 		return null;
 	}
 

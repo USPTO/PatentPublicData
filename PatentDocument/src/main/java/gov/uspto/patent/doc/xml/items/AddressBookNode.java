@@ -53,7 +53,7 @@ public class AddressBookNode extends ItemReader<Name> {
      * @return
      * @throws InvalidDataException 
      */
-    public Name getPersonName() throws InvalidDataException {
+    public Name getPersonName() {
         Node prefixN = itemNode.selectSingleNode("prefix");
         String prefix = prefixN != null ? prefixN.getText() : null;
 
@@ -82,12 +82,18 @@ public class AddressBookNode extends ItemReader<Name> {
             name.setPrefix(prefix);
             name.setSuffix(suffix);
             name.setSynonyms(synonyms);
+
+            try {
+				name.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("Person Name Invalid: {}", itemNode.getParent().getParent().asXML(), e);
+			}
         }
 
         return name;
     }
 
-    public NameOrg getOrgName() throws InvalidDataException {
+    public NameOrg getOrgName() {
         // @FIXME Note: for now, treat name as a org name. 
         Node orgnameN = itemNode.selectSingleNode("orgname") != null ? itemNode.selectSingleNode("orgname")
                 : itemNode.selectSingleNode("name");
@@ -104,11 +110,17 @@ public class AddressBookNode extends ItemReader<Name> {
             String orgName = orgnameN.getText();
             name = new NameOrg(orgName);
             name.setSynonyms(synonyms);
+
+            try {
+				name.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("Org Name Invalid: {}", orgnameN.getParent().getParent().asXML(), e);
+			}
         }
         return name;
     }
 
-    public Address getAddress() throws InvalidDataException {
+    public Address getAddress() {
         Node addressN = itemNode.selectSingleNode("address");
         if (addressN == null) {
             return null;
@@ -171,7 +183,6 @@ public class AddressBookNode extends ItemReader<Name> {
         address.setPhoneNumber(phone);
         address.setFaxNumber(fax);
         address.setEmail(email);
-
         return address;
     }
 

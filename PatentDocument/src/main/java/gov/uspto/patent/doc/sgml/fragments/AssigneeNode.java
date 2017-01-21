@@ -31,7 +31,9 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 			Assignee assignee = readAssignee(dataNode);
 
-			assigneeList.add(assignee);
+			if (assignee != null){
+				assigneeList.add(assignee);
+			}
 		}
 
 		return assigneeList;
@@ -39,10 +41,11 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 	public Assignee readAssignee(Node assigneeNode){
 		Name name = new NameNode(assigneeNode).read();
-
-		Address address = new AddressNode(assigneeNode).read();
-
-		return new Assignee(name, address);
+		if (name != null){
+			Address address = new AddressNode(assigneeNode).read();
+			return new Assignee(name, address);
+		}
+		return null;
 	}
 
 }

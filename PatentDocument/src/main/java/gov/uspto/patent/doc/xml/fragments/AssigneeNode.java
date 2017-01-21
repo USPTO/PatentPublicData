@@ -40,7 +40,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 			if (node.selectSingleNode("addressbook") != null) {
 				addressBook = new AddressBookNode(node);
 			} else {
-				// Wrap assignee child nodes with addressbook.
+				// Fix for assignee without addressbook, wrap assignee child nodes with addressbook.
 				Element addressBookNode = DocumentHelper.createElement("addressbook");
 
 				Iterator<Element> it = ((Element) node).elementIterator();
@@ -55,15 +55,10 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 			}
 
 			Name assigneeName = null;
-			try {
-				if (addressBook.getPersonName() != null) {
-					assigneeName = addressBook.getPersonName();
-				} else {
-					assigneeName = addressBook.getOrgName();
-				}
-			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Assignee Name: {}", node.asXML(), e);
-				continue;
+			if (addressBook.getPersonName() != null) {
+				assigneeName = addressBook.getPersonName();
+			} else {
+				assigneeName = addressBook.getOrgName();
 			}
 
 			if (assigneeName == null) {
@@ -71,12 +66,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 				continue;
 			}
 
-			Address address = null;
-			try {
-				address = addressBook.getAddress();
-			} catch (InvalidDataException e1) {
-				LOGGER.warn("Invalid Assignee Address: {}", node.asXML(), e1);
-			}
+			Address address = addressBook.getAddress();
 
 			Node roleTypeN = node.selectSingleNode("addressbook/role");
 			String roleType = roleTypeN != null ? roleTypeN.getText() : "";

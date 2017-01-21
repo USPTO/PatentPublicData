@@ -12,7 +12,9 @@ import gov.uspto.patent.model.entity.Address;
 /**
  * Residence or Address
  *
- *<p><pre>
+ * <p>
+ * 
+ * <pre>
  * {@code}
  * <residence-us>
  *   <city>SALT LAKE CITY</city>
@@ -20,69 +22,74 @@ import gov.uspto.patent.model.entity.Address;
  *   <country-code>US</country-code>
  * </residence-us>
  * }
- *</pre></p>
+ * </pre>
+ * </p>
  * 
- *<p><pre>
+ * <p>
+ * 
+ * <pre>
  * {@code
  * <!ELEMENT address  (military-address?,address-1?,address-2?,city?,state?,postalcode?,country?,email*,telephone*,fax*) >
  * }
- *</pre><p>
+ * </pre>
+ * <p>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class AddressNode extends ItemReader<Address> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AddressNode.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AddressNode.class);
 
-    private static final String ITEM_NODE_NAME = "address";
+	private static final String ITEM_NODE_NAME = "address";
 
-    public AddressNode(Node itemNode) {
-        super(itemNode, ITEM_NODE_NAME);
-    }
+	public AddressNode(Node itemNode) {
+		super(itemNode, ITEM_NODE_NAME);
+	}
 
-    @Override
-    public Address read() {
-        return readAddress(itemNode);
-    }
+	@Override
+	public Address read() {
+		return readAddress(itemNode);
+	}
 
-    public Address readAddress(Node node) {
-        Node emailN = node.selectSingleNode("email");
-        String email = emailN != null ? emailN.getText() : null;
+	public Address readAddress(Node node) {
+		Node emailN = node.selectSingleNode("email");
+		String email = emailN != null ? emailN.getText() : null;
 
-        Node phoneN = node.selectSingleNode("telephone");
-        String phone = phoneN != null ? phoneN.getText() : null;
+		Node phoneN = node.selectSingleNode("telephone");
+		String phone = phoneN != null ? phoneN.getText() : null;
 
-        Node faxN = node.selectSingleNode("fax");
-        String fax = faxN != null ? faxN.getText() : null;
+		Node faxN = node.selectSingleNode("fax");
+		String fax = faxN != null ? faxN.getText() : null;
 
-        Node cityN = node.selectSingleNode("city");
-        String city = cityN != null ? cityN.getText() : null;
+		Node cityN = node.selectSingleNode("city");
+		String city = cityN != null ? cityN.getText() : null;
 
-        Node stateN = node.selectSingleNode("state");
-        String state = stateN != null ? stateN.getText() : null;
+		Node stateN = node.selectSingleNode("state");
+		String state = stateN != null ? stateN.getText() : null;
 
-        Node zipCodeN = node.selectSingleNode("postalcode");
-        String zipCode = zipCodeN != null ? zipCodeN.getText() : null;
+		Node zipCodeN = node.selectSingleNode("postalcode");
+		String zipCode = zipCodeN != null ? zipCodeN.getText() : null;
 
-        Node countryN = node.selectSingleNode("country-code");
-        CountryCode countryCode = CountryCode.UNDEFINED;
-        if (countryN != null) {
-            try {
-                countryCode = CountryCode.fromString(countryN.getText());
-            } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid CountryCode: {} from: {}", countryN.getText(), node.asXML());
-            }
-        }
+		Node countryN = node.selectSingleNode("country-code");
+		CountryCode countryCode = CountryCode.UNDEFINED;
+		if (countryN != null) {
+			try {
+				countryCode = CountryCode.fromString(countryN.getText());
+			} catch (InvalidDataException e) {
+				LOGGER.warn("Invalid CountryCode: {} from: {}", countryN.getText(), node.asXML());
+			}
+		}
 
-        Address address = null;
-        try {
-            address = new Address(null, city, state, zipCode, countryCode);
-            address.setEmail(email);
-            address.setPhoneNumber(phone);
-            address.setFaxNumber(fax);
-        } catch (InvalidDataException e) {
-            LOGGER.warn("Invalid Address: {}", node.asXML(), e);
-        }
-        return address;
-    }
+		Address address = new Address(null, city, state, zipCode, countryCode);
+		address.setEmail(email);
+		address.setPhoneNumber(phone);
+		address.setFaxNumber(fax);
+
+		try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("Invalid Address: {}", node.getParent().asXML(), e);
+		}
+		return address;
+	}
 }

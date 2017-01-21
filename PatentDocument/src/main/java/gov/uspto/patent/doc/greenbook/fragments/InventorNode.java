@@ -29,17 +29,22 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 		List<Node> inventors = document.selectNodes(FRAGMENT_PATH);
 		for (Node inventorN : inventors) {
 			Inventor inventor = readInventor(inventorN);
-			inventorList.add(inventor);
+			if (inventor != null) {
+				inventorList.add(inventor);
+			}
 		}
 
 		return inventorList;
 	}
 
-	public Inventor readInventor(Node inventorN){
+	public Inventor readInventor(Node inventorN) {
 		Name name = new NameNode(inventorN).read();
 
-		Address address = new AddressNode(inventorN).read();
-		
-		return new Inventor(name, address);
+		if (name != null) {
+			Address address = new AddressNode(inventorN).read();
+			return new Inventor(name, address);
+		}
+
+		return null;
 	}
 }

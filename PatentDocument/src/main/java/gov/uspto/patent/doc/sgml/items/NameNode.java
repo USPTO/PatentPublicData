@@ -56,10 +56,11 @@ public class NameNode extends ItemReader<Name> {
 		Node orgNameN = nameNode.selectSingleNode("ONM/STEXT");
 		if (orgNameN != null) {
 			String orgName = readSTEXT(orgNameN);
+			name = new NameOrg(orgName);
 			try {
-				name = new NameOrg(orgName);
+				((NameOrg)name).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("NameOrg Invalid: {}", nameNode.asXML(), e);
+				LOGGER.warn("Org Name Invalid: {}", nameNode.getParent().asXML(), e);
 			}
 		} else {
 			Node firstNameN = nameNode.selectSingleNode("FNM/PDAT");
@@ -67,11 +68,11 @@ public class NameNode extends ItemReader<Name> {
 
 			Node lastNameN = nameNode.selectSingleNode("SNM/STEXT");
 			String lastName = readSTEXT(lastNameN);
-
+			name = new NamePerson(firstName, lastName);
 			try {
-				name = new NamePerson(firstName, lastName);
+				((NamePerson)name).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("NamePerson Invalid: {}", nameNode.asXML(), e);
+				LOGGER.warn("Person Name Invalid: {}", nameNode.getParent().asXML(), e);
 			}
 		}
 

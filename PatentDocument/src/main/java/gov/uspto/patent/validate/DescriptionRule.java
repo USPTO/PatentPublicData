@@ -1,13 +1,15 @@
 package gov.uspto.patent.validate;
 
+import gov.uspto.patent.model.DescriptionSection;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentType;
 
 /**
+ * Description Rule
  * 
- * DESIGN Patents only require 1 claim, abstract and description are optional. 
- * UTILITY Patents (majority of patents) require 1 or more claims, and usually have an abstract and description.
- *
+ *<p>
+ * For Utility Patent ensure content exists
+ *</p>
  */
 public class DescriptionRule implements Validator<Patent> {
 
@@ -20,7 +22,22 @@ public class DescriptionRule implements Validator<Patent> {
 			if (patent.getDescription() == null || patent.getDescription().getAllPlainText().length() < 100) {
 				return false;
 			}
+
+			for (DescriptionSection section : patent.getDescription().getSections()) {
+				if (section.getRawText().length() < 25) {
+					return false;
+				}
+
+				if (section.getPlainText().length() < 25) {
+					return false;
+				}
+
+				if (section.getSimpleHtml().length() < 25) {
+					return false;
+				}
+			}
 		}
+
 		return true;
 	}
 
@@ -28,7 +45,7 @@ public class DescriptionRule implements Validator<Patent> {
 	public String getName() {
 		return NAME;
 	}
-	
+
 	@Override
 	public String getMessage() {
 		return MESSAGE;

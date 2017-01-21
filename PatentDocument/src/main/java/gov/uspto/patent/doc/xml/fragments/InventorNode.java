@@ -122,19 +122,14 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
             LOGGER.warn("Invalid Residence Country Code", e1);
         }
 
-        try {
-        	Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();
-            Inventor inventor = new Inventor(name, addressBook.getAddress());
-            inventor.setNationality(nationlityCC);
-            inventor.setResidency(residenceCC);
-            if (addressBook.getOrgName() != null) {
-                inventor.addRelationship(addressBook.getOrgName(), RelationshipType.EMPLOYEE);
-            }
-            return inventor;
-        } catch (InvalidDataException e) {
-            LOGGER.warn("Invalid Inventor: {}", inventorNode.asXML(), e);
+    	Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();
+        Inventor inventor = new Inventor(name, addressBook.getAddress());
+        inventor.setNationality(nationlityCC);
+        inventor.setResidency(residenceCC);
+        if (addressBook.getOrgName() != null) {
+            inventor.addRelationship(addressBook.getOrgName(), RelationshipType.EMPLOYEE);
         }
-        return null;
+        return inventor;
     }
 
 }
