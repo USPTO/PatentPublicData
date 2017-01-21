@@ -67,7 +67,7 @@ public class FormattedText implements TextProcessor {
 	@Override
 	public String getSimpleHtml(String rawText) {
         Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
-		jsoupDoc.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
+		jsoupDoc.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_8).escapeMode(EscapeMode.xhtml);
 
 		jsoupDoc.select("bold").tagName("b");
 
@@ -151,9 +151,8 @@ public class FormattedText implements TextProcessor {
 		 */
 		for (Element el : jsoupDoc.select("SB")) {
 			try {
-				String unicode = UnicodeUtil.toSubscript(el.text());
-				el.text(unicode);
-				el.unwrap();
+				String unicode = UnicodeUtil.toSubscript(el.html());
+				el.replaceWith(new TextNode(unicode, null));
 			} catch (ParseException e) {
 				el.tagName("sub");
 			}
@@ -164,9 +163,8 @@ public class FormattedText implements TextProcessor {
 		 */
 		for (Element el : jsoupDoc.select("SP")) {
 			try {
-				String unicode = UnicodeUtil.toSuperscript(el.text());
-				el.text(unicode);
-				el.unwrap();
+				String unicode = UnicodeUtil.toSuperscript(el.html());
+				el.replaceWith(new TextNode(unicode, null));
 			} catch (ParseException e) {
 				el.tagName("sup");
 			}
@@ -217,7 +215,9 @@ public class FormattedText implements TextProcessor {
 		outSettings.syntax(Syntax.xml);
 		outSettings.outline(true);
 		outSettings.prettyPrint(false);
-		outSettings.escapeMode(EscapeMode.extended);
+		//outSettings.escapeMode(EscapeMode.extended);
+        outSettings.escapeMode(EscapeMode.xhtml);
+
 
 		String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
 		// fieldTextCleaned = fieldTextCleaned.replaceAll("\\s+(\\r|\\n)\\s+", "

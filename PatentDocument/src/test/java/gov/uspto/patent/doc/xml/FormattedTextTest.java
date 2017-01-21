@@ -112,6 +112,17 @@ public class FormattedTextTest {
 	}
 
 	@Test
+	public void subSupSpaceUnicode() {
+		String input = "R<sub>1 </sub>";
+
+		String expect = "R\u2081 ";
+
+		String actual = format.getSimpleHtml(input);
+
+		assertEquals(expect, actual);
+	}
+
+	@Test
 	public void subSupNonUnicode() {
 		String input = "<sub>Z+1</sub> <sup>Z - 1</sup>";
 

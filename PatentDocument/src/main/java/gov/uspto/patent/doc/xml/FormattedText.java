@@ -72,7 +72,7 @@ public class FormattedText implements TextProcessor {
 				"</in-line-formula>");
 
 		Document document = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
-		document.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
+		document.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_8).escapeMode(EscapeMode.xhtml);
 
 		document.select("bold").tagName("b");
 
@@ -186,9 +186,8 @@ public class FormattedText implements TextProcessor {
 		 */
 		for (Element el : document.select("sub")) {
 			try {
-				String unicode = UnicodeUtil.toSubscript(el.text());
-				el.text(unicode);
-				el.unwrap();
+				String unicode = UnicodeUtil.toSubscript(el.html());
+				el.replaceWith(new TextNode(unicode, null));
 			} catch (ParseException e) {
 				// ignore.
 			}
@@ -199,9 +198,8 @@ public class FormattedText implements TextProcessor {
 		 */
 		for (Element el : document.select("sup")) {
 			try {
-				String unicode = UnicodeUtil.toSuperscript(el.text());
-				el.text(unicode);
-				el.unwrap();
+				String unicode = UnicodeUtil.toSuperscript(el.html());
+				el.replaceWith(new TextNode(unicode, null));
 			} catch (ParseException e) {
 				// ignore.
 			}
@@ -263,7 +261,8 @@ public class FormattedText implements TextProcessor {
 		outSettings.syntax(Syntax.xml);
 		outSettings.outline(true);
 		outSettings.prettyPrint(false);
-		outSettings.escapeMode(EscapeMode.extended);
+		outSettings.escapeMode(EscapeMode.xhtml);
+		//outSettings.escapeMode(EscapeMode.extended);
 
 		docStr = Jsoup.clean(docStr, "", whitelist, outSettings);
 
