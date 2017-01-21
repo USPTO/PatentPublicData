@@ -10,12 +10,14 @@ public class NamePersonTest {
 
     @Test(expected = InvalidDataException.class)
     public void invalidNameNullLastName() throws InvalidDataException {
-        Name name = new NamePerson("John", null);
+    	NamePerson name = new NamePerson("John", null);
+        name.validate();
     }
 
     @Test(expected = InvalidDataException.class)
     public void invalidNameEmptyLastName() throws InvalidDataException {
-        Name name = new NamePerson("John", "");
+    	NamePerson name = new NamePerson("John", "");
+    	name.validate();
     }
 
     @Test
