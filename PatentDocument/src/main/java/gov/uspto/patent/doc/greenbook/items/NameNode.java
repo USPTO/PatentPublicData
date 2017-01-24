@@ -25,6 +25,9 @@ public class NameNode extends ItemReader<Name> {
 	public Name read() {
 		Node nameN = itemNode.selectSingleNode("NAM");
 		String fullName = nameN != null ? nameN.getText() : null;
+		if (fullName == null){
+			return null;
+		}
 
 		List<String> nameParts = Splitter.onPattern("[,;]").limit(2).trimResults().splitToList(fullName);
 
