@@ -27,8 +27,8 @@ public class DateRange {
     }
 
     public DateRange(LocalDate startDate, LocalDate endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startDate = startDate.minusDays(1);
+        this.endDate = endDate.plusDays(1);
     }
 
     public boolean between(Date date) {
