@@ -29,8 +29,10 @@ import gov.uspto.patent.model.Patent;
  *
  */
 public class PatentReader implements PatentDocReader<Patent> {
+	private static final long DEFAULT_MAX_BYTES = 100000000; // 100 MB.
 
 	private PatentDocFormat patentDocFormat;
+	private long maxByteSize = DEFAULT_MAX_BYTES;
 
 	/**
 	 * Load Reader
@@ -41,6 +43,10 @@ public class PatentReader implements PatentDocReader<Patent> {
 	public PatentReader(final PatentDocFormat patentDocFormat) {
 		Preconditions.checkNotNull(patentDocFormat, "patentType can not be Null");
 		this.patentDocFormat = patentDocFormat;
+	}
+
+	public void setMaxByteSize(long maxByteSize){
+		this.maxByteSize = maxByteSize;
 	}
 
 	/**
@@ -64,6 +70,10 @@ public class PatentReader implements PatentDocReader<Patent> {
 	@Override
 	public Patent read(Reader reader) throws PatentReaderException, IOException {
 		Preconditions.checkNotNull(reader, "reader can not be Null");
+
+		if (!checkSize(reader)){
+			throw new PatentReaderException("Patent too Large");
+		}
 
 		switch (patentDocFormat) {
 		case Greenbook:
@@ -101,6 +111,17 @@ public class PatentReader implements PatentDocReader<Patent> {
 				throw new PatentReaderException(e1);
 			}
 		}
+	}
+
+	public boolean checkSize(Reader reader) throws IOException{
+		int c;
+		long charCount = 0;
+		while ( -1 != (c = reader.read()) ){ 
+			charCount++;
+		}
+		reader.reset();
+
+		return (charCount * 2 < maxByteSize);
 	}
 
 	/**
