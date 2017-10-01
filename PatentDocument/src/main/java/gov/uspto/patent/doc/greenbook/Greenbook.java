@@ -65,9 +65,18 @@ public class Greenbook extends KvParser {
 	private static List<String> HEADER_FIELDS = Arrays.asList(new String[] { "PAC" });
 	private static List<String> TABLE_FIELDS = Arrays.asList(new String[] { "TBL" });
 
-	public Greenbook() {
-		super(MAINTAIN_SPACE_FIELDS, PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
-	}
+    public Greenbook() {
+        this(false);
+    }
+
+    /**
+     * @param normalize
+     *            whether {@link DotCodes} should be replaced by their Unicode or
+     *            XML equivalents
+     */
+    public Greenbook(final boolean normalize) {
+        super(newKvReader(normalize));
+    }
 
 	/*
 	 * private static final Set<String> SECTIONS = new HashSet<String>(20);
@@ -225,5 +234,12 @@ public class Greenbook extends KvParser {
 			System.out.println(patent.toString());
 		}
 	}
+
+    private static GreenbookKvReader newKvReader(final boolean normalize) {
+        final GreenbookKvReader kvReader = new GreenbookKvReader(normalize);
+        kvReader.setMaintainSpaceFields(MAINTAIN_SPACE_FIELDS);
+        kvReader.setFieldsForId(PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
+        return kvReader;
+    }
 
 }
