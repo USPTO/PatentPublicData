@@ -19,7 +19,7 @@ package gov.uspto.patent.model;
 public class PatentApplication extends Patent {
 
     public PatentApplication(DocumentId documentId, PatentType patentType) {
-        super(PatentCorpus.USPAT, documentId, patentType);
+        super(PatentCorpus.PGPUB, documentId, patentType);
     }
 
 }
