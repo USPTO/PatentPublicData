@@ -15,8 +15,8 @@ import gov.uspto.patent.model.entity.RelationshipType;
 
 public class AgentNode extends DOMFragmentReader<List<Agent>> {
 
-	private static final String FRAGMENT_PATH = "//us-parties/agents/agent";
-
+	private static final String FRAGMENT_PATH = "//us-parties/agents/agent|//parties/agents/agent";
+	
 	private static final String FRAGMENT_PATH2 = "//correspondence-address";
 
 	public AgentNode(Document document) {
