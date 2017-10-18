@@ -14,7 +14,7 @@ import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.model.entity.Name;
 
 public class InventorNode extends DOMFragmentReader<List<Inventor>> {
-	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B700/B720";
+	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B700/B720/B721";
 
 	public InventorNode(Document document) {
 		super(document);
@@ -28,7 +28,7 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 		List<Node> inventors = document.selectNodes(FRAGMENT_PATH);
 
 		for (Node inventorN : inventors) {
-			Node dataNode = inventorN.selectSingleNode("B721/PARTY-US");
+			Node dataNode = inventorN.selectSingleNode("PARTY-US");
 			Inventor inventor = readInventor(dataNode);
 			if (inventor != null){
 				inventorList.add(inventor);

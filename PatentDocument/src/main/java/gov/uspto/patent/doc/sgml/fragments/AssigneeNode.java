@@ -14,7 +14,7 @@ import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
 
 public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
-	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B700/B730";
+	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B700/B730/B731";
 
 	public AssigneeNode(Document document) {
 		super(document);
@@ -27,7 +27,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		@SuppressWarnings("unchecked")
 		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
 		for (Node assigneeN : assignees) {
-			Node dataNode = assigneeN.selectSingleNode("B731/PARTY-US");
+			Node dataNode = assigneeN.selectSingleNode("PARTY-US");
 
 			Assignee assignee = readAssignee(dataNode);
 
