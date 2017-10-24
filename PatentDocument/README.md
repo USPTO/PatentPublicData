@@ -123,8 +123,8 @@ public class ReadBulkPatentZip {
 
         for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
             String xmlDocStr = (String) dumpReader.next();
-            try (PatentReader patentReader = new PatentReader(xmlDocStr, patentDocFormat)) {
-                Patent patent = patentReader.read();
+            try (PatentReader patentReader = new PatentReader(patentDocFormat)) {
+                Patent patent = patentReader.read(xmlDocStr);
                 String patentId = patent.getDocumentId().toText();
                 
                 System.out.println(patentId);
