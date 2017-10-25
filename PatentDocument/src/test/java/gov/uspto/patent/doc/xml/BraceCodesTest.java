@@ -60,12 +60,11 @@ public class BraceCodesTest {
 	}
 
 	@Test
-	public void testEmpty() {
+	public void testSpace() {
 		String empty = "{circumflex over ( )}"; // Grant US6185654B1
 		String actual = braceCode.brace2Unicode(empty);
-		String expect = "{circumflex over ( )}"; // @TODO Eval if this is what we wish to expect.
+		String expect = "\u0302 ";
 		assertEquals(expect, actual);
 	}
-
 
 }

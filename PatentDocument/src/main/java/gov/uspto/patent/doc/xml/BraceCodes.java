@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public class BraceCodes {
 
 	private static final Pattern ACCENT_PATTERN = Pattern
-			.compile("\\{([A-z]+)(?:\\sover|\\sabove)?\\s?\\(\\s?([A-z\\p{InGreek}0-9])\\s?\\)\\}", Pattern.UNICODE_CHARACTER_CLASS);
+			.compile("\\{([A-z]+)(?:\\sover|\\sabove)?\\s?\\((?:\\s|\\s?([A-z\\p{InGreek}0-9]))\\s?\\)\\}", Pattern.UNICODE_CHARACTER_CLASS);
 
 	/*
 	 * Unicode Combining Accent Lookup Table
@@ -71,12 +71,14 @@ public class BraceCodes {
 	 */
 	private static final Map<String, String> ACCENTS = new HashMap<String, String>();
 	static {
+		ACCENTS.put("blank_umlaut", "");
+		
 		ACCENTS.put("a_grave", "\u00E0");
 		ACCENTS.put("a_acute", "\u00E1");
 		ACCENTS.put("a_circumflex", "\u00E2");
 		ACCENTS.put("a_tilde", "\u00E3");
 		ACCENTS.put("a_umlaut", "\u00E4");
-		ACCENTS.put("a_dieresis", "\u00E4");
+		ACCENTS.put("a_diaeresis", "\u00E4");
 		ACCENTS.put("a_ring", "\u00E5");
 		ACCENTS.put("a_caron", "\u01CE");
 		ACCENTS.put("a_hacek", "\u01CE");
@@ -110,7 +112,7 @@ public class BraceCodes {
 		ACCENTS.put("e_acute", "\u00E9");
 		ACCENTS.put("e_circumflex", "\u00EA");
 		ACCENTS.put("e_umlaut", "\u00EB");
-		ACCENTS.put("e_dieresis", "\u00EB");
+		ACCENTS.put("e_diaeresis", "\u00EB");
 		ACCENTS.put("e_tilde", "\u1EBD");
 		ACCENTS.put("e_caron", "\u011B");
 		ACCENTS.put("e_hacek", "\u011B");
@@ -150,7 +152,7 @@ public class BraceCodes {
 		ACCENTS.put("i_acute", "\u00ED");
 		ACCENTS.put("i_circumflex", "\u00EE");
 		ACCENTS.put("i_umlaut", "\u00EF");
-		ACCENTS.put("i_dieresis", "\u00EF");
+		ACCENTS.put("i_diaeresis", "\u00EF");
 		ACCENTS.put("i_tilde", "\u0129");
 		ACCENTS.put("i_caron", "\u01D0");
 		ACCENTS.put("i_hacek", "\u01D0");
@@ -197,7 +199,7 @@ public class BraceCodes {
 		ACCENTS.put("o_acute", "\u00F3");
 		ACCENTS.put("o_circumflex", "\u00F4");
 		ACCENTS.put("o_umlaut", "\u00F6");
-		ACCENTS.put("o_dieresis", "\u00F6");
+		ACCENTS.put("o_diaeresis", "\u00F6");
 		ACCENTS.put("o_stroke", "\u00F8");
 		ACCENTS.put("o_tilde", "\u00F5");
 		ACCENTS.put("o_caron", "\u01D2");
@@ -235,7 +237,7 @@ public class BraceCodes {
 		ACCENTS.put("u_acute", "\u00FA");
 		ACCENTS.put("u_circumflex", "\u00FB");
 		ACCENTS.put("u_umlaut", "\u00FC");
-		ACCENTS.put("u_dieresis", "\u00FC");
+		ACCENTS.put("u_diaeresis", "\u00FC");
 		ACCENTS.put("u_grave", "\u00F9");
 		ACCENTS.put("u_ogonek", "\u0173");
 		ACCENTS.put("u_horn", "\u01B0");
@@ -263,7 +265,7 @@ public class BraceCodes {
 		ACCENTS.put("w_grave", "\u1E81");
 		ACCENTS.put("w_acute", "\u1E83");
 		ACCENTS.put("w_umlaut", "\u1E85");
-		ACCENTS.put("w_dieresis", "\u1E85");
+		ACCENTS.put("w_diaeresis", "\u1E85");
 		ACCENTS.put("w_dot", "\u1E87");
 		ACCENTS.put("w_dot_below", "\u1E89");
 		ACCENTS.put("w_ring", "\u1E98");
@@ -271,7 +273,7 @@ public class BraceCodes {
 		ACCENTS.put("x_partial_hook", "\u1D8D");
 		ACCENTS.put("x_dot", "\u1E8B");
 		ACCENTS.put("x_umlaut", "\u1E8D");
-		ACCENTS.put("x_dieresis", "\u1E8D");
+		ACCENTS.put("x_diaeresis", "\u1E8D");
 
 		ACCENTS.put("y_acute", "\u00FD");
 		ACCENTS.put("y_umlaut", "\u00FF");
@@ -391,6 +393,12 @@ public class BraceCodes {
 		while (matcher.find()) {
 			String accent = matcher.group(1);
 			String letter = matcher.group(2);
+
+			if (letter == null) {
+				// null is returned for captured empty space.
+				letter = " ";
+			}
+
 			String unicode = lookup(letter, accent);
 			if (unicode != null) {
 				matcher.appendReplacement(stb, unicode.toString());
