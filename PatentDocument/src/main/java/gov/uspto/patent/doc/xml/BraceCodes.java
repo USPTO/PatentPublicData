@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * Brace Codes are used within Patent documents in XML. They are used for accents
  * or diacritics in proper names, mathematical equations, titles of foreign NPL and
  * occasionally descriptive words in the text body.
- * The question remains, why are brace codes use in xml instead of unicode? 
+ * The question remains, why do brace codes appear in xml when a unicode equivalent exists?
  * Since it occurs high enough this class was created to normalize Brace Codes into unicode.
  *</p>
  *
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public class BraceCodes {
 
 	private static final Pattern ACCENT_PATTERN = Pattern
-			.compile("\\{([A-z]+)(?:\\sover|\\sabove)?\\s?\\((?:\\s|\\s?([A-z\\p{InGreek}0-9]))\\s?\\)\\}", Pattern.UNICODE_CHARACTER_CLASS);
+			.compile("\\{([A-z]+)(?:\\sover|\\sabove)?\\s?\\((?:\\s|\\s?([\\p{L}\\p{N}\\p{Sm}]))\\s?\\)\\}", Pattern.UNICODE_CHARACTER_CLASS);
 
 	/*
 	 * Unicode Combining Accent Lookup Table
