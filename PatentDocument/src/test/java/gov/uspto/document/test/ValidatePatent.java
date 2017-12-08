@@ -10,7 +10,6 @@ import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.validate.AbstractRule;
 import gov.uspto.patent.validate.ClassificationRule;
 import gov.uspto.patent.validate.DescriptionRule;
-import gov.uspto.patent.validate.EntitiesRule;
 import gov.uspto.patent.validate.TitleRule;
 
 public class ValidatePatent {
