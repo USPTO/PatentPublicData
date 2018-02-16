@@ -3,6 +3,7 @@ package gov.uspto.patent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -193,7 +194,8 @@ public class TransformerCli {
 								currentWriter.close();
 							}
 						}
-						currentWriter = new BufferedWriter(new FileWriter(outputDir.resolve(currentFileName).toFile()));
+						//currentWriter = new BufferedWriter(new FileWriter(outputDir.resolve(currentFileName).toFile()));
+						currentWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputDir.resolve(currentFileName).toFile(), true), StandardCharsets.UTF_8));
 					} else {
 						if (!outputBulkFile) {
 							currentWriter = new StringWriter();
