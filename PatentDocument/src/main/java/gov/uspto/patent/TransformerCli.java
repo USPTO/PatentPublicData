@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -50,6 +53,8 @@ import joptsimple.OptionSet;
  */
 public class TransformerCli {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransformerCli.class);
+	
+	public static PrintWriter STDOUT = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true); // Unicode in STDOUT.
 
 	private final DocumentBuilder<Patent> fileBuilder;
 	private Path outputDir;
@@ -218,7 +223,8 @@ public class TransformerCli {
 		if (outputBulkFile) {
 			writer.write("\n");
 		} else if (stdout) {
-			System.out.println("JSON: " + writer.toString());
+			//System.out.println("JSON: " + writer.toString());
+			STDOUT.println("JSON: " + writer.toString());
 		}
 	}
 
