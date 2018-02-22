@@ -24,16 +24,17 @@ This source code is a work in progress and has not been fully vetted for a produ
 <li><b>Build a corpus</b> using Corpus Builder, which automates building a corpus by downloading and extracting patents/applications matching specified classifications, one bulk file at a time for a date range.</li>
 </ul>
 
-### Public Data Rate of Release
-Evey Tuesday, a new bulk file is released, which contains around two to five thousand patents granted on the same day as the release.
-
-### Changes after Patents are published
-Bulk files are not updated once published, updates can be received by indexing additional supplemental files which are also made available to the public. The following are fields which update after publication:
+### Public Patent Data
+<ul>
+<li><b>Rate of Release:</b> Evey Tuesday, a new bulk file is released, which contains around two to five thousand patents granted on the same day as the release.
+<li><b>Releases are available</b> on both the <a href="https://bulkdata.uspto.gov/">USPTO Bulkdata</a> and <a href="https://patents.reedtech.com/patent-products.php">Reedtech</a> websites.
+<li><b>Receiving changes of patents after publication</b>, note bulk files are not updated once published, updates can be received by indexing additional supplemental files which are also made available to the public. The following are fields which periodically update after publication:
 
 | field | description |
 | :-------- | ------------|
 | assignee | Update available <u>daily</u> within Patent Assignment XML Dump files |
 | Classifications | Updates available <u>monthly</u> within Master Classification File Dumps |
+</ul>
 
 ### Other Information
 The United States Department of Commerce (DOC)and the United States Patent and Trademark Office (USPTO) GitHub project code is provided on an ‘as is’ basis without any warranty of any kind, either expressed, implied or statutory, including but not limited to any warranty that the subject software will conform to specifications, any implied warranties of merchantability, fitness for a particular purpose, or freedom from infringement, or any warranty that the documentation, if provided, will conform to the subject software.  DOC and USPTO disclaim all warranties and liabilities regarding third party software, if present in the original software, and distribute it as is.  The user or recipient assumes responsibility for its use. DOC and USPTO have relinquished control of the information and no longer have responsibility to protect the integrity, confidentiality, or availability of the information. 
