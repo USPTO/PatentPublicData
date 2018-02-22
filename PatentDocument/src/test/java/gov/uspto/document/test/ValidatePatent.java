@@ -10,7 +10,6 @@ import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.validate.AbstractRule;
 import gov.uspto.patent.validate.ClassificationRule;
 import gov.uspto.patent.validate.DescriptionRule;
-import gov.uspto.patent.validate.EntitiesRule;
 import gov.uspto.patent.validate.TitleRule;
 
 public class ValidatePatent {
@@ -32,8 +31,6 @@ public class ValidatePatent {
 		//assertTrue("has Assignee", !patent.getAssignee().isEmpty());
 		assertTrue("has Agent", !patent.getAgent().isEmpty());
 
-		//EntitiesRule entitiesTest = new EntitiesRule();
-		//assertTrue(entitiesTest.getMessage() + " : " + patent.getDocumentId().toText(), entitiesTest.test(patent));
 	}
 
 	public static void validateGrant(Patent patent) {
@@ -46,8 +43,7 @@ public class ValidatePatent {
 		assertTrue("has Inventor", !patent.getInventors().isEmpty());
 		//assertTrue("has Assignee", !patent.getAssignee().isEmpty());
 		assertTrue("has Agent", !patent.getAgent().isEmpty());
-		//EntitiesRule entitiesTest = new EntitiesRule();
-		//assertTrue(entitiesTest.getMessage() + " : " + patent.getDocumentId().toText(), entitiesTest.test(patent));
+
 	}
 
 	/**
