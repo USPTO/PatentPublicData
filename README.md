@@ -25,7 +25,7 @@ This source code is a work in progress and has not been fully vetted for a produ
 </ul>
 
 ### Public Data Rate of Release
-Evey Tuesday, a new bulk file is released, which contains around two to five thousand newly granted patents.
+Evey Tuesday, a new bulk file is released, which contains around two to five thousand patents granted on the same day as the release.
 
 ### Changes after Patents are published
 Bulk files are not updated once published, updates can be received by indexing additional supplemental files which are also made available to the public. The following are fields which update after publication:
