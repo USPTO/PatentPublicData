@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	private BufferedReader reader;
 
 	private FileFilter fileFilter;
-	private String currentRawDoc = "";
+	private String currentRawDoc;
 
 	public DumpFile(File file) {
 		Preconditions.checkNotNull(file, "File can not be Null");
@@ -58,8 +59,6 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	}
 
 	public void open() throws IOException {
-		currentRawDoc = "";
-
 		if (file.getName().endsWith("zip")) {
 			zipFile = new ZipReader(file, fileFilter);
 			reader = zipFile.open().next();
@@ -70,6 +69,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 		}
 
 		patentDocFormat = new PatentDocFormatDetect().fromContent(reader);
+		currentRawDoc = read();
 	}
 
 	@Override
@@ -89,11 +89,13 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 
 	@Override
 	public String next() {
-		currentRawDoc = read();
-		if (currentRawDoc != null) {
-			return currentRawDoc.toString();
+		String doc = currentRawDoc;
+		if (doc != null) {
+			currentRawDoc = read();
+			return doc;
+		} else {
+			throw new NoSuchElementException();
 		}
-		return null;
 	}
 
 	@Override
