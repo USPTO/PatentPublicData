@@ -30,10 +30,10 @@ This source code is a work in progress and has not been fully vetted for a produ
 <li><b>Releases are available</b> on both the <a href="https://bulkdata.uspto.gov/">USPTO Bulkdata</a> and <a href="https://patents.reedtech.com/patent-products.php">Reedtech</a> websites.
 <li><b>Receiving changes of patents after publication</b>, note bulk files are not updated once published, updates can be received by indexing additional supplemental files which are also public available. The following are fields which periodically update after publication:
 
-| field | description |
+| Field | Update available |
 | :-------- | ------------|
-| assignee | Update available <u>daily</u> within Patent Assignment XML Dump files |
-| Classifications | Updates available <u>monthly</u> within Master Classification File Dumps |
+| Assignee | <u>daily</u> within Patent Assignment XML Dump files |
+| Classifications | <u>monthly</u> within Master Classification File Dumps |
 </ul>
 
 ### Other Information
