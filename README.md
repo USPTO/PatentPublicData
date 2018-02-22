@@ -28,7 +28,7 @@ This source code is a work in progress and has not been fully vetted for a produ
 <ul>
 <li><b>Rate of Release:</b> Evey Tuesday, a new bulk file is released, which contains around two to five thousand patents granted on the same day as the release.
 <li><b>Releases are available</b> on both the <a href="https://bulkdata.uspto.gov/">USPTO Bulkdata</a> and <a href="https://patents.reedtech.com/patent-products.php">Reedtech</a> websites.
-<li><b>Receiving changes of patents after publication</b>, note bulk files are not updated once published, updates can be received by indexing additional supplemental files which are also public available. The following are fields which periodically update after publication:
+<li><b>Receiving changes of patents after publication</b>, note bulk files are not updated once published, updates can be received by indexing additional supplemental files which are also publicly available. The following are fields which periodically update after publication:
 
 | Field | Update available |
 | :-------- | ------------|
