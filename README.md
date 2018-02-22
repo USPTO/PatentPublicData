@@ -2,16 +2,16 @@
 # Patent Public Bulk Files
 Tool kit to download, read, and utilize open patent data provided to the public.
 
-## Notice
+### Notice
 This source code is a work in progress and has not been fully vetted for a production environment. 
 
-## Two main modules
+### Two main modules
 <ul>
 <li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/BulkDownloader">Bulk Downloader</a></b> automates downloading of public bulk patent data</li>
 <li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/PatentDocument">Patent Document</a></b> provides the ability to iterate and read patents directly from the large bulk download files, supports reading patent documents from 1976 to current (formats: Greenbook, SGML, PAP, Redbook XML) into a normalized Patent Object Model.</li>
 </ul>
 
-## Features
+### Features
 <ul>
 <li><b>Download</b> Bulk Patent Grants and Applications, as well as additional resources</li>
 <li><b>View</b> individual Patent Documents directly from the large bulk files</li>
@@ -24,15 +24,18 @@ This source code is a work in progress and has not been fully vetted for a produ
 <li><b>Build a corpus</b> using Corpus Builder, which automates building a corpus by downloading and extracting patents/applications matching specified classifications, one bulk file at a time for a date range.</li>
 </ul>
 
-## Changes after Patents are published
+### Public Data Rate of Release
+Evey Tuesday, around two to five thousand patents are issued.
+
+### Changes after Patents are published
 Bulk files are not updated once published, updates can be received by indexing additional supplemental files which are also made available to the public. The following are fields which update after publication:
 
 | field | description |
 | :-------- | ------------|
 | assignee | Update available <u>daily</u> within Patent Assignment XML Dump files |
-| Classifications | Updates available <u>monthly</u> within Master Classification File Dump files |
+| Classifications | Updates available <u>monthly</u> within Master Classification File Dumps |
 
-## Other Information
+### Other Information
 The United States Department of Commerce (DOC)and the United States Patent and Trademark Office (USPTO) GitHub project code is provided on an ‘as is’ basis without any warranty of any kind, either expressed, implied or statutory, including but not limited to any warranty that the subject software will conform to specifications, any implied warranties of merchantability, fitness for a particular purpose, or freedom from infringement, or any warranty that the documentation, if provided, will conform to the subject software.  DOC and USPTO disclaim all warranties and liabilities regarding third party software, if present in the original software, and distribute it as is.  The user or recipient assumes responsibility for its use. DOC and USPTO have relinquished control of the information and no longer have responsibility to protect the integrity, confidentiality, or availability of the information. 
 
 User and recipient agree to waive any and all claims against the United States Government, its contractors and subcontractors as well as any prior recipient, if any.  If user or recipient’s use of the subject software results in any liabilities, demands, damages, expenses or losses arising from such use, including any damages from products based on, or resulting from recipient’s use of the subject software, user or recipient shall indemnify and hold harmless the United States government, its contractors and subcontractors as well as any prior recipient, if any, to the extent permitted by law.  User or recipient’s sole remedy for any such matter shall be immediate termination of the agreement.  This agreement shall be subject to United States federal law for all purposes including but not limited to the validity of the readme or license files, the meaning of the provisions and rights and the obligations and remedies of the parties. Any claims against DOC or USPTO stemming from the use of its GitHub project will be governed by all applicable Federal law. “User” or “Recipient” means anyone who acquires or utilizes the subject code, including all contributors. “Contributors” means any entity that makes a modification. 
