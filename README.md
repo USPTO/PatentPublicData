@@ -8,7 +8,7 @@ This source code is a work in progress and has not been fully vetted for a produ
 ### Two main modules
 <ul>
 <li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/BulkDownloader">Bulk Downloader</a></b> automates downloading of public bulk patent data</li>
-<li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/PatentDocument">Patent Document</a></b> provides the ability to iterate and read patents directly from the large bulk download files, supports reading patent documents from 1976 to current (formats: Greenbook, SGML, PAP, Redbook XML) into a normalized Patent Object Model.</li>
+<li><b><a href="https://github.com/USPTO/PatentPublicData/tree/master/PatentDocument">Patent Document</a></b> provides the ability to iterate and read patents directly from the large bulk download files, supports reading patent documents from 1976 to current, which includes Greenbook, SGML, PAP, and all Redbook XML formats, into a normalized Patent Object Model.</li>
 </ul>
 
 ### Features
