@@ -29,20 +29,20 @@ public class DumpFileXml extends DumpFile {
     @Override
     public void open() throws IOException {
         super.open();
-        String xmlTag = super.getPatentDocFormat().getParentElement();
-        this.xmlStartTag = "<" + xmlTag;
-        this.xmlEndTag = "</" + xmlTag;
     }
 
     @Override
     public String read() {
+        String xmlTag = super.getPatentDocFormat().getParentElement();
+        this.xmlStartTag = "<" + xmlTag;
+        this.xmlEndTag = "</" + xmlTag;
+
         StringBuilder content = new StringBuilder();
         content.append(header);
 
         try {
             String line;
             while (super.getReader().ready() && (line = super.getReader().readLine()) != null) {
-
                 if (isStartTag(line)) {
                     content = new StringBuilder();
                     content.append(header);
@@ -94,6 +94,10 @@ public class DumpFileXml extends DumpFile {
     	LOGGER.info("Inserting HTML Entities DTD");
         //header = DEFAULT_HEADER + "\n<!DOCTYPE simple SYSTEM \"html-entities.dtd\">\n";
         header = DEFAULT_HEADER + "<!DOCTYPE simple PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
+    }
+
+    private boolean isXMLHeader(final String line) {
+    	return line.trim().startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     }
 
     private boolean isStartTag(String line) {
