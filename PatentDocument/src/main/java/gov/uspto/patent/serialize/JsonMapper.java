@@ -91,6 +91,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
         builder.add("applicationDate", mapDate(patent.getApplicationDate()));
 
+        builder.add("priorityIds", mapDocumentIds(patent.getPriorityIds()));
+
         builder.add("relatedIds", mapDocIds(patent.getRelationIds()));
 
         // OtherIds contain [documentId, applicationId, relatedIds]
@@ -131,6 +133,31 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         return output;
     }
 
+    private JsonArray mapDocumentIds(Collection<DocumentId> docIds) {
+        JsonArrayBuilder arBldr = Json.createArrayBuilder();
+
+        for (DocumentId docid : docIds) {
+            JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            jsonObj.add("id", docid.toText());
+            jsonObj.add("date", mapDate(docid.getDate()));
+            arBldr.add(jsonObj);
+        }
+
+        return arBldr.build();
+    }
+    
+    private JsonArray mapDocIds(Collection<DocumentId> docIds) {
+        JsonArrayBuilder arBldr = Json.createArrayBuilder();
+        if (docIds != null) {
+            for (DocumentId docId : docIds) {
+                if (docId != null) {
+                    arBldr.add(docId.toText());
+                }
+            }
+        }
+        return arBldr.build();
+    }
+    
     private JsonObject mapClassifications(Collection<? extends PatentClassification> classes) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
@@ -424,18 +451,6 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         if (strings != null) {
             for (String tok : strings) {
                 arBldr.add(tok);
-            }
-        }
-        return arBldr.build();
-    }
-
-    private JsonArray mapDocIds(Collection<DocumentId> docIds) {
-        JsonArrayBuilder arBldr = Json.createArrayBuilder();
-        if (docIds != null) {
-            for (DocumentId docId : docIds) {
-                if (docId != null) {
-                    arBldr.add(docId.toText());
-                }
             }
         }
         return arBldr.build();
