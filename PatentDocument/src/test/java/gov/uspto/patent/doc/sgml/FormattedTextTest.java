@@ -66,20 +66,20 @@ public class FormattedTextTest {
 	@Test
 	public void table() {
 		StringBuilder stb = new StringBuilder();
-		stb.append("<table frame=\"none\" colsep=\"0\" rowsep=\"0\">\n");
-		stb.append("<tgroup align=\"left\" colsep=\"0\" rowsep=\"0\" cols=\"2\">\n");
-		stb.append("<colspec colname=\"offset\" colwidth=\"21pt\" align=\"left\"/>\n");
-		stb.append("<colspec colname=\"1\" colwidth=\"196pt\" align=\"left\"/>\n");
-		stb.append("<thead><row><entry>head1</entry><entry namest=\"offset\" nameend=\"1\" align=\"center\" rowsep=\"1\">head2</entry></row></thead>\n");
-		stb.append("<tbody valign=\"top\"><row><entry/><entry morerows=\"1\">cell data</entry></row></tbody>\n");
+		stb.append("<table frame=\"none\" colsep=\"0\" rowsep=\"0\">");
+		stb.append("<tgroup align=\"left\" colsep=\"0\" rowsep=\"0\" cols=\"2\">");
+		stb.append("<colspec colname=\"offset\" colwidth=\"21pt\" align=\"left\"/>");
+		stb.append("<colspec colname=\"1\" colwidth=\"196pt\" align=\"left\"/>");
+		stb.append("<thead><row><entry>head1</entry><entry namest=\"offset\" nameend=\"1\" align=\"center\" rowsep=\"1\">head2</entry></row></thead>");
+		stb.append("<tbody valign=\"top\"><row><entry/><entry morerows=\"1\">cell data</entry></row></tbody>");
 		stb.append("</tgroup></table>");
 		String input = stb.toString();
 
 		StringBuilder expectStb = new StringBuilder();
 		expectStb.append("<table id=\"TBL-0001\">");
-		expectStb.append("<colgroup><col width=\"21pt\" align=\"left\" /><col width=\"196pt\" align=\"left\" /></colgroup>\n\n\n\n");
-		expectStb.append("<thead><tr><th>head1</th><th align=\"center\">head2</th></tr></thead>\n");
-		expectStb.append("<tbody valign=\"top\"><tr><td></td><td rowspan=\"2\">cell data</td></tr></tbody>\n");
+		expectStb.append("<colgroup><col width=\"21pt\" align=\"left\" /><col width=\"196pt\" align=\"left\" /></colgroup>");
+		expectStb.append("<thead><tr><th>head1</th><th align=\"center\">head2</th></tr></thead>");
+		expectStb.append("<tbody valign=\"top\"><tr><td></td><td rowspan=\"2\">cell data</td></tr></tbody>");
 		expectStb.append("</table>");
 		String expect = expectStb.toString();
 		
