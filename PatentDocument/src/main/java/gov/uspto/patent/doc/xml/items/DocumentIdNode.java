@@ -25,6 +25,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 
 	public DocumentIdNode(Node itemNode, CountryCode fallbackCountryCode) {
 		super(itemNode, ITEM_NODE_NAME);
+		//super(itemNode, itemNode.getName());
 		this.fallbackCountryCode = fallbackCountryCode;
 	}
 
