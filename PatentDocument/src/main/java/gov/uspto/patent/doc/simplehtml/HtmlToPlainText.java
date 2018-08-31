@@ -10,7 +10,7 @@ import org.jsoup.select.NodeVisitor;
 /**
  * HTML to Plaintext
  * 
- * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ * Adapted from org.jsoup.examples.HtmlToPlainText
  *
  */
 public class HtmlToPlainText implements NodeVisitor {
@@ -34,10 +34,9 @@ public class HtmlToPlainText implements NodeVisitor {
 	 * @return formatted text
 	 */
 	public String getPlainText(Element element) {
-		NodeTraversor traversor = new NodeTraversor(this);
-
+		
 		for (String xmlElSelector : config.getRemoveElements()) {
-			element.select(xmlElSelector).remove();
+			element.select(xmlElSelector).remove(); //.unwrap();
 		}
 
 		for (String xmlElSelector : config.getReplaceElements().keySet()) {
@@ -46,7 +45,10 @@ public class HtmlToPlainText implements NodeVisitor {
 			}
 		}
 
+		NodeTraversor traversor = new NodeTraversor(this);
 		traversor.traverse(element);
+		//NodeTraversor.traverse(this, element);
+		
 		return this.toString();
 	}
 
@@ -69,8 +71,6 @@ public class HtmlToPlainText implements NodeVisitor {
 
 		if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5", "table")) {
 			append("\n");
-		} else if (name.equals("a")) {
-			append(String.format(" <%s>", node.absUrl("href")));
 		}
 	}
 
