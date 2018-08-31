@@ -32,6 +32,18 @@ public class FormattedTextTest {
 	}
 
 	@Test
+	public void pLevel(){
+		Map<String, String> variations = new HashMap<String, String>();
+		variations.put("<p lvl=\"1\"></p>", "<p level=\"1\"></p>");
+		variations.put("<p level=\"1\"></p>", "<p level=\"1\"></p>");
+
+		for(Entry<String, String> entry : variations.entrySet()){
+			String actual = format.getSimpleHtml(entry.getKey());
+			assertEquals(entry.getValue(), actual);
+		}
+	}
+
+	@Test
 	public void figRef() {
 		String input = "<figref idref=\"DRAWINGS\">FIG. 1</figref>";
 
@@ -62,10 +74,17 @@ public class FormattedTextTest {
 	@Test
 	public void tailingFigrefs() {
 		Map<String, String> variations = new HashMap<String, String>();
+		
 		variations.put(
 				"<figref idref=\"DRAWINGS\">FIGS. 1</figref>, <b>2</b> and <b>3</b>c", 
-				"<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIGS. 1</a>, "
-				+ "<a idref=\"FIG-2\" id=\"FR-0002\" class=\"figref\">2</a> and <a idref=\"FIG-3\" id=\"FR-0003\" class=\"figref\">3c</a>");
+					"<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIGS. 1</a>, "
+					+ "<a idref=\"FIG-2\" id=\"FR-0002\" class=\"figref\">2</a> and <a idref=\"FIG-3\" id=\"FR-0003\" class=\"figref\">3c</a>"
+				);
+		
+		//variations.put(
+		//		"<figref idref=\"DRAWINGS\">FIGS. 5 to 8</figref>", 
+		//			"<a idref=\"FIG-5,FIG-6,FIG-7,FIG-8\" id=\"FR-0001\" class=\"figref\">FIGS. 5 to 8</a>"
+		//		);
 
 		for(Entry<String, String> entry : variations.entrySet()){
 			String actual = format.getSimpleHtml(entry.getKey());

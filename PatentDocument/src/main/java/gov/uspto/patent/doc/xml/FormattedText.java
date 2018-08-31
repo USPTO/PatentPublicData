@@ -94,15 +94,18 @@ public class FormattedText implements TextProcessor {
 		 * HEADING tags
 		 */
 		for (Element heading : document.select("heading")) {
-			heading.attr("level", heading.attr("lvl")).tagName("h2");
-			// heading.removeAttr("lvl");
+			if (heading.hasAttr("lvl")) {
+				heading.attr("level", heading.attr("lvl"));
+			}
+			heading.tagName("h2");
 		}
 		// Header Paragraphs which have an id starting with "h-".
 		document.select("p[id^=h-]").tagName("h4");
 
 		for (Element par : document.select("p")) {
-			par.attr("level", par.attr("lvl"));
-			// par.removeAttr("lvl");
+			if (par.hasAttr("lvl")) {
+				par.attr("level", par.attr("lvl"));
+			}
 		}
 
 		/*
@@ -348,7 +351,7 @@ public class FormattedText implements TextProcessor {
 	}
 
 	/*
-	 * Fix Figref Lists
+	 * Fix Figref Lists TRAILING
 	 * 
 	 * <figref idref=\"DRAWINGS\">FIGS. 1</figref>, <b>2</b> and <b>3</b>c
 	 *   become 
