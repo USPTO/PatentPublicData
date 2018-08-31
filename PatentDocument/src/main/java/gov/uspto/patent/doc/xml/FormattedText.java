@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,6 +15,7 @@ import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.nodes.Document.OutputSettings.Syntax;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
@@ -38,6 +41,8 @@ import gov.uspto.patent.mathml.MathmlEscaper;
  *
  */
 public class FormattedText implements TextProcessor {
+
+	private static final Pattern TRAILING_REGEX = Pattern.compile("^\\s?(?:[.,;(])?([a-z])([.,;)]|\\b)");
 
 	private static final String[] HTML_WHITELIST_TAGS = new String[] { "br", "b", "sub", "sup", "h1", "h2", "h3", "h4",
 			"h5", "h6", "p", "table", "tbody", "thead", "th", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a",
@@ -72,7 +77,8 @@ public class FormattedText implements TextProcessor {
 				"</in-line-formula>");
 
 		Document document = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
-		document.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_8).escapeMode(EscapeMode.xhtml);
+		document.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_8)
+				.escapeMode(EscapeMode.xhtml);
 
 		document.select("bold").tagName("b");
 
@@ -155,31 +161,38 @@ public class FormattedText implements TextProcessor {
 			element.addClass("crossref");
 		}
 
-        /*
-         * Escape MathML math elements, to maintain all xml elements after
-         * sending through Cleaner.
-         */
-        boolean mathFound = false;
-        Elements mathEls = document.select("math");
-        for (int i = 1; i <= mathEls.size(); i++) {
-            Element element = mathEls.get(i - 1);
-            mathFound = true;
+		fixFigrefLists(document);
 
-            //String mathml = MathmlEscaper.escape(element.outerHtml());
-            String mathml = "";
-            try {
-                mathml = Base64.getEncoder().encodeToString(element.outerHtml().getBytes("utf-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+		for (Element element : document.select("a")) {
+			figrefMergeTrailing(element);
+		}
 
-            Element newEl = new Element(Tag.valueOf("span"), "");
-            newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
-            newEl.addClass("math");
-            newEl.attr("format", "mathml");
-            newEl.appendChild(new TextNode(mathml, null));
-            element.replaceWith(newEl);         
-        }
+		/*
+		 * Escape MathML math elements, to maintain all xml elements after
+		 * sending through Cleaner.
+		 */
+		boolean mathFound = false;
+		Elements mathEls = document.select("math");
+		for (int i = 1; i <= mathEls.size(); i++) {
+			Element element = mathEls.get(i - 1);
+			mathFound = true;
+
+			// String mathml = MathmlEscaper.escape(element.outerHtml());
+			String mathml = "";
+			try {
+				mathml = Base64.getEncoder().encodeToString(element.outerHtml().getBytes("utf-8"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+
+			Element newEl = new Element(Tag.valueOf("span"), "");
+			newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			newEl.addClass("math");
+			newEl.attr("format", "mathml");
+			newEl.appendChild(new TextNode(mathml, null));
+			element.replaceWith(newEl);
+			figrefMergeTrailing(newEl);
+		}
 
 		/*
 		 * Subscript use unicode if able to convert
@@ -262,30 +275,122 @@ public class FormattedText implements TextProcessor {
 		outSettings.outline(true);
 		outSettings.prettyPrint(false);
 		outSettings.escapeMode(EscapeMode.xhtml);
-		//outSettings.escapeMode(EscapeMode.extended);
+		// outSettings.escapeMode(EscapeMode.extended);
 
 		docStr = Jsoup.clean(docStr, "", whitelist, outSettings);
 
 		if (mathFound) {
-		    // Reload document and un-base64 the mathml sections.
-		    document = Jsoup.parse("<body>" + docStr + "</body>", "", Parser.xmlParser());
-		    document.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
+			// Reload document and un-base64 the mathml sections.
+			document = Jsoup.parse("<body>" + docStr + "</body>", "", Parser.xmlParser());
+			document.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml)
+					.charset(StandardCharsets.UTF_8);
 
-		    for (Element el : document.select("span[class=math]")) {
-                try {
-                    String html = new String(Base64.getDecoder().decode(el.html()), "utf-8");
-                    el.text("");
-                    el.append(html);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-		    }
-		    docStr = document.select("body").html();
+			for (Element el : document.select("span[class=math]")) {
+				try {
+					String html = new String(Base64.getDecoder().decode(el.html()), "utf-8");
+					el.text("");
+					el.append(html);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}
+			docStr = document.select("body").html();
 		}
 
 		return docStr;
 	}
 
+	/*
+	 * Capture trailing non-space trailing text back to entity.
+	 *
+	 * <a idref="DRAWINGS">FIG. 4</a><i>a</i>
+	 * (<a idref="DRAWINGS">FIG. 4</a>a)
+	 * <a idref="DRAWINGS">FIG. 4</a>a;
+	 * <a idref="DRAWINGS">FIG. 4</a> <i>(a)</i>;
+	 * 
+	 *  ==> <a idref="DRAWINGS">FIG. 4a</a>
+	 * 
+	 */
+	public void figrefMergeTrailing(Element element) {
+		Node next = element.nextSibling();
+
+		String trailingTxt;
+		if (next != null && next instanceof TextNode) {
+			trailingTxt = ((TextNode) next).getWholeText();
+			
+		} else if (next != null && next instanceof Element) {
+			trailingTxt = ((Element) next).text();
+		} else {
+			return;
+		}
+
+		Matcher matcher = TRAILING_REGEX.matcher(trailingTxt);
+		if (matcher.matches()) {
+			String trailingChar = matcher.group(1);
+			String buffer = matcher.group(2);
+			String tail = trailingTxt.substring(matcher.end() - buffer.length()).trim();
+			if (next instanceof Element) {
+				Element nel = (Element) next;
+				if (trailingTxt.length() == 1) {
+					element.append(nel.outerHtml());
+					nel.remove();
+				} else {
+					nel.text(tail);
+					element.text(element.text() + trailingChar);
+				}
+			}
+			else if (next instanceof TextNode) {
+				TextNode txtNode = (TextNode) next;
+				txtNode.text(tail);
+				element.text(element.text() + trailingChar);
+			}
+		}
+	}
+
+	/*
+	 * Fix Figref Lists
+	 * 
+	 * <figref idref=\"DRAWINGS\">FIGS. 1</figref>, <b>2</b> and <b>3</b>c
+	 *   become 
+	 * <figref>FIGS. 1</figref>, <figref>2</figref> and <figref>3c</figref>
+	 */
+	public void fixFigrefLists(Document document) {
+		for (Element element : document.select("a.figref")) {
+			fixFigrefListItem(element);
+		}
+	}
+
+	public void fixFigrefListItem(Element element) {
+		Node next = element.nextSibling();
+		
+		String trailingTxt;
+		if (next != null && next instanceof TextNode) {
+			trailingTxt = ((TextNode) next).getWholeText();
+		} else if (next != null && next instanceof Element) {
+			trailingTxt = ((Element) next).text();
+		} else {
+			return;
+		}
+
+		if (trailingTxt.matches("^(, |,? and )")) {
+			next = element.nextSibling().nextSibling();
+			if (next.nodeName().toLowerCase().equals("b")){
+				String containedTxt = ((TextNode) next.childNode(0)).getWholeText();
+				if (containedTxt.matches("[0-9]{1,2}[A-z]?")){
+					Element newEl = element.clone();
+					newEl.attr("id", "FR-" + Strings.padStart(containedTxt, 4, '0'));
+					newEl.attr("idref", ReferenceTagger.createFigId(containedTxt));
+					newEl.tagName("a");
+					newEl.addClass("figref");
+					newEl.text(containedTxt);
+					next.replaceWith(newEl);
+					
+					fixFigrefListItem(newEl);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public List<String> getParagraphText(String rawText) {
 		String textWithPMarks = getSimpleHtml(rawText);

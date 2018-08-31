@@ -2,6 +2,10 @@ package gov.uspto.patent.doc.xml;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.junit.Test;
 
 import gov.uspto.patent.doc.xml.FormattedText;
@@ -36,6 +40,37 @@ public class FormattedTextTest {
 		String actual = format.getSimpleHtml(input);
 
 		assertEquals(expect, actual);
+	}
+
+	@Test
+	public void tailingEntityText() {
+		Map<String, String> variations = new HashMap<String, String>();
+		variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref><i>a</i>", "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>");
+		variations.put("(<figref idref=\"DRAWINGS\">FIG. 1</figref>a)", "(<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>)");
+		variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref>a;", "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>;");
+		variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref><i>a;</i>", "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>;");
+		variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref><i>aa</i>", "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1</a>aa");
+		//variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref> (a)", "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>");
+		//variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref> (<i>a</i>)", "<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>");
+
+		for(Entry<String, String> entry : variations.entrySet()){
+			String actual = format.getSimpleHtml(entry.getKey());
+			assertEquals(entry.getValue(), actual);
+		}
+	}
+
+	@Test
+	public void tailingFigrefs() {
+		Map<String, String> variations = new HashMap<String, String>();
+		variations.put(
+				"<figref idref=\"DRAWINGS\">FIGS. 1</figref>, <b>2</b> and <b>3</b>c", 
+				"<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIGS. 1</a>, "
+				+ "<a idref=\"FIG-2\" id=\"FR-0002\" class=\"figref\">2</a> and <a idref=\"FIG-3\" id=\"FR-0003\" class=\"figref\">3c</a>");
+
+		for(Entry<String, String> entry : variations.entrySet()){
+			String actual = format.getSimpleHtml(entry.getKey());
+			assertEquals(entry.getValue(), actual);
+		}
 	}
 
 	@Test
