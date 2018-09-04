@@ -25,6 +25,7 @@ public class DocumentId implements Comparable<DocumentId> {
     private String kindCode; // different patent offices have different kindcodes.
     private DocumentDate date;
     private PatentType patentType; // defined with application id or derived from kindcode.
+    private String rawText; // capture raw string before parsing into parts; mainly for debugging.
 
     /*
      * Parsing of Document Id into its parts, such as Citation PatentIds.
@@ -42,6 +43,14 @@ public class DocumentId implements Comparable<DocumentId> {
         this.countryCode = countryCode;
         setDocNumber(docNumber);
         this.kindCode = kindCode;
+    }
+
+    public void setRawText(String raw) {
+    	this.rawText = raw;
+    }
+
+    public String getRawText() {
+    	return rawText;
     }
 
     public void setPatentType(PatentType patentType) {
@@ -196,6 +205,7 @@ public class DocumentId implements Comparable<DocumentId> {
             if (applicationYear != null && applicationYear.length() == 4) {
                 docId.setDate(new DocumentDate(applicationYear.replace("/", "")));
             }
+            docId.setRawText(documentIdStr);
             return docId;
         } else {
             throw new InvalidDataException("Failed to parse DocumentId text: " + documentIdStr);

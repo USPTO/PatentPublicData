@@ -50,10 +50,32 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 			LOGGER.warn("Invalid CountryCode '{}', from: {}", country, itemNode.asXML(), e2);
 		}
 
+		String docNumber = docNumN.getText();
+
+		if (docNumber.substring(0,2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
+			docNumber = docNumber.substring(2).trim();
+			LOGGER.debug("Removed duplicate CountryCode '{}' doc-number: {} => {}", countryCode.toString(), docNumN.getText(), docNumber);
+		}
+
+		/*
+		if (docNumber.startsWith("PCT/")) {
+				String countryPCT = docNumber.substring(4, 6);
+				try {
+					countryCode = CountryCode.fromString(countryPCT);
+				} catch (InvalidDataException e2) {
+					LOGGER.warn("Invalid CountryCode '{}', from: {}", countryPCT, itemNode.asXML(), e2);
+				}
+				
+				docNumber = docNumber.substring(4);
+			}
+		}
+		*/
+
 		Node kindN = itemNode.selectSingleNode("kind");
 		String kindCode = kindN != null ? kindN.getText() : null;
 
-		DocumentId documentId = new DocumentId(countryCode, docNumN.getText(), kindCode);
+		DocumentId documentId = new DocumentId(countryCode, docNumber, kindCode);
+		documentId.setRawText(docNumN.getText());
 
 		Node dateN = itemNode.selectSingleNode("date");
 		if (dateN != null) {
