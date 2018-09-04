@@ -1,5 +1,8 @@
 package gov.uspto.patent.doc.xml.items;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,8 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentIdNode.class);
 
 	private static final String ITEM_NODE_NAME = "document-id";
+
+	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-4]/\\d+");
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 
@@ -56,6 +61,25 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 			docNumber = docNumber.substring(2).trim();
 			LOGGER.debug("Removed duplicate CountryCode '{}' doc-number: {} => {}", countryCode.toString(), docNumN.getText(), docNumber);
 		}
+
+		// Seems application number format changed in 2004 from short year to long year.
+		Matcher matcher = SHORT_YEAR.matcher(docNumber);
+		if (matcher.matches()) {
+			if (matcher.group(1).equals("0")) {
+				docNumber = "20" + docNumber;
+				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+			}
+			else if (matcher.group(1).equals("9")) {
+				docNumber = "19" + docNumber;
+				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+			}
+		}
+
+		if (!docNumber.startsWith("PCT/")) {
+			docNumber = docNumber.replace("/", "");
+		}
+
+		docNumber = docNumber.replace(" ", "");
 
 		/*
 		if (docNumber.startsWith("PCT/")) {

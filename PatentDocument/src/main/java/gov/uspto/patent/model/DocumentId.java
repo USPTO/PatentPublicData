@@ -86,7 +86,12 @@ public class DocumentId implements Comparable<DocumentId> {
      * @return
      */
     public String getId() {
-        StringBuilder strb = new StringBuilder().append(countryCode).append(docNumber);
+        StringBuilder strb = new StringBuilder();
+
+        if (!docNumber.startsWith("PCT/")) {
+        	strb.append(countryCode);
+        }
+        strb.append(docNumber);
 
         if (kindCode != null) {
             strb.append(kindCode);

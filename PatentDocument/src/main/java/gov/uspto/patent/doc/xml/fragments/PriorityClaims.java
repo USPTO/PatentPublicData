@@ -2,6 +2,8 @@ package gov.uspto.patent.doc.xml.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -30,6 +32,8 @@ import gov.uspto.patent.model.DocumentIdType;
 public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentIdNode.class);
+	
+	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-4]/\\d+");
 	
     private static final String FRAGMENT_PATH = "//priority-claims/priority-claim";
 
@@ -78,12 +82,41 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
         			LOGGER.warn("Invalid CountryCode '{}', from : {}", country, fragNode.asXML(), e2);
         		}
 
+        		
+        		String docNumber = docNumN.getText();
+        		
+        		if (docNumber.substring(0,2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
+        			docNumber = docNumber.substring(2).trim();
+        			LOGGER.debug("Removed duplicate CountryCode '{}' doc-number: {} => {}", countryCode.toString(), docNumN.getText(), docNumber);
+        		}
+
+        		// Seems application number format changed in 2004 from short year to long year.
+        		Matcher matcher = SHORT_YEAR.matcher(docNumber);
+        		if (matcher.matches()) {
+        			if (matcher.group(1).equals("0")) {
+        				docNumber = "20" + docNumber;
+        				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+        			}
+        			else if (matcher.group(1).equals("9")) {
+        				docNumber = "19" + docNumber;
+        				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+        			}
+        		}
+
+        		if (!docNumber.startsWith("PCT/")) {
+        			docNumber = docNumber.replace("/", "");
+        		}
+
+        		docNumber = docNumber.replaceAll("[\\s-]", "");        		
+        		
+        		
         		Node kindN = fragNode.selectSingleNode("kind");
         		String kindCode = kindN != null ? kindN.getText() : null;
 
-        		DocumentId documentId = new DocumentId(countryCode, docNumN.getText(), kindCode);
+        		DocumentId documentId = new DocumentId(countryCode, docNumber, kindCode);
+        		documentId.setRawText(docNumN.getText());
         		documentId.setType(docIdType);
-        		
+
         		Node dateN = fragNode.selectSingleNode("date");
         		if (dateN != null) {
         			try {
