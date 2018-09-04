@@ -9,7 +9,6 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -127,6 +126,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         builder.add("applicantFirstName", mapEntity(patent.getApplicants(), EntityField.LASTNAME));
         builder.add("applicantAddress", mapEntity(patent.getApplicants(), EntityField.ADDRESS));
         builder.add("applicantCity", mapEntity(patent.getApplicants(), EntityField.CITY));
+        builder.add("applicantState", mapEntity(patent.getApplicants(), EntityField.STATE));
         builder.add("applicantCountry", mapEntity(patent.getApplicants(), EntityField.COUNTRY));
 
         builder.add("inventor", mapEntity(patent.getInventors(), EntityField.NAME));
@@ -134,6 +134,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         builder.add("inventorFirstName", mapEntity(patent.getInventors(), EntityField.LASTNAME));
         builder.add("inventorAddress", mapEntity(patent.getInventors(), EntityField.ADDRESS));
         builder.add("inventorCity", mapEntity(patent.getInventors(), EntityField.CITY));
+        builder.add("inventorState", mapEntity(patent.getInventors(), EntityField.STATE));
         builder.add("inventorCountry", mapEntity(patent.getInventors(), EntityField.COUNTRY));
         builder.add("inventorNationality", mapInventor(patent.getInventors(), InventorField.NATIONALITY));
         builder.add("inventorResidency", mapInventor(patent.getInventors(), InventorField.RESIDENCE));
@@ -142,6 +143,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         builder.add("assigneeRoles", mapAssigneeRoles(patent.getAssignee()));
         builder.add("assigneeAddress", mapEntity(patent.getAssignee(), EntityField.ADDRESS));
         builder.add("assigneeCity", mapEntity(patent.getAssignee(), EntityField.CITY));
+        builder.add("assigneeState", mapEntity(patent.getAssignee(), EntityField.STATE));
         builder.add("assigneeCountry", mapEntity(patent.getAssignee(), EntityField.COUNTRY));
 
         builder.add("examiner", mapEntity(patent.getExaminers(), EntityField.NAME));
@@ -213,7 +215,6 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         return arBldr.build();
     }
 
-    
     private void mapClassifications(Collection<? extends PatentClassification> classes, JsonObjectBuilder builder) {
 
         @SuppressWarnings("unchecked")
@@ -416,6 +417,11 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
                     arBldr.add(entity.getAddress().getCountry().toString());
                 }
                 break;
+            case STATE:
+                if (entity.getAddress() != null) {
+                    arBldr.add(entity.getAddress().getState());
+                }
+                break;
             case CITY:
                 if (entity.getAddress() != null && entity.getAddress().getCity() != null) {
                     arBldr.add(entity.getAddress().getCity());
@@ -468,7 +474,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
     }
 
     private enum EntityField {
-        NAME, FIRSTNAME, LASTNAME, ADDRESS, COUNTRY, CITY
+        NAME, FIRSTNAME, LASTNAME, ADDRESS, COUNTRY, STATE, CITY
     }
 
     private enum InventorField {
