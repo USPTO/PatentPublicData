@@ -18,7 +18,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 
 	private static final String ITEM_NODE_NAME = "document-id";
 
-	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-4]/\\d+");
+	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-9][/-]\\d+");
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 
@@ -79,7 +79,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 			docNumber = docNumber.replace("/", "");
 		}
 
-		docNumber = docNumber.replace(" ", "");
+		docNumber = docNumber.replaceAll("[\\s-]", "");
 
 		/*
 		if (docNumber.startsWith("PCT/")) {

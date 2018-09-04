@@ -33,7 +33,7 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentIdNode.class);
 	
-	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-4]/\\d+");
+	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-9][/-]\\d+");
 	
     private static final String FRAGMENT_PATH = "//priority-claims/priority-claim";
 
