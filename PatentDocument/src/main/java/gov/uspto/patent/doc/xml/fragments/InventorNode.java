@@ -106,14 +106,6 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
     private Inventor readInventor(Node inventorNode) {
         AddressBookNode addressBook = new AddressBookNode(inventorNode);
 
-        Node nationalityN = inventorNode.selectSingleNode("nationality/country");
-        CountryCode nationlityCC = null;
-        try {
-            nationlityCC = nationalityN != null ? CountryCode.fromString(nationalityN.getText()) : null;
-        } catch (InvalidDataException e1) {
-            LOGGER.warn("Invalid Nationality Country Code", e1);
-        }
-
         Node residenceN = inventorNode.selectSingleNode("residence/country");
         CountryCode residenceCC = null;
         try {
@@ -124,7 +116,6 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 
     	Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();
         Inventor inventor = new Inventor(name, addressBook.getAddress());
-        inventor.setNationality(nationlityCC);
         inventor.setResidency(residenceCC);
         if (addressBook.getOrgName() != null) {
             inventor.addRelationship(addressBook.getOrgName(), RelationshipType.EMPLOYEE);

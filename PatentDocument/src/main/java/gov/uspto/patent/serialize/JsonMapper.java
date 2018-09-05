@@ -318,6 +318,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
         for (Agent agent : agents) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            //jsonObj.add("sequence", valueOrEmpty(agent.getSequence()));
             jsonObj.add("name", mapName(agent.getName()));
             jsonObj.add("address", mapAddress(agent.getAddress()));
             arBldr.add(jsonObj);
@@ -363,7 +364,6 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             jsonObj.add("name", mapName(inventor.getName()));
             jsonObj.add("address", mapAddress(inventor.getAddress()));
             jsonObj.add("residency", valueOrEmpty(inventor.getResidency()));
-            jsonObj.add("nationality", valueOrEmpty(inventor.getNationality()));
             arBldr.add(jsonObj);
         }
 

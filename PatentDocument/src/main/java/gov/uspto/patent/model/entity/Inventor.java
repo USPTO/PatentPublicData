@@ -6,7 +6,6 @@ public class Inventor extends Entity {
 
     private String sequence;
     private CountryCode residency;
-    private CountryCode nationality;
 
     public Inventor(Name name, Address address) {
         super(EntityType.INVENTOR, name, address);
@@ -18,14 +17,6 @@ public class Inventor extends Entity {
 
     public void setSequence(String sequence) {
         this.sequence = sequence;
-    }
-
-    public CountryCode getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(CountryCode nationality) {
-        this.nationality = nationality;
     }
 
     public CountryCode getResidency() {
@@ -43,6 +34,6 @@ public class Inventor extends Entity {
     @Override
     public String toString() {
         return "Inventor[ name=" + getName() + ", sequence=" + sequence + ", address=" + getAddress() + ", residency="
-                + residency + ", nationality=" + nationality + "]";
+                + residency + "]";
     }
 }
