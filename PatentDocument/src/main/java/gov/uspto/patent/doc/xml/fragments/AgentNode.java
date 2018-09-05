@@ -5,15 +5,20 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.AgentRepType;
 import gov.uspto.patent.model.entity.Name;
+import gov.uspto.patent.model.entity.NamePerson;
 import gov.uspto.patent.model.entity.RelationshipType;
 
 public class AgentNode extends DOMFragmentReader<List<Agent>> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AgentNode.class);
 
 	private static final String FRAGMENT_PATH = "//us-parties/agents/agent|//parties/agents/agent";
 	
@@ -43,7 +48,17 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 
 			Name name = addressBook.getPersonName();
 			if (name != null) {
-				Agent agent = new Agent(addressBook.getPersonName(), addressBook.getAddress(), agentRepType);
+
+				String lastName = ((NamePerson) name).getLastName();
+				if (lastName.endsWith(", Esq.")) {
+					NamePerson name2 = (NamePerson) name;
+					NamePerson newName = new NamePerson(name2.getFirstName(), name2.getLastName().substring(0,name2.getLastName().length()-6));
+					newName.setSuffix("Esq.");
+					name = newName;
+					LOGGER.debug("Removed Suffix 'Esq.' from Lastname: '{}' => '{}'", name2.getLastName(), newName.getLastName());
+				}
+
+				Agent agent = new Agent(name, addressBook.getAddress(), agentRepType);
 				agent.setSequence(sequence);
 
 				if (addressBook.getOrgName() != null) {
