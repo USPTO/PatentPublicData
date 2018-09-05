@@ -35,6 +35,9 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 
 		Examiner assistant = readAssistantExaminer();
 		if (assistant != null) {
+			if (assistant.getDepartment() == null) {
+				assistant.setDepartment(primary.getDepartment());
+			}
 			examinerList.add(assistant);
 		}
 
