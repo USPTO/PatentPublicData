@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.InvalidDataException;
+import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Name;
@@ -37,7 +38,7 @@ import gov.uspto.patent.model.entity.NamePerson;
  */
 public class AddressBookNode extends ItemReader<Name> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AddressBookNode.class);
-
+  
     private static final String ITEM_NODE_NAME = "addressbook";
     private static final String ITEM_ELSE_PREFIX = "-examiner";
 
@@ -78,7 +79,7 @@ public class AddressBookNode extends ItemReader<Name> {
 
         NamePerson name = null;
         if (lastName != null || firstName != null) {
-            name = new NamePerson(firstName, middleName, lastName);
+            name = new NamePerson(firstName, middleName, lastName);           
             name.setPrefix(prefix);
             name.setSuffix(suffix);
             name.setSynonyms(synonyms);
@@ -104,12 +105,14 @@ public class AddressBookNode extends ItemReader<Name> {
         for (Node synonymN : synonymNodes) {
             synonyms.add(synonymN.getText());
         }
-
+        
         NameOrg name = null;
         if (orgnameN != null) {
             String orgName = orgnameN.getText();
             name = new NameOrg(orgName);
             name.setSynonyms(synonyms);
+
+            OrgSynonymGenerator.computeSynonyms(name);
 
             try {
 				name.validate();
@@ -117,9 +120,10 @@ public class AddressBookNode extends ItemReader<Name> {
 				LOGGER.warn("Org Name Invalid: {}", orgnameN.getParent().getParent().asXML(), e);
 			}
         }
+        
         return name;
     }
-
+  
     public Address getAddress() {
         Node addressN = itemNode.selectSingleNode("address");
         if (addressN == null) {
