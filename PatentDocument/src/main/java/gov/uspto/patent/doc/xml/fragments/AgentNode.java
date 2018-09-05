@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
-import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.AgentRepType;
