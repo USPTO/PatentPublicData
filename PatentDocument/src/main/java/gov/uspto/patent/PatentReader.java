@@ -15,6 +15,9 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
 
+import gov.uspto.parser.dom4j.Dom4JParser;
+import gov.uspto.parser.dom4j.keyvalue.KvParser;
+import gov.uspto.patent.doc.greenbook.DotCodes;
 import gov.uspto.patent.doc.greenbook.Greenbook;
 import gov.uspto.patent.doc.pap.PatentAppPubParser;
 import gov.uspto.patent.doc.sgml.Sgml;
@@ -29,9 +32,13 @@ import gov.uspto.patent.model.Patent;
  *
  */
 public class PatentReader implements PatentDocReader<Patent> {
+
 	private static final long DEFAULT_MAX_BYTES = 100000000; // 100 MB.
 
-	private PatentDocFormat patentDocFormat;
+	private boolean normalize = false;
+
+	private final PatentDocFormat patentDocFormat;
+
 	private long maxByteSize = DEFAULT_MAX_BYTES;
 
 	/**
@@ -48,6 +55,18 @@ public class PatentReader implements PatentDocReader<Patent> {
 	public void setMaxByteSize(long maxByteSize){
 		this.maxByteSize = maxByteSize;
 	}
+
+    /**
+     * Set whether {@link DotCodes} should be replaced by their Unicode or XML
+     * equivalents
+     * 
+     * @param normalize
+     *            whether {@link DotCodes} should be replaced by their Unicode or
+     *            XML equivalents
+     */
+    public void setNormalize(final boolean normalize) {
+        this.normalize = normalize;
+    }
 
 	/**
 	 * Parse Dom4j Document
@@ -75,21 +94,29 @@ public class PatentReader implements PatentDocReader<Patent> {
 			throw new PatentReaderException("Patent too Large");
 		}
 
-		switch (patentDocFormat) {
-		case Greenbook:
-			return new Greenbook().parse(reader);
-		case RedbookApplication:
-			return new ApplicationParser().parse(getJDOM(reader));
-		case RedbookGrant:
-			return new GrantParser().parse(getJDOM(reader));
-		case Sgml:
-			return new Sgml().parse(getJDOM(reader));
-		case Pap:
-			return new PatentAppPubParser().parse(getJDOM(reader));
+        switch (patentDocFormat) {
+        case Greenbook:
+            return read(new Greenbook(normalize), reader);
+        case RedbookApplication:
+            return read(new ApplicationParser(), reader);
+        case RedbookGrant:
+            return read(new GrantParser(), reader);
+        case Sgml:
+            return read(new Sgml(), reader);
+        case Pap:
+            return read(new PatentAppPubParser(), reader);
 		default:
 			throw new PatentReaderException("Invalid or Unknown Document Type");
 		}
 	}
+
+    private Patent read(final Dom4JParser parser, final Reader reader) throws PatentReaderException {
+        return parser.parse(getJDOM(reader));
+    }
+
+    private Patent read(final KvParser parser, final Reader reader) throws PatentReaderException {
+        return parser.parse(reader);
+    }
 
 	/**
 	 * Load XML Document
@@ -144,7 +171,7 @@ public class PatentReader implements PatentDocReader<Patent> {
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 			return sax.read(new StringReader(doc));
 		} catch (DocumentException | SAXException e) {
-			throw new PatentReaderException("Failed to Fix and Parse Docuemnt", e);
+			throw new PatentReaderException("Failed to Fix and Parse Document", e);
 		}
 	}
 }

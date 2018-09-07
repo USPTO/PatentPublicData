@@ -144,7 +144,7 @@ public class KvReader {
                 	tCount++;
                 }
 
-               	field.setText(kv.getValue());
+                genXmlValue(field, kv);
                 currentSection.add(field);
             }
         }
@@ -177,7 +177,7 @@ public class KvReader {
                 currentSection = DocumentHelper.createElement(kv.getKey());
             } else {
                 Element field = DocumentHelper.createElement(kv.getKey());
-                field.setText(kv.getValue());
+                genXmlValue(field, kv);
                 currentSection.add(field);
             }
         }
@@ -242,11 +242,11 @@ public class KvReader {
                     currentSection = DocumentHelper.createElement(currentFieldGroup.getName());
 
                     Element field = DocumentHelper.createElement(kv.getKey());
-                    field.setText(kv.getValue());
+                    genXmlValue(field, kv);
                     currentSection.add(field);
                 } else {                    
                     Element field = DocumentHelper.createElement(kv.getKey());
-                    field.setText(kv.getValue());
+                    genXmlValue(field, kv);
                     currentSection.add(field);
                 }
             }
@@ -263,12 +263,12 @@ public class KvReader {
                 currentSection = DocumentHelper.createElement(currentFieldGroup.getName());
 
                 Element field = DocumentHelper.createElement(kv.getKey());
-                field.setText(kv.getValue());
+                genXmlValue(field, kv);
                 currentSection.add(field);
 
             } else if (currentFieldGroup == entry.getFieldGroup() && currentSection != rootNode) {
                 Element field = DocumentHelper.createElement(kv.getKey());
-                field.setText(kv.getValue());
+                genXmlValue(field, kv);
                 currentSection.add(field);
             } else {
                 if (currentSection != rootNode) {
@@ -278,7 +278,7 @@ public class KvReader {
                 currentSection = rootNode;
 
                 Element field = DocumentHelper.createElement(kv.getKey());
-                field.setText(kv.getValue());
+                genXmlValue(field, kv);
                 currentSection.add(field);
             }
         }
@@ -307,7 +307,7 @@ public class KvReader {
                 // String[] parts = processLineRegex(currentLine);
                 String[] parts = processLineLeadingWhiteSpace(currentLine);
                 if (parts.length == 2) {
-                    keyValues.add(new KeyValue(parts[0], parts[1]));
+                    keyValues.add(new KeyValue(parts[0], normalizeValue(parts[1])));
                     // } else if (sections != null && parts.length == 1 &&
                     // sections.contains(parts[0])) {
                     // keyValues.add(new KeyValue(parts[0], ""));
@@ -319,7 +319,7 @@ public class KvReader {
                     }
                     int lastLoc = keyValues.size() - 1;
                     KeyValue lastKv = keyValues.get(lastLoc);
-                    lastKv.appendValue(parts[0]);
+                    lastKv.appendValue(normalizeValue(parts[0]));
                     currentFieldName = lastKv.getKey().toUpperCase();
                 }
             }
@@ -329,6 +329,48 @@ public class KvReader {
         }
 
         return keyValues;
+    }
+
+    /**
+     * Generate the XML representation of the given value, and add it to the given
+     * XML element
+     * 
+     * @param element
+     *            the element to which the XML representation should be added
+     * @param value
+     *            the value to transform into XML
+     */
+    protected void genXmlValue(final Element element, final String value) {
+        element.setText(value);
+    }
+
+    /**
+     * Normalize a {@link KeyValue}'s value
+     * 
+     * <p>
+     * The default implementation merely returns its argument. This method should be
+     * overridden to customize the reader's behavior.
+     * 
+     * @param string
+     *            the string to normalize
+     * @return the normalized string
+     */
+    protected String normalizeValue(final String string) {
+        return string;
+    }
+
+    /**
+     * Generate the XML representation of the given {@link KeyValue}'s value, and
+     * add it to the given XML element
+     * 
+     * @param element
+     *            the element to which the XML representation should be added
+     * @param keyValue
+     *            the {@link KeyValue} to transform into XML
+     * @see KvReader#genXmlValue(Element, String)
+     */
+    private void genXmlValue(final Element element, final KeyValue keyValue) {
+        genXmlValue(element, keyValue.getValue());
     }
 
     /**
