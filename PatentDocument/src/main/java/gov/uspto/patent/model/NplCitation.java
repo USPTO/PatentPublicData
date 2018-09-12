@@ -6,12 +6,20 @@ import java.util.regex.Pattern;
 public class NplCitation extends Citation {
 
 	private static Pattern QUOTED_TEXT = Pattern.compile("(?:[\"“]|<i>)([^\"”]+)(?:[\"”]|<\\/i>)");
-
-	private String citeText;
+	private String citeText; // raw cite text
+	private DocumentId patDocId; // Patent DocumentId parsed from raw text.
 
 	public NplCitation(String num, String citeText, boolean examinerCited) {
 		super(num, CitationType.NPLCIT, examinerCited);
 		this.citeText = citeText;
+	}
+
+	public void setPatentId(DocumentId docId) {
+		this.patDocId = docId;
+	}
+
+	public DocumentId getPatentId() {
+		return patDocId;
 	}
 
 	public String getQuotedText(){
@@ -38,6 +46,10 @@ public class NplCitation extends Citation {
 
 		NplCitation other = (NplCitation) o;
 		if (this.citeText != null && this.citeText != null) {
+			//if (this.getPatentId().equals(other.getPatentId())) {
+			//	return true;
+			//}
+			//else 
 			if (this.citeText.equals(other.getCiteText()) && this.citeText.equals(other.getCiteText())) {
 				return true;
 			} else {
@@ -47,9 +59,9 @@ public class NplCitation extends Citation {
 			return false;
 		}
 	}	
-	
+
 	@Override
 	public String toString() {
-		return "NplCitation [num=" + super.getNum() + ", citeText=" + citeText + ", quotedText()=" + getQuotedText() +", examinerCited=" + super.isExaminerCited() + " ]";
+		return "NplCitation [num=" + super.getNum() + ", citeText=" + citeText + ", quotedText()=" + getQuotedText() + " patentId=" + getPatentId() + ", examinerCited=" + super.isExaminerCited() + " ]";
 	}
 }
