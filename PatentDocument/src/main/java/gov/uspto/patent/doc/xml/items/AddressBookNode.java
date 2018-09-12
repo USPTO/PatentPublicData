@@ -112,7 +112,7 @@ public class AddressBookNode extends ItemReader<Name> {
             name = new NameOrg(orgName);
             name.setSynonyms(synonyms);
 
-            OrgSynonymGenerator.computeSynonyms(name);
+            new OrgSynonymGenerator().computeSynonyms(name);
 
             try {
 				name.validate();
