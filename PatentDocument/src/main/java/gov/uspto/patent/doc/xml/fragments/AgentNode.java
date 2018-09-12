@@ -34,11 +34,14 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		@SuppressWarnings("unchecked")
 		List<Node> agents = document.selectNodes(FRAGMENT_PATH);
 
+		int interationSquence = 0;
 		for (Node node : agents) {
+			interationSquence++;
+
 			AddressBookNode addressBook = new AddressBookNode(node);
 
 			Node sequenceN = node.selectSingleNode("@sequence");
-			String sequence = sequenceN != null ? sequenceN.getText() : null;
+			String sequence = sequenceN != null ? sequenceN.getText() : Integer.toString(interationSquence);
 
 			Node repTypeN = node.selectSingleNode("@rep-type");
 			String repType = repTypeN != null ? repTypeN.getText() : null;
