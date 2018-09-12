@@ -136,7 +136,6 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         builder.add("inventorCity", mapEntity(patent.getInventors(), EntityField.CITY));
         builder.add("inventorState", mapEntity(patent.getInventors(), EntityField.STATE));
         builder.add("inventorCountry", mapEntity(patent.getInventors(), EntityField.COUNTRY));
-        builder.add("inventorNationality", mapInventor(patent.getInventors(), InventorField.NATIONALITY));
         builder.add("inventorResidency", mapInventor(patent.getInventors(), InventorField.RESIDENCE));
 
         builder.add("assignee", mapEntity(patent.getAssignee(), EntityField.NAME));
@@ -309,11 +308,6 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
 
         for (Inventor inventor : inventors) {
             switch (inventorField) {
-            case NATIONALITY:
-                if (inventor.getNationality() != null) {
-                    arBldr.add(inventor.getNationality().toString());
-                }
-                break;
             case RESIDENCE:
                 if (inventor.getResidency() != null) {
                     arBldr.add(valueOrEmpty(inventor.getResidency()));
@@ -478,7 +472,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
     }
 
     private enum InventorField {
-        NATIONALITY, RESIDENCE
+        RESIDENCE
     }
 
     private String base64(String string) {

@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -389,7 +388,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         if (name instanceof NamePerson) {
             NamePerson perName = (NamePerson) name;
             jsonObj.add("type", "person");
-            jsonObj.add("raw", valueOrEmpty(name.getName()));
+            jsonObj.add("raw", valueOrEmpty(perName.getName()));
             jsonObj.add("prefix", valueOrEmpty(perName.getPrefix()));
             jsonObj.add("firstName", valueOrEmpty(perName.getFirstName()));
             jsonObj.add("middleName", valueOrEmpty(perName.getMiddleName()));
@@ -400,7 +399,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         } else {
             NameOrg orgName = (NameOrg) name;
             jsonObj.add("type", "org");
-            jsonObj.add("raw", valueOrEmpty(name.getName()));
+            jsonObj.add("raw", valueOrEmpty(orgName.getName()));
+            jsonObj.add("prefix", valueOrEmpty(orgName.getPrefix()));
             jsonObj.add("suffix", valueOrEmpty(orgName.getSuffix()));
             jsonObj.add("synonyms", toJsonArray(orgName.getSynonyms()));
         }
@@ -490,13 +490,27 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             if (cite.getCitType() == CitationType.NPLCIT) {
                 NplCitation nplCite = (NplCitation) cite;
 
-                arBldr.add(Json.createObjectBuilder().add("num", nplCite.getNum()).add("type", "NPL")
-                        .add("citedBy", nplCite.getCitType().toString()).add("examinerCited", nplCite.isExaminerCited())
-                        .add("text", nplCite.getCiteText()).add("quotedText", nplCite.getQuotedText()));
+                JsonObjectBuilder nplObj = Json.createObjectBuilder()
+        		.add("num", nplCite.getNum())
+        		.add("type", "NPL")
+                .add("citedBy", nplCite.getCitType().toString())
+                .add("examinerCited", nplCite.isExaminerCited())
+                .add("text", nplCite.getCiteText());
+                
+                JsonObjectBuilder extractedObj = Json.createObjectBuilder()
+                .add("quotedText", nplCite.getQuotedText())
+                .add("patentId", nplCite.getPatentId() != null ? nplCite.getPatentId().toText() : "");
+                nplObj.add("extracted", extractedObj);
+
+                arBldr.add(nplObj);
+
             } else if (cite.getCitType() == CitationType.PATCIT) {
                 PatCitation patCite = (PatCitation) cite;
-                arBldr.add(Json.createObjectBuilder().add("num", patCite.getNum()).add("type", "PATENT")
-                        .add("citedBy", patCite.getCitType().toString()).add("examinerCited", patCite.isExaminerCited())
+                arBldr.add(Json.createObjectBuilder()
+                		.add("num", patCite.getNum())
+                		.add("type", "PATENT")
+                        .add("citedBy", patCite.getCitType().toString())
+                        .add("examinerCited", patCite.isExaminerCited())
                         .add("text", patCite.getDocumentId().toText()));
             }
         }
