@@ -59,7 +59,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	}
 
 	public void open() throws IOException {
-		if (file.getName().endsWith("zip")) {
+		if (file.getName().endsWith(".zip")) {
 			zipFile = new ZipReader(file, fileFilter);
 			reader = zipFile.open().next();
 		} else if (reader != null) {
