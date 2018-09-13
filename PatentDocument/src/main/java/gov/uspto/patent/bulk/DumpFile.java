@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.google.common.base.Preconditions;
 
@@ -36,7 +37,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	public DumpFile(File file) {
 		Preconditions.checkNotNull(file, "File can not be Null");
 		Preconditions.checkArgument(file.isFile(), "File not found:" + file.getAbsolutePath());
-
+        MDC.put("SOURCE", String.valueOf(file.getName()));
 		this.file = file;
 	}
 
@@ -80,6 +81,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 		if (reader != null) {
 			reader.close();
 		}
+		MDC.clear();
 	}
 
 	@Override

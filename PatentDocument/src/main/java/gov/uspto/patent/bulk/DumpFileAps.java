@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class DumpFileAps extends DumpFile {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFileAps.class);
@@ -37,6 +38,7 @@ public class DumpFileAps extends DumpFile {
 				} else {
 					if (line.startsWith(startTag)) {
 						currentRecCount++;
+						MDC.put("RECNUM", String.valueOf(currentRecCount));
 						return startTag + "\n" + content.toString();
 					} else {
 						content.append(line).append('\n');
