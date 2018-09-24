@@ -30,7 +30,7 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | documentId / patentId | normalization; including removing leading 0 padding, currently added to patent ids with length less than 8 digits, in the near future patent ids may increase to 13 digits |
 | country | improvement: mapping of country codes to country name, current and historic codes used before 1978 or individual codes dropped or changed since |
 | address and name | not-fixed, lookout for switched value errors: within name the first-name and last-name or middle name switched; within address the country and state switched ; farther back in time more likely to see these data errors. Older Greenbook patents sometimes have first name or last name switched with middle name (presented as an initial), making searching by a person's name more difficult |
-
+| description | not-fixed, Node elements within the description fields have "id" and "num" attributes which can be incorrect with duplicates, since they are entered by humans, by the filing law firms. Data Scientist may wish to create their own id and number for these data elements i.e. (heading \\| p \\| li \\| table). The num attribute is more likely to be off, since it is not as visbile to the examiner. |
 
 ## Also Parses
 <ul>
