@@ -26,6 +26,7 @@ public class DocumentId implements Comparable<DocumentId> {
     private DocumentDate date;
     private PatentType patentType; // defined with application id or derived from kindcode.
     private String rawText; // capture raw string before parsing into parts; mainly for debugging.
+    private boolean allowLeadingZeros; //Need this for the one case in greenbook where the appId has a zero
 
     /*
      * Parsing of Document Id into its parts, such as Citation PatentIds.
@@ -36,6 +37,10 @@ public class DocumentId implements Comparable<DocumentId> {
         this(countryCode, docNumber, null);
     }
 
+    public DocumentId(CountryCode countryCode, String docNumber, boolean allowLeadingZeros) throws IllegalArgumentException {
+        this(countryCode, docNumber, null, allowLeadingZeros);
+    }
+
     public DocumentId(CountryCode countryCode, String docNumber, String kindCode) {
         Preconditions.checkNotNull(countryCode, "CountryCode can not be set to Null");
         Preconditions.checkNotNull(docNumber, "DocNumber can not be set to Null");
@@ -43,6 +48,15 @@ public class DocumentId implements Comparable<DocumentId> {
         this.countryCode = countryCode;
         setDocNumber(docNumber);
         this.kindCode = kindCode;
+    }
+
+    public DocumentId(CountryCode countryCode, String docNumber, String kindCode, boolean allowLeadingZeros) {
+        Preconditions.checkNotNull(countryCode, "CountryCode can not be set to Null");
+        Preconditions.checkNotNull(docNumber, "DocNumber can not be set to Null");
+        this.allowLeadingZeros = allowLeadingZeros;
+        this.countryCode = countryCode;
+        setDocNumber(docNumber);
+        this.kindCode = kindCode;  
     }
 
     public void setRawText(String raw) {
@@ -73,7 +87,11 @@ public class DocumentId implements Comparable<DocumentId> {
     private void setDocNumber(String publicationId) {
         Preconditions.checkNotNull(publicationId, "DocNumber can not be set to Null!");
         // Remove Leading Zeros.
-        this.docNumber = publicationId.replaceFirst("^0+(?!$)", "");
+        if(!allowLeadingZeros) {
+        	this.docNumber = publicationId.replaceFirst("^0+(?!$)", "");
+        } else {
+        	this.docNumber = publicationId;
+        }
     }
 
     public String getDocNumber() {
