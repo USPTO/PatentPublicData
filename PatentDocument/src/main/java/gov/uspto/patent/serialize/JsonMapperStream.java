@@ -333,7 +333,13 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
             	jGenerator.writeStringField("type", "PATENT");
             	jGenerator.writeBooleanField("examinerCited", patCite.isExaminerCited());
             	jGenerator.writeStringField("raw", patCite.getDocumentId().getRawText());
-            	jGenerator.writeStringField("text", patCite.getDocumentId().toText());
+            	jGenerator.writeStringField("text", patCite.getDocumentId().toTextNoKind());
+            	jGenerator.writeFieldName("classification");
+            	jGenerator.writeStartObject();
+	                writeSingleClassificationType(patCite.getClassification(), ClassificationType.USPC);
+	                writeSingleClassificationType(patCite.getClassification(), ClassificationType.CPC);
+	                writeSingleClassificationType(patCite.getClassification(), ClassificationType.IPC);
+                jGenerator.writeEndObject();
             }
 
         	jGenerator.writeEndObject(); // end cite

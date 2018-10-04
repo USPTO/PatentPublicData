@@ -52,6 +52,8 @@ import gov.uspto.patent.model.entity.NamePerson;
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
+ * @deprecated will be replaced with JsonMapperStream
+ * 
  */
 public class JsonMapper implements DocumentBuilder<Patent> {
 
