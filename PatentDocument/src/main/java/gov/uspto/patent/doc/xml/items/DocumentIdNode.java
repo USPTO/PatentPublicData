@@ -96,7 +96,10 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		*/
 
 		Node kindN = itemNode.selectSingleNode("kind");
-		String kindCode = kindN != null ? kindN.getText() : null;
+		String kindCode = kindN != null ? kindN.getText().trim() : null;
+		if (countryCode == CountryCode.US && "00".equals(kindCode)) {
+			kindCode = null;
+		}
 
 		DocumentId documentId = new DocumentId(countryCode, docNumber, kindCode);
 		documentId.setRawText(docNumN.getText());

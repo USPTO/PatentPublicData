@@ -39,6 +39,7 @@ import gov.uspto.patent.model.ClaimTreeBuilder;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
+import gov.uspto.patent.model.DocumentIdType;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.PatentType;
@@ -137,6 +138,11 @@ public class GrantParser extends Dom4JParser {
         patent.setDatePublished(datePublishedDate);
 
         patent.setDocumentId(publicationId);
+        
+        DocumentId docIdWithoutKind = new DocumentId(publicationId.getCountryCode(), publicationId.getDocNumber());
+        docIdWithoutKind.setType(DocumentIdType.PUBLISHED);
+        patent.addOtherId(docIdWithoutKind);
+        
         patent.setApplicationId(applicationId);
 		patent.addPriorityId(priorityIds);
 		patent.addOtherId(pctRegionalIds);

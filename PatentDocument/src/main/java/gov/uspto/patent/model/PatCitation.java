@@ -36,7 +36,7 @@ public class PatCitation extends Citation {
 
 		DocumentId other = (DocumentId) o;
 		if (this.documentId != null && this.documentId != null) {
-			if (this.documentId.equals(other.getDocNumber()) && this.documentId.equals(other.getDocNumber())) {
+			if (this.documentId.equals(other.getIdNoKind()) && this.documentId.equals(other.getIdNoKind())) {
 				return true;
 			} else {
 				return false;
