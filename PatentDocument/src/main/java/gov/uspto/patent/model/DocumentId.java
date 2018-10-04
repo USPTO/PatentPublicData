@@ -119,6 +119,22 @@ public class DocumentId implements Comparable<DocumentId> {
     }
 
     /**
+     * Full String ID Representation, leaving off kindcode, example: US12345
+     * 
+     * @return
+     */
+    public String getIdNoKind() {
+        StringBuilder strb = new StringBuilder();
+
+        if (!docNumber.startsWith("PCT/")) {
+        	strb.append(countryCode);
+        }
+        strb.append(docNumber);
+
+        return strb.toString();
+    }
+    
+    /**
      * Full String ID Representation, example: US12345A1
      * 
      * @param zeroPadMinLen - anything under provided length will be padded with leading zeros
@@ -184,6 +200,10 @@ public class DocumentId implements Comparable<DocumentId> {
         } else {
             return false;
         }
+    }
+
+    public String toTextNoKind() {
+        return getIdNoKind();
     }
 
     public String toText() {

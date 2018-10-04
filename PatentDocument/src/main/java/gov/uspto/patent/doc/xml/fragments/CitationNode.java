@@ -37,10 +37,8 @@ import gov.uspto.patent.model.classification.PatentClassification;
  */
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
-	private static final String FRAGMENT_PATH = "//us-references-cited|//references-cited"; // current us-references-cited. 
-
-	private Node citationNode;
-
+	private static final String FRAGMENT_PATH = "/*/*/us-references-cited|/*/*/references-cited"; // current us-references-cited. 
+	
 	public CitationNode(Document document) {
 		super(document);
 	}
@@ -49,13 +47,14 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	public List<Citation> read() {
 		List<Citation> citations = new ArrayList<Citation>();
 
-		citationNode = document.selectSingleNode(FRAGMENT_PATH);
+		Node citationNode = document.selectSingleNode(FRAGMENT_PATH);
+		
 		if (citationNode == null) {
 			return citations;
 		}
 
-		List<Citation> patCitations = readPatCitations();
-		List<Citation> nplCitations = readNplCitations();
+		List<Citation> patCitations = readPatCitations(citationNode);
+		List<Citation> nplCitations = readNplCitations(citationNode);
 
 		citations.addAll(patCitations);
 		citations.addAll(nplCitations);
@@ -63,11 +62,11 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		return citations;
 	}
 
-	public List<Citation> readNplCitations() {
+	public List<Citation> readNplCitations(Node citationNode) {
 		List<Citation> nplCitations = new ArrayList<Citation>();
 
 		@SuppressWarnings("unchecked")
-		List<Node> nlpcitNodes = citationNode.selectNodes("us-citation/nplcite|citation/nplcit");
+		List<Node> nlpcitNodes = citationNode.selectNodes("us-citation/nplcit|us-citation/nplcite|citation/nplcit");
 
 		for (Node nplcit : nlpcitNodes) {
 
@@ -129,7 +128,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		return null;
 	}
 
-	public List<Citation> readPatCitations() {
+	public List<Citation> readPatCitations(Node citationNode) {
 		List<Citation> patCitations = new ArrayList<Citation>();
 
 		@SuppressWarnings("unchecked")
@@ -166,17 +165,17 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 			PatentClassification mainClassNational = new ClassificationNationalNode(patcit.getParent()).read();
 			if (mainClassNational != null){
-			    citation.setClassification(mainClassNational);
+			    citation.addClassification(mainClassNational);
 			}
 
 	        PatentClassification mainClassCpc = new ClassificationCpcNode(patcit.getParent()).read();
 	        if (mainClassCpc != null){
-	            citation.setClassification(mainClassCpc);
+	            citation.addClassification(mainClassCpc);
 	        }
 	        
             PatentClassification mainClassIpc = new ClassificationIPCNode(patcit.getParent()).read();
             if (mainClassCpc != null){
-                citation.setClassification(mainClassIpc);
+                citation.addClassification(mainClassIpc);
             }
 	        
 	        patCitations.add(citation);

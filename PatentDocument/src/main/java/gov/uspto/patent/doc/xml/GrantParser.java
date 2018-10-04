@@ -141,6 +141,7 @@ public class GrantParser extends Dom4JParser {
         
         DocumentId docIdWithoutKind = new DocumentId(publicationId.getCountryCode(), publicationId.getDocNumber());
         docIdWithoutKind.setType(DocumentIdType.PUBLISHED);
+        docIdWithoutKind.setDate(publicationId.getDate());
         patent.addOtherId(docIdWithoutKind);
         
         patent.setApplicationId(applicationId);
