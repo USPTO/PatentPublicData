@@ -44,14 +44,17 @@ public class StringCaseUtil {
 		return sb.toString();
 	}
 
+
 	/**
 	 * Title Case
 	 *
 	 *<pre>
-	 * Patent Titles originate in one of three forms: all uppercase, sentence case or proper title case. 
-	 * Here a best effort is performed to normalized to Title Case.
+	 * Patent Titles originate in one of three forms: all upper-case, sentence case or proper title case; 
+	 * and occasionally a double space after punctuation.
 	 * 
-	 * The Style Rules used loosely follows the Chicago Simple and Wikipedia Style Manuals; with a preference
+	 * Best effort is performed to normalized to Title Case.
+	 * 
+	 * The Style Rules loosely follow the Chicago Simple and Wikipedia Style Manuals; with a preference
 	 * to lowercase words when possible but only if it can be done with a light weight manner 
 	 * (without a NLP parser) and receives a decent level of accuracy.
 	 *
@@ -66,6 +69,7 @@ public class StringCaseUtil {
 	 * 9) Hyphenated lead prefix: treat prefix and word as if a single word; capitalize prefix and lowercase trailing word.
 	 * 10) Hyphenated trailing word with verb tense suffixes ['ing','ed']: capitalize first word then lowercase trailing word.
 	 * 11) Slashes: treat each word as a noun or verb, capitalize each word
+	 * 12) Multiple Spaces: compress to a single space
 	 *</pre>
 	 *
 	 * @param text
@@ -76,6 +80,8 @@ public class StringCaseUtil {
 			return null;
 		}
 
+		System.out.println("Title Text: " + text);
+		
 		/*
 		 * If text is not all capitals then maintain capitals
 		 */
@@ -84,12 +90,12 @@ public class StringCaseUtil {
 			maintainCapitals = true;
 		}
 
-		String[] words = text.split("\\s");
+		String[] words = text.split("\\s+");
 
 		boolean inBlock = false;
 		char wantCloseBlockChar = '?';
 		for (int i = 0; i < words.length; i++) {
-
+			
 			/*
 			 * Block Quoted or Bracketed; maintain original lettercase.
 			 */

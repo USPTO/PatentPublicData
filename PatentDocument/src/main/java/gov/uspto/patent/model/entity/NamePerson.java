@@ -8,7 +8,6 @@ import gov.uspto.patent.InvalidDataException;
 
 public class NamePerson extends Name {
 
-    private String prefix; // Title: Mr., Mrs., Dr.
     private final String firstName;
     private final String middleName;
     private final String lastName;
@@ -84,14 +83,6 @@ public class NamePerson extends Name {
         return middleName;
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
     private static String buildFullName(String firstName, String middleName, String lastName) {
         StringBuilder sb = new StringBuilder();
         if (!Strings.isNullOrEmpty(lastName)) {
@@ -107,8 +98,8 @@ public class NamePerson extends Name {
 
     @Override
     public String toString() {
-        return "PersonName[prefix=" + prefix + ", firstName=" + firstName + ", middleName=" + middleName + ", lastName="
-                + lastName + ", fullName=" + super.getName() + ", suffix=" + super.getSuffix() + ", synonym="
+        return "PersonName[firstName=" + firstName + ", middleName=" + middleName + ", lastName="
+                + lastName + ", fullName=" + super.getName() + ", prefix=" + super.getPrefix() + ", suffix=" + super.getSuffix() + ", synonym="
                 + super.getSynonyms() + "]";
     }
 }
