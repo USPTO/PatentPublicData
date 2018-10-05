@@ -46,6 +46,14 @@ public class AddressBookNode extends ItemReader<Name> {
         super(itemNode, ITEM_NODE_NAME, ITEM_ELSE_PREFIX);
     }
 
+    public Name getName() {
+    	if (itemNode.selectSingleNode("last-name") != null) {
+    		return getPersonName();
+    	} else {
+    		return getOrgName();
+    	}
+    }
+
     /**
      * Get Names.
      * 

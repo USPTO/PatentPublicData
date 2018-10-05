@@ -48,16 +48,18 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 
 			AgentRepType agentRepType = AgentRepType.valueOf(repType.trim().toUpperCase());
 
-			Name name = addressBook.getPersonName();
+			Name name = addressBook.getName();
 			if (name != null) {
-
-				String lastName = ((NamePerson) name).getLastName();
-				if (lastName.endsWith(", Esq.")) {
-					NamePerson name2 = (NamePerson) name;
-					NamePerson newName = new NamePerson(name2.getFirstName(), name2.getLastName().substring(0,name2.getLastName().length()-6));
-					newName.setSuffix("Esq.");
-					name = newName;
-					LOGGER.debug("Removed Suffix 'Esq.' from Lastname: '{}' => '{}'", name2.getLastName(), newName.getLastName());
+				
+				if (name instanceof NamePerson) {
+					String lastName = ((NamePerson) name).getLastName();
+					if (lastName.endsWith(", Esq.")) {
+						NamePerson name2 = (NamePerson) name;
+						NamePerson newName = new NamePerson(name2.getFirstName(), name2.getLastName().substring(0,name2.getLastName().length()-6));
+						newName.setSuffix("Esq.");
+						name = newName;
+						LOGGER.debug("Removed Suffix ', Esq.' from Lastname: '{}' => '{}'", name2.getLastName(), newName.getLastName());
+					}
 				}
 
 				Agent agent = new Agent(name, addressBook.getAddress(), agentRepType);
