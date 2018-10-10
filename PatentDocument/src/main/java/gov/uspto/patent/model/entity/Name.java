@@ -56,18 +56,26 @@ public abstract class Name {
 
 	public void addSynonymNorm(String synonym){
 		String norm1 = synonym.replaceAll("\\s+", " ")
-				.replaceAll(",$", "")
+				.replaceFirst(",\\s*$", "")
 				.trim()
 				.toUpperCase();
 		this.synonym.add(norm1);
 
-		String norm2 = synonym.replaceAll("[\\.'](?!com\\b)", "") // period replace with no space. except if ".COM"
+		String norm2 = synonym.replaceAll("[\\.'](?!(?:com?)\\b)", "") // period replace with no space. except if ".COM"
 				//.replaceAll("[\\p{Punct}\\p{IsPunctuation}]", " ")
-				.replaceAll("[,\\-;:()\\[\\]?!'/\\\\]", " ")
+				.replaceAll("[,;:\\-()\\[\\]?!'/\\\\]", " ")
 				.replaceAll("\\s+", " ")
 				.trim()
 				.toUpperCase();
 		this.synonym.add(norm2);
+
+		String norm3 = synonym.replaceAll("[\\.'](?!(?:com?)\\b)", " ") // period replace with space. except if ".COM"
+				//.replaceAll("[\\p{Punct}\\p{IsPunctuation}]", " ")
+				.replaceAll("[,;:\\-()\\[\\]?!'/\\\\]", " ")
+				.replaceAll("\\s+", " ")
+				.trim()
+				.toUpperCase();
+		this.synonym.add(norm3);
 	}
 
 	public void addSynonym(Collection<String> synonym){

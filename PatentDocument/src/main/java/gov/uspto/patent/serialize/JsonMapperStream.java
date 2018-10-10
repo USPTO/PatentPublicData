@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 
 import gov.uspto.patent.DateTextType;
+import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
@@ -186,7 +187,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
             jGenerator.writeStartObject();
 
         	jGenerator.writeFieldName("name");
-        	writeName(entity.getName());
+        	writeName(entity);
 
         	if (entity instanceof Inventor) {
         		Inventor inventor = (Inventor) entity;
@@ -205,7 +206,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
             	continue;
         	}
  
-        	writeAddress(entity.getAddress());
+        	writeAddress(entity);
 
         	jGenerator.writeEndObject();
     	}
@@ -213,7 +214,9 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         jGenerator.writeEndArray();
     }
 
-    private void writeName(Name name) throws IOException {
+    private void writeName(Entity entity) throws IOException {
+        Name name = entity.getName();
+
     	//jGenerator.writeFieldName("name");
         jGenerator.writeStartObject();
 
@@ -234,13 +237,16 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         	jGenerator.writeStringField("raw", valueOrEmpty(orgName.getName()));
         	jGenerator.writeStringField("prefix", valueOrEmpty(orgName.getPrefix()));
         	jGenerator.writeStringField("suffix", valueOrEmpty(orgName.getSuffix()));
+
+            new OrgSynonymGenerator().computeSynonyms(entity);
         	writeArray("synonyms", orgName.getSynonyms());
         }
         
     	jGenerator.writeEndObject();
     }
 
-    private void writeAddress(Address address) throws IOException {
+    private void writeAddress(Entity entity) throws IOException {
+    	Address address = entity.getAddress();
         if (address != null) {
         	jGenerator.writeFieldName("Address");
             jGenerator.writeStartObject();

@@ -20,6 +20,7 @@ import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
 
 import gov.uspto.patent.DateTextType;
+import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
@@ -41,6 +42,7 @@ import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
 import gov.uspto.patent.model.entity.Assignee;
+import gov.uspto.patent.model.entity.Entity;
 import gov.uspto.patent.model.entity.Examiner;
 import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.model.entity.Name;
@@ -320,8 +322,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         for (Agent agent : agents) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
             //jsonObj.add("sequence", valueOrEmpty(agent.getSequence()));
-            jsonObj.add("name", mapName(agent.getName()));
-            jsonObj.add("address", mapAddress(agent.getAddress()));
+            jsonObj.add("name", mapName(agent));
+            jsonObj.add("address", mapAddress(agent));
             arBldr.add(jsonObj);
         }
 
@@ -333,8 +335,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
         for (Applicant applicant : applicants) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-            jsonObj.add("name", mapName(applicant.getName()));
-            jsonObj.add("address", mapAddress(applicant.getAddress()));
+            jsonObj.add("name", mapName(applicant));
+            jsonObj.add("address", mapAddress(applicant));
             arBldr.add(jsonObj);
         }
 
@@ -346,8 +348,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
         for (Assignee assignee : assignees) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-            jsonObj.add("name", mapName(assignee.getName()));
-            jsonObj.add("address", mapAddress(assignee.getAddress()));
+            jsonObj.add("name", mapName(assignee));
+            jsonObj.add("address", mapAddress(assignee));
             jsonObj.add("role", valueOrEmpty(assignee.getRole()));
             jsonObj.add("roleDefinition", valueOrEmpty(assignee.getRoleDesc()));
             arBldr.add(jsonObj);
@@ -362,8 +364,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         for (Inventor inventor : inventors) {
             JsonObjectBuilder jsonObj = Json.createObjectBuilder();
             jsonObj.add("sequence", valueOrEmpty(inventor.getSequence()));
-            jsonObj.add("name", mapName(inventor.getName()));
-            jsonObj.add("address", mapAddress(inventor.getAddress()));
+            jsonObj.add("name", mapName(inventor));
+            jsonObj.add("address", mapAddress(inventor));
             jsonObj.add("residency", valueOrEmpty(inventor.getResidency()));
             arBldr.add(jsonObj);
         }
@@ -385,7 +387,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         return arBldr.build();
     }
 
-    private JsonObject mapName(Name name) {
+    private JsonObject mapName(Entity entity) {
+    	Name name = entity.getName();
         JsonObjectBuilder jsonObj = Json.createObjectBuilder();
         if (name instanceof NamePerson) {
             NamePerson perName = (NamePerson) name;
@@ -404,22 +407,25 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             jsonObj.add("raw", valueOrEmpty(orgName.getName()));
             jsonObj.add("prefix", valueOrEmpty(orgName.getPrefix()));
             jsonObj.add("suffix", valueOrEmpty(orgName.getSuffix()));
+            
+            new OrgSynonymGenerator().computeSynonyms(entity);
             jsonObj.add("synonyms", toJsonArray(orgName.getSynonyms()));
         }
         return jsonObj.build();
     }
 
-    private JsonObject mapAddress(Address address) {
+    private JsonObject mapAddress(Entity entity) {
+    	Address address = entity.getAddress();
         JsonObjectBuilder jsonObj = Json.createObjectBuilder();
         if (address != null) {
-            jsonObj.add("street", valueOrEmpty(address.getStreet()));
+            //jsonObj.add("street", valueOrEmpty(address.getStreet()));
             jsonObj.add("city", valueOrEmpty(address.getCity()));
             jsonObj.add("state", valueOrEmpty(address.getState()));
-            jsonObj.add("zipCode", valueOrEmpty(address.getZipCode()));
+            //jsonObj.add("zipCode", valueOrEmpty(address.getZipCode()));
             jsonObj.add("country", valueOrEmpty(address.getCountry()));
-            jsonObj.add("email", valueOrEmpty(address.getEmail()));
-            jsonObj.add("fax", valueOrEmpty(address.getFaxNumber()));
-            jsonObj.add("phone", valueOrEmpty(address.getPhoneNumber()));
+            //jsonObj.add("email", valueOrEmpty(address.getEmail()));
+            //jsonObj.add("fax", valueOrEmpty(address.getFaxNumber()));
+            //jsonObj.add("phone", valueOrEmpty(address.getPhoneNumber()));
             //jsonObj.add("tokens", mapStringCollection(address.getTokenSet()));
         }
         return jsonObj.build();
