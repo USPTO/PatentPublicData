@@ -5,14 +5,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -21,7 +22,7 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.MDC;
 
 import gov.uspto.common.filter.FileFilterChain;
-import gov.uspto.common.filter.SuffixFilter;
+import gov.uspto.common.io.ContentStream;
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.PatentReader;
@@ -29,8 +30,11 @@ import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
-import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.serialize.DocumentBuilder;
+import gov.uspto.patent.serialize.JsonMapperFlat;
+import gov.uspto.patent.serialize.JsonMapperStream;
+import gov.uspto.patent.serialize.PlainText;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
@@ -38,7 +42,7 @@ import joptsimple.OptionSet;
  * Look is a CLI tool to a view a single patent document from Bulk Patent XML.
  *
  * View contents of listed fields
- * 	--source="download/ipa150101.zip" --limit 5 --skip 5 --fields=id,title,family
+ * 	--source="download/ipa150101.zip" --limit 5 --skip 5 --fields=id,title
  * 
  * Dump a single Patent XML Document by location in zipfile; the 3rd document:
  * --source="download/ipa150305.zip" --num=3 --fields=xml --out=download/patent.xml
@@ -50,8 +54,8 @@ import joptsimple.OptionSet;
  *
  */
 public class Look {
-
-    private String rawDocStr;
+	
+    private ContentStream contentStream;
 
     public void look(DumpReader dumpReader, int limit, Writer writer, String[] fields)
             throws PatentReaderException, IOException {
@@ -60,31 +64,18 @@ public class Look {
 
         for (int i = 1; dumpReader.hasNext() && i <= limit; i++) {
 			MDC.put("DOCID", dumpReader.getFile().getName() + ":" + dumpReader.getCurrentRecCount());
-        	
-            System.out.println(dumpReader.getCurrentRecCount() + 1 + " --------------------------");
 
             try {
-                rawDocStr = dumpReader.next();
+            	contentStream = dumpReader.next();
             } catch (NoSuchElementException e) {
                 break;
             }
 
-            //LOGGER.info(xmlDocStr);
-
-            /*
-             Match matcher = new MatchValueRegex("//classification-national/main-classification", "^166.+");
-             if (matcher.match(xmlDocStr){
-            	LOGGER.info("found matching document.");
-             }
-            */
-
-            if (fields.length == 1 && "raw".equalsIgnoreCase(fields[0])) {
-                show(null, fields, writer);
+            if (fields.length == 1 && "raw".equalsIgnoreCase(fields[0]) || "rawparts".equalsIgnoreCase(fields[0])) {
+                show(String.valueOf(dumpReader.getCurrentRecCount()+1), null, fields, writer);
             } else {
-                try (StringReader rawText = new StringReader(rawDocStr)) {
-                    Patent patent = patentReader.read(rawText);
-                    show(patent, fields, writer);
-                }
+               Patent patent = patentReader.read(contentStream);
+               show(String.valueOf(dumpReader.getCurrentRecCount()+1), patent, fields, writer);
             }
         }
 
@@ -97,26 +88,25 @@ public class Look {
         PatentReader patentReader = new PatentReader(dumpReader.getPatentDocFormat());
 
         while (dumpReader.hasNext()) {
+
             try {
-                rawDocStr = dumpReader.next();
+            	contentStream = dumpReader.next();
             } catch (NoSuchElementException e) {
                 break;
             }
 
-            if (rawDocStr != null){
-                try (StringReader rawText = new StringReader(rawDocStr)) {
-                    Patent patent = patentReader.read(rawText);
-                    if (patent.getDocumentId().toText().equals(docId)) {
-                        show(patent, fields, writer);
-                        break;
-                    }
+            if (contentStream != null){
+                Patent patent = patentReader.read(contentStream);
+                if (patent.getDocumentId().toText().equals(docId)) {
+                    show(String.valueOf(dumpReader.getCurrentRecCount()+1), patent, fields, writer);
+                    break;
                 }
             }
         }
 
         dumpReader.close();
     }
-
+   
     /**
      * STDOUT requested Patent fields.
      * 
@@ -125,75 +115,74 @@ public class Look {
      * @throws IOException 
      * 
      */
-    private void show(Patent patent, String[] fields, Writer writer) throws IOException {
+    private void show(String sourceLoc, Patent patent, String[] fields, Writer writer) throws IOException {
+    	
         for (String field : fields) {
-            switch (field) {
-            case "raw":
-                writer.write("Patent RAW:\n");
-                //String prettyXml = prettyFormatXml(xmlDocStr);
-                //writer.write(prettyXml + "\n");
-                writer.write(rawDocStr);
-                writer.flush();
-                //System.out.println(prettyXml);
-                break;
-            case "id":
-                writer.write("ID:\t" + patent.getDocumentId() + "\n");
-                writer.flush();
-                //System.out.println("ID:\t" + patent.getDocumentId());
-                break;
-            case "title":
-                writer.write("TITLE:\t" + patent.getTitle() + "\n");
-                writer.flush();
-                //System.out.println("TITLE:\t" + patent.getTitle());
-                break;
-            case "abstract":
-                writer.write("ABSTRACT:\t" + patent.getAbstract() + "\n");
-                writer.flush();
-                //System.out.println("ABSTRACT:\t" + patent.getAbstract());
-                break;
-            case "description":
-                writer.write("DESCRIPTION:\t" + patent.getDescription().getAllPlainText() + "\n");
-                writer.flush();
-                //System.out.println("DESCRIPTION:\t" + patent.getDescription().getPlainText());
-                break;
-            case "citations":
-                writer.write("CITATIONS:\t" + patent.getCitations() + "\n");
-                writer.flush();
-                //System.out.println("CITATIONS:\t" + patent.getCitations());
-                break;
-            case "claims":
-                writer.write("CLAIMS:\t" + patent.getClaims() + "\n");
-                writer.flush();
-                //System.out.println("CLAIMS:\t" + patent.getClaims());
-                break;
-            case "assignee":
-                writer.write("ASSIGNEE:\t" + patent.getAssignee() + "\n");
-                writer.flush();
-                break;
-            case "inventor":
-                writer.write("INVENTORS:\t" + patent.getInventors() + "\n");
-                writer.flush();
-                break;
-            case "classification":
-                writer.write("CLASSIFICATION:\t" + patent.getClassification() + "\n");
-                writer.flush();
-                //System.out.println("CLASSIFICATION:\t" + patent.getClassification());
+        	
+        	String fieldName = field.toLowerCase();
+        	if (fieldName.endsWith("s")) {
+        		fieldName = fieldName.substring(0, fieldName.length()-1);
+        	}
+
+        	writer.write(sourceLoc);
+        	writer.write(" ---------------------------\n");
+
+            switch (fieldName) {
+            case "fields":
+            case "help":
+            case "?":
+            	writer.write("\nAvailable Patent Fields:\n\t");
+            	writer.write(Arrays.toString(new PlainText().definedFields().toArray()));
+            	writer.write("\n");
+            	break;
+            case "plaintext":
+            case "text":
+            	new PlainText().write(patent, writer);
                 break;
             case "object":
-                writer.write(patent.toString());
-                writer.flush();
+            	writer.write(patent.toString());
+                break;
+            case "json":
+            	writer.write("Patent JSON:\n");
+            	JsonMapperStream fileBuilder = new JsonMapperStream(true);
+        		fileBuilder.write(patent, writer);
+        		break;
+            case "jsonflat":
+            case "flatjson":
+            	writer.write("Patent JSON FLAT:\n");
+        		DocumentBuilder<Patent> fileBuilder2 = new JsonMapperFlat(true, false);
+        		fileBuilder2.write(patent, writer);
+        		break;
+            case "raw":
+            	writer.write("Patent RAW:\n");
+                //String prettyXml = prettyFormatXml(xmlDocStr);
+                //writer.write(prettyXml + "\n");
+            	IOUtils.copy(contentStream.getInputStream(), writer, "UTF-8");
+                break;
+            case "rawpart":
+            	writer.write("Patent RAW Parts:");
+            	for(String part: contentStream.getMarkedNames()) {
+                    writer.write(part);
+                	IOUtils.copy(contentStream.getInputStream(part), writer, "UTF-8");
+            	}
+                break;
+            case "id":
+            	new PlainText("doc_id").write(patent, writer);
                 break;
             case "family":
-                writer.write("FAMILY:\t\n");
-                //System.out.println("FAMILY:\t");
-                for (DocumentId docId : patent.getRelationIds()) {
-                    //System.out.println("\t" + docId.getDocIdType().name() + " : " + docId.toText() );
-                    writer.write("\t" + docId.getType().name() + " : " + docId.toText() + "\n");
-                }
-                writer.flush();
+            case "related":
+            	new PlainText("related_id").write(patent, writer);
                 break;
+            default:
+            	if (PlainText.isDefinedField(fieldName)) {
+            		new PlainText(fieldName).write(patent, writer);
+            	} else {
+            		System.err.println("Field Name not found " + field);
+            	}
+            	break;
             }
         }
+        writer.flush();
     }
 
     /**
@@ -220,7 +209,7 @@ public class Look {
         }
         return result;
     }
-
+    
     public static void main(String[] args) throws PatentReaderException, IOException {
         System.out.println("--- Start ---");
 
@@ -229,7 +218,7 @@ public class Look {
                 accepts("source").withRequiredArg().ofType(String.class).describedAs("zip file").required();
                 accepts("fields").withOptionalArg().ofType(String.class)
                         .describedAs(
-                                "comma seperated list of fields; options: [xml,object,id,title,abstract,description,citations,claims,assignee,inventor,classsification,family]")
+                                "comma seperated list of fields; options: [raw,xml,json,object,text]")
                         .defaultsTo("object");
                 accepts("num").withOptionalArg().ofType(Integer.class).describedAs("Record Number to retrive");
                 accepts("id").withOptionalArg().ofType(String.class).describedAs("Patent Id");
@@ -239,7 +228,6 @@ public class Look {
                 accepts("xmlBodyTag").withOptionalArg().ofType(String.class)
                         .describedAs("XML Body Tag which wrapps document: [us-patent, PATDOC, patent-application]")
                         .defaultsTo("us-patent");
-                accepts("out").withOptionalArg().ofType(String.class).describedAs("out file");
                 accepts("addHtmlEntities").withOptionalArg().ofType(Boolean.class)
                         .describedAs("Add Html Entities DTD to XML; Needed when reading Patents in PAP format.")
                         .defaultsTo(false);
@@ -256,6 +244,9 @@ public class Look {
         int limit = (Integer) options.valueOf("limit");
         String xmlBodyTag = (String) options.valueOf("xmlBodyTag");
         boolean addHtmlEntities = (Boolean) options.valueOf("addHtmlEntities");
+        
+       	//String format = (String) options.valueOf("format");
+        
         boolean aps = (Boolean) options.valueOf("aps");
 
         if (options.has("num")) {
@@ -282,12 +273,12 @@ public class Look {
                 //filters.addRule(new SuffixFilter("txt"));
                 break;
             default:
-                DumpFileXml dumpXml = new DumpFileXml(inputFile);
+            	DumpFileXml dumpXml = new DumpFileXml(inputFile);
     			if (PatentDocFormat.Pap.equals(patentDocFormat) || addHtmlEntities) {
     				dumpXml.addHTMLEntities();
     			}
                 dumpReader = dumpXml;
-                filters.addRule(new SuffixFileFilter("xml"));
+                filters.addRule(new SuffixFileFilter(new String[] {"xml", "sgm", "sgml"}));
             }
         }
 
@@ -321,4 +312,12 @@ public class Look {
         System.out.println("--- Finished ---");
     }
 
+
+    interface FileMethod {
+ 	   void method();
+    }
+
+    interface ObjectMethod {
+    	   void get();
+    }
 }
