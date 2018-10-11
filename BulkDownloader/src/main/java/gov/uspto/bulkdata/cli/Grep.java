@@ -55,17 +55,17 @@ import joptsimple.OptionSet;
  * 2) See or dump all raw values within a field
  *
  * Text Regex Search
- * --source="../download/ipg180102.zip" --regex="<br/>"
+ * --regex="<br/>"
  * --regex="classification-cpc-text"
  *
  * Only Display Matching Record Count
- * --source="../download/ipg180102.zip" --regex="\D\D09856571" --count
+ * --regex="\D\D09856571" --count
  * 
  * Only Display Matching Record iteration/locations
- * --source="../download/ipg180102.zip" --regex="\D\D09856571" --matching-records
+ * --regex="\D\D09856571" --matching-records
  * 
  * Parse XML using Xpath and Regex
- * --source="../download/ipg180102.zip" --xpath="//doc-number/text()" --regex="D0806350" --max-count=1
+ * --xpath="//doc-number/text()" --regex="D0806350" --max-count=1
  * 
  * --xpath="//description/p[contains(descendant-or-self::text(),'computer')]"
  * 
@@ -75,11 +75,14 @@ import joptsimple.OptionSet;
  * --xpath="//p/descendant::text()|//table/descendant::text()" --regex="[Tt]omato"\
  * --xpath="//classification-cpc-text/text()" --regex="^A21C"
  *
- * Find transitional phrases using regex
- * --source="../download/ipg180102.zip" --xpath="//description//text()" --regex="\b[A-Z][a-z ]{10,35}," --only-matching --no-source
- * 
+ * Dump all:
+ *    Transitional phrases: --xpath="//description//text()" --regex="\b[A-Z][a-z ]{10,35}," --only-matching --no-source
+ *    Brace Codes: --regex="\{[A-z ]+ \(.+?\)\}" --only-matching --no-source
+ * 	  Company Names: --xpath="//orgname/text()" --no-source
+ * 	  Company Names with CountryCode 'DE': --xpath="//addressbook/orgname[../address/country[text()='DE']]/text()" --no-source
+ *
  * Full XPath Lookup
- * --source="../download/ipg180102.zip" --xpath="//document-id/*[text() = 'D0806350']" --max-count=1
+ * --xpath="//document-id/*[text() = 'D0806350']" --max-count=1
  * --xpath="//document-id/*[contains(text(),'D0806350')]" --max-count=1
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
