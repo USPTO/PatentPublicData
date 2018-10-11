@@ -66,6 +66,15 @@ public class PlainText implements DocumentBuilder<Patent> {
     	}
     }
 
+    /**
+     * Get fields which are available to printout.
+     * 
+     * @return
+     */
+    public Set<String> definedFields(){
+    	return METHODS.keySet();
+    }
+
     public void invokeMethod(Patent patent, PrintWriter writer, String fieldName) throws IOException {
     	writer.printf(FIELD_FORMAT, fieldName);
 		METHODS.get(fieldName.toLowerCase()).invoke(patent, writer);
