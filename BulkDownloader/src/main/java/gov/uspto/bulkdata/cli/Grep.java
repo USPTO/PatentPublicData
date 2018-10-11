@@ -3,6 +3,7 @@ package gov.uspto.bulkdata.cli;
 import static java.util.Arrays.asList;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -86,7 +87,8 @@ import joptsimple.OptionSet;
  */
 public class Grep {
 
-    private ContentStream contentStream;
+    //private ContentStream contentStream;
+	private String rawRecord;
     private Match<MatchPattern> matcher;
     private boolean onlyCount = false;
 	private boolean onlyRecordNumber;
@@ -159,12 +161,12 @@ public class Grep {
     	
         for (; dumpReader.hasNext(); checked++) {
             try {
-            	contentStream = dumpReader.next();
+            	rawRecord = dumpReader.next();
             } catch (NoSuchElementException e) {
                 break;
             }
 
-            Reader reader = new InputStreamReader(contentStream.getInputStream(), "UTF-8");
+            Reader reader = new InputStreamReader(new ByteArrayInputStream(rawRecord.getBytes()), "UTF-8");
             String sourceTxt = dumpReader.getFile().getName() + ":" + dumpReader.getCurrentRecCount();
 
            	if (hasMatch(sourceTxt, reader, writer)) {

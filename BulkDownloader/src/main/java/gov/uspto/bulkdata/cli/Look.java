@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -13,7 +14,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -22,7 +22,6 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.MDC;
 
 import gov.uspto.common.filter.FileFilterChain;
-import gov.uspto.common.io.ContentStream;
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.PatentReader;
@@ -55,7 +54,8 @@ import joptsimple.OptionSet;
  */
 public class Look {
 	
-    private ContentStream contentStream;
+    //private ContentStream contentStream;
+	private String rawRecord;
 
     public void look(DumpReader dumpReader, int limit, Writer writer, String[] fields)
             throws PatentReaderException, IOException {
@@ -66,7 +66,8 @@ public class Look {
 			MDC.put("DOCID", dumpReader.getFile().getName() + ":" + dumpReader.getCurrentRecCount());
 
             try {
-            	contentStream = dumpReader.next();
+            	rawRecord = dumpReader.next();
+            	//contentStream = dumpReader.next();
             } catch (NoSuchElementException e) {
                 break;
             }
@@ -74,7 +75,8 @@ public class Look {
             if (fields.length == 1 && "raw".equalsIgnoreCase(fields[0]) || "rawparts".equalsIgnoreCase(fields[0])) {
                 show(String.valueOf(dumpReader.getCurrentRecCount()+1), null, fields, writer);
             } else {
-               Patent patent = patentReader.read(contentStream);
+               //Patent patent = patentReader.read(contentStream);
+               Patent patent = patentReader.read(new StringReader(rawRecord));
                show(String.valueOf(dumpReader.getCurrentRecCount()+1), patent, fields, writer);
             }
         }
@@ -90,13 +92,16 @@ public class Look {
         while (dumpReader.hasNext()) {
 
             try {
-            	contentStream = dumpReader.next();
+            	rawRecord = dumpReader.next();;
+            	//contentStream = dumpReader.next();
             } catch (NoSuchElementException e) {
                 break;
             }
 
-            if (contentStream != null){
-                Patent patent = patentReader.read(contentStream);
+            //if (contentStream != null){
+             //   Patent patent = patentReader.read(contentStream);
+            if (rawRecord != null) {
+            	Patent patent = patentReader.read(new StringReader(rawRecord));
                 if (patent.getDocumentId().toText().equals(docId)) {
                     show(String.valueOf(dumpReader.getCurrentRecCount()+1), patent, fields, writer);
                     break;
@@ -157,14 +162,19 @@ public class Look {
             	writer.write("Patent RAW:\n");
                 //String prettyXml = prettyFormatXml(xmlDocStr);
                 //writer.write(prettyXml + "\n");
-            	IOUtils.copy(contentStream.getInputStream(), writer, "UTF-8");
+            	
+            	//IOUtils.copy(contentStream.getInputStream(), writer, "UTF-8");
+            	
+            	writer.write(rawRecord);
                 break;
             case "rawpart":
             	writer.write("Patent RAW Parts:");
+            	/*
             	for(String part: contentStream.getMarkedNames()) {
                     writer.write(part);
                 	IOUtils.copy(contentStream.getInputStream(part), writer, "UTF-8");
             	}
+            	*/
                 break;
             case "id":
             	new PlainText("doc_id").write(patent, writer);
