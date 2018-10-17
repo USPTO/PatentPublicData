@@ -3,7 +3,7 @@ package gov.uspto.bulkdata;
 import java.io.IOException;
 import java.io.Writer;
 
-import gov.uspto.bulkdata.grep.DocumentException;
+import gov.uspto.bulkdata.tools.grep.DocumentException;
 
 public interface RecordProcessor {
 	//public void process(String sourceTxt, String rawRecord) throws DocumentException, IOException;

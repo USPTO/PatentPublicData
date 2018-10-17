@@ -1,4 +1,4 @@
-package gov.uspto.bulkdata.grep;
+package gov.uspto.bulkdata.tools.grep;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.io.Writer;
 import javax.xml.xpath.XPathExpressionException;
 
 import gov.uspto.bulkdata.RecordProcessor;
-import gov.uspto.bulkdata.grep.OutputMatchConfig.OUTPUT_MATCHING;
+import gov.uspto.bulkdata.tools.grep.OutputMatchConfig.OUTPUT_MATCHING;
 
 public class GrepRecordProcessor implements RecordProcessor {
 	

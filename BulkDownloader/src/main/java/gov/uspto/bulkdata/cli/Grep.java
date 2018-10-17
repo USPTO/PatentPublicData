@@ -11,9 +11,9 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.Priority;
 
 import gov.uspto.bulkdata.RecordReader;
-import gov.uspto.bulkdata.grep.DocumentException;
-import gov.uspto.bulkdata.grep.GrepConfig;
-import gov.uspto.bulkdata.grep.GrepRecordProcessor;
+import gov.uspto.bulkdata.tools.grep.DocumentException;
+import gov.uspto.bulkdata.tools.grep.GrepConfig;
+import gov.uspto.bulkdata.tools.grep.GrepRecordProcessor;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpReader;
 

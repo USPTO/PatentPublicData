@@ -1,4 +1,4 @@
-package gov.uspto.bulkdata.view;
+package gov.uspto.bulkdata.tools.view;
 
 import java.io.IOException;
 import java.io.StringReader;

@@ -1,4 +1,4 @@
-package gov.uspto.bulkdata.view;
+package gov.uspto.bulkdata.tools.view;
 
 import static java.util.Arrays.asList;
 

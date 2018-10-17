@@ -3,6 +3,7 @@ package gov.uspto.bulkdata.cli;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.ConsoleAppender;
@@ -12,41 +13,38 @@ import org.apache.log4j.Priority;
 
 import gov.uspto.bulkdata.RecordReader;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
-import gov.uspto.bulkdata.tools.view.ViewConfig;
-import gov.uspto.bulkdata.tools.view.ViewRecordProcessor;
-import gov.uspto.patent.PatentReader;
+import gov.uspto.bulkdata.tools.xslt.XsltConfig;
+import gov.uspto.bulkdata.tools.xslt.XsltRecordProcessor;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpReader;
 
 /**
- * VIEW is a CLI tool to view patents within Patent Bulk File.
+ * XSLT is a tool to transform Raw patent XML documents within a Patent Bulk File.
  * 
- * --input="../download/ipg180102.zip"  --skip=2 --limit=4 --type="text"
+ * --input="../download/ipg180102.zip"  --skip=0 --limit=1 --xslt="example.xslt" --prettyPrint=true
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
-public class View {
+public class Xslt {
 
-	private ViewConfig config;
+	private XsltConfig config;
 	private RecordReader recordReader;
-	private PatentReader patentReader;
 
-	public View(ViewConfig config) {
+	public Xslt(XsltConfig config) {
     	this.config = config;
     	this.recordReader = new RecordReader(config);
-    	this.patentReader = recordReader.getPatentReader();
     }
  
-    public void view() throws XPathExpressionException, PatentReaderException, IOException, DocumentException {
-    	recordReader.read(new ViewRecordProcessor(config, patentReader));
-    }
-    
-    public void view(DumpReader dumpReader, Writer writer) throws XPathExpressionException, PatentReaderException, IOException, DocumentException {
-    	recordReader.read(dumpReader, new ViewRecordProcessor(config, patentReader), writer);
+    public void transform() throws TransformerConfigurationException, PatentReaderException, IOException, DocumentException {
+    	recordReader.read(new XsltRecordProcessor(config));
     }
 
-    public static void main(String[] args) throws PatentReaderException, IOException, DocumentException, XPathExpressionException {
+    public void transform(DumpReader dumpReader, Writer writer) throws TransformerConfigurationException, PatentReaderException, IOException, DocumentException  {
+    	recordReader.read(dumpReader, new XsltRecordProcessor(config), writer);
+    }
+
+    public static void main(String[] args) throws PatentReaderException, IOException, DocumentException, XPathExpressionException, TransformerConfigurationException {
 	  /*
 	   * Disable Logging except for Errors.
 	   */
@@ -58,12 +56,12 @@ public class View {
 	  console.activateOptions();
 	  Logger.getRootLogger().addAppender(console);
 
-	  ViewConfig config = new ViewConfig();
+	  XsltConfig config = new XsltConfig();
 	  config.parseArgs(args);
 	  config.readOptions();
 
-	  View view = new View(config);
-	  view.view();
+	  Xslt xslt = new Xslt(config);
+	  xslt.transform();
     }
 
 }

@@ -1,4 +1,4 @@
-package gov.uspto.bulkdata.grep;
+package gov.uspto.bulkdata.tools.grep;
 
 import static java.util.Arrays.asList;
 
@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.xml.xpath.XPathExpressionException;
 
 import gov.uspto.bulkdata.BulkReaderArguments;
-import gov.uspto.bulkdata.grep.OutputMatchConfig.OUTPUT_MATCHING;
+import gov.uspto.bulkdata.tools.grep.OutputMatchConfig.OUTPUT_MATCHING;
 
 /**
  * Grep Arguments

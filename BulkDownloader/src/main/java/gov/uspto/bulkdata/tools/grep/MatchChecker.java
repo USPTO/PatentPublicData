@@ -1,4 +1,4 @@
-package gov.uspto.bulkdata.grep;
+package gov.uspto.bulkdata.tools.grep;
 
 import java.io.BufferedReader;
 import java.io.IOException;

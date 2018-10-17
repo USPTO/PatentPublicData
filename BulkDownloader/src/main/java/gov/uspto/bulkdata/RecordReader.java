@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
-import gov.uspto.bulkdata.grep.DocumentException;
+import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.common.filter.FileFilterChain;
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
