@@ -12,7 +12,6 @@ import com.google.common.base.Preconditions;
 public class MatchChecker implements Match<MatchPattern> {
 
 	protected Set<MatchPattern> matchPatterns;
-	private boolean printSource;
 
 	public MatchChecker(Set<MatchPattern> matchPatterns) {
 		setMatchPatterns(matchPatterns);
@@ -22,7 +21,6 @@ public class MatchChecker implements Match<MatchPattern> {
 	public void setMatchPatterns(Set<MatchPattern> patterns) {
 		Preconditions.checkNotNull(patterns);
 		Preconditions.checkArgument(!patterns.isEmpty());
-		this.printSource = patterns.iterator().next().isPrintSource();
 		this.matchPatterns = patterns;
 	}
 

@@ -98,12 +98,12 @@ public class MatchCheckerXML implements Match<MatchPattern> {
 			if (matchPattern instanceof MatchPatternXPath) {
 				MatchPatternXPath matchPattern2 = (MatchPatternXPath) matchPattern;
 				String value = (String) xpath.evaluate(matchPattern2.getXpathNodePath(), w3cdom, XPathConstants.STRING);
-				if (match(value)) {
+				if (matchPattern.hasMatch(value)) {
 					return true;
 				}
 			}
 			else if (matchPattern instanceof MatchXPathExpression) {
-				if (match(w3cdom)) {
+				if (matchPattern.hasMatch(w3cdom)) {
 					return true;
 				}
 			}

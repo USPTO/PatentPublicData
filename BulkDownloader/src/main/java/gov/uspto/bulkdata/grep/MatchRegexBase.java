@@ -15,10 +15,21 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 	private boolean printSource = true;
 	private boolean onlyMatching = false;
 
-	public MatchRegexBase(String regex) {
+	public MatchRegexBase(String regex, Boolean ignoreCase) {
 		Preconditions.checkNotNull(regex);
 		this.regex = regex;
-		this.matcher = Pattern.compile(regex).matcher("");
+		this.matcher = Pattern.compile(regex, ignoreCase ? Pattern.CASE_INSENSITIVE : 0).matcher("");
+	}
+
+	/**
+	 * Constructor
+	 * @param regexOrPatternName - only written in output to track the pattern which matched.
+	 * @param pattern
+	 */
+	public MatchRegexBase(String regexOrPatternName, Pattern pattern) {
+		Preconditions.checkNotNull(pattern);
+		this.regex = regexOrPatternName;
+		this.matcher = pattern.matcher("");
 	}
 
 	@Override
@@ -142,4 +153,5 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 		}
 		return false;
 	}
+
 }

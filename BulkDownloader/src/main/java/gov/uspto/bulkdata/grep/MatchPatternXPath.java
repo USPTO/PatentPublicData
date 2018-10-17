@@ -21,7 +21,7 @@ public class MatchPatternXPath extends MatchRegexBase {
 	private XPathExpression xpathExpression;
 
 	public MatchPatternXPath(String regex, String XPathNodePath) throws XPathExpressionException{
-		super(regex);
+		super(regex, false); // TODO set ignorecase from config.
 		Preconditions.checkNotNull(XPathNodePath);
 		this.XPathNodePath = XPathNodePath;
 		XPathFactory xpathFactory = XPathFactory.newInstance();
