@@ -16,6 +16,7 @@ import gov.uspto.bulkdata.grep.DocumentException;
 import gov.uspto.common.filter.FileFilterChain;
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
+import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
 import gov.uspto.patent.bulk.DumpFileXml;
@@ -101,4 +102,12 @@ public class RecordReader {
         dumpReader.close();
     }
 
+	public PatentReader getPatentReader() {
+		return new PatentReader(getPatentDocFormat());
+	}
+
+	public PatentDocFormat getPatentDocFormat() {
+		File inputFile = bulkReaderArgs.getInputFile().toFile();
+		return new PatentDocFormatDetect().fromFileName(inputFile);
+	}
 }

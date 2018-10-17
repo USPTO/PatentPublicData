@@ -50,6 +50,8 @@ import joptsimple.OptionSet;
  * --source="download/ipa150305.zip" --id=3 --fields=xml --out=download/patent.xml
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ * 
+ * @deprecated replaced with gov.uspto.bulkdata.cli.View
  *
  */
 public class Look {

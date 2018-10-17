@@ -34,7 +34,8 @@ public class BulkReaderArguments {
             		.describedAs("zip file, individual file or directory").required();
             	
 			opParser.accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("records to skip").defaultsTo(0);
-                
+			opParser.accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("record limit").defaultsTo(-1);
+
 			opParser.accepts("xmlBodyTag").withOptionalArg().ofType(String.class)
                         .describedAs("XML Body Tag which wrapps document: [us-patent, PATDOC, patent-application]")
                         .defaultsTo("us-patent");
@@ -72,7 +73,7 @@ public class BulkReaderArguments {
 
 		if (options.has("limit")) {
 	    	int limit = (Integer) options.valueOf("limit");
-	    	setSkipRecordCount(limit);
+	    	setRecordReadLimit(limit);
 		}
 
         boolean addHtmlEntities = (Boolean) options.valueOf("addHtmlEntities");
