@@ -153,6 +153,9 @@ public class GrepConfig extends BulkReaderArguments {
 		 if (XPath != null && regexList != null){
 			 RegexArguments regex = regexList.get(0);
 			 MatchPatternXPath matchPatternXpath = new MatchPatternXPath(regex.getRegex(), XPath);
+			 if (outputConfig.getOutputType() == OUTPUT_MATCHING.PATTERN_COVERED){
+				 matchPatternXpath.onlyMatching();
+			 }
 			 if (outputConfig.isNoSource()){
 				 matchPatternXpath.doNotPrintSource();
 			 }
@@ -165,6 +168,9 @@ public class GrepConfig extends BulkReaderArguments {
 		 else if (regexList != null) {
 			 RegexArguments regex = regexList.get(0);
 			 MatchRegexBase matchPatternBase = new MatchRegexBase(regex.getRegex(), regex.isIgnoreCase());
+			 if (outputConfig.getOutputType() == OUTPUT_MATCHING.PATTERN_COVERED){
+				 matchPatternBase.onlyMatching();
+			 }
 			 if (outputConfig.isNoSource()){
 				 matchPatternBase.doNotPrintSource();
 			 }
