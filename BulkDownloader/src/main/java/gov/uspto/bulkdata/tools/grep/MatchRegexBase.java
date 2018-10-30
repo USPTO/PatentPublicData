@@ -143,6 +143,12 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 
 				if (onlyMatching) {
 					writer.write(getMatch());
+					writer.write("\n");
+
+					while(hasNext()) {
+						writer.write(getMatch());
+						writer.write("\n");
+					}
 				}
 				else {
 					writer.write(text.toString());

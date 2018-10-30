@@ -64,6 +64,9 @@ public class MatchPatternXPath extends MatchRegexBase {
 					}
 
 					if (super.isOnlyMatching()) {
+						writer.write(super.getMatch());
+						writer.write("\n");
+						
 						while(super.hasNext()) {
 							writer.write(super.getMatch());
 							writer.write("\n");

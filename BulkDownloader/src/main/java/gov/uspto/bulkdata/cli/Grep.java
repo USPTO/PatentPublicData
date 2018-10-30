@@ -47,12 +47,16 @@ import gov.uspto.patent.bulk.DumpReader;
  * --xpath="//table/descendant::text()" --regex="[Tt]omato"
  * --xpath="//p/descendant::text()|//table/descendant::text()" --regex="[Tt]omato"\
  * --xpath="//classification-cpc-text/text()" --regex="^A21C"
+ * 
  *
  * Dump all:
  *    Transitional phrases: --xpath="//description//text()" --regex="\b[A-Z][a-z ]{10,35}," --only-matching --no-source
  *    Brace Codes: --regex="\{[A-z ]+ \(.+?\)\}" --only-matching --no-source
  * 	  Company Names: --xpath="//orgname/text()" --no-source
  * 	  Company Names with CountryCode 'DE': --xpath="//addressbook/orgname[../address/country[text()='DE']]/text()" --no-source
+ *    Last Names:  --xpath="//last-name/text()" --no-source
+ *    First Names: --xpath="//first-name/text()" --no-source
+ *    Trademarks: --xpath="//p/descendant::text()|//table/descendant::text()" --regex="\b((?:[a-z]-?)?[A-Z][\w'\/]{1,13}[\d\-_®™\/ ]*){1,5}\W?[®™]{1,2}" --only-matching --no-source
  *
  * Full XPath Lookup
  * --xpath="//document-id/*[text() = 'D0806350']" --max-count=1
