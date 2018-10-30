@@ -11,6 +11,7 @@ import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.serialize.DocumentBuilder;
 import gov.uspto.patent.serialize.JsonMapperFlat;
+import gov.uspto.patent.serialize.JsonMapperPATFT;
 import gov.uspto.patent.serialize.JsonMapperStream;
 import gov.uspto.patent.serialize.PlainText;
 
@@ -37,13 +38,11 @@ public class ViewRecordProcessor implements RecordProcessor {
 				} else {
 					writeOutputType(sourceTxt, patent, writer);	
 				}
-				
 			} catch (PatentReaderException e) {
 				e.printStackTrace();
-			}			
-
+			}
 		}
-		
+
 		writer.flush();
 		return true;
 	}
@@ -64,6 +63,12 @@ public class ViewRecordProcessor implements RecordProcessor {
             	JsonMapperStream fileBuilder = new JsonMapperStream(true);
         		fileBuilder.write(patent, writer);
         		break;
+			case "patft":
+			case "apft":
+            	//writer.write("Patent JSON:\n");
+				JsonMapperPATFT builderPatft = new JsonMapperPATFT(true, false);
+				builderPatft.write(patent, writer);
+        		break;
             case "json_flat":
             case "jsonflat":
             case "flatjson":
@@ -75,6 +80,8 @@ public class ViewRecordProcessor implements RecordProcessor {
             case "obj":
             	writer.write(patent.toString());
                 break;
+            default:
+            	throw new RuntimeException("Unknown output type: " + config.getOutputType().toLowerCase());
 		}
 	}
 

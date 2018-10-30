@@ -80,8 +80,6 @@ public class StringCaseUtil {
 			return null;
 		}
 
-		System.out.println("Title Text: " + text);
-		
 		/*
 		 * If text is not all capitals then maintain capitals
 		 */
