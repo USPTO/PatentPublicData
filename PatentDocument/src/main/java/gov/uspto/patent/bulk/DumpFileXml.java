@@ -79,7 +79,6 @@ public class DumpFileXml extends DumpFile {
     public void skip(int skipCount) throws IOException {
         for (int i = 1; i < skipCount; i++) {
             super.next();
-            currentRecCount++;
         }
     }
 
