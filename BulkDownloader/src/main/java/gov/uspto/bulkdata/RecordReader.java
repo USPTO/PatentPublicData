@@ -71,13 +71,19 @@ public class RecordReader {
         read(dumpReader, processor, writer);
 	}
 
-    public void read(DumpReader dumpReader, RecordProcessor processor, Writer writer) throws PatentReaderException, IOException, DocumentException {
+    public void read(DumpReader dumpReader, RecordProcessor processor, Writer writer) throws PatentReaderException, DocumentException, IOException {
  
     	dumpReader.open();
     	dumpReader.skip(bulkReaderArgs.getSkipRecordCount());
     	long sucessCount = 0;
     	long failCount = 0;
-    	
+
+    	 try {
+			processor.initialize(writer);
+		} catch (Exception e1) {
+			throw new PatentReaderException(e1);
+		}
+
         for (int checked=1; dumpReader.hasNext(); checked++) {
         	String sourceTxt = dumpReader.getFile().getName() + ":" + dumpReader.getCurrentRecCount();
  
@@ -97,6 +103,12 @@ public class RecordReader {
         		break;
         	}
         }
+
+        try {
+   		 	processor.finish(writer);
+		} catch (Exception e1) {
+			throw new PatentReaderException(e1);
+		}
 
         writer.close();
         dumpReader.close();

@@ -26,6 +26,11 @@ public class ViewRecordProcessor implements RecordProcessor {
 	}
 
 	@Override
+	public void initialize(Writer writer) throws IOException {
+		// empty.
+	}
+
+	@Override
 	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws IOException {
 		if ("raw".equals(config.getOutputType())) {
 			write(writer, " ---------------------------\n", "Patent RAW:\n", rawRecord);
@@ -45,6 +50,11 @@ public class ViewRecordProcessor implements RecordProcessor {
 
 		writer.flush();
 		return true;
+	}
+
+	@Override
+	public void finish(Writer writer) throws IOException {
+		// empty.
 	}
 
 	public void writeOutputType(String sourceText, Patent patent, Writer writer) throws IOException {
@@ -129,8 +139,4 @@ public class ViewRecordProcessor implements RecordProcessor {
 		writer.flush();
 	}
 
-	@Override
-	public void finish(Writer writer) throws IOException {
-		// empty.
-	}
 }

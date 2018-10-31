@@ -22,8 +22,12 @@ public class XsltRecordProcessor implements RecordProcessor {
 	private Templates template;
 	private Transformer transformer;
 
-	public XsltRecordProcessor(XsltConfig config) throws TransformerConfigurationException {
+	public XsltRecordProcessor(XsltConfig config) {
 		this.config = config;
+	}
+
+	@Override
+	public void initialize(Writer writer) throws IOException, TransformerConfigurationException {
 		this.factory = TransformerFactory.newInstance();
 		Source xslt = new StreamSource(config.getXsltFile().toFile());
 		this.template = factory.newTemplates(xslt);
@@ -47,9 +51,10 @@ public class XsltRecordProcessor implements RecordProcessor {
 		
 		return true;
 	}
-
+	
 	@Override
 	public void finish(Writer writer) throws IOException {
 		// empty.
 	}
+
 }

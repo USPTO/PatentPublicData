@@ -10,8 +10,15 @@ public interface RecordProcessor {
 	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws DocumentException, IOException;
 
 	/**
-	 * Indicates that the processing task is complete
+	 * Executes before processing task starts complete
+	 * @throws IOException 
+	 */
+	public void initialize(Writer writer) throws Exception;
+
+	/**
+	 * Executes when processing task is complete
 	 * @throws IOException 
 	 */
 	public void finish(Writer writer) throws IOException;
+
 }

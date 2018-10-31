@@ -82,6 +82,11 @@ public class GrepRecordProcessor implements RecordProcessor {
 	}
 
 	@Override
+	public void initialize(Writer writer) throws IOException {
+		// empty
+	}
+	
+	@Override
 	public void finish(Writer writer) throws IOException {
 		if (!matchArgs.isNoCount()) {
 			writer.write("\n\nRecords Matched: ");
@@ -92,4 +97,5 @@ public class GrepRecordProcessor implements RecordProcessor {
 			writer.flush();
 		}
 	}
+
 }
