@@ -6,10 +6,11 @@ import java.io.OutputStream;
 
 /**
  * Comments out line breaks within an OutputSteam
- * 
+ *
  * <p>
  * This class wraps an output stream, replacing all line breaks with '\\n'.
  * CR(Carriage Return '\r'), LF(Line Feed '\n') and CRLF('\r\n') become '\\n'
+ * and (NULL '\0') become new-line '\n'
  * <p>
  *
  * <p>
@@ -36,6 +37,8 @@ public class CommentNewlineOutputStream extends FilterOutputStream {
 			if (lastByte != '\r') {
 				out.write(newline);
 			}
+		} else if (i == '\0') {
+			out.write('\n');
 		} else {
 			out.write(i);
 		}
