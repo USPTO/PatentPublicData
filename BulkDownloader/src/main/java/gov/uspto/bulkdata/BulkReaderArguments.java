@@ -57,8 +57,13 @@ public class BulkReaderArguments {
 		if (args.length < 1) {
 			printHelp();
 		}
-		
-		options = opParser.parse(args);
+
+		try {
+			options = opParser.parse(args);
+		} catch (Exception e) { // joptsimple.UnrecognizedOptionException is not visible.
+			System.err.println(e.getMessage());
+			printHelp();
+		}
 
 		if (options.has("help")) {
 			printHelp();
@@ -72,9 +77,9 @@ public class BulkReaderArguments {
 		} catch (IOException e) {
 			// ignore
 			// e.printStackTrace();
-		}		
+		}
 	}
-	
+
 	public void readOptions() {
 		String inFileStr = (String) options.valueOf("input");
 		setInputFile(Paths.get(inFileStr));
