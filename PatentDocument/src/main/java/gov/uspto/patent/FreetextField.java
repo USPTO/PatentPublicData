@@ -23,8 +23,15 @@ public abstract class FreetextField implements TextField {
         }
     }
 
+    /**
+     * Get Plaintext using Default Settings
+     *
+     * @see {@link FreetextConfig#getDefault()}
+     *
+     * @return String - Freetext
+     */
     public String getPlainText() {
-        return textProcessor.getPlainText(getRawText(), FreetextConfig.getDefault());
+        return getPlainText(FreetextConfig.getDefault());
     }
 
     public String getPlainText(FreetextConfig textConfig) {

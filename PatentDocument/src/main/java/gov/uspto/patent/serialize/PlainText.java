@@ -11,6 +11,7 @@ import java.util.Set;
 
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.OrgSynonymGenerator;
+import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.Claim;
@@ -32,54 +33,71 @@ import gov.uspto.patent.model.entity.NamePerson;
  */
 public class PlainText implements DocumentBuilder<Patent> {
 
-    private static String FIELD_FORMAT = "%-30S : ";
-    private static String LIST_ITEM_SEPERATOR = " || "; // note comma and semicolons are used in citations.
-    private static String MISSING_DATE = "99999999";
-    private static String MISSING_VALUE = "null";
+	private static String FIELD_FORMAT = "%-30S : ";
+	private static String LIST_ITEM_SEPERATOR = " || "; // note comma and semicolons are used in citations.
+	private static String MISSING_DATE = "99999999";
+	private static String MISSING_VALUE = "null";
+	private static FreetextConfig TEXTCONFIG;
 
-    private static Map<String, WriteFieldMethod> METHODS;
-    static {
-    	METHODS = PlainText.setup();
-    }
+	private static Map<String, WriteFieldMethod> METHODS;
+	static {
+		METHODS = PlainText.setup();
+		TEXTCONFIG = new FreetextConfig(false);
+	}
 
-    private String[] wantedFieldNames;
-    
-	public PlainText() {
-		// empty.
-    }
+	private final boolean prettyPrint;
+	private final String[] wantedFieldNames;
+	
 
-	public PlainText(String... wantedFieldNames) {
-    	this.wantedFieldNames = wantedFieldNames;
-    }
+	public PlainText(Boolean prettyPrint) {
+		this(prettyPrint, new String[] {});
+	}
 
-    @Override
-    public void write(Patent patent, Writer writerIn) throws IOException {
-    	PrintWriter writer = new PrintWriter(writerIn);
-    	if (wantedFieldNames == null || wantedFieldNames.length == 0) {
-    		for(String fieldName: METHODS.keySet()) {
-    			invokeMethod(patent, writer, fieldName);
-    		}
-    	} else {
-    		for(String fieldName: wantedFieldNames) {
-    			invokeMethod(patent, writer, fieldName);
-    		}
-    	}
-    }
+	/**
+	 * 
+	 * @param prettyPrint      - newlines between fields
+	 * @param wantedFieldNames
+	 */
+	public PlainText(Boolean prettyPrint, String... wantedFieldNames) {
+		this.prettyPrint = prettyPrint;
+		this.wantedFieldNames = wantedFieldNames;
+		TEXTCONFIG = new FreetextConfig(prettyPrint);
+	}
 
-    /**
-     * Get fields which are available to printout.
-     * 
-     * @return
-     */
-    public Set<String> definedFields(){
-    	return METHODS.keySet();
-    }
+	@Override
+	public void write(Patent patent, Writer writerIn) throws IOException {
+		PrintWriter writer = new PrintWriter(writerIn);
+		if (wantedFieldNames == null || wantedFieldNames.length == 0) {
+			for (String fieldName : METHODS.keySet()) {
+				invokeMethod(patent, writer, fieldName);
+			}
+		} else {
+			for (String fieldName : wantedFieldNames) {
+				invokeMethod(patent, writer, fieldName);
+			}
+		}
+	}
 
-    public void invokeMethod(Patent patent, PrintWriter writer, String fieldName) throws IOException {
-    	writer.printf(FIELD_FORMAT, fieldName);
+	/**
+	 * Get fields which are available to printout.
+	 * 
+	 * @return
+	 */
+	public Set<String> definedFields() {
+		return METHODS.keySet();
+	}
+
+	public void invokeMethod(Patent patent, PrintWriter writer, String fieldName) throws IOException {
+		writer.printf(FIELD_FORMAT, fieldName);
+
 		METHODS.get(fieldName.toLowerCase()).invoke(patent, writer);
-		writer.write("\n");
-    }
+
+		if (prettyPrint) {
+			writer.write("\n");
+		} else {
+			writer.write("\\n");
+		}
+	}
 
 	private static Map<String, WriteFieldMethod> setup() {
 		Map<String, WriteFieldMethod> methods = new LinkedHashMap<String, WriteFieldMethod>();
@@ -90,7 +108,7 @@ public class PlainText implements DocumentBuilder<Patent> {
 			}
 		};
 		methods.put("doc_id", writeDocId);
-		
+
 		WriteFieldMethod writeDateProduced = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				writer.write(patent.getDateProduced().getDateText(DateTextType.RAW));
@@ -111,7 +129,7 @@ public class PlainText implements DocumentBuilder<Patent> {
 			}
 		};
 		methods.put("application_id", writeAppId);
-		
+
 		WriteFieldMethod writeAppDate = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				writer.write(patent.getApplicationId().getDate().getDateText(DateTextType.RAW));
@@ -132,14 +150,14 @@ public class PlainText implements DocumentBuilder<Patent> {
 			}
 		};
 		methods.put("related_id", writeRelatedIds);
-		
+
 		WriteFieldMethod writeOthers = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				PlainText.WriteDocIds(patent.getOtherIds(), writer);
 			}
 		};
 		methods.put("other_id", writeOthers);
-		
+
 		WriteFieldMethod writeApplicants = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				PlainText.WriteEntity(patent.getApplicants(), writer);
@@ -171,13 +189,13 @@ public class PlainText implements DocumentBuilder<Patent> {
 		WriteFieldMethod writeExaminer = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				List<Examiner> examiners = patent.getExaminers();
-				for(int i=0; i < examiners.size(); i++) {
+				for (int i = 0; i < examiners.size(); i++) {
 					Examiner examiner = examiners.get(i);
 					writer.write(examiner.getName().getName());
 					writer.write(" (");
 					writer.write(examiner.getDepartment());
 					writer.write(")");
-					if (i != examiners.size()-1) {
+					if (i != examiners.size() - 1) {
 						writer.write(LIST_ITEM_SEPERATOR);
 					}
 				}
@@ -188,42 +206,42 @@ public class PlainText implements DocumentBuilder<Patent> {
 		WriteFieldMethod writeCitations = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				List<Citation> citations = patent.getCitations();
-				for(int i=0; i < citations.size(); i++) {
+				for (int i = 0; i < citations.size(); i++) {
 					Citation cite = citations.get(i);
-					
+
 					writer.write(cite.getNum());
 					writer.write(" ");
 					writer.write(cite.getCitType().name());
 					writer.write(" ");
 					writer.write(cite.isExaminerCited() ? "examiner" : "applicant");
 					writer.write(" ");
-	                if (cite.getCitType() == CitationType.NPLCIT) {
-	                    NplCitation nplCite = (NplCitation) cite;
-	                    if (nplCite.getPatentId() != null) {
-	                    	writer.write("patent(");
-	                    	writer.write(nplCite.getPatentId().toTextNoKind());
-	                    	writer.write(")");
-	                    	writer.write(" ");
-	                    }
-	                    writer.write(nplCite.getCiteText());
-	                } else if (cite.getCitType() == CitationType.PATCIT) {
-	                    PatCitation patCite = (PatCitation) cite;
-	                    writer.write(patCite.getDocumentId().toTextNoKind());
-	        			writer.write(" ");
-	        			if (patCite.getDocumentId() != null){
-	        				writer.write(patCite.getDocumentId().getDate().getDateText(DateTextType.RAW));
-	        			} else {
-	        				writer.write(MISSING_DATE);
-	        			}
-	        			writer.write(" ");
-	        			if (patCite.getClassification() != null){
-	        				PlainText.writeClassifications(patCite.getClassification(), writer);
-	        			} else {
-	        				writer.write(MISSING_VALUE);
-	        			}
-	                }
+					if (cite.getCitType() == CitationType.NPLCIT) {
+						NplCitation nplCite = (NplCitation) cite;
+						if (nplCite.getPatentId() != null) {
+							writer.write("patent(");
+							writer.write(nplCite.getPatentId().toTextNoKind());
+							writer.write(")");
+							writer.write(" ");
+						}
+						writer.write(nplCite.getCiteText());
+					} else if (cite.getCitType() == CitationType.PATCIT) {
+						PatCitation patCite = (PatCitation) cite;
+						writer.write(patCite.getDocumentId().toTextNoKind());
+						writer.write(" ");
+						if (patCite.getDocumentId() != null) {
+							writer.write(patCite.getDocumentId().getDate().getDateText(DateTextType.RAW));
+						} else {
+							writer.write(MISSING_DATE);
+						}
+						writer.write(" ");
+						if (patCite.getClassification() != null) {
+							PlainText.writeClassifications(patCite.getClassification(), writer);
+						} else {
+							writer.write(MISSING_VALUE);
+						}
+					}
 
-					if (i != citations.size()-1) {
+					if (i != citations.size() - 1) {
 						writer.write(LIST_ITEM_SEPERATOR);
 					}
 				}
@@ -237,7 +255,7 @@ public class PlainText implements DocumentBuilder<Patent> {
 			}
 		};
 		methods.put("classification", writeClasses);
-		
+
 		WriteFieldMethod writeTitle = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				writer.write(patent.getTitle());
@@ -247,36 +265,39 @@ public class PlainText implements DocumentBuilder<Patent> {
 
 		WriteFieldMethod writeAbstract = new WriteFieldMethod() { // TODO check abstract field
 			public void invoke(Patent patent, Writer writer) throws IOException {
-				writer.write(patent.getAbstract().getRawText());
+				//writer.write(patent.getAbstract().getRawText());
+				writer.write(patent.getAbstract().getPlainText(TEXTCONFIG));
 			}
 		};
 		methods.put("abstract", writeAbstract);
 
 		WriteFieldMethod writeDescription = new WriteFieldMethod() { // TODO check description field
 			public void invoke(Patent patent, Writer writer) throws IOException {
-				writer.write(patent.getDescription().getAllRawText());
+				writer.write(patent.getDescription().getAllPlainText(TEXTCONFIG));
+				//writer.write(patent.getDescription().getAllRawText());
 			}
 		};
 		methods.put("description", writeDescription);
-		
+
 		WriteFieldMethod writeClaim = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				List<Claim> claims = patent.getClaims(); // TODO check claim field
-				for(int i=0; i < claims.size(); i++) {
+				for (int i = 0; i < claims.size(); i++) {
 					Claim claim = claims.get(i);
 					writer.write(claim.getId());
 					writer.write(" ");
 					writer.write(claim.getClaimType().toString());
 					writer.write(" ");
-					writer.write(claim.getRawText());
-					if (i != claims.size()-1) {
+					writer.write(claim.getPlainText(TEXTCONFIG));
+					//writer.write(claim.getRawText());
+					if (i != claims.size() - 1) {
 						writer.write(LIST_ITEM_SEPERATOR);
 					}
 				}
 			}
 		};
 		methods.put("claim", writeClaim);
-		
+
 		return methods;
 	}
 
@@ -284,32 +305,33 @@ public class PlainText implements DocumentBuilder<Patent> {
 		return METHODS.containsKey(fieldName.toLowerCase());
 	}
 
-	public static void writeClassifications(Collection<PatentClassification> classes, Writer writer) throws IOException {
+	public static void writeClassifications(Collection<PatentClassification> classes, Writer writer)
+			throws IOException {
 		int count = 0;
-		for(PatentClassification clazz: classes) {
+		for (PatentClassification clazz : classes) {
 			writer.write(clazz.getType().name());
 			writer.write("/");
 			writer.write(clazz.getTextNormalized());
-			if (count != classes.size()-1) {
+			if (count != classes.size() - 1) {
 				writer.write(","); // not LIST_ITEM_SEPERATOR since can be nested within another list.
 			}
-			count++;			
+			count++;
 		}
 	}
 
 	public static void WriteDocIds(Set<DocumentId> docIds, Writer writer) throws IOException {
 		int count = 0;
-		for(DocumentId docId: docIds) {
+		for (DocumentId docId : docIds) {
 			writer.write(docId.getType().toString());
 			writer.write(" ");
 			writer.write(docId.toTextNoKind());
 			writer.write(" ");
-			if (docId.getDate() != null){
+			if (docId.getDate() != null) {
 				writer.write(docId.getDate().getDateText(DateTextType.RAW));
 			} else {
 				writer.write(MISSING_DATE); // date is missing.
 			}
-			if (count != docIds.size()-1) {
+			if (count != docIds.size() - 1) {
 				writer.write(LIST_ITEM_SEPERATOR);
 			}
 			count++;
@@ -317,9 +339,9 @@ public class PlainText implements DocumentBuilder<Patent> {
 	}
 
 	public static <T extends Entity> void WriteEntity(List<T> entities, Writer writer) throws IOException {
-		for(int i=0; i < entities.size(); i++) {
+		for (int i = 0; i < entities.size(); i++) {
 			Entity entity = entities.get(i);
-			
+
 			if (entity instanceof Agent) {
 				if (entity.getName() instanceof NamePerson) {
 					writer.write("PERSON/");
@@ -347,13 +369,14 @@ public class PlainText implements DocumentBuilder<Patent> {
 			}
 			writer.write(")");
 
-			if (i != entities.size()-1) {
+			if (i != entities.size() - 1) {
 				writer.write(LIST_ITEM_SEPERATOR);
 			}
 		}
 	}
 
-    interface WriteFieldMethod {
-    	void invoke(Patent patent, Writer writer) throws IOException;
-    }
+	interface WriteFieldMethod {
+		void invoke(Patent patent, Writer writer) throws IOException;
+	}
+
 }

@@ -58,6 +58,8 @@ public class ViewRecordProcessor implements RecordProcessor {
 	}
 
 	public void writeOutputType(String sourceText, Patent patent, Writer writer) throws IOException {
+		Boolean prettyPrint = true;
+		
     	writer.write(sourceText);
     	writer.write(" ---------------------------\n");
 
@@ -65,25 +67,25 @@ public class ViewRecordProcessor implements RecordProcessor {
 			case "plaintext":
         	case "text":
         	case "txt":
-        		new PlainText().write(patent, writer);
+        		new PlainText(prettyPrint).write(patent, writer);
         		break;
 			case "json":
 			case "js":
             	//writer.write("Patent JSON:\n");
-            	JsonMapperStream fileBuilder = new JsonMapperStream(true);
+            	JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint);
         		fileBuilder.write(patent, writer);
         		break;
 			case "patft":
 			case "apft":
             	//writer.write("Patent JSON:\n");
-				JsonMapperPATFT builderPatft = new JsonMapperPATFT(true, false);
+				JsonMapperPATFT builderPatft = new JsonMapperPATFT(prettyPrint, false);
 				builderPatft.write(patent, writer);
         		break;
             case "json_flat":
             case "jsonflat":
             case "flatjson":
             	//writer.write("Patent JSON FLAT:\n");
-        		DocumentBuilder<Patent> fileBuilder2 = new JsonMapperFlat(true, false);
+        		DocumentBuilder<Patent> fileBuilder2 = new JsonMapperFlat(prettyPrint, false);
         		fileBuilder2.write(patent, writer);
         		break;
             case "object":
@@ -96,6 +98,8 @@ public class ViewRecordProcessor implements RecordProcessor {
 	}
 
 	public void writeField(String sourceText, Patent patent, Writer writer) throws IOException {
+		Boolean prettyPrint = true;
+		
     	writer.write(sourceText);
     	writer.write(" ---------------------------\n");
 		
@@ -111,19 +115,19 @@ public class ViewRecordProcessor implements RecordProcessor {
             case "help":
             case "?":
             	writer.write("\nAvailable Patent Fields:\n\t");
-            	writer.write(Arrays.toString(new PlainText().definedFields().toArray()));
+            	writer.write(Arrays.toString(new PlainText(prettyPrint).definedFields().toArray()));
             	writer.write("\n");
             	break;
             case "id":
-            	new PlainText("doc_id").write(patent, writer);
+            	new PlainText(prettyPrint, "doc_id").write(patent, writer);
                 break;
             case "family":
             case "related":
-            	new PlainText("related_id").write(patent, writer);
+            	new PlainText(prettyPrint, "related_id").write(patent, writer);
                 break;
             default:
             	if (PlainText.isDefinedField(fieldName)) {
-            		new PlainText(fieldName).write(patent, writer);
+            		new PlainText(prettyPrint, fieldName).write(patent, writer);
             	} else {
             		System.err.println("Field Name not found " + field);
             	}

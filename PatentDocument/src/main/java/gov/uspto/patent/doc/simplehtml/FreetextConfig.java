@@ -141,6 +141,16 @@ public class FreetextConfig {
 
 	/**
 	 * Default Configuration
+	 *
+     *<ul>
+     *<li>Pretty Print true, newlines between sections</li>
+     *<li>remove CROSSREF field</li>
+     *<li>replace FIGREF field with "Patent-Figure" text</li>
+	 *<li>replace CLAIMREF field with "Patent-Claim"</li>
+	 *<li>replace PATCITE field with "Patent-Citation"</li>
+     *<li>replace NPLCITE field with "Patent-Citation"</li>
+	 *<li>replace NPLCITE field with "Patent-Citation"</li>
+     *</ul> 
 	 * 
 	 * @return FreetextConfig
 	 */
