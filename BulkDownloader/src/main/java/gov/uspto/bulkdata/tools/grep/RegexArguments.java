@@ -50,10 +50,9 @@ public class RegexArguments {
 	 */
 	public static List<RegexArguments> parseString(String regexesStr) {
         String[] regexes = regexesStr.split("'\\s*,\\s*'");
-        Matcher flagMatcher = Pattern.compile("^(.+)~([if]+)$").matcher("");
+        Matcher flagMatcher = Pattern.compile("^\'?(.+)~([if]+)\'?$").matcher("");
         List<RegexArguments> regexs = new ArrayList<RegexArguments>(regexes.length+1);
         for(String regex: regexes) {
-        	regex = regex.replaceFirst("'$", "");
         	String flags = null;
         	if (flagMatcher.reset(regex).matches()) {
         		regex = flagMatcher.group(1);
