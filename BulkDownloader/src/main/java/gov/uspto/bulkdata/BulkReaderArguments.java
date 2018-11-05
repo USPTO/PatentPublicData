@@ -2,6 +2,7 @@ package gov.uspto.bulkdata;
 
 import static java.util.Arrays.asList;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,40 +24,57 @@ public class BulkReaderArguments {
 	private boolean htmlEntities = false;
 	private boolean apsPatent;
 
-	public BulkReaderArguments(){
+	public BulkReaderArguments() {
 		opParser = new OptionParser(true);
 	}
 
 	public void buildArgs() {
-			opParser.acceptsAll( asList( "input", "f", "file" ) )
-            		.withRequiredArg()
-            		.ofType(String.class)
-            		.describedAs("zip file, individual file or directory").required();
-            	
-			opParser.accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("records to skip").defaultsTo(0);
-			opParser.accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("record limit").defaultsTo(-1);
+		opParser.acceptsAll(asList("input", "f", "file")).withRequiredArg().ofType(String.class)
+				.describedAs("zip file, individual file or directory").required();
 
-			opParser.accepts("xmlBodyTag").withOptionalArg().ofType(String.class)
-                        .describedAs("XML Body Tag which wrapps document: [us-patent, PATDOC, patent-application]")
-                        .defaultsTo("us-patent");
-                
-			opParser.accepts("addHtmlEntities").withOptionalArg().ofType(Boolean.class)
-                        .describedAs("Add Html Entities DTD to XML; Needed when reading Patents in PAP format.")
-                        .defaultsTo(false);
-                
-			opParser.accepts("aps").withOptionalArg().ofType(Boolean.class)
-                        .describedAs("Read APS - Greenbook Patent Document Format").defaultsTo(false);
+		opParser.accepts("skip").withOptionalArg().ofType(Integer.class).describedAs("records to skip").defaultsTo(0);
+		opParser.accepts("limit").withOptionalArg().ofType(Integer.class).describedAs("record limit").defaultsTo(-1);
 
-			opParser.acceptsAll(asList("out", "output", "outfile"))
-	            	.withOptionalArg()
-	            	.ofType(String.class)
-	            	.describedAs("out file");
+		opParser.accepts("xmlBodyTag").withOptionalArg().ofType(String.class)
+				.describedAs("XML Body Tag which wrapps document: [us-patent, PATDOC, patent-application]")
+				.defaultsTo("us-patent");
+
+		opParser.accepts("addHtmlEntities").withOptionalArg().ofType(Boolean.class)
+				.describedAs("Add Html Entities DTD to XML; Needed when reading Patents in PAP format.")
+				.defaultsTo(false);
+
+		opParser.accepts("aps").withOptionalArg().ofType(Boolean.class)
+				.describedAs("Read APS - Greenbook Patent Document Format").defaultsTo(false);
+
+		opParser.acceptsAll(asList("out", "output", "outfile")).withOptionalArg().ofType(String.class)
+				.describedAs("out file");
+
+		opParser.acceptsAll(asList("help", "?")).withOptionalArg().ofType(Boolean.class).describedAs("Print Help")
+				.defaultsTo(false);
 	}
 
-	public void parseArgs(String... arguments) {
-		options = opParser.parse(arguments);
+	public void parseArgs(String... args) {
+		if (args.length < 1) {
+			printHelp();
+		}
+		
+		options = opParser.parse(args);
+
+		if (options.has("help")) {
+			printHelp();
+		}
 	}
 
+	public void printHelp() {
+		try {
+			opParser.printHelpOn(System.out);
+			System.exit(1);
+		} catch (IOException e) {
+			// ignore
+			// e.printStackTrace();
+		}		
+	}
+	
 	public void readOptions() {
 		String inFileStr = (String) options.valueOf("input");
 		setInputFile(Paths.get(inFileStr));
@@ -67,24 +85,25 @@ public class BulkReaderArguments {
 		}
 
 		if (options.has("skip")) {
-	    	int skip = (Integer) options.valueOf("skip");
-	    	setSkipRecordCount(skip);
+			int skip = (Integer) options.valueOf("skip");
+			setSkipRecordCount(skip);
 		}
 
 		if (options.has("limit")) {
-	    	int limit = (Integer) options.valueOf("limit");
-	    	setRecordReadLimit(limit);
+			int limit = (Integer) options.valueOf("limit");
+			setRecordReadLimit(limit);
 		}
 
-        boolean addHtmlEntities = (Boolean) options.valueOf("addHtmlEntities");
-        setAddHtmlEntities(addHtmlEntities);
-        
-        boolean aps = (Boolean) options.valueOf("aps");
-        setApsPatent(aps);
+		boolean addHtmlEntities = (Boolean) options.valueOf("addHtmlEntities");
+		setAddHtmlEntities(addHtmlEntities);
+
+		boolean aps = (Boolean) options.valueOf("aps");
+		setApsPatent(aps);
 	}
 
-	private void setOutputFile(Path filePath) {
-		Preconditions.checkArgument(filePath.toFile().canRead(), "Unable to read file: "+ filePath);
+	public void setOutputFile(Path filePath) {
+		Preconditions.checkArgument(filePath.toAbsolutePath().getParent().toFile().canWrite(),
+				"Unable to create file, directory is not writable: " + filePath.toAbsolutePath());
 		this.outputFile = filePath;
 	}
 
@@ -93,14 +112,14 @@ public class BulkReaderArguments {
 	}
 
 	public void setInputFile(Path filePath) {
-		Preconditions.checkArgument(filePath.toFile().canWrite(), "Unable to write to file: "+ filePath);
+		Preconditions.checkArgument(filePath.toFile().canWrite(), "Unable to write to file: " + filePath);
 		this.inputFile = filePath;
 	}
 
 	public Path getInputFile() {
 		return this.inputFile;
 	}
-	
+
 	public void setSkipRecordCount(int skipRecordCount) {
 		this.skipRecordCount = skipRecordCount;
 	}
@@ -118,7 +137,7 @@ public class BulkReaderArguments {
 	}
 
 	public void setAddHtmlEntities(boolean addHtmlEntities) {
-		this.htmlEntities  = addHtmlEntities;
+		this.htmlEntities = addHtmlEntities;
 	}
 
 	public Boolean addHtmlEntities() {
