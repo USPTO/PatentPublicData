@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.jsoup.select.Evaluator;
+import org.jsoup.select.QueryParser;
+
 /**
  * XML/HTML to Freetext Configuration
  * 
@@ -14,14 +17,23 @@ import java.util.Map;
  */
 public class FreetextConfig {
 
-    private Map<String, String> replacements = new HashMap<String, String>();
+    private Map<Evaluator, String> replacements = new HashMap<Evaluator , String>();
     private Collection<String> remove = new HashSet<String>();
     private Collection<HtmlFieldType> removeTypes = new HashSet<HtmlFieldType>();
     private boolean wrapText = false;
     private int wrapWidth = 0;
+	private final Boolean prettyPrint;
 
-    public FreetextConfig() {
-        // empty.
+	/**
+	 * 
+	 * @param prettyPrint -- print newlines, else print commented-out newlines.
+	 */
+    public FreetextConfig(Boolean prettyPrint) {
+    	this.prettyPrint = prettyPrint;
+    }
+
+    public Boolean isPrettyPrint() {
+    	return this.prettyPrint;
     }
 
     /**
@@ -32,7 +44,8 @@ public class FreetextConfig {
      * @return
      */
     public FreetextConfig replace(String xmlElementName, String replacementText) {
-        replacements.put(xmlElementName, replacementText);
+    	replacements.put(QueryParser.parse(xmlElementName), replacementText);
+        //replacements.put(xmlElementName, replacementText);
         return this;
     }
 
@@ -45,7 +58,7 @@ public class FreetextConfig {
      */
     public FreetextConfig replace(HtmlFieldType fieldType, String replacementText) {
     	for(String key: fieldType.getNodeNames()){
-    		replacements.put(key, replacementText);
+    		replacements.put(QueryParser.parse(key), replacementText);
     	}
         return this;
     }
@@ -106,7 +119,7 @@ public class FreetextConfig {
         return remove;
     }
 
-    public Map<String, String> getReplaceElements() {
+    public Map<Evaluator, String> getReplaceElements() {
         return replacements;
     }
 
@@ -132,8 +145,8 @@ public class FreetextConfig {
 	 * @return FreetextConfig
 	 */
 	public static FreetextConfig getDefault(){
-		FreetextConfig config = new FreetextConfig();
-		
+		FreetextConfig config = new FreetextConfig(true);
+
 		config.remove(HtmlFieldType.CROSSREF);
 
 		config.replace(HtmlFieldType.FIGREF, "Patent-Figure");

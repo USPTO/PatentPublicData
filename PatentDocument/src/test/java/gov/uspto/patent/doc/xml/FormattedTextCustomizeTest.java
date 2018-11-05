@@ -23,7 +23,7 @@ public class FormattedTextCustomizeTest {
 
         StringBuilder expectStb = new StringBuilder();
         expectStb.append("<h4 id=\"h-1\">SECTION TITLE</h4>");
-        expectStb.append("<p level=\"\"><span id=\"MTH-0001\" class=\"math\" format=\"mathml\">");
+        expectStb.append("<p><span id=\"MTH-0001\" class=\"math\" format=\"mathml\">");
         expectStb.append("<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math></span></p>");
         String expect = expectStb.toString();
 
@@ -47,7 +47,7 @@ public class FormattedTextCustomizeTest {
         expectStb.append("  math(mrow(mrow(msup(mi(x)mn(2))mo(+)mrow(mn(4)mo(+)mi(x))mo(+)mn(4))mo(=)mn(0)))  \n");
         String expect = expectStb.toString();
 
-        String actual = format.getPlainText(stb.toString(), new FreetextConfig());
+        String actual = format.getPlainText(stb.toString(), new FreetextConfig(true));
         //assertEquals(expect, actual);
     }
 
@@ -62,9 +62,9 @@ public class FormattedTextCustomizeTest {
                 "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>&InvisibleTimes;</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>");
         stb.append("</maths></p>");
 
-        String expect = "\nSECTION TITLE\n\n\n";
+        String expect = "\nSECTION TITLE\n\n";
 
-        FreetextConfig textConfig = new FreetextConfig();
+        FreetextConfig textConfig = new FreetextConfig(true);
         textConfig.remove(HtmlFieldType.MATHML);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
@@ -81,7 +81,7 @@ public class FormattedTextCustomizeTest {
 
         String expect = "\nSection Text here\n";
 
-        FreetextConfig textConfig = new FreetextConfig();
+        FreetextConfig textConfig = new FreetextConfig(true);
         textConfig.remove(HtmlFieldType.HEADER);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
@@ -100,10 +100,49 @@ public class FormattedTextCustomizeTest {
         expectStb.append("\nSECTION TITLE\n\n\n\n");
         String expect = expectStb.toString();
 
-        FreetextConfig textConfig = new FreetextConfig();
+        FreetextConfig textConfig = new FreetextConfig(true);
         textConfig.remove(HtmlFieldType.TABLE);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
         //assertEquals(expect, actual);
     }
+    
+    @Test
+    public void plaintextNonPrettyPrint() {
+    	Boolean prettyPrint = false;
+    	
+        FormattedText format = new FormattedText();
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("<p id=\"h-1\">SECTION TITLE</p>");
+        stb.append("<p><table><row><entry>text</entry></row></table></p>");
+
+        String expect = "\\nSECTION TITLE\\n\\n\\ntext\\n\\n\\n\\n";
+
+        FreetextConfig textConfig = new FreetextConfig(prettyPrint);
+
+        String actual = format.getPlainText(stb.toString(), textConfig);
+        assertEquals(expect, actual);
+    }
+    
+    @Test
+    public void plaintextReplace() {
+    	Boolean prettyPrint = true;
+    	
+        FormattedText format = new FormattedText();
+
+        StringBuilder stb = new StringBuilder();
+        stb.append("<p>");
+        stb.append("<a class=\"figref\">1232<a>");
+        stb.append("</p>");
+
+        String expect = "\nFIG-REF\n";
+
+        FreetextConfig textConfig = new FreetextConfig(prettyPrint);
+        textConfig.replace(HtmlFieldType.FIGREF, "FIG-REF");
+
+        String actual = format.getPlainText(stb.toString(), textConfig);
+        assertEquals(expect, actual);
+    }
+    
 }
