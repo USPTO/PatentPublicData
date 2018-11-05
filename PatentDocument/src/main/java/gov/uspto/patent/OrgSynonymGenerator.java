@@ -329,8 +329,9 @@ public class OrgSynonymGenerator {
 		}
 	}
 
-	private static List<String> ChinaRegisteredLocs = Arrays.asList("beijing", "chengdu", "chongqing", "dongguan", "guangzhou", "hangzhou", "hong kong", "hk", "jiangsu", 
-			"jingdezhen", "mianyang", "shanghai", "shenyang", "shenzhen", "suzhou", "tianjin", "qinhuangdao", "wuhan", "xi'an", "xiamen", "zhengzhou");
+	private static List<String> ChinaRegisteredLocs = Arrays.asList("cn", "hk", "beijing", "changzhou", "chengdu", "chongqing", "dongguan",
+			"guangzhou", "hangzhou", "hong kong", "hui zhou", "huizhou", "jiashan", "jiangsu", "jingdezhen", "kunshan", "mianyang", "pudong",
+			"shanghai", "shenyang",	"shenzhen", "suzhou", "tianjin", "qinhuangdao", "wuhan", "wuxi", "xi'an", "xiamen", "zhengzhou");
 	/**
 	 * Remove the Registered location from Chinese Company Names.
 	 * 
@@ -352,7 +353,7 @@ public class OrgSynonymGenerator {
 						//System.out.println(" China Name fix: " + name.getName() + " --->  " + nameStr);
 						name.addSynonymNorm(updatedName);
 					} else {
-						System.out.println("Possible China City Not Defined: " + bracketWord);
+						//System.out.println("Possible China City Not Defined: " + bracketWord);
 					}
 				}
 			} else {
