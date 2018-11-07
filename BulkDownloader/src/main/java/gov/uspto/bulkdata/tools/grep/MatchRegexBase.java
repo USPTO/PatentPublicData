@@ -14,6 +14,7 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 	private boolean partial = true;
 	private boolean printSource = true;
 	private boolean onlyMatching = false;
+	private boolean onlyMatchingNode = false; // print matching node xml.
 
 	public MatchRegexBase(String regex, Boolean ignoreCase) {
 		Preconditions.checkNotNull(regex);
@@ -60,6 +61,16 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 	@Override
 	public boolean isOnlyMatching() {
 		return onlyMatching;
+	}
+
+	@Override
+	public void onlyMatchingNode() {
+		onlyMatchingNode = true;
+	}
+
+	@Override
+	public boolean isMatchingNode() {
+		return onlyMatchingNode;
 	}
 	
 	/**
@@ -159,5 +170,7 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 		}
 		return false;
 	}
+
+
 
 }

@@ -9,6 +9,10 @@ public interface MatchPattern<T> {
 	
 	public String getMatch();
 
+	public void onlyMatchingNode();
+
+	public boolean isMatchingNode();
+	
 	public void onlyMatching();
 	
 	public boolean isOnlyMatching();

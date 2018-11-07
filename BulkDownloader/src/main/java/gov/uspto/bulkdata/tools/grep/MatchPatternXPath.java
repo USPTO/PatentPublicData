@@ -1,8 +1,15 @@
 package gov.uspto.bulkdata.tools.grep;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -63,7 +70,11 @@ public class MatchPatternXPath extends MatchRegexBase {
 						writer.write("] - ");
 					}
 
-					if (super.isOnlyMatching()) {
+					if (super.isMatchingNode()) {
+						writer.write(nodeToString(node.getParentNode()));
+						writer.write("\n");
+					}
+					else if (super.isOnlyMatching()) {
 						writer.write(super.getMatch());
 						writer.write("\n");
 						
@@ -85,5 +96,18 @@ public class MatchPatternXPath extends MatchRegexBase {
 		} catch (XPathExpressionException e) {
 			throw new DocumentException(e);
 		}
+	}
+
+	private String nodeToString(Node node) {
+		StringWriter sw = new StringWriter();
+		try {
+			Transformer t = TransformerFactory.newInstance().newTransformer();
+			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			t.setOutputProperty(OutputKeys.INDENT, "no");
+			t.transform(new DOMSource(node), new StreamResult(sw));
+		} catch (TransformerException te) {
+			System.out.println("nodeToString Transformer Exception");
+		}
+		return sw.toString();
 	}
 }

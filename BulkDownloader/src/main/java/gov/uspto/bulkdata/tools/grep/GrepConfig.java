@@ -77,6 +77,12 @@ public class GrepConfig extends BulkReaderArguments {
 	    	.describedAs("Only full records which match")
 	    	.defaultsTo(false);
 
+		opParser.acceptsAll( asList( "matching-node-xml", "node-xml", "matching-xml") )
+    	.withOptionalArg()
+    	.ofType(Boolean.class)
+    	.describedAs("Print matching node's xml")
+    	.defaultsTo(false);
+
 		opParser.acceptsAll( asList( "no-source", "no-filename", "no-location", "h" ) )
         	.withOptionalArg()
         	.ofType(Boolean.class)
@@ -115,7 +121,11 @@ public class GrepConfig extends BulkReaderArguments {
 		}
 		else if (options.has("matching-record-location")) {
 			outputConfig = new OutputMatchConfig(OUTPUT_MATCHING.RECORD_LOCATION);
-		} else {
+		} 
+		else if (options.has("matching-node-xml")) {
+			outputConfig = new OutputMatchConfig(OUTPUT_MATCHING.NODE_XML);
+		}
+		else {
 			outputConfig = new OutputMatchConfig(OUTPUT_MATCHING.PATTERN_CONTAINED);
 		}
 
@@ -156,6 +166,9 @@ public class GrepConfig extends BulkReaderArguments {
 			 if (outputConfig.getOutputType() == OUTPUT_MATCHING.PATTERN_COVERED){
 				 matchPatternXpath.onlyMatching();
 			 }
+			 if (outputConfig.getOutputType() == OUTPUT_MATCHING.NODE_XML) {
+				 matchPatternXpath.onlyMatchingNode();
+			 }
 			 if (outputConfig.isNoSource()){
 				 matchPatternXpath.doNotPrintSource();
 			 }
@@ -184,6 +197,9 @@ public class GrepConfig extends BulkReaderArguments {
 			 MatchXPathExpression matchXPathPattern = new MatchXPathExpression(XPath);
 			 if (outputConfig.isNoSource()){
 				 matchXPathPattern.doNotPrintSource();
+			 }
+			 if (outputConfig.getOutputType() == OUTPUT_MATCHING.NODE_XML) {
+				 matchXPathPattern.onlyMatchingNode();
 			 }
 			 patterns.add(matchXPathPattern);
 			 return new MatchCheckerXML(patterns);

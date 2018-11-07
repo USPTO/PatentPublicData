@@ -47,7 +47,7 @@ import gov.uspto.patent.bulk.DumpReader;
  * --xpath="//table/descendant::text()" --regex="[Tt]omato"
  * --xpath="//p/descendant::text()|//table/descendant::text()" --regex="[Tt]omato"\
  * --xpath="//classification-cpc-text/text()" --regex="^A21C"
- * 
+ * --xpath="//invention-title/text()" --regex="Food" --matching-xml
  *
  * Dump all:
  *    Transitional phrases: --xpath="//description//text()" --regex="\b[A-Z][a-z ]{10,35}," --only-matching --no-source
@@ -57,6 +57,7 @@ import gov.uspto.patent.bulk.DumpReader;
  *    Last Names:  --xpath="//last-name/text()" --no-source
  *    First Names: --xpath="//first-name/text()" --no-source
  *    Trademarks: --xpath="//p/descendant::text()|//table/descendant::text()" --regex="\b((?:[a-z]-?)?[A-Z][\w'\/]{1,13}[\d\-_®™\/ ]*){1,5}\W?[®™]{1,2}" --only-matching --no-source
+ *    NPL Patent/Application Citations: --xpath="//nplcit/othercit/text()" --regex="\b([Pp]at\.|[P]atent\b|[Aa]pp\.|[Aa]pplication\b|PCT)" --no-source 
  *
  * Full XPath Lookup
  * --xpath="//document-id/*[text() = 'D0806350']" --max-count=1

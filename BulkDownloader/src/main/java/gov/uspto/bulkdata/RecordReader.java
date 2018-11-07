@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.slf4j.MDC;
 
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.common.filter.FileFilterChain;
@@ -87,6 +88,8 @@ public class RecordReader {
         for (int checked=1; dumpReader.hasNext(); checked++) {
         	String sourceTxt = dumpReader.getFile().getName() + ":" + dumpReader.getCurrentRecCount();
  
+			MDC.put("DOCID", sourceTxt);
+
         	String rawRecord;
             try {
             	rawRecord = dumpReader.next();
@@ -95,7 +98,12 @@ public class RecordReader {
             }
 
             Boolean success = processor.process(sourceTxt, rawRecord, writer);
-            if (success) { sucessCount++; } else { failCount++; }
+            if (success) {
+            	sucessCount++;
+            } else {
+            	//System.err.println("Record Failed: "+ sourceTxt);
+            	failCount++;
+            }
 
         	if (checked == bulkReaderArgs.getRecordReadLimit() || 
         			sucessCount == bulkReaderArgs.getSucessLimit() || 
