@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import com.google.common.base.Preconditions;
 
 import gov.uspto.bulkdata.BulkReaderArguments;
+import joptsimple.OptionParser;
 
 /**
  * Transformer Config from Command-line args
@@ -30,12 +31,12 @@ public class TransformerConfig extends BulkReaderArguments {
 	private Path outputDir;
 	private String outputType = "json";
 
-	public TransformerConfig() {
-		buildArgs();
+	public OptionParser buildArgs() {
+		return buildArgs(new OptionParser());
 	}
 
-	public void buildArgs() {
-		super.buildArgs();
+	public OptionParser buildArgs(OptionParser opParser) {
+		super.buildArgs(opParser);
 		opParser.accepts("outDir").withRequiredArg().ofType(String.class).describedAs("Output Directory").required();
 
 		opParser.acceptsAll(asList("outBulk", "outputBulkFile")).withOptionalArg().ofType(Boolean.class)
@@ -52,6 +53,8 @@ public class TransformerConfig extends BulkReaderArguments {
 
 		opParser.accepts("type").withOptionalArg().ofType(String.class)
 				.describedAs("types options: [raw,xml,json,json_flat,patft,object,text]").defaultsTo("json");
+		
+		return opParser;
 	}
 
 	public void readOptions() {

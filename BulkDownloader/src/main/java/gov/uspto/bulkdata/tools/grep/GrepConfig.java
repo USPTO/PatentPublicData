@@ -10,12 +10,14 @@ import javax.xml.xpath.XPathExpressionException;
 
 import gov.uspto.bulkdata.BulkReaderArguments;
 import gov.uspto.bulkdata.tools.grep.OutputMatchConfig.OUTPUT_MATCHING;
+import joptsimple.OptionParser;
 
 /**
  * Grep Arguments
  * 
  *<code><pre>
  * GrepArguments grepArgs = new GrepArguments();
+ * grepArgs.buildArgs();
  * grepArgs.parseArgs(args);
  * grepArgs.readOptions();
  *</pre></code>
@@ -29,12 +31,12 @@ public class GrepConfig extends BulkReaderArguments {
 	private List<RegexArguments> regexList;
 	private OutputMatchConfig outputConfig;
 
-	public GrepConfig() {
-		buildArgs();
+	public OptionParser buildArgs() {
+		return buildArgs(new OptionParser());
 	}
 
-	public void buildArgs() {
-		super.buildArgs();
+	public OptionParser buildArgs(OptionParser opParser) {
+		opParser = super.buildArgs(opParser);
 
 		opParser.accepts("xpath").withOptionalArg().ofType(String.class).describedAs("XPath - XML node to perform match on");
 
@@ -88,8 +90,10 @@ public class GrepConfig extends BulkReaderArguments {
         	.ofType(Boolean.class)
         	.describedAs("Do not output counts as well as source and location of match; only outputs matches")
         	.defaultsTo(false);
+		
+		return opParser;
 	}
-	
+
 	public void readOptions() {
 		super.readOptions();
 
@@ -106,8 +110,10 @@ public class GrepConfig extends BulkReaderArguments {
         	setRegex(RegexArguments.parseString(regexStr));
         }
 
-        int maxCount = (Integer) options.valueOf("max-count");
-        setSucessLimit(maxCount);
+        if (options.has("max-count")) {
+        	int maxCount = (Integer) options.valueOf("max-count");
+        	setSucessLimit(maxCount);
+        }
 
         OutputMatchConfig outputConfig = null;
 		if (options.has("matching-record")) {
@@ -205,8 +211,8 @@ public class GrepConfig extends BulkReaderArguments {
 			 return new MatchCheckerXML(patterns);
 		 } 
 		 else {
-			 System.err.println("Not Pattern Defined, xpath and/or regex");
-			 System.exit(-1);
+			 //System.err.println("Not Pattern Defined, xpath and/or regex");
+			 //System.exit(-1);
 			 return null;
 		 }
 

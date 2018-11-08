@@ -3,6 +3,7 @@ package gov.uspto.bulkdata.tools.view;
 import static java.util.Arrays.asList;
 
 import gov.uspto.bulkdata.BulkReaderArguments;
+import joptsimple.OptionParser;
 
 /**
  * View Config from Command-line args
@@ -23,11 +24,11 @@ public class ViewConfig extends BulkReaderArguments {
 	private String outputType = "fields";
 
 	public ViewConfig() {
-		buildArgs();
+		buildArgs(new OptionParser());
 	}
 
-	public void buildArgs() {
-		super.buildArgs();
+	public OptionParser buildArgs(OptionParser opParser) {
+		super.buildArgs(opParser);
 
 		opParser.accepts("type").withOptionalArg().ofType(String.class)
 			.describedAs("types options: [raw,xml,json,json_flat,patft,object,text]")
@@ -42,6 +43,8 @@ public class ViewConfig extends BulkReaderArguments {
 			.describedAs("Record Number to retrive");
 		
 		opParser.accepts("id").withOptionalArg().ofType(String.class).describedAs("Patent Id");
+		
+		return opParser;
 	}
 
 	public void readOptions() {

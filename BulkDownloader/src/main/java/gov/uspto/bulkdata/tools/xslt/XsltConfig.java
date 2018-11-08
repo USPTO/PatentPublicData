@@ -1,19 +1,19 @@
 package gov.uspto.bulkdata.tools.xslt;
 
-import static java.util.Arrays.asList;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.google.common.base.Preconditions;
 
 import gov.uspto.bulkdata.BulkReaderArguments;
+import joptsimple.OptionParser;
 
 /**
  * Xslt Config from Command-line args
  * 
  *<code><pre>
  * XsltConfig config = new XsltConfig();
+ * config.buildArgs();
  * config.parseArgs(args);
  * config.readOptions();
  *</pre></code>
@@ -26,13 +26,14 @@ public class XsltConfig extends BulkReaderArguments {
 	private Boolean prettyPrint = false;
 
 	public XsltConfig() {
-		buildArgs();
+		buildArgs(new OptionParser());
 	}
 
-	public void buildArgs() {
+	public OptionParser buildArgs(OptionParser opParser) {
 		super.buildArgs();
 		opParser.accepts("xslt").withRequiredArg().ofType(String.class).describedAs("xslt stylesheet file path").required();
-		opParser.accepts("prettyPrint").withOptionalArg().ofType(Boolean.class).describedAs("Pretty print output").defaultsTo(false);		
+		opParser.accepts("prettyPrint").withOptionalArg().ofType(Boolean.class).describedAs("Pretty print output").defaultsTo(false);
+		return opParser;
 	}
 
 	public void readOptions() {

@@ -13,7 +13,7 @@ import joptsimple.OptionSet;
 
 public class BulkReaderArguments {
 
-	protected final OptionParser opParser;
+	protected OptionParser opParser = null;
 	protected OptionSet options;
 	private Path inputFile;
 	private Path outputFile;
@@ -24,11 +24,16 @@ public class BulkReaderArguments {
 	private boolean htmlEntities = false;
 	private boolean apsPatent;
 
-	public BulkReaderArguments() {
-		opParser = new OptionParser(true);
+	public OptionParser buildArgs() {
+		return buildArgs(new OptionParser(true));
 	}
 
-	public void buildArgs() {
+	public OptionParser buildArgs(OptionParser opParser) {
+		if (opParser == null) {
+			opParser = new OptionParser(true);
+		}
+		this.opParser = opParser;
+
 		opParser.acceptsAll(asList("input", "f", "file")).withRequiredArg().ofType(String.class)
 				.describedAs("zip file, individual file or directory").required();
 
@@ -51,6 +56,8 @@ public class BulkReaderArguments {
 
 		opParser.acceptsAll(asList("help", "?")).withOptionalArg().ofType(Boolean.class).describedAs("Print Help")
 				.defaultsTo(false);
+
+		return opParser;
 	}
 
 	public void parseArgs(String... args) {
