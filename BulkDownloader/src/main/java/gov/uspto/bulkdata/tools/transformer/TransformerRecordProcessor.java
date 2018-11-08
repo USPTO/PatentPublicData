@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import javax.xml.transform.TransformerConfigurationException;
 
@@ -32,12 +31,13 @@ public class TransformerRecordProcessor implements RecordProcessor {
 	private PatentReader patentReader;
 	private String currentFilename;
 	private Writer currentWriter;
-	private List<RecordProcessor> preProcessors;
 	private GrepRecordProcessor matchProcessor;
+	private final String fileExt;
 
 	public TransformerRecordProcessor(TransformerConfig config, PatentReader patentReader) {
 		this.config = config;
 		this.patentReader = patentReader;
+		this.fileExt = config.isBulkKV() ? ".tsv" : "." + config.getOutputType();
 	}
 
 	@Override
@@ -54,10 +54,7 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		MDC.put("DOCID", sourceTxt);
 
 		if (matchProcessor != null && !matchProcessor.process(sourceTxt, rawRecord, new DummyWriter())) {
-			//System.out.println("Skipping Record: " + sourceTxt);
 			return false;
-		} else {
-			System.out.println("Matched Record: " + sourceTxt);
 		}
 
 		Patent patent;
@@ -71,7 +68,7 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		MDC.put("DOCID", patentId);
 
 		if (!config.isBulkOutput()) {
-			String currentFileName = patentId + ".json";
+			String currentFileName = patentId + fileExt;
 			Writer currentWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(config.getOutputDir().resolve(currentFileName).toFile(), true),
 					StandardCharsets.UTF_8));
@@ -79,12 +76,13 @@ public class TransformerRecordProcessor implements RecordProcessor {
 			currentWriter.close();
 		} else {
 			String filename = sourceTxt.replaceFirst("\\.zip:\\d+$", "");
+			filename = filename + fileExt;
 			if (!filename.equals(currentFilename)) {
 				if (currentWriter != null) {
 					currentWriter.close();
 				}
 				currentWriter = new BufferedWriter(new OutputStreamWriter(
-						new FileOutputStream(config.getOutputDir().resolve(filename+"."+config.getOutputType()+"l").toFile(), true),
+						new FileOutputStream(config.getOutputDir().resolve(filename).toFile(), true),
 						StandardCharsets.UTF_8));
 				currentFilename = filename;
 			}
@@ -100,7 +98,7 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		Boolean prettyPrint = config.isPrettyPrint();
 
 		if (config.isBulkKV()) {
-			writer.write(patent.getDocumentId().toText()+":"+sourceText);
+			writer.write(patent.getDocumentId().toText() + ":" + sourceText);
 			writer.write("\t");
 		}
 
