@@ -60,6 +60,7 @@ public class View {
 
 	  ViewConfig config = new ViewConfig();
 	  config.parseArgs(args);
+	  config.buildArgs();
 	  config.readOptions();
 
 	  View view = new View(config);

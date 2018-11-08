@@ -57,6 +57,7 @@ public class Xslt {
 	  Logger.getRootLogger().addAppender(console);
 
 	  XsltConfig config = new XsltConfig();
+	  config.buildArgs();
 	  config.parseArgs(args);
 	  config.readOptions();
 

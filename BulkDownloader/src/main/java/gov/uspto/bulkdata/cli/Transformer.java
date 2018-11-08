@@ -12,11 +12,14 @@ import org.apache.log4j.Priority;
 
 import gov.uspto.bulkdata.RecordReader;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
+import gov.uspto.bulkdata.tools.grep.GrepConfig;
+import gov.uspto.bulkdata.tools.grep.GrepRecordProcessor;
 import gov.uspto.bulkdata.tools.transformer.TransformerConfig;
 import gov.uspto.bulkdata.tools.transformer.TransformerRecordProcessor;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpReader;
+import joptsimple.OptionParser;
 
 /**
  * Transformer is a CLI tool to read, normalize and export patents from within Patent Bulk Files.
@@ -25,27 +28,57 @@ import gov.uspto.patent.bulk.DumpReader;
  * --input="../download/ipg180102.zip"  --skip=0 --limit=0 --type="json" --outDir="./target/output" --bulkKV=true --outputBulkFile=true
  *</p>
  *
+ *<h3>Pre-match Documents before transforming</h3>
+ *<p>Uses Grep Tool to match documents</p>
+ *<p>
+ * --type="json" --outDir="./target/output" --bulkKV=true --outputBulkFile=true --xpath="//invention-title/text()" --regex="Food"
+ * --type="json" --outDir="./target/output" --bulkKV=true --outputBulkFile=true --xpath="//invention-title/text()" --regex="Food"
+ *</p>
+ *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class Transformer {
 
-	private TransformerConfig config;
+	private final TransformerConfig config;
+	private final GrepConfig grepConfig;
+	private final boolean prematch;
 	private RecordReader recordReader;
 	private PatentReader patentReader;
 
-	public Transformer(TransformerConfig config) {
+	public Transformer(TransformerConfig config) throws XPathExpressionException {
+		this(config, null);
+    }
+
+	public Transformer(TransformerConfig config, GrepConfig grepConfig) throws XPathExpressionException {
     	this.config = config;
     	this.recordReader = new RecordReader(config);
     	this.patentReader = recordReader.getPatentReader();
+    	this.grepConfig = grepConfig;
+    	if (grepConfig == null || grepConfig.getMatcher() == null) {
+    		prematch = false;
+    	} else {
+    		System.out.println("Matcher defined");
+    		prematch = true;
+    	}
     }
- 
-    public void exec() throws XPathExpressionException, PatentReaderException, IOException, DocumentException {
-    	recordReader.read(new TransformerRecordProcessor(config, patentReader));
+
+	public void exec() throws XPathExpressionException, PatentReaderException, IOException, DocumentException {
+		TransformerRecordProcessor processor = new TransformerRecordProcessor(config, patentReader);
+		if (prematch) {
+			System.out.println("Prematching is turned on");
+			processor.setMatchProcessor(new GrepRecordProcessor(grepConfig));
+		}
+    	recordReader.read(processor);
     }
 
     public void exec(DumpReader dumpReader, Writer writer) throws XPathExpressionException, PatentReaderException, IOException, DocumentException {
-    	recordReader.read(dumpReader, new TransformerRecordProcessor(config, patentReader), writer);
+		TransformerRecordProcessor processor = new TransformerRecordProcessor(config, patentReader);
+		if (prematch) {
+			System.out.println("Prematching is turned on");
+			processor.setMatchProcessor(new GrepRecordProcessor(grepConfig));
+		}
+    	recordReader.read(dumpReader, processor, writer);
     }
 
     public static void main(String[] args) throws PatentReaderException, IOException, DocumentException, XPathExpressionException {
@@ -62,10 +95,18 @@ public class Transformer {
 	  Logger.getRootLogger().addAppender(console);
 
       TransformerConfig config = new TransformerConfig();
+      OptionParser opParser = config.buildArgs();
+
+      GrepConfig grepConfig = new GrepConfig();
+      grepConfig.buildArgs(opParser);
+
 	  config.parseArgs(args);
 	  config.readOptions();
 
-	  Transformer transform = new Transformer(config);
+	  grepConfig.parseArgs(args);
+	  grepConfig.readOptions();
+
+	  Transformer transform = new Transformer(config, grepConfig);
 	  transform.exec();
     }
 

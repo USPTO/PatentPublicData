@@ -7,12 +7,16 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import javax.xml.transform.TransformerConfigurationException;
 
 import org.slf4j.MDC;
 
 import gov.uspto.bulkdata.RecordProcessor;
+import gov.uspto.bulkdata.tools.grep.DocumentException;
+import gov.uspto.bulkdata.tools.grep.GrepRecordProcessor;
+import gov.uspto.common.io.DummyWriter;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
@@ -28,6 +32,8 @@ public class TransformerRecordProcessor implements RecordProcessor {
 	private PatentReader patentReader;
 	private String currentFilename;
 	private Writer currentWriter;
+	private List<RecordProcessor> preProcessors;
+	private GrepRecordProcessor matchProcessor;
 
 	public TransformerRecordProcessor(TransformerConfig config, PatentReader patentReader) {
 		this.config = config;
@@ -39,9 +45,20 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		// empty.
 	}
 
+	public void setMatchProcessor(GrepRecordProcessor grepProcessor) {
+		this.matchProcessor = grepProcessor;
+	}
+
 	@Override
-	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws IOException {
+	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws IOException, DocumentException {
 		MDC.put("DOCID", sourceTxt);
+
+		if (matchProcessor != null && !matchProcessor.process(sourceTxt, rawRecord, new DummyWriter())) {
+			//System.out.println("Skipping Record: " + sourceTxt);
+			return false;
+		} else {
+			System.out.println("Matched Record: " + sourceTxt);
+		}
 
 		Patent patent;
 		try {

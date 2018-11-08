@@ -98,6 +98,7 @@ public class Grep {
 	  Logger.getRootLogger().addAppender(console);
 
 	  GrepConfig grepConfig = new GrepConfig();
+	  grepConfig.buildArgs();
 	  grepConfig.parseArgs(args);
 	  grepConfig.readOptions();
 
