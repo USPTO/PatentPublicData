@@ -214,7 +214,11 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 			Transformer t = TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			t.setOutputProperty(OutputKeys.INDENT, "no");
-			t.transform(new DOMSource(node), new StreamResult(sw));
+			if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.ATTRIBUTE_NODE) { 
+				t.transform(new DOMSource(node.getParentNode()), new StreamResult(sw));
+			} else {
+				t.transform(new DOMSource(node), new StreamResult(sw));
+			}
 		} catch (TransformerException te) {
 			System.out.println("nodeToString Transformer Exception");
 		}

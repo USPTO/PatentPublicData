@@ -44,7 +44,7 @@ public class MatchPatternXPath extends MatchRegexBase {
 		NodeList nodes = (NodeList) xpathExpression.evaluate(document, XPathConstants.NODESET);
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node node = nodes.item(i);
-			if (super.hasMatch(node.getNodeValue())){
+			if (super.hasMatch(node.getTextContent())){
 				return true;
 			}
 		}
@@ -71,7 +71,7 @@ public class MatchPatternXPath extends MatchRegexBase {
 					}
 
 					if (super.isMatchingNode()) {
-						writer.write(nodeToString(node.getParentNode()));
+						writer.write(nodeToString(node));
 						writer.write("\n");
 					}
 					else if (super.isOnlyMatching()) {
@@ -104,7 +104,11 @@ public class MatchPatternXPath extends MatchRegexBase {
 			Transformer t = TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			t.setOutputProperty(OutputKeys.INDENT, "no");
-			t.transform(new DOMSource(node), new StreamResult(sw));
+			if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.ATTRIBUTE_NODE) {
+				t.transform(new DOMSource(node.getParentNode()), new StreamResult(sw));
+			} else {
+				t.transform(new DOMSource(node), new StreamResult(sw));
+			}
 		} catch (TransformerException te) {
 			System.out.println("nodeToString Transformer Exception");
 		}
