@@ -20,10 +20,13 @@ import gov.uspto.patent.bulk.DumpReader;
 /**
  * GREP is a CLI tool to find/view raw values within Bulk Patent XML.
  *
+ *<p>
  * Use Cases:
  * 1) Find patents which match
- * 2) See or dump all raw values within a field
+ * 2) See, dump, or validate all raw values within a field
+ *</p>
  *
+ *<pre>
  * Text Regex Search
  * --regex="<br/>"
  * --regex="classification-cpc-text"
@@ -47,7 +50,11 @@ import gov.uspto.patent.bulk.DumpReader;
  * --xpath="//table/descendant::text()" --regex="[Tt]omato"
  * --xpath="//p/descendant::text()|//table/descendant::text()" --regex="[Tt]omato"\
  * --xpath="//classification-cpc-text/text()" --regex="^A21C"
+ * 
+ * --xpath="//invention-title[starts-with(text(), 'Food')]" --matching-xml
+ * --xpath="//invention-title[contains(text(), 'Food')]" --matching-xml
  * --xpath="//invention-title/text()" --regex="Food" --matching-xml
+ * --xpath="//invention-title[@id='d2e53']/." --matching-xml
  *
  * Dump all:
  *    Transitional phrases: --xpath="//description//text()" --regex="\b[A-Z][a-z ]{10,35}," --only-matching --no-source
@@ -63,7 +70,8 @@ import gov.uspto.patent.bulk.DumpReader;
  * --xpath="//document-id/*[text() = 'D0806350']" --max-count=1
  * --xpath="//document-id/*[contains(text(),'D0806350')]" --max-count=1
  * --xpath="count(//claim-text/*[contains(text(),' consisting ')]) > 3" --matching-record
- * 
+ *</pre>
+ *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */

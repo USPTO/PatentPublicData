@@ -23,35 +23,37 @@ import org.w3c.dom.NodeList;
 
 import com.google.common.base.Preconditions;
 
-// /*/cat[matches(@name, '^cat$', 'i')]
-
 public class MatchXPathExpression implements MatchPattern<Document> {
+	private final XPath xpath;
 	private String XPathExpression;
 	private XPathExpression xpathExpression;
 	private boolean printSource = true;
 	private boolean onlyMatchingNode = false;
 	private QName XpathConstaint = XPathConstants.NODESET;
 
-	public MatchXPathExpression(String XPathExpression) throws XPathExpressionException {
+	public MatchXPathExpression(final String XPathExpression) throws XPathExpressionException {
 		Preconditions.checkNotNull(XPathExpression);
 		this.XPathExpression = XPathExpression;
 		XPathFactory xpathFactory = XPathFactory.newInstance();
-		XPath xpath = xpathFactory.newXPath();
+		this.xpath = xpathFactory.newXPath();
 		this.xpathExpression = xpath.compile(XPathExpression);
 		this.XpathConstaint = getXpathConstraint();
 	}
 
 	/**
-	 * @TODO update to parse out XPath functions then map functions to type.
+	 * Attempt detection of xPath Constraints by parsing xPath Expression
 	 * 
 	 * @return
 	 */
-	private QName getXpathConstraint() {
-		if (XPathExpression.matches("^(count|sum|min|max|avg|number)\\(.+\\)$")) {
+	public QName getXpathConstraint() {
+		if (XPathExpression.matches("/+\\*\\[[^\\]]+\\]$")) { // xPath("//*[text() = 'qwerty']")
+			return XPathConstants.NODESET;
+		}
+		else if (XPathExpression.matches("^(count|sum|min|max|avg|number|string-length)\\(.+\\)$")) {
 			return XPathConstants.NUMBER;
-		} else if (XPathExpression.matches("(.+ [!=><]{1,2} ['A-z0-9]+$|^(not|nilled|boolean)\\(.+\\)$)")) {
+		} else if (XPathExpression.matches("(.+[!=><]{1,2}\\s?['A-z0-9]+$|^(not|nilled|boolean)\\(.+\\)$|=\\s?[A-z0-9]$)")) {
 			return XPathConstants.BOOLEAN;
-		} else if (XPathExpression.matches("(.+ /(text|name|local-name)\\(\\)$|^string\\\\(.+\\\\)$)")) {
+		} else if (XPathExpression.matches("(.+ /(text|name|local-name)\\(\\)$|^(string|concat)\\(.+\\)$)")) {
 			return XPathConstants.STRING;
 		}
 		return XPathConstants.NODESET;
@@ -111,13 +113,13 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 			// return (nodes.getLength() > 0);
 
 			Object evelObj = xpathExpression.evaluate(document, XpathConstaint);
-			if (XpathConstaint.getLocalPart() == "NUMBER") {
+			if (XpathConstaint == XPathConstants.NUMBER) {
 				Double num = (Double) evelObj;
 				return num > 0;
-			} else if (XpathConstaint.getLocalPart() == "BOOLEAN") {
+			} else if (XpathConstaint == XPathConstants.BOOLEAN) {
 				Boolean bool = (Boolean) evelObj;
 				return bool;
-			} else if (XpathConstaint.getLocalPart() == "STRING") {
+			} else if (XpathConstaint == XPathConstants.STRING) {
 				String str = (String) evelObj;
 				return str != null && str.length() > 0;
 			} else {
@@ -175,26 +177,33 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 		writer.write(value);
 		writer.write("\n");
 		writer.flush();
+		
 	}
 
 	@Override
 	public boolean writeMatches(String source, Document document, Writer writer) throws DocumentException, IOException {
 		try {
+			// If boolean query and want matching node, then change query to get matching node.
+			if (onlyMatchingNode && XpathConstaint == XPathConstants.BOOLEAN) {
+				XpathConstaint = XPathConstants.NODESET;
+				xpathExpression = xpath.compile(XPathExpression+"/.");
+			}
+
 			Object evelObj = xpathExpression.evaluate(document, XpathConstaint);
 
-			if (XpathConstaint.getLocalPart() == "NUMBER") {
+			if (XpathConstaint == XPathConstants.NUMBER) {
 				Double num = (Double) evelObj;
 				if (num > 0) {
 					writeSingleValue(source, writer, String.valueOf(num));
 				}
 				return num > 0;
-			} else if (XpathConstaint.getLocalPart() == "BOOLEAN") {
+			} else if (XpathConstaint == XPathConstants.BOOLEAN) {
 				Boolean bool = (Boolean) evelObj;
 				if (bool) {
 					writeSingleValue(source, writer, String.valueOf(bool));
 				}
 				return bool;
-			} else if (XpathConstaint.getLocalPart() == "STRING") {
+			} else if (XpathConstaint == XPathConstants.STRING) {
 				String str = (String) evelObj;
 				if (str.length() > 0) {
 					writeSingleValue(source, writer, str);

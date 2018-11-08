@@ -30,10 +30,17 @@ import joptsimple.OptionParser;
  *
  *<h3>Pre-match Documents before transforming</h3>
  *<p>Uses Grep Tool to match documents</p>
- *<p>
- * --type="json" --outDir="./target/output" --bulkKV=true --outputBulkFile=true --xpath="//invention-title/text()" --regex="Food"
- * --type="json" --outDir="./target/output" --bulkKV=true --outputBulkFile=true --xpath="//invention-title/text()" --regex="Food"
- *</p>
+ *<p><pre>
+ * --xpath="//invention-title/text()" --regex="Food"
+ * --xpath="//invention-title[contains(text(), 'Food')]"
+ *
+ * --xpath="//classification-cpc[./section/text() = 'A' and ./class/text() = '23' and ./subclass/text() = 'B' and ./main-group/text() = '5' and ./subgroup/text()='045']/."
+ *
+ * --xpath="//classification-cpc-text/text()" --regex="^A21C"
+ * --xpath="//classification-cpc-text[starts-with(text(), 'A21C')]"
+ * --xpath="(//classification-cpc-text[starts-with(text(), 'A21C')]|//classification-cpc[./section/text() = 'A' and ./class/text() = '21' and ./subclass/text() = 'C'])/."
+ *
+ *</pre></p>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
