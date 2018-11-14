@@ -50,6 +50,8 @@ import okhttp3.HttpUrl;
  *<pre>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ * 
+ * @deprecated replaced with {@link gov.uspto.bulkdata.cli.Fetch} 
  *
  */
 public class Corpus {

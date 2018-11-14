@@ -1,6 +1,5 @@
 package gov.uspto.bulkdata.cli;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +34,7 @@ import okhttp3.OkHttpClient;
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
+ * @deprecated replaced with {@link gov.uspto.bulkdata.cli.Fetch} 
  */
 public class Download {
     private static final Logger LOGGER = LoggerFactory.getLogger(Download.class);
