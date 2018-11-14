@@ -14,9 +14,10 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import gov.uspto.bulkdata.RecordProcessor;
+import gov.uspto.patent.PatentDocFormat;
 
 public class XsltRecordProcessor implements RecordProcessor {
-	
+
 	private final XsltConfig config;
 	private TransformerFactory factory;
 	private Templates template;
@@ -27,12 +28,17 @@ public class XsltRecordProcessor implements RecordProcessor {
 	}
 
 	@Override
+	public void setPatentDocFormat(PatentDocFormat docFormat) {
+		// not used.
+	}
+
+	@Override
 	public void initialize(Writer writer) throws IOException, TransformerConfigurationException {
 		this.factory = TransformerFactory.newInstance();
 		Source xslt = new StreamSource(config.getXsltFile().toFile());
 		this.template = factory.newTemplates(xslt);
 		this.transformer = template.newTransformer();
-		
+
 		if (config.isPrettyPrint()) {
 			transformer.setOutputProperty("indent", "yes");
 		} else {
@@ -48,10 +54,10 @@ public class XsltRecordProcessor implements RecordProcessor {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public void finish(Writer writer) throws IOException {
 		// empty.

@@ -16,6 +16,7 @@ import gov.uspto.bulkdata.RecordProcessor;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.bulkdata.tools.grep.GrepRecordProcessor;
 import gov.uspto.common.io.DummyWriter;
+import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
@@ -34,10 +35,14 @@ public class TransformerRecordProcessor implements RecordProcessor {
 	private GrepRecordProcessor matchProcessor;
 	private final String fileExt;
 
-	public TransformerRecordProcessor(TransformerConfig config, PatentReader patentReader) {
+	public TransformerRecordProcessor(TransformerConfig config) {
 		this.config = config;
-		this.patentReader = patentReader;
 		this.fileExt = config.isBulkKV() ? ".tsv" : "." + config.getOutputType();
+	}
+
+	@Override
+	public void setPatentDocFormat(PatentDocFormat docFormat) {
+		this.patentReader = new PatentReader(docFormat);
 	}
 
 	@Override

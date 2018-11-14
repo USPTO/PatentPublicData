@@ -10,6 +10,7 @@ import gov.uspto.bulkdata.BulkReaderArguments;
 import gov.uspto.bulkdata.RecordProcessor;
 import gov.uspto.bulkdata.RecordReader;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
+import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
@@ -23,13 +24,15 @@ public class Example implements RecordProcessor {
 	private PatentReader patentReader;
 	private DocumentBuilder<Patent> jsonBuilder;
 
-	public Example(PatentReader patentReader) {
-		this.patentReader = patentReader;
-		this.jsonBuilder = new JsonMapperStream(true);
-		// this.jsonBuilder = new JsonMapperFlat(true, false);
-		// this.jsonBuilder = new JsonMapperPATFT(true, false);
+	public Example(DocumentBuilder<Patent> jsonBuilder) {
+		this.jsonBuilder = jsonBuilder;
 	}
 
+	@Override
+	public void setPatentDocFormat(PatentDocFormat docFormat) {
+		this.patentReader = new PatentReader(docFormat);
+	}
+	
 	@Override
 	public void initialize(Writer writer) throws IOException {
 		System.out.println("--- START ---");
@@ -71,11 +74,12 @@ public class Example implements RecordProcessor {
 
 		RecordReader bulkReader = new RecordReader(config);
 
-		PatentReader patentReader = bulkReader.getPatentReader();
+		DocumentBuilder<Patent> jsonBuilder = new JsonMapperStream(true);
+		// DocumentBuilder<Patent> jsonBuilder = new JsonMapperFlat(true, false);
+		// DocumentBuilder<Patent> jsonBuilder = new JsonMapperPATFT(true, false);
 
-		RecordProcessor process = new Example(patentReader);
+		RecordProcessor process = new Example(jsonBuilder);
 		bulkReader.read(process);
 	}
-
 
 }

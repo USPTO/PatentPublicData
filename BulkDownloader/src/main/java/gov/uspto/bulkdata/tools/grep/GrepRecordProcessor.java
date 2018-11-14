@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import gov.uspto.bulkdata.RecordProcessor;
 import gov.uspto.bulkdata.tools.grep.OutputMatchConfig.OUTPUT_MATCHING;
+import gov.uspto.patent.PatentDocFormat;
 
 public class GrepRecordProcessor implements RecordProcessor {
 	
@@ -35,7 +36,7 @@ public class GrepRecordProcessor implements RecordProcessor {
 	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws DocumentException, IOException {
 		Boolean matched = false;
         try {
-			Reader reader = new InputStreamReader(new ByteArrayInputStream(rawRecord.getBytes()), "UTF-8");			
+			Reader reader = new InputStreamReader(new ByteArrayInputStream(rawRecord.getBytes()), "UTF-8");
 			recordsChecked++;
 			if (hasMatch(sourceTxt, reader, writer)) {
 				matched = true;
@@ -96,6 +97,11 @@ public class GrepRecordProcessor implements RecordProcessor {
 			writer.write("\n");
 			writer.flush();
 		}
+	}
+
+	@Override
+	public void setPatentDocFormat(PatentDocFormat docFormat) {
+		// not used.
 	}
 
 }

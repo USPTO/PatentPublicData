@@ -124,7 +124,7 @@ public class BulkReaderArguments {
 	}
 
 	public void setInputFile(Path filePath) {
-		Preconditions.checkArgument(filePath.toFile().canWrite(), "Unable to write to file: " + filePath);
+		Preconditions.checkArgument(filePath.toFile().canRead(), "Unable to read file: " + filePath);
 		this.inputFile = filePath;
 	}
 

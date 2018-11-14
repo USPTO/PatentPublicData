@@ -65,24 +65,21 @@ public class Transformer {
     	if (grepConfig == null || grepConfig.getMatcher() == null) {
     		prematch = false;
     	} else {
-    		System.out.println("Matcher defined");
     		prematch = true;
     	}
     }
 
 	public void exec() throws XPathExpressionException, PatentReaderException, IOException, DocumentException {
-		TransformerRecordProcessor processor = new TransformerRecordProcessor(config, patentReader);
+		TransformerRecordProcessor processor = new TransformerRecordProcessor(config);
 		if (prematch) {
-			System.out.println("Prematching is turned on");
 			processor.setMatchProcessor(new GrepRecordProcessor(grepConfig));
 		}
     	recordReader.read(processor);
     }
 
     public void exec(DumpReader dumpReader, Writer writer) throws XPathExpressionException, PatentReaderException, IOException, DocumentException {
-		TransformerRecordProcessor processor = new TransformerRecordProcessor(config, patentReader);
+		TransformerRecordProcessor processor = new TransformerRecordProcessor(config);
 		if (prematch) {
-			System.out.println("Prematching is turned on");
 			processor.setMatchProcessor(new GrepRecordProcessor(grepConfig));
 		}
     	recordReader.read(dumpReader, processor, writer);

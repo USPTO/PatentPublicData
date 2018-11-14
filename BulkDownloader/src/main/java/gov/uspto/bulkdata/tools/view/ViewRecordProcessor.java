@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.util.Arrays;
 
 import gov.uspto.bulkdata.RecordProcessor;
+import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
@@ -16,13 +17,17 @@ import gov.uspto.patent.serialize.JsonMapperStream;
 import gov.uspto.patent.serialize.PlainText;
 
 public class ViewRecordProcessor implements RecordProcessor {
-	
+
 	private final ViewConfig config;
 	private PatentReader patentReader;
 
-	public ViewRecordProcessor(ViewConfig config, PatentReader patentReader) {
-		this.patentReader = patentReader;
+	public ViewRecordProcessor(ViewConfig config) {
 		this.config = config;
+	}
+
+	@Override
+	public void setPatentDocFormat(PatentDocFormat docFormat) {
+		this.patentReader = new PatentReader(docFormat);
 	}
 
 	@Override
@@ -142,5 +147,4 @@ public class ViewRecordProcessor implements RecordProcessor {
 		}
 		writer.flush();
 	}
-
 }
