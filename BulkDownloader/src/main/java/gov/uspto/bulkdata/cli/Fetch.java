@@ -4,12 +4,6 @@ import java.io.IOException;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.Priority;
-
-import gov.uspto.bulkdata.RecordReader;
 import gov.uspto.bulkdata.tools.fetch.DownloadConfig;
 import gov.uspto.bulkdata.tools.fetch.DownloadTool;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
@@ -52,17 +46,6 @@ public class Fetch {
 
 	public static void main(String[] args)
 			throws PatentReaderException, IOException, DocumentException, XPathExpressionException {
-		/*
-		 * Disable Logging except for Errors.
-		 *
-		 */
-		Logger.getRootLogger().getLoggerRepository().resetConfiguration();
-		ConsoleAppender console = new ConsoleAppender();
-		String PATTERN = "%d [%p|%c|%C{1}] %m%n";
-		console.setLayout(new PatternLayout(PATTERN));
-		console.setThreshold(Priority.ERROR);
-		console.activateOptions();
-		Logger.getRootLogger().addAppender(console);
 
 		DownloadConfig downloadConfig = new DownloadConfig();
 		OptionParser opParser = downloadConfig.buildArgs();
@@ -81,8 +64,6 @@ public class Fetch {
 
 		downloadConfig.parseArgs(args);
 		downloadConfig.readOptions();
-
-		RecordReader recordReader = new RecordReader(downloadConfig);
 
 		TransformerRecordProcessor processor = new TransformerRecordProcessor(transConfig);
 		if (grepConfig.getMatcher() != null) {

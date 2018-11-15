@@ -43,6 +43,7 @@ import okhttp3.OkHttpClient;
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
+ * @deprecated replaced with {@link gov.uspto.bulkdata.cli.Fetch} 
  */
 public class BulkData {
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkData.class);

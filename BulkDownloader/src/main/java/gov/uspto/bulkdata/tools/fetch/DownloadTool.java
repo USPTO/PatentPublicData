@@ -19,6 +19,7 @@ import com.google.common.collect.ListMultimap;
 
 import gov.uspto.bulkdata.PageLinkScraper;
 import gov.uspto.bulkdata.RecordProcessor;
+import gov.uspto.bulkdata.RunStats;
 import gov.uspto.bulkdata.cli2.BulkDataType;
 import gov.uspto.bulkdata.downloader.DownloadFile;
 import gov.uspto.bulkdata.downloader.DownloadJob;
@@ -54,43 +55,89 @@ public class DownloadTool {
 
 	public void exec() throws IOException, DocumentException, PatentReaderException {
 		downloader.setup(config.getOutputDir());
+		RunStats runStats;
 
-		if (config.isRestart()) {
-			this.restart();
-		} else if (config.getMatchFilenames() != null && config.getMatchFilenames().length > 0) {
-			Collection<HttpUrl> urls = findUrl(config.getMatchFilenames());
-			enqueue(urls);
-		} else {
-			enqueue();
-		}
-
-		if (downloadProcessor == null) {
-			download(bulkFileQueue);
-		} else {
+		if (downloadProcessor != null) {
+			LOGGER.info("--- Start ---");
 			LOGGER.info("Download Processor: {}", downloadProcessor.getClass().getName());
-			try {
-				downloadProcessor.initialize(new DummyWriter());
-			} catch (Exception e) {
-				e.printStackTrace();
+			enqueue();
+			runStats = downloadAndProcessFiles();
+		} else {
+			DownloadJob job;
+			if (config.isRestart()) {
+				LOGGER.info("--- Restart ---");
+				job = this.restart();
+			} else {
+				LOGGER.info("--- Start ---");
+				enqueue();
+				job = download(bulkFileQueue);
 			}
-			for(HttpUrl url: bulkFileQueue) {
-				DownloadJob job = download(url);
-				DownloadFile dfile = job.getDownloadTasks().get(0);
-				File file = dfile.getOutFile();
-				downloadProcessor.process(file);
-				//file.delete();
-			}
-			downloadProcessor.finish(null);
+			runStats = runStatsFromJob(job);
 		}
+
+		LOGGER.info(runStats.toString());
+		LOGGER.info("--- Finished ---");
+	}
+
+	private RunStats runStatsFromJob(DownloadJob job) {
+		RunStats runStats = new RunStats("Download Job");
+		runStats.setSuccessCount(job.getTaskCompleted());
+		runStats.setRecordCount(job.getTaskTotal());
+		runStats.setFailCount(job.getTaskTotal() - job.getTaskCompleted());
+		return runStats;
+	}
+
+	private RunStats downloadAndProcessFiles() throws IOException, DocumentException, PatentReaderException {
+		RunStats runStats = new RunStats("DownloadAndProcess");
+
+		try {
+			downloadProcessor.initialize(new DummyWriter());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		HttpUrl url;
+	    while ((url = bulkFileQueue.poll()) != null) {
+			DownloadJob job = download(url);
+
+			DownloadFile dfile = job.getDownloadTasks().get(0);
+			File file = dfile.getOutFile();
+
+			RunStats fileRunStats = downloadProcessor.process(file);
+			runStats.add(fileRunStats);
+			
+			if (config.isDelete()) {
+				file.delete();
+			}
+		}
+    
+		downloadProcessor.finish(null);
+		
+		return runStats;
 	}
 
 	public void enqueue(Collection<HttpUrl> bulkFiles) {
 		bulkFileQueue.addAll(bulkFiles);
+		LOGGER.info("Files enqueued for download: [{}]", bulkFileQueue.size());
 	}
 
 	public void enqueue() throws IOException {
 		List<HttpUrl> bulkFiles = getDownloadURLs();
 		enqueue(bulkFiles);
+	}
+
+	public List<HttpUrl> getDownloadURLs() throws IOException {
+		List<HttpUrl> urls = new ArrayList<HttpUrl>();
+
+		if (config.getMatchFilenames() != null && !config.getMatchFilenames().isEmpty()) {
+			LOGGER.info("Fetching URLS matching filenames...");
+			urls = fetchLinks(config.getMatchFilenames());
+		} else {
+			LOGGER.info("Fetching URLS...");
+			urls = fetchLinks(config.getDownloadLimit());
+		}
+
+		return urls;
 	}
 
 	public DownloadJob restart() throws IOException {
@@ -121,14 +168,6 @@ public class DownloadTool {
 
 		// LOGGER.info("URLS[{}]: {}", urls.size(), urls);
 		return download(urls);
-	}
-
-	public List<HttpUrl> getDownloadURLs() throws IOException {
-		if (urls == null) {
-			urls = fetchLinks(config.getDownloadLimit());
-		}
-
-		return urls;
 	}
 
 	public DownloadJob downloadRandom(int limit) throws IOException {
@@ -176,56 +215,69 @@ public class DownloadTool {
 		return job;
 	}
 
-    private List<HttpUrl> fetchLinks() throws IOException {
-        List<HttpUrl> urls = new LinkedList<HttpUrl>();
-        PageLinkScraper scrapper = new PageLinkScraper(client);
-        ListMultimap<String, DateRange> dateRanges = config.getDateRangs();
-        Iterator<String> yearIterator = dateRanges.keySet().iterator();
-        BulkDataType dataType = config.getDataType();
-        while (yearIterator.hasNext()) {
-            String year = yearIterator.next();
-            //String fileRegex = "[A-z]{3,6}" + yearMap.get(year) + ".*?" + "\\." + dataType.getSuffix() + "$";
-            HttpUrl url = HttpUrl.parse(dataType.getURL(year));
-            LOGGER.info("URL: {}, Matcher: {}", url, dateRanges.get(year));
-            List<HttpUrl> yearUrls = scrapper.fetchLinks(url, dateRanges.get(year), dataType.getSuffix());
-            urls.addAll(yearUrls);
-        }
-        return urls;
-    }
-
-    public List<HttpUrl> fetchLinks(int skip) throws IOException {
-        List<HttpUrl> urls = fetchLinks();
-        return urls.subList(skip, urls.size());
-    }
-
-    private List<HttpUrl> fetchLinks(int skip, int limit) throws IOException {
-        List<HttpUrl> urls = fetchLinks();
-        if (urls.isEmpty()) {
-            LOGGER.warn("Fetched URL list is empty");
-        }
-        int size = (skip + limit) > urls.size() ? urls.size() : skip + limit;
-        return urls.subList(skip, size);
-    }
-    
-	public List<HttpUrl> findUrl(String... filenames) throws IOException {
-		List<HttpUrl> urls = fetchLinks();
-		List<HttpUrl> matchedUrls = new ArrayList<HttpUrl>();
-		for (String filename : filenames) {
-			for (HttpUrl url : urls) {
-				if (url.toString().endsWith(filename)) {
-					matchedUrls.add(url);
-					break;
-				}
-			}
+	/**
+	 * Fetch Links
+	 * 
+	 * <p>
+	 * Date Year is required to get the page containing links. Links are partitioned
+	 * on separate pages by year.
+	 * </p>
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	private List<HttpUrl> fetchLinks() throws IOException {
+		List<HttpUrl> urls = new LinkedList<HttpUrl>();
+		PageLinkScraper scrapper = new PageLinkScraper(client);
+		ListMultimap<String, DateRange> dateRanges = config.getDateRangs();
+		Iterator<String> yearIterator = dateRanges.keySet().iterator();
+		BulkDataType dataType = config.getDataType();
+		while (yearIterator.hasNext()) {
+			String year = yearIterator.next();
+			// String fileRegex = "[A-z]{3,6}" + yearMap.get(year) + ".*?" + "\\." +
+			// dataType.getSuffix() + "$";
+			HttpUrl url = HttpUrl.parse(dataType.getURL(year));
+			LOGGER.info("URL: {}, Matcher: {}", url, dateRanges.get(year));
+			List<HttpUrl> yearUrls = scrapper.fetchLinks(url, dateRanges.get(year), dataType.getSuffix());
+			urls.addAll(yearUrls);
 		}
-		return matchedUrls;
-	}
 
-	public List<HttpUrl> getUrls() {
+		if (urls.isEmpty()) {
+			LOGGER.warn("Fetched URL list is empty");
+		}
 		return urls;
 	}
 
-	public void setUrls(List<HttpUrl> urls) {
-		this.urls = urls;
+	private List<HttpUrl> fetchLinks(Iterable<String> filenames) throws IOException {
+		List<HttpUrl> urls = new LinkedList<HttpUrl>();
+		PageLinkScraper scrapper = new PageLinkScraper(client);
+		ListMultimap<String, DateRange> dateRanges = config.getDateRangs();
+		Iterator<String> yearIterator = dateRanges.keySet().iterator();
+		BulkDataType dataType = config.getDataType();
+		while (yearIterator.hasNext()) {
+			String year = yearIterator.next();
+			// String fileRegex = "[A-z]{3,6}" + yearMap.get(year) + ".*?" + "\\." +
+			// dataType.getSuffix() + "$";
+			HttpUrl url = HttpUrl.parse(dataType.getURL(year));
+			LOGGER.info("URL: {}, Matcher: {}", url, dateRanges.get(year));
+			List<HttpUrl> yearUrls = scrapper.fetchLinks(url, filenames);
+			urls.addAll(yearUrls);
+		}
+
+		if (urls.isEmpty()) {
+			LOGGER.warn("Fetched URL list is empty");
+		}
+		return urls;
+	}
+
+	public List<HttpUrl> fetchLinks(int skip) throws IOException {
+		List<HttpUrl> urls = fetchLinks();
+		return urls.subList(skip, urls.size());
+	}
+
+	private List<HttpUrl> fetchLinks(int skip, int limit) throws IOException {
+		List<HttpUrl> urls = fetchLinks();
+		int size = (skip + limit) > urls.size() ? urls.size() : skip + limit;
+		return urls.subList(skip, size);
 	}
 }

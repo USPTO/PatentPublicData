@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.json.JsonObject;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;

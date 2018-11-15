@@ -12,17 +12,43 @@ public class MatchXPathExpressionTest {
 
 	@Test
 	public void ConstraintNodes() throws XPathExpressionException {
+		QName expect = XPathConstants.NODESET;
+
 		MatchXPathExpression xpath = new MatchXPathExpression(
 				"//description/p[contains(descendant-or-self::text(),'computer')]");
-		assertEquals(XPathConstants.NODESET, xpath.getXpathConstraint());
+		assertEquals(expect, xpath.getXpathConstraint());
 		
 		MatchXPathExpression xpath2 = new MatchXPathExpression(
 				"//*[text() = 'qwerty']");
-		assertEquals(XPathConstants.NODESET, xpath2.getXpathConstraint());
+		assertEquals(expect, xpath2.getXpathConstraint());
 
 		MatchXPathExpression xpath3 = new MatchXPathExpression(
 				"//*[node/text() = 'qwerty']");
-		assertEquals(XPathConstants.NODESET, xpath3.getXpathConstraint());
+		assertEquals(expect, xpath3.getXpathConstraint());
+
+		MatchXPathExpression xpath6 = new MatchXPathExpression(
+				"*/session[contains(comments, 'strong')]");
+		assertEquals(expect, xpath6.getXpathConstraint());
+
+		MatchXPathExpression xpath7 = new MatchXPathExpression(
+				"//a[not(@id='XX')]");
+		assertEquals(expect, xpath7.getXpathConstraint());
+
+		MatchXPathExpression xpath8 = new MatchXPathExpression(
+				"//a[not(contains(@id, 'xx'))]");
+		assertEquals(expect, xpath8.getXpathConstraint());
+		
+		MatchXPathExpression xpath9 = new MatchXPathExpression(
+				"//a[not(@class)]");
+		assertEquals(expect, xpath9.getXpathConstraint());		
+		
+		MatchXPathExpression xpath5 = new MatchXPathExpression(
+				"//child::item[position()=last()]");
+		assertEquals(expect, xpath5.getXpathConstraint());
+
+		MatchXPathExpression xpath4 = new MatchXPathExpression(
+				"//child::item[position()=3]/.");
+		assertEquals(expect, xpath4.getXpathConstraint());
 	}
 
 	@Test
@@ -53,6 +79,18 @@ public class MatchXPathExpressionTest {
 		MatchXPathExpression xpath2 = new MatchXPathExpression(
 				"count(//addressbook/last-name)");
 		assertEquals(expect, xpath2.getXpathConstraint());
+
+		MatchXPathExpression xpath3 = new MatchXPathExpression(
+				"count(*/distance[@units='miles'])");
+		assertEquals(expect, xpath3.getXpathConstraint());
+		
+		MatchXPathExpression xpath4 = new MatchXPathExpression(
+				"sum(cart/item/@price)");
+		assertEquals(expect, xpath4.getXpathConstraint());
+		
+		MatchXPathExpression xpath5 = new MatchXPathExpression(
+				"round(sum(cart/item/@price))");
+		assertEquals(expect, xpath5.getXpathConstraint());
 	}
 
 	@Test

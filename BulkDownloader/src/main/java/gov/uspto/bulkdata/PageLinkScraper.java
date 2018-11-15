@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,197 +27,220 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class PageLinkScraper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PageLinkScraper.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(PageLinkScraper.class.getName());
 
-    private final OkHttpClient client;
+	private final OkHttpClient client;
 
-    public PageLinkScraper(OkHttpClient client) {
-        this.client = client;
-    }
+	public PageLinkScraper(OkHttpClient client) {
+		this.client = client;
+	}
 
-    /**
-     * Fetch Links using Suffix.
-     * 
-     * @param url
-     * @param suffix
-     * @return
-     * @throws IOException
-     */
-    public List<HttpUrl> fetchLinks(String url, String suffix) throws IOException {
-        Preconditions.checkNotNull(url, "URL can not be Null");
-        return fetchLinks(HttpUrl.parse(url), new String(), suffix);
-    }
+	/**
+	 * Fetch Page
+	 * 
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	private Document fetchPage(Request request) throws IOException {
+		Response response = client.newCall(request).execute();
 
-    /**
-     * Fetch Links using Prefix and Suffix
-     * 
-     * @param url
-     * @param linkPrefix
-     * @param suffix
-     * @return
-     * @throws IOException
-     */
-    /*
-    public List<HttpUrl> fetchLinks(String url, String linkPrefix, String suffix) throws IOException {
-        Preconditions.checkNotNull(url, "URL can not be Null");
-    
-        HttpUrl httpUrl = HttpUrl.parse(url);
-    
-        return fetchLinks(httpUrl, linkPrefix, suffix);
-    }
-    */
+		String responseSource = response.networkResponse() != null
+				? ("network: " + response.networkResponse().code() + " over " + response.protocol())
+				: "cache";
 
-    /**
-     * Fetch Links using Prefix and Suffix
-     * 
-     * @param url
-     * @param linkPrefix
-     * @param suffix without dot.
-     * @return
-     * @throws IOException
-     */
-    public List<HttpUrl> fetchLinks(HttpUrl url, String linkPrefix, String suffix) throws IOException {
-        List<HttpUrl> list = new ArrayList<HttpUrl>();
+		int responseCode = response.code();
 
-        //String matchPrefix = "/?" + linkPrefix;
+		LOGGER.info("{}: {} ({})", responseCode, request.url(), responseSource);
 
-        String matchPrefix = linkPrefix;
+		String contentType = response.header("Content-Type");
+		if (responseCode != 200 || contentType == null) {
+			response.body().close();
+			throw new IOException("Unexpected server response code " + responseCode);
+		}
 
-        Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
+		Document document = Jsoup.parse(response.body().string(), request.url().toString());
+		return document;
+	}
 
-        String responseSource = response.networkResponse() != null
-                ? ("network: " + response.networkResponse().code() + " over " + response.protocol()) : "cache";
+	private Elements fetchPageLinks(Request request) throws IOException {
+		Document document = fetchPage(request);
+		return document.select("a[href]");
+	}
 
-        int responseCode = response.code();
+	private Elements fetchPageLinks(Request request, String suffix) throws IOException {
+		Document document = fetchPage(request);
+		return document.select("a[href$=." + suffix + "]");
+	}
 
-        LOGGER.info("{}: {} ({})", responseCode, url, responseSource);
+	/**
+	 * Fetch Links using Suffix.
+	 * 
+	 * @param url
+	 * @param suffix
+	 * @return
+	 * @throws IOException
+	 */
+	public List<HttpUrl> fetchLinks(String url, String suffix) throws IOException {
+		Preconditions.checkNotNull(url, "URL can not be Null");
+		return fetchLinks(HttpUrl.parse(url), new String(), suffix);
+	}
 
-        String contentType = response.header("Content-Type");
-        if (responseCode != 200 || contentType == null) {
-            response.body().close();
-            throw new IOException("Unexpected server response code " + responseCode);
-        }
+	/**
+	 * Fetch Links using Prefix and Suffix
+	 * 
+	 * @param url
+	 * @param linkPrefix
+	 * @param suffix     without dot.
+	 * @return
+	 * @throws IOException
+	 */
+	public List<HttpUrl> fetchLinks(HttpUrl url, String linkPrefix, String suffix) throws IOException {
+		Request request = new Request.Builder().url(url).build();
 
-        Document document = Jsoup.parse(response.body().string(), url.toString());
-        for (Element element : document.select("a[href$=." + suffix + "]")) {
-            String relHref = element.attr("href");
-            String href = element.attr("abs:href");
+		// String matchPrefix = "/?" + linkPrefix;
+		String matchPrefix = linkPrefix;
 
-            if (linkPrefix == null || relHref.matches(matchPrefix)) {
+		List<HttpUrl> list = new ArrayList<HttpUrl>();
 
-                HttpUrl link = HttpUrl.parse(href);
+		for (Element element : fetchPageLinks(request)) {
+			String relHref = element.attr("href");
+			String href = element.attr("abs:href");
 
-                if (link != null) {
-                    list.add(link);
-                }
-            }
-        }
+			if (linkPrefix == null || relHref.matches(matchPrefix)) {
 
-        return list;
-    }
+				HttpUrl link = HttpUrl.parse(href);
 
-    private final static Pattern FILENAME_DATE = Pattern.compile("^[A-z]{2,6}([0-9]{6,8})(:?_[A-z]+[0-9]+)?\\.[a-z]+$");
-    private final static DateTimeFormatter[] FILE_DATE_FORMATS = new DateTimeFormatter[] {
-            DateTimeFormatter.ofPattern("yyMMdd"), DateTimeFormatter.ofPattern("yyyyMMdd") };
+				if (link != null) {
+					list.add(link);
+				}
+			}
+		}
 
-    public LocalDate parseFileDate(String filename) {
-        Matcher matcher = FILENAME_DATE.matcher(filename);
-        if (matcher.matches()) {
-            String fileDateStr = matcher.group(1);
+		return list;
+	}
 
-            for (DateTimeFormatter fileDateFormat : FILE_DATE_FORMATS) {
-                try {
-                    return LocalDate.parse(fileDateStr, fileDateFormat);
-                } catch (DateTimeParseException e) {
-                    // ignore.
-                }
-            }
-        } else {
-            LOGGER.warn("Filename does not match file date regex: {}", filename);
-        }
+	public List<HttpUrl> fetchLinks(HttpUrl url, Iterable<String> filenames) throws IOException {
+		Request request = new Request.Builder().url(url).build();
 
-        throw new DateTimeParseException("Failed to create LocalDate from filename: " + filename, filename, 0);
+		List<HttpUrl> list = new ArrayList<HttpUrl>();
+		Elements allLinks = fetchPageLinks(request);
 
-    }
+		for (String filename : filenames) {
+			for (Element element : allLinks) {
+				// only want filename from href
+				String relHref = element.attr("href");
+				if (relHref.contains("/")) {
+					relHref = relHref.substring(relHref.lastIndexOf('/') + 1, relHref.length());
+				}
 
-    public List<HttpUrl> fetchLinks(Source source) throws IOException { // method currently used by Download class.
-        List<HttpUrl> list = new ArrayList<HttpUrl>();
-               
-        Request request = new Request.Builder().url(source.getDownload().getScrapeUrl()).build();
-        Response response = client.newCall(request).execute();
+				if (filename.equalsIgnoreCase(relHref)) {
+					String href = element.attr("abs:href");
+					list.add(HttpUrl.parse(href));
+					break;
+				}
+			}
+		}
 
-        String responseSource = response.networkResponse() != null
-                ? ("network: " + response.networkResponse().code() + " over " + response.protocol()) : "cache";
+		/*
+		for (Element element : fetchPageLinks(request)) {
+			// String relHref = element.attr("href");
+			String href = element.attr("abs:href");
+			HttpUrl link = HttpUrl.parse(href);
+			List<String> urlSegments = link.pathSegments();
+			String fileSegment = urlSegments.get(urlSegments.size() - 1);
+			if (filenames.contains(fileSegment)) {
+				list.add(url);
+			}
+		}
+		*/
 
-        int responseCode = response.code();
+		return list;
+	}
 
-        LOGGER.info("{}: {} ({})", responseCode, source.getDownload().getScrapeUrl(), responseSource);
+	/**
+	 * Fetch link using Source Object and it's contained predicate.
+	 *
+	 * @param source
+	 * @return
+	 * @throws IOException
+	 */
+	public List<HttpUrl> fetchLinks(Source source) throws IOException {
+		List<HttpUrl> list = new ArrayList<HttpUrl>();
 
-        String contentType = response.header("Content-Type");
-        if (responseCode != 200 || contentType == null) {
-            response.body().close();
-            throw new IOException("Unexpected server response code " + responseCode);
-        }
+		Request request = new Request.Builder().url(source.getDownload().getScrapeUrl()).build();
 
-        Document document = Jsoup.parse(response.body().string(), source.getDownload().getScrapeUrl());
-        //for (Element element : document.select("a[href$=." + suffix + "]")) {
-        
-        for (Element element : document.select("a[href]")) {
-            String relHref = element.attr("href");
+		for (Element element : fetchPageLinks(request)) {
+			String relHref = element.attr("href");
 
-            // only want filename.
-            if (relHref.contains("/")){ 
-                relHref = relHref.substring(relHref.lastIndexOf('/')+1, relHref.length());               
-            }
-            LOGGER.trace(relHref);
-            
-            if (source.getDownload().getPredicate().test(relHref)){
-                String href = element.attr("abs:href");
-                HttpUrl link = HttpUrl.parse(href);
-                list.add(link);  
-            }
-        }
+			// only want filename.
+			if (relHref.contains("/")) {
+				relHref = relHref.substring(relHref.lastIndexOf('/') + 1, relHref.length());
+			}
+			LOGGER.trace(relHref);
 
-        return list;
-    }
-    
-    
-    public List<HttpUrl> fetchLinks(HttpUrl url, List<DateRange> dateMatches, String suffix) throws IOException { 
-        // method currently used by BulkData class.
-        List<HttpUrl> list = new ArrayList<HttpUrl>();
+			if (source.getDownload().getPredicate().test(relHref)) {
+				String href = element.attr("abs:href");
+				HttpUrl link = HttpUrl.parse(href);
+				list.add(link);
+			}
+		}
 
-        Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
+		return list;
+	}
 
-        String responseSource = response.networkResponse() != null
-                ? ("network: " + response.networkResponse().code() + " over " + response.protocol()) : "cache";
+	/**
+	 * Fetch Links which has suffix and within list of DateRanges
+	 * 
+	 * @param url
+	 * @param dateRanges
+	 * @param suffix
+	 * @return
+	 * @throws IOException
+	 */
+	public List<HttpUrl> fetchLinks(HttpUrl url, List<DateRange> dateRanges, String suffix) throws IOException {
+		Request request = new Request.Builder().url(url).build();
 
-        int responseCode = response.code();
+		List<HttpUrl> list = new ArrayList<HttpUrl>();
 
-        LOGGER.info("{}: {} ({})", responseCode, url, responseSource);
+		for (Element element : fetchPageLinks(request, suffix)) {
+			String relHref = element.attr("href");
+			String href = element.attr("abs:href");
 
-        String contentType = response.header("Content-Type");
-        if (responseCode != 200 || contentType == null) {
-            response.body().close();
-            throw new IOException("Unexpected server response code " + responseCode);
-        }
+			LocalDate fileDate = parseFileDate(relHref);
+			for (DateRange dateRange : dateRanges) {
+				if (dateRange.between(fileDate)) {
+					HttpUrl link = HttpUrl.parse(href);
+					list.add(link);
+					break;
+				}
+			}
+		}
 
-        Document document = Jsoup.parse(response.body().string(), url.toString());
-        for (Element element : document.select("a[href$=." + suffix + "]")) {
-            String relHref = element.attr("href");
-            String href = element.attr("abs:href");
+		return list;
+	}
 
-            LocalDate fileDate = parseFileDate(relHref);
-            for (DateRange dateRange : dateMatches) {
-                if (dateRange.between(fileDate)) {
-                    HttpUrl link = HttpUrl.parse(href);
-                    list.add(link);
-                    break;
-                }
-            }
-        }
+	private final static Pattern FILENAME_DATE = Pattern.compile("^[A-z]{2,6}([0-9]{6,8})(:?_[A-z]+[0-9]+)?\\.[a-z]+$");
+	private final static DateTimeFormatter[] FILE_DATE_FORMATS = new DateTimeFormatter[] {
+			DateTimeFormatter.ofPattern("yyMMdd"), DateTimeFormatter.ofPattern("yyyyMMdd") };
 
-        return list;
-    }
+	public LocalDate parseFileDate(String filename) {
+		Matcher matcher = FILENAME_DATE.matcher(filename);
+		if (matcher.matches()) {
+			String fileDateStr = matcher.group(1);
+
+			for (DateTimeFormatter fileDateFormat : FILE_DATE_FORMATS) {
+				try {
+					return LocalDate.parse(fileDateStr, fileDateFormat);
+				} catch (DateTimeParseException e) {
+					// ignore.
+				}
+			}
+		} else {
+			LOGGER.warn("Filename does not match file date regex: {}", filename);
+		}
+
+		throw new DateTimeParseException("Failed to create LocalDate from filename: " + filename, filename, 0);
+
+	}
 }

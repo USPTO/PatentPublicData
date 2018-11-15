@@ -15,6 +15,7 @@ import org.slf4j.MDC;
 
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.common.filter.FileFilterChain;
+import gov.uspto.common.io.DummyWriter;
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
 import gov.uspto.patent.PatentReader;
@@ -35,13 +36,48 @@ public class RecordReader {
 		return this.read(bulkReaderArgs.getInputFile().toFile(), processor, bulkReaderArgs.getOutputFile());
 	}
 
+	/**
+	 * Read, processor does not write (i.e. using Grep for hasMatch only)
+	 * 
+	 * @param inputFile
+	 * @param processor
+	 * @return
+	 * @throws PatentReaderException
+	 * @throws DocumentException
+	 * @throws IOException
+	 */
 	public RunStats read(File inputFile, RecordProcessor processor)
 			throws PatentReaderException, DocumentException, IOException {
 		this.bulkReaderArgs.setInputFile(inputFile.toPath());
-		return this.read(inputFile, processor, null);
+		return this.read(inputFile, processor, new DummyWriter());
 	}
 
+	/**
+	 * Read, processor writes to STDOUT or FILE.
+	 * 
+	 * @param inputFile
+	 * @param processor
+	 * @param outputFilePath
+	 * @return
+	 * @throws PatentReaderException
+	 * @throws DocumentException
+	 * @throws IOException
+	 */
 	public RunStats read(File inputFile, RecordProcessor processor, Path outputFilePath)
+			throws PatentReaderException, DocumentException, IOException {
+
+		Writer writer = null;
+		if (outputFilePath != null) {
+			writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(outputFilePath.toFile()), Charset.forName("UTF-8")));
+		} else {
+			writer = new BufferedWriter(new OutputStreamWriter(System.out, Charset.forName("UTF-8")));
+		}
+
+		return read(inputFile, processor, writer);
+	}
+
+	public RunStats read(File inputFile, RecordProcessor processor, Writer writer)
 			throws PatentReaderException, DocumentException, IOException {
 		FileFilterChain filters = new FileFilterChain();
 		DumpReader dumpReader;
@@ -70,14 +106,6 @@ public class RecordReader {
 			dumpReader.setFileFilter(filters);
 		}
 
-		Writer writer = null;
-		if (outputFilePath != null) {
-			writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(outputFilePath.toFile()), Charset.forName("UTF-8")));
-		} else {
-			writer = new BufferedWriter(new OutputStreamWriter(System.out, Charset.forName("UTF-8")));
-		}
-
 		return read(dumpReader, processor, writer);
 	}
 
@@ -86,7 +114,7 @@ public class RecordReader {
 
 		dumpReader.open();
 		dumpReader.skip(bulkReaderArgs.getSkipRecordCount());
-		
+
 		String currentFileName = dumpReader.getFile().getName();
 		RunStats runStats = new RunStats(currentFileName);
 
@@ -117,7 +145,7 @@ public class RecordReader {
 				runStats.incrementFailure(sourceTxt);
 			}
 
-			if (checked == bulkReaderArgs.getRecordReadLimit() 
+			if (checked == bulkReaderArgs.getRecordReadLimit()
 					|| runStats.getSuccess() == bulkReaderArgs.getSucessLimit()
 					|| runStats.getFailure() == bulkReaderArgs.getFailLimit()) {
 				break;
@@ -132,7 +160,7 @@ public class RecordReader {
 
 		writer.close();
 		dumpReader.close();
-		
+
 		return runStats;
 	}
 

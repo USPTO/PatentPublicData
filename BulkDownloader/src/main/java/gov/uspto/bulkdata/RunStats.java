@@ -136,8 +136,17 @@ public class RunStats {
 
 	@Override
 	public String toString() {
-		return "RunStats [taskName=" + taskName + ", records=" + records + ", success=" + success + ", failure=" + failure
-				+ ", failureSourceLocations=" + Arrays.toString(failureSourceLocations.toArray()) + ", childRunStats="
-				+ Arrays.toString(childRunStats.toArray()) + "]";
+		StringBuilder stb = new StringBuilder();
+		stb.append("RunStats [taskName=").append(taskName);
+		stb.append(", records=").append(records);
+		stb.append(", success=").append(success);
+		stb.append(", failure=").append(failure);
+		if (failureSourceLocations != null) {
+			stb.append(", failureSourceLocations=").append(Arrays.toString(failureSourceLocations.toArray()));
+		}
+		if (childRunStats != null) {
+			stb.append(", childRunStats[").append(childRunStats.size()).append("]={").append(Arrays.toString(childRunStats.toArray())).append("}");
+		}
+		return stb.toString();
 	}
 }

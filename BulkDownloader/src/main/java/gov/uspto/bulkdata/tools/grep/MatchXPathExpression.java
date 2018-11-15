@@ -41,7 +41,7 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 	}
 
 	/**
-	 * Attempt detection of xPath Constraints by parsing xPath Expression
+	 * Attempt detection of {@link javax.xml.xpath.XPathConstants XPathConstants} by parsing XPath Expression
 	 * 
 	 * @return
 	 */
@@ -49,7 +49,10 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 		if (XPathExpression.matches("/+\\*\\[[^\\]]+\\]$")) { // xPath("//*[text() = 'qwerty']")
 			return XPathConstants.NODESET;
 		}
-		else if (XPathExpression.matches("^(count|sum|min|max|avg|number|string-length)\\(.+\\)$")) {
+		//else if (XPathExpression.matches("/(child|descendant|descendant-or-self|parent|ancestor|ancestor-or-self|preceding-sibling|following-sibling|preceding|following|self|attribute)(:?::)?")) { // xPath("//*[text() = 'qwerty']")
+		//	return XPathConstants.NODESET;
+		//}
+		else if (XPathExpression.matches("^(count|sum|min|max|avg|number|string-length|round|floor|ceiling)\\(.+\\)$")) {
 			return XPathConstants.NUMBER;
 		} else if (XPathExpression.matches("(.+[!=><]{1,2}\\s?['A-z0-9]+$|^(not|nilled|boolean)\\(.+\\)$|=\\s?[A-z0-9]$)")) {
 			return XPathConstants.BOOLEAN;

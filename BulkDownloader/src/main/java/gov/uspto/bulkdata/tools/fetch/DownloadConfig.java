@@ -4,9 +4,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -15,8 +14,6 @@ import com.google.common.collect.ListMultimap;
 
 import gov.uspto.bulkdata.BulkReaderArguments;
 import gov.uspto.bulkdata.cli2.BulkDataType;
-import gov.uspto.bulkdata.source.Source;
-import gov.uspto.bulkdata.source.Sources;
 import gov.uspto.common.DateRange;
 import joptsimple.OptionParser;
 
@@ -35,12 +32,13 @@ import joptsimple.OptionParser;
 public class DownloadConfig extends BulkReaderArguments {
 	private Path outputDir;
 	private boolean restart = false;
-	private String[] matchFilenames;
+	private Collection<String> matchFilenames;
 	private int downloadLimit;
 	private boolean async;
 	private BulkDataType dataType;
-    private ListMultimap<String, DateRange> yearMap;
+	private ListMultimap<String, DateRange> yearMap;
 	private ListMultimap<String, DateRange> dateRanges;
+	private boolean delete;
 
 	public OptionParser buildArgs() {
 		return buildArgs(new OptionParser());
@@ -65,8 +63,11 @@ public class DownloadConfig extends BulkReaderArguments {
 		opParser.accepts("fetch-async").withOptionalArg().ofType(Boolean.class).describedAs("download file async")
 				.defaultsTo(false);
 
-		opParser.accepts("match-filename").withOptionalArg().ofType(String.class)
+		opParser.accepts("fetch-filename").withOptionalArg().ofType(String.class)
 				.describedAs("comma separated list of file names to match and download");
+
+		opParser.accepts("fetch-delete").withOptionalArg().ofType(Boolean.class)
+				.describedAs("Delete bulkfile after each processing download.").defaultsTo(false);
 
 		opParser.accepts("restart").withOptionalArg().ofType(Boolean.class)
 				.describedAs("Restart failed download from job file in download directory.").defaultsTo(false);
@@ -85,6 +86,7 @@ public class DownloadConfig extends BulkReaderArguments {
 
 		setRestart((boolean) options.valueOf("restart"));
 		setAsync((boolean) options.valueOf("fetch-async"));
+		setDelete((boolean) options.valueOf("fetch-delete"));
 
 		ListMultimap<String, DateRange> yearMap = LinkedListMultimap.create();
 		if (options.has("fetch-date")) {
@@ -99,7 +101,7 @@ public class DownloadConfig extends BulkReaderArguments {
 						yearMap.put(String.valueOf(year), dateRange);
 					}
 				} else {
-					//LOGGER.warn("Invalid DateRange has more than two dashs: {}", dateInputRange);
+					// LOGGER.warn("Invalid DateRange has more than two dashs: {}", dateInputRange);
 				}
 			}
 			setDateRangs(yearMap);
@@ -121,7 +123,7 @@ public class DownloadConfig extends BulkReaderArguments {
 					Integer year = Integer.parseInt(yearStr);
 					if (year < 2001) {
 						throw new IllegalArgumentException(
-								"Patent Applications not available before March 2001: " + yearMap.keySet());
+								"Patent Applications not publicly available before March 2001: " + yearMap.keySet());
 					}
 				}
 				break;
@@ -134,10 +136,11 @@ public class DownloadConfig extends BulkReaderArguments {
 			setDataType(dataType);
 		}
 
-		if (options.has("match-filename")) {
-			String filenameStr = (String) options.valueOf("match-filename");
+		if (options.has("fetch-filename")) {
+			String filenameStr = (String) options.valueOf("fetch-filename");
 			if (!filenameStr.isEmpty()) {
-				setMatchFilenames(filenameStr.split("\\s*,\\s*"));
+				List<String> filenames = Splitter.on(",").trimResults().omitEmptyStrings().splitToList(filenameStr);
+				setMatchFilenames(filenames);
 			}
 		}
 	}
@@ -146,25 +149,38 @@ public class DownloadConfig extends BulkReaderArguments {
 		System.out.println("####  Available Types ##### ");
 		System.out.println("Patent Document Types [grant, application, gazette]");
 		/*
-		for (BulkDataType value : BulkDataType.values()) {
-			System.out.println(value.name());
-		}
-		*/
+		 * for (BulkDataType value : BulkDataType.values()) {
+		 * System.out.println(value.name()); }
+		 */
 		System.exit(0);
+	}
+
+	/**
+	 * Delete files after processing each; only when processing is enabled i.e.
+	 * matching and/or transforming.
+	 * 
+	 * @param bool
+	 */
+	public void setDelete(boolean bool) {
+		this.delete = bool;
+	}
+
+	public boolean isDelete() {
+		return this.delete;
 	}
 
 	public void setDateRangs(ListMultimap<String, DateRange> dateRanges) {
 		this.dateRanges = dateRanges;
 	}
 
-	public ListMultimap<String, DateRange> getDateRangs(){
+	public ListMultimap<String, DateRange> getDateRangs() {
 		return this.dateRanges;
 	}
-	
+
 	private void setDataType(BulkDataType dataType) {
 		this.dataType = dataType;
 	}
-	
+
 	public BulkDataType getDataType() {
 		return this.dataType;
 	}
@@ -193,11 +209,11 @@ public class DownloadConfig extends BulkReaderArguments {
 		return this.downloadLimit;
 	}
 
-	public void setMatchFilenames(String... filenames) {
+	public void setMatchFilenames(Collection<String> filenames) {
 		this.matchFilenames = filenames;
 	}
 
-	public String[] getMatchFilenames() {
+	public Collection<String> getMatchFilenames() {
 		return this.matchFilenames;
 	}
 
