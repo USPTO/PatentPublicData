@@ -77,8 +77,7 @@ public class Downloader {
 	}
 
 	public boolean download(DownloadFile download) throws IOException{
-		
-		  LOGGER.info("Downloading: {} - {}", download.getOutFile(), download.getTempFile());
+		  LOGGER.info("Downloading: {} - {} - {}", download.getURLAsStr(), download.getTempFile(), download.getOutFile());
 
 		  Request request = new Request.Builder().url(download.getUrl()).build();
 
