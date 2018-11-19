@@ -9,15 +9,12 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.google.common.base.Preconditions;
 
 public class PatternXPath extends MatchXPath {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PatternXPath.class);
-	
+
 	private final List<XPathExpression> xPaths = new ArrayList<XPathExpression>();
 	private String[] xPathExpressions;
 

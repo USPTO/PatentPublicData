@@ -36,7 +36,6 @@ public class DownloadConfig extends BulkReaderArguments {
 	private int downloadLimit;
 	private boolean async;
 	private BulkDataType dataType;
-	private ListMultimap<String, DateRange> yearMap;
 	private ListMultimap<String, DateRange> dateRanges;
 	private boolean delete;
 

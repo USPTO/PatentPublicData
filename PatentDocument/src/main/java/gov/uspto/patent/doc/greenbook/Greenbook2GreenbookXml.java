@@ -25,54 +25,39 @@ import gov.uspto.patent.PatentReaderException;
  */
 public class Greenbook2GreenbookXml {
 
-    /*
-	private static final Set<String> SECTIONS = new HashSet<String>(20);
-	static {
-		SECTIONS.add("PATN");
-		SECTIONS.add("INVT");
-		SECTIONS.add("ASSG");
-		SECTIONS.add("PRIR");
-		SECTIONS.add("REIS");
-		SECTIONS.add("RLAP");
-		SECTIONS.add("CLAS");
-		SECTIONS.add("UREF");
-		SECTIONS.add("FREF");
-		SECTIONS.add("OREF");
-		SECTIONS.add("LREP");
-		SECTIONS.add("PCTA");
-		SECTIONS.add("ABST");
-		SECTIONS.add("GOVT");
-		SECTIONS.add("PARN");
-		SECTIONS.add("BSUM");
-		SECTIONS.add("DRWD");
-		SECTIONS.add("DETD");
-		SECTIONS.add("CLMS");
-		SECTIONS.add("DCLM");
-	}
-    */
+	/*
+	 * private static final Set<String> SECTIONS = new HashSet<String>(20); static {
+	 * SECTIONS.add("PATN"); SECTIONS.add("INVT"); SECTIONS.add("ASSG");
+	 * SECTIONS.add("PRIR"); SECTIONS.add("REIS"); SECTIONS.add("RLAP");
+	 * SECTIONS.add("CLAS"); SECTIONS.add("UREF"); SECTIONS.add("FREF");
+	 * SECTIONS.add("OREF"); SECTIONS.add("LREP"); SECTIONS.add("PCTA");
+	 * SECTIONS.add("ABST"); SECTIONS.add("GOVT"); SECTIONS.add("PARN");
+	 * SECTIONS.add("BSUM"); SECTIONS.add("DRWD"); SECTIONS.add("DETD");
+	 * SECTIONS.add("CLMS"); SECTIONS.add("DCLM"); }
+	 */
 
-    public Document parse(File file) throws IOException, PatentReaderException{
-        try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF-8")) {
-            KvReader kvReader = new KvReader();
-            List<KeyValue> keyValues = kvReader.parse(reader);
-            return kvReader.genXml(keyValues);
-        }
-    }
-    
-	public static void writeFile(Document document, Path outDir, String outFileName) throws IOException{
-	    OutputFormat format = OutputFormat.createPrettyPrint();
-        XMLWriter writer = new XMLWriter( new FileWriter( outDir.resolve(outFileName).toFile() ) );
-        writer.write( document );
-        writer.close();
+	public Document parse(File file) throws IOException, PatentReaderException {
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF-8")) {
+			KvReader kvReader = new KvReader();
+			List<KeyValue> keyValues = kvReader.parse(reader);
+			return kvReader.genXml(keyValues);
+		}
 	}
 
-	public static void stdout(Document document) throws IOException{
-        OutputFormat format = OutputFormat.createPrettyPrint();
-        //OutputFormat format = OutputFormat.createCompactFormat();
-        XMLWriter writer = new XMLWriter( System.out, format );
-        writer.write( document );
+	public static void writeFile(Document document, Path outDir, String outFileName) throws IOException {
+		// OutputFormat format = OutputFormat.createPrettyPrint();
+		XMLWriter writer = new XMLWriter(new FileWriter(outDir.resolve(outFileName).toFile()));
+		writer.write(document);
+		writer.close();
 	}
-	
+
+	public static void stdout(Document document) throws IOException {
+		OutputFormat format = OutputFormat.createPrettyPrint();
+		// OutputFormat format = OutputFormat.createCompactFormat();
+		XMLWriter writer = new XMLWriter(System.out, format);
+		writer.write(document);
+	}
+
 	public static void main(String[] args) throws PatentReaderException, IOException {
 		String filename = args[0];
 		File file = new File(filename);
@@ -84,12 +69,12 @@ public class Greenbook2GreenbookXml {
 			for (File subfile : file.listFiles()) {
 				System.out.println(count++ + " " + subfile.getAbsolutePath());
 				Document dom4jDoc = g2xml.parse(subfile);
-				String outFileName = subfile.getName()+".xml";
+				String outFileName = subfile.getName() + ".xml";
 				Path outDir = Paths.get(".");
 				try {
 					Greenbook2GreenbookXml.writeFile(dom4jDoc, outDir, outFileName);
 				} catch (IOException e) {
-					System.err.println("Failed to write: "+ outFileName);
+					System.err.println("Failed to write: " + outFileName);
 					e.printStackTrace();
 				}
 			}

@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -50,6 +49,8 @@ import joptsimple.OptionSet;
  * </pre>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ * 
+ * @deprecated replaced with {@link gov.uspto.bulkdata.cli.Transformer} 
  *
  */
 public class TransformerCli {
@@ -269,7 +270,7 @@ public class TransformerCli {
 		String outdir = (String) options.valueOf("outdir");
 		Path outDirPath = Paths.get(outdir);
 
-		int skip = (Integer) options.valueOf("skip"); // SKIP not yet supported.
+		//int skip = (Integer) options.valueOf("skip"); // SKIP not yet supported.
 		int limit = (Integer) options.valueOf("limit");
 
 		boolean flatJson = (Boolean) options.valueOf("flat");

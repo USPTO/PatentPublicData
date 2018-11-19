@@ -12,9 +12,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Entity;
 import gov.uspto.patent.model.entity.NameOrg;
@@ -47,8 +44,6 @@ import gov.uspto.patent.model.entity.NameOrg;
  *
  */
 public class OrgSynonymGenerator {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(OrgSynonymGenerator.class);
 
 	// https://en.wikipedia.org/wiki/List_of_legal_entity_types_by_country
 	private static final Pattern ORG_SUFFIX_PATTERN = Pattern.compile(
@@ -124,7 +119,6 @@ public class OrgSynonymGenerator {
 	 * @param abbrevs
 	 */
 	protected void processAbbrev(NameOrg name, Set<String> abbrevs){
-		//LOGGER.info("lastWordsAbbrev : {} -> {}", name.getName(),  abbrevSet1);
 		for(String abbrevVar: abbrevs) {
 			String abbrevSuffix = suffix(name, abbrevVar);
 			String abbrevPrefix =  prefix(name, abbrevVar);

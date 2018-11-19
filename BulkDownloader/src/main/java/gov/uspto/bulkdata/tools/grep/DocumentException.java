@@ -2,6 +2,8 @@ package gov.uspto.bulkdata.tools.grep;
 
 public class DocumentException extends Exception {
 
+	private static final long serialVersionUID = 7577314044713539713L;
+
 	private String message = null;
 
 	public DocumentException() {

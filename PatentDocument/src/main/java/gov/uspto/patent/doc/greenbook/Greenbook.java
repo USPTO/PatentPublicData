@@ -48,9 +48,9 @@ import gov.uspto.patent.model.entity.Inventor;
 /**
  * Greenbook (APS) Patent Format
  * 
- *<p>
+ * <p>
  * APS was the acronym for the USPTO's Automated Patent System
- *</p>
+ * </p>
  * 
  * @see http://www.uspto.gov/sites/default/files/products/PatentFullTextAPSGreenBook-Documentation.pdf
  * 
@@ -70,14 +70,14 @@ public class Greenbook extends KvParser {
 	}
 
 	/*
-	 * private static final Set<String> SECTIONS = new HashSet<String>(20);
-	 * static { SECTIONS.add("PATN"); SECTIONS.add("INVT");
-	 * SECTIONS.add("ASSG"); SECTIONS.add("PRIR"); SECTIONS.add("REIS");
-	 * SECTIONS.add("RLAP"); SECTIONS.add("CLAS"); SECTIONS.add("UREF");
-	 * SECTIONS.add("FREF"); SECTIONS.add("OREF"); SECTIONS.add("LREP");
-	 * SECTIONS.add("PCTA"); SECTIONS.add("ABST"); SECTIONS.add("GOVT");
-	 * SECTIONS.add("PARN"); SECTIONS.add("BSUM"); SECTIONS.add("DRWD");
-	 * SECTIONS.add("DETD"); SECTIONS.add("CLMS"); SECTIONS.add("DCLM"); }
+	 * private static final Set<String> SECTIONS = new HashSet<String>(20); static {
+	 * SECTIONS.add("PATN"); SECTIONS.add("INVT"); SECTIONS.add("ASSG");
+	 * SECTIONS.add("PRIR"); SECTIONS.add("REIS"); SECTIONS.add("RLAP");
+	 * SECTIONS.add("CLAS"); SECTIONS.add("UREF"); SECTIONS.add("FREF");
+	 * SECTIONS.add("OREF"); SECTIONS.add("LREP"); SECTIONS.add("PCTA");
+	 * SECTIONS.add("ABST"); SECTIONS.add("GOVT"); SECTIONS.add("PARN");
+	 * SECTIONS.add("BSUM"); SECTIONS.add("DRWD"); SECTIONS.add("DETD");
+	 * SECTIONS.add("CLMS"); SECTIONS.add("DCLM"); }
 	 */
 
 	@Override
@@ -85,11 +85,11 @@ public class Greenbook extends KvParser {
 
 		DocumentId publicationId = new DocumentIdNode(document).read();
 		PatentType patentType = PatentType.UNDEFINED;
-		if (publicationId != null){
+		if (publicationId != null) {
 			MDC.put("DOCID", publicationId.toText());
 			patentType = new PatentTypeNode(document).read();
 			publicationId.setPatentType(patentType);
-			
+
 			/*
 			 * Assign Kind Code from PatentType
 			 */
@@ -121,7 +121,6 @@ public class Greenbook extends KvParser {
 				}
 			}
 		}
-
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
@@ -207,17 +206,19 @@ public class Greenbook extends KvParser {
 		 * ZipReader fileInZip = new ZipReader(file, find); fileInZip.open();
 		 * 
 		 * int count = 0; while(fileInZip.hasNext()){ Reader docTxtStr =
-		 * fileInZip.next(); if (docTxtStr == null){ break; } count++; Sgml sgml
-		 * = new Sgml(); Patent patent = sgml.parse(docTxtStr);
-		 * System.out.println(count + " :: " + patent.toString()); }
-		 * fileInZip.close(); } else
+		 * fileInZip.next(); if (docTxtStr == null){ break; } count++; Sgml sgml = new
+		 * Sgml(); Patent patent = sgml.parse(docTxtStr); System.out.println(count +
+		 * " :: " + patent.toString()); } fileInZip.close(); } else
 		 */
 		if (file.isDirectory()) {
 			int count = 1;
 			for (File subfile : file.listFiles()) {
 				System.out.println(count++ + " " + subfile.getAbsolutePath());
 				Greenbook greenbook = new Greenbook();
-				Patent patent = greenbook.parse(subfile);
+				greenbook.parse(subfile);
+				// Patent patent = greenbook.parse(subfile);
+				// System.out.println(patent.getDocumentId().toText() + " - " +
+				// patent.getTitle());
 			}
 		} else {
 			Greenbook greenbook = new Greenbook();

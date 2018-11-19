@@ -14,9 +14,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -24,7 +21,6 @@ import org.xml.sax.SAXException;
 import com.google.common.base.Preconditions;
 
 public class MatchCheckerXML implements Match<MatchPattern> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MatchCheckerXML.class);
 
 	protected Set<MatchPattern> matchPatterns;
 

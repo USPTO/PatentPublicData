@@ -12,8 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.google.common.base.Preconditions;
@@ -23,7 +21,6 @@ import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
 
 public abstract class DumpFile implements Iterator<String>, Closeable, DumpReader {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFile.class);
 
 	private final File file;
 	private PatentDocFormat patentDocFormat;
