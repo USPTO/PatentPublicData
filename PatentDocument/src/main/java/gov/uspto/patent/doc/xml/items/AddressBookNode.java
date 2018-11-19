@@ -17,9 +17,10 @@ import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
 
 /**
- * Addressbook
+ * Address Book Node
  * 
- *<p><pre>
+ * <p>
+ * <pre>
  * {@code
  * <!ELEMENT addressbook ((%name_group;, address?, phone*, fax*, email*, url*, ead*, dtext?) | text)>
  * <!ELEMENT address (%address_group;)>
@@ -30,174 +31,173 @@ import gov.uspto.patent.model.entity.NamePerson;
  * <!ELEMENT fax (#PCDATA)>
  * <!ELEMENT email (#PCDATA)>
  * }
- *</pre></p>
+ * </pre>
+ * </p>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class AddressBookNode extends ItemReader<Name> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AddressBookNode.class);
-  
-    private static final String ITEM_NODE_NAME = "addressbook";
-    private static final String ITEM_ELSE_PREFIX = "-examiner";
+	private static final Logger LOGGER = LoggerFactory.getLogger(AddressBookNode.class);
 
-    public AddressBookNode(Node itemNode) {
-        super(itemNode, ITEM_NODE_NAME, ITEM_ELSE_PREFIX);
-    }
+	private static final String ITEM_NODE_NAME = "addressbook";
+	private static final String ITEM_ELSE_PREFIX = "-examiner";
 
-    public Name getName() {
-    	if (itemNode.selectSingleNode("last-name") != null) {
-    		return getPersonName();
-    	} else {
-    		return getOrgName();
-    	}
-    }
+	public AddressBookNode(Node itemNode) {
+		super(itemNode, ITEM_NODE_NAME, ITEM_ELSE_PREFIX);
+	}
 
-    /**
-     * Get Names.
-     * 
-     * PersonName can also have an associated Orgname, or Orgname can be by itself.
-     * 
-     * @return
-     * @throws InvalidDataException 
-     */
-    public Name getPersonName() {
-        Node prefixN = itemNode.selectSingleNode("prefix");
-        String prefix = prefixN != null ? prefixN.getText() : null;
+	public Name getName() {
+		if (itemNode.selectSingleNode("last-name") != null) {
+			return getPersonName();
+		} else {
+			return getOrgName();
+		}
+	}
 
-        Node firstN = itemNode.selectSingleNode("first-name");
-        String firstName = firstN != null ? firstN.getText() : null;
+	/**
+	 * Get Names.
+	 * 
+	 * PersonName can also have an associated Orgname, or Orgname can be by itself.
+	 * 
+	 * @return
+	 * @throws InvalidDataException
+	 */
+	public Name getPersonName() {
+		Node prefixN = itemNode.selectSingleNode("prefix");
+		String prefix = prefixN != null ? prefixN.getText() : null;
 
-        Node lastN = itemNode.selectSingleNode("last-name");
-        String lastName = lastN != null ? lastN.getText() : null;
+		Node firstN = itemNode.selectSingleNode("first-name");
+		String firstName = firstN != null ? firstN.getText() : null;
 
-        Node middleN = itemNode.selectSingleNode("middleName");
-        String middleName = middleN != null ? middleN.getText() : null;
+		Node lastN = itemNode.selectSingleNode("last-name");
+		String lastName = lastN != null ? lastN.getText() : null;
 
-        Node suffixN = itemNode.selectSingleNode("suffix");
-        String suffix = suffixN != null ? suffixN.getText() : null;
+		Node middleN = itemNode.selectSingleNode("middleName");
+		String middleName = middleN != null ? middleN.getText() : null;
 
-        @SuppressWarnings("unchecked")
-        List<Node> synonymNodes = itemNode.selectNodes("synonym");
-        Set<String> synonyms = new HashSet<String>(synonymNodes.size());
-        for (Node synonymN : synonymNodes) {
-            synonyms.add(synonymN.getText());
-        }
+		Node suffixN = itemNode.selectSingleNode("suffix");
+		String suffix = suffixN != null ? suffixN.getText() : null;
 
-        NamePerson name = null;
-        if (lastName != null || firstName != null) {
-            name = new NamePerson(firstName, middleName, lastName);           
-            name.setPrefix(prefix);
-            name.setSuffix(suffix);
-            name.setSynonyms(synonyms);
+		List<Node> synonymNodes = itemNode.selectNodes("synonym");
+		Set<String> synonyms = new HashSet<String>(synonymNodes.size());
+		for (Node synonymN : synonymNodes) {
+			synonyms.add(synonymN.getText());
+		}
 
-            try {
+		NamePerson name = null;
+		if (lastName != null || firstName != null) {
+			name = new NamePerson(firstName, middleName, lastName);
+			name.setPrefix(prefix);
+			name.setSuffix(suffix);
+			name.setSynonyms(synonyms);
+
+			try {
 				name.validate();
 			} catch (InvalidDataException e) {
 				LOGGER.warn("Person Name Invalid: {}", itemNode.getParent().getParent().asXML(), e);
 			}
-        }
+		}
 
-        return name;
-    }
+		return name;
+	}
 
-    public NameOrg getOrgName() {
-        // @FIXME Note: for now, treat name as a org name. 
-        Node orgnameN = itemNode.selectSingleNode("orgname") != null ? itemNode.selectSingleNode("orgname")
-                : itemNode.selectSingleNode("name");
+	public NameOrg getOrgName() {
+		// @FIXME Note: for now, treat name as a org name.
+		Node orgnameN = itemNode.selectSingleNode("orgname") != null ? itemNode.selectSingleNode("orgname")
+				: itemNode.selectSingleNode("name");
 
-        @SuppressWarnings("unchecked")
-        List<Node> synonymNodes = itemNode.selectNodes("synonym");
-        Set<String> synonyms = new HashSet<String>(synonymNodes.size());
-        for (Node synonymN : synonymNodes) {
-            synonyms.add(synonymN.getText());
-        }
-        
-        NameOrg name = null;
-        if (orgnameN != null) {
-            String orgName = orgnameN.getText();
-            name = new NameOrg(orgName);
-            name.setSynonyms(synonyms);
+		List<Node> synonymNodes = itemNode.selectNodes("synonym");
+		Set<String> synonyms = new HashSet<String>(synonymNodes.size());
+		for (Node synonymN : synonymNodes) {
+			synonyms.add(synonymN.getText());
+		}
 
-            try {
+		NameOrg name = null;
+		if (orgnameN != null) {
+			String orgName = orgnameN.getText();
+			name = new NameOrg(orgName);
+			name.setSynonyms(synonyms);
+
+			try {
 				name.validate();
 			} catch (InvalidDataException e) {
 				LOGGER.warn("Org Name Invalid: {}", orgnameN.getParent().getParent().asXML(), e);
 			}
-        }
-        
-        return name;
-    }
-  
-    public Address getAddress() {
-        Node addressN = itemNode.selectSingleNode("address");
-        if (addressN == null) {
-            return null;
-        }
+		}
 
-        /*
-         * Contact Info
-         */
-        Node phoneN = itemNode.selectSingleNode("phone");
-        String phone = phoneN != null ? phoneN.getText() : null;
+		return name;
+	}
 
-        Node faxN = itemNode.selectSingleNode("fax");
-        String fax = faxN != null ? faxN.getText() : null;
+	public Address getAddress() {
+		Node addressN = itemNode.selectSingleNode("address");
+		if (addressN == null) {
+			return null;
+		}
 
-        Node emailN = itemNode.selectSingleNode("email");
-        String email = emailN != null ? emailN.getText() : null;
+		/*
+		 * Contact Info
+		 */
+		Node phoneN = itemNode.selectSingleNode("phone");
+		String phone = phoneN != null ? phoneN.getText() : null;
 
-        /*
-         * Address
-         */
-        Node streetN1 = addressN.selectSingleNode("address-1");
-        Node streetN2 = addressN.selectSingleNode("street");
-        String street = null;
-        if (streetN1 != null) {
-            street = streetN1.getText();
-            Node streetN12 = addressN.selectSingleNode("address-2");
-            if (streetN12 != null) {
-                street = street + ", " + streetN12.getText();
-            }
-        } else if (streetN2 != null) {
-            street = streetN2.getText();
-        }
+		Node faxN = itemNode.selectSingleNode("fax");
+		String fax = faxN != null ? faxN.getText() : null;
 
-        Node pboxN = addressN.selectSingleNode("pobox");
-        String pbox = pboxN != null ? pboxN.getText() : null;
-        if (pbox != null && street == null) {
-            street = pbox;
-        }
+		Node emailN = itemNode.selectSingleNode("email");
+		String email = emailN != null ? emailN.getText() : null;
 
-        Node cityN = addressN.selectSingleNode("city");
-        String city = cityN != null ? cityN.getText() : null;
+		/*
+		 * Address
+		 */
+		Node streetN1 = addressN.selectSingleNode("address-1");
+		Node streetN2 = addressN.selectSingleNode("street");
+		String street = null;
+		if (streetN1 != null) {
+			street = streetN1.getText();
+			Node streetN12 = addressN.selectSingleNode("address-2");
+			if (streetN12 != null) {
+				street = street + ", " + streetN12.getText();
+			}
+		} else if (streetN2 != null) {
+			street = streetN2.getText();
+		}
 
-        Node stateN = addressN.selectSingleNode("state");
-        String state = stateN != null ? stateN.getText() : null;
+		Node pboxN = addressN.selectSingleNode("pobox");
+		String pbox = pboxN != null ? pboxN.getText() : null;
+		if (pbox != null && street == null) {
+			street = pbox;
+		}
 
-        Node zipCodeN = addressN.selectSingleNode("postcode");
-        String zipCode = zipCodeN != null ? zipCodeN.getText() : null;
+		Node cityN = addressN.selectSingleNode("city");
+		String city = cityN != null ? cityN.getText() : null;
 
-        Node countryN = addressN.selectSingleNode("country");
-        CountryCode countryCode = CountryCode.UNDEFINED;
-        if (countryN != null) {
-            try {
-                countryCode = CountryCode.fromString(countryN.getText());
-            } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid CountryCode: {} from: {}", countryN.getText(), addressN.asXML());
-            }
-        }
+		Node stateN = addressN.selectSingleNode("state");
+		String state = stateN != null ? stateN.getText() : null;
 
-        Address address = new Address(street, city, state, zipCode, countryCode);
-        address.setPhoneNumber(phone);
-        address.setFaxNumber(fax);
-        address.setEmail(email);
-        return address;
-    }
+		Node zipCodeN = addressN.selectSingleNode("postcode");
+		String zipCode = zipCodeN != null ? zipCodeN.getText() : null;
 
-    @Override
-    public Name read() {
-        throw new IllegalArgumentException("Function not Used.");
-    }
+		Node countryN = addressN.selectSingleNode("country");
+		CountryCode countryCode = CountryCode.UNDEFINED;
+		if (countryN != null) {
+			try {
+				countryCode = CountryCode.fromString(countryN.getText());
+			} catch (InvalidDataException e) {
+				LOGGER.warn("Invalid CountryCode: {} from: {}", countryN.getText(), addressN.asXML());
+			}
+		}
+
+		Address address = new Address(street, city, state, zipCode, countryCode);
+		address.setPhoneNumber(phone);
+		address.setFaxNumber(fax);
+		address.setEmail(email);
+		return address;
+	}
+
+	@Override
+	public Name read() {
+		throw new IllegalArgumentException("Function not Used.");
+	}
 
 }

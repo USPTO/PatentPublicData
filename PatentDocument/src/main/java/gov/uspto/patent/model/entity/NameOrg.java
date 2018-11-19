@@ -2,11 +2,6 @@ package gov.uspto.patent.model.entity;
 
 import gov.uspto.patent.InvalidDataException;
 
-/**
- * 
- * @author Brian G. Feldman (brian.feldman@uspto.gov)
- *
- */
 public class NameOrg extends Name {
 
 	public NameOrg(String fullName) {
@@ -17,7 +12,7 @@ public class NameOrg extends Name {
 		String fullName = super.getName();
 
 		if (fullName == null || fullName.length() < 2) {
-	            throw new InvalidDataException("Invalid NameOrg, lastname can not be blank");
+			throw new InvalidDataException("Invalid NameOrg, lastname can not be blank");
 		}
 
 		return true;

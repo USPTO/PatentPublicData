@@ -10,14 +10,17 @@ import org.jsoup.select.NodeVisitor;
 /**
  * HTML to Plaintext
  * 
- *<p>Adapted from org.jsoup.examples.HtmlToPlainText</p>
+ * <p>
+ * Adapted from org.jsoup.examples.HtmlToPlainText
+ * </p>
  * 
- *<h3>Changes</h3>
- *<ul>
- *<li>Added FreetextConfig</li>
- *<li>Added PrettyPrint - when false, created newlines are commented out</li>
- *<li>Copied traverse method and added ability to Filter and Replace Nodes (Brian G. Feldman <brian.feldman@uspto.gov>)</li>
- *</ul>
+ * <h3>Changes</h3>
+ * <ul>
+ * <li>Added FreetextConfig</li>
+ * <li>Added PrettyPrint - when false, created newlines are commented out</li>
+ * <li>Copied traverse method and added ability to Filter and Replace Nodes
+ * (Brian G. Feldman <brian.feldman@uspto.gov>)</li>
+ * </ul>
  *
  */
 public class HtmlToPlainText implements NodeVisitor {

@@ -3,18 +3,17 @@ package gov.uspto.patent.model;
 import gov.uspto.patent.InvalidDataException;
 
 /**
- * Country Codes, from WIPO standard ST.3. two-letter codes
+ * <p>Country Codes, from WIPO standard ST.3. two-letter codes
  * which mirrors the country codes listed as ISO Alpha-2 Codes in International Standard ISO 3166-1,
- * with addition to codes given to organizations.
+ * with addition to codes given to organizations.</p>
  *
- * WIPO updated Country Codes April 2016.
+ * <p>WIPO updated Country Codes April 2016.</p>
  *
- * Note 1: different code existed before January 1, 1978, the pre 1978 are also listed in 
- * the WIPO ST.3.
+ * <p>Note 1: different code existed before January 1, 1978, the pre 1978 are also listed in 
+ * the WIPO ST.3.</p>
  * 
- * Note 2: Sometimes states or province codes are entered erroneously as Country Codes.
- * 
- * 
+ * <p>Note 2: Sometimes states or province codes are entered erroneously as Country Codes by the applicant.</p>
+ *
  * @see http://www.wipo.int/export/sites/www/standards/en/pdf/03-03-01.pdf
  * @see http://patft.uspto.gov/netahtml/PTO/help/helpctry.htm
  */

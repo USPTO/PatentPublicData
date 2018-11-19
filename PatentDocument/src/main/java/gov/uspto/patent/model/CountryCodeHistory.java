@@ -9,14 +9,14 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 /**
- * Map Historic County Code to Current Country Codes.
+ * <p>Map Historic County Code to Current Country Codes.</p>
  * 
- * In 1978 the Country Codes changed, some where reused, but since then new countries have been established and borders have changed.
+ * <p>In 1978 the Country Codes changed, some where reused, but since then new countries have been established and borders have changed.</p>
  *
- * The mapping allows for possible country codes reused, year range can be used to disambiguate the correct country code. 
+ * <p>The mapping allows for possible country codes reused, year range can be used to disambiguate the correct country code.</p> 
  *
- *<pre>
- * Pre-1978 codes are reused for different countries post-1978.
+ *<p><pre>
+ * The following country codes where reused for a different county, pre-1978 to post-1978:
  * 
  * Code    Pre-1978               Post-1978
  * ----    -------               ---------
@@ -37,11 +37,11 @@ import com.google.common.collect.ListMultimap;
  * RU      Romania               Russia
  * TO      Togo                  Tonga
  * ...
- *</pre> 
+ *</pre></p> 
  * 
- * https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
- * https://en.wikipedia.org/wiki/ISO_3166-3
- * 
+ * @see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+ * @see https://en.wikipedia.org/wiki/ISO_3166-3
+ *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */

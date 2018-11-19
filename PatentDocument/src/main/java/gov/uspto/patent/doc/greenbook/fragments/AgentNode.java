@@ -20,7 +20,9 @@ import gov.uspto.patent.model.entity.Name;
 /**
  * Agent / Legal Rep
  *
- *<p><pre>
+ * <p>
+ * 
+ * <pre>
  * {@code
  * <LREP>
  *  <FR2>Lawyer Name 1</FR2>
@@ -28,28 +30,29 @@ import gov.uspto.patent.model.entity.Name;
  * 	<FRM>Legal Firm Name Here</FRM>
  * <LREP>
  * }
- *</pre></p>
+ * </pre>
+ * </p>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class AgentNode extends DOMFragmentReader<List<Agent>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AgentNode.class);
-	
+
 	private static final String FRAGMENT_PATH = "/DOCUMENT/LREP";
-	
+
 	private static NameNode nameParser = new NameNode(null);
-	
+
 	public AgentNode(Document document) {
 		super(document);
 	}
 
 	@Override
-	public List<Agent> read(){
+	public List<Agent> read() {
 		List<Agent> agentList = new ArrayList<Agent>();
 
 		Node legalRep = document.selectSingleNode(FRAGMENT_PATH);
-		if (legalRep == null){
+		if (legalRep == null) {
 			return agentList;
 		}
 
@@ -58,11 +61,10 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Attorney Principle Name
 		 */
-		@SuppressWarnings("unchecked")
 		List<Node> attorneyPrinciples = legalRep.selectNodes("FR2"); // Multiple can exist.
-		for (Node attyPN: attorneyPrinciples){
+		for (Node attyPN : attorneyPrinciples) {
 			Name name = parseName(attyPN);
-			if (name != null){
+			if (name != null) {
 				Agent agent = new Agent(name, address, AgentRepType.ATTORNEY);
 				agentList.add(agent);
 			}
@@ -71,37 +73,34 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Attorney Associate Name
 		 */
-		@SuppressWarnings("unchecked")
 		List<Node> attorneyAssociates = legalRep.selectNodes("AAT");
-		for (Node attyAN: attorneyAssociates){
+		for (Node attyAN : attorneyAssociates) {
 			Name name = parseName(attyAN);
-			if (name != null){
+			if (name != null) {
 				Agent agent = new Agent(name, address, AgentRepType.ATTORNEY);
 				agentList.add(agent);
 			}
 		}
-		
+
 		/*
 		 * Attorney Name
 		 */
-		@SuppressWarnings("unchecked")
 		List<Node> attorneyNames = legalRep.selectNodes("ATT");
-		for (Node attorneyNameN: attorneyNames){
+		for (Node attorneyNameN : attorneyNames) {
 			Name name = parseName(attorneyNameN);
-			if (name != null){
+			if (name != null) {
 				Agent agent = new Agent(name, address, AgentRepType.ATTORNEY);
 				agentList.add(agent);
 			}
 		}
-		
+
 		/*
 		 * Agent Name
 		 */
-		@SuppressWarnings("unchecked")
 		List<Node> agents = legalRep.selectNodes("AGT");
-		for (Node agentN: agents){
+		for (Node agentN : agents) {
 			Name name = parseName(agentN);
-			if (name != null){
+			if (name != null) {
 				Agent agent = new Agent(name, address, AgentRepType.AGENT);
 				agentList.add(agent);
 			}
@@ -110,11 +109,10 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Representative Name
 		 */
-		@SuppressWarnings("unchecked")
 		List<Node> nameNs = legalRep.selectNodes("NAM");
-		for (Node nameN: nameNs){
+		for (Node nameN : nameNs) {
 			Name name = parseName(nameN);
-			if (name != null){
+			if (name != null) {
 				Agent agent = new Agent(name, address, AgentRepType.COMMON_REPRESENTATIVE);
 				agentList.add(agent);
 			}
@@ -123,11 +121,10 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Law Firm Name
 		 */
-		@SuppressWarnings("unchecked")
 		List<Node> lawFirmNs = legalRep.selectNodes("FRM");
-		for (Node lawFirmN: lawFirmNs){
+		for (Node lawFirmN : lawFirmNs) {
 			Name name = parseName(lawFirmN);
-			if (name != null){
+			if (name != null) {
 				Agent agent = new Agent(name, address, AgentRepType.ATTORNEY);
 				agentList.add(agent);
 			}
@@ -136,7 +133,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		return agentList;
 	}
 
-	private Name parseName(Node fullNameNode){
+	private Name parseName(Node fullNameNode) {
 		try {
 			return nameParser.createName(fullNameNode.getText());
 		} catch (InvalidDataException e) {

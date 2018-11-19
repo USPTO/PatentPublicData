@@ -5,13 +5,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Derwent "DWPI" Classification, are defined as Derwent Manual Codes, since they are applied manually by analyst.
- *
+ * Derwent "DWPI" Classification
+ * 
+ * <p>
+ * Derwent Classification are defined as Derwent Manual Codes, since they are applied manually by analyst.
+ * </p>
+ * 
+ *<p><pre>
  * Patents are classified into three broad technology areas: 
  * 		Chemical
  *		Engineering
- *		Electrical and Electronic Engineering   
- *
+ *		Electrical and Electronic Engineering
+ *</pre>   
+ *</p>
+ *<p><pre>
  * A01-A01A1
  *  -- Section, 1st letter
  *  -- Subsection, two digits
@@ -22,19 +29,23 @@ import java.util.regex.Pattern;
  *  -- occasional training letter.
  *  
  *  -- subclass / "Fragmentation Code", series of alphnumerics.
- *  
+ *  </pre></p>
+ * 
+ * <p>
  * Codes are applied to the inventive/significant features of the invention using the Documentation Abstract.
  * Codes are assigned by teams of Thomson Reuters DWPI analysts.
+ * </p>
  * 
+ * <pre>
  * Can be followed by IPC code as follows:
  * 		A47, F23-5
  *		( DWPI code, IPC code)
- *
+ * </pre>
  *
  *  @author Brian G. Feldman (brian.feldman@uspto.gov)
  *  
- *  http://ip-science.thomsonreuters.com/support/patents/dwpiref/reftools/classification/
- *	http://ip-science.thomsonreuters.com/m/pdfs/DWPI_Class_Manual_2015.pdf
+ *  @see http://ip-science.thomsonreuters.com/support/patents/dwpiref/reftools/classification/
+ *	@see http://ip-science.thomsonreuters.com/m/pdfs/DWPI_Class_Manual_2015.pdf
  * 
  */
 public class DwpiClassification extends PatentClassification {

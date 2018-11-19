@@ -15,6 +15,7 @@ import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 
 public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PriorityClaimNode.class);
 
 	private static final String FRAGMENT_PATH = "/DOCUMENT/PRIR";

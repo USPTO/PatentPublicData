@@ -15,39 +15,39 @@ import gov.uspto.patent.model.Figure;
 
 public class DescriptionNode extends DOMFragmentReader<Description> {
 
-    public DescriptionNode(Document document, TextProcessor textProcessor) {
-        super(document, textProcessor);
-    }
+	public DescriptionNode(Document document, TextProcessor textProcessor) {
+		super(document, textProcessor);
+	}
 
-    @Override
-    public Description read() {
+	@Override
+	public Description read() {
 
-        Description desc = new Description();
+		Description desc = new Description();
 
-        Node parentCaseTextN = document.selectSingleNode("/DOCUMENT/PARN");
-        if (parentCaseTextN != null) {
-            desc.addSection(new DescriptionSection(DescSection.REL_APP_DESC, parentCaseTextN.asXML(), textProcessor));
-        }
+		Node parentCaseTextN = document.selectSingleNode("/DOCUMENT/PARN");
+		if (parentCaseTextN != null) {
+			desc.addSection(new DescriptionSection(DescSection.REL_APP_DESC, parentCaseTextN.asXML(), textProcessor));
+		}
 
-        Node briefSummary = document.selectSingleNode("/DOCUMENT/BSUM");
-        if (briefSummary != null) {
-            desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, briefSummary.asXML(), textProcessor));
-        }
+		Node briefSummary = document.selectSingleNode("/DOCUMENT/BSUM");
+		if (briefSummary != null) {
+			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, briefSummary.asXML(), textProcessor));
+		}
 
-        Node drawingDesc = document.selectSingleNode("/DOCUMENT/DRWD");
-        if (drawingDesc != null) {
-            desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, drawingDesc.asXML(), textProcessor));
+		Node drawingDesc = document.selectSingleNode("/DOCUMENT/DRWD");
+		if (drawingDesc != null) {
+			desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, drawingDesc.asXML(), textProcessor));
 
-            List<Figure> figures = new DescriptionFigures(drawingDesc).read();
-            desc.addFigures(figures);
-        }
+			List<Figure> figures = new DescriptionFigures(drawingDesc).read();
+			desc.addFigures(figures);
+		}
 
-        Node detailedDesc = document.selectSingleNode("/DOCUMENT/DETD");
-        if (detailedDesc != null) {
-            desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc.asXML(), textProcessor));
-        }
+		Node detailedDesc = document.selectSingleNode("/DOCUMENT/DETD");
+		if (detailedDesc != null) {
+			desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc.asXML(), textProcessor));
+		}
 
-        return desc;
-    }
+		return desc;
+	}
 
 }

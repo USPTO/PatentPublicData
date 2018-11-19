@@ -6,59 +6,66 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *<h3>Cooperative Patent Classification</h3>
- *<p>
- * Partnership between EPO and USPTO, as a joint effort to develop a common, 
- * internationally compatible classification system  for technical documents, 
- * in particular patent publications, which will be used by both offices in the patent granting process.
- *</p>
- *<p>
- * Classification code/symbol format same as IPC, but the groups differ in areas.
- * The CPC has many more subdivisions than the IPC, that is, many more subgroups. These internal subgroups
- * start with the symbol of an IPC group (not necessarily of the current edition), followed by a further
- * combination of numbers. In some cases, an IPC group is not used in the CPC structure. In this situation,
- * the IPC group will not be present in the CPC structure. 
- *</p>
- *<p> 
- * The CPC is substantially based on the previous European classification system (ECLA) of which
- * closely mirrored the IPC Classification System.  
- *</p>
- *<li>1 January 2013, EPO replaced European Classification (ECLA).
- *<li>1 January 2015, USPTO replaced most of the USPC System.
+ * <h3>Cooperative Patent Classification</h3>
+ * <p>
+ * Partnership between EPO and USPTO, as a joint effort to develop a common,
+ * internationally compatible classification system for technical documents, in
+ * particular patent publications, which will be used by both offices in the
+ * patent granting process.
+ * </p>
+ * <p>
+ * Classification code/symbol format same as IPC, but the groups differ in
+ * areas. The CPC has many more subdivisions than the IPC, that is, many more
+ * subgroups. These internal subgroups start with the symbol of an IPC group
+ * (not necessarily of the current edition), followed by a further combination
+ * of numbers. In some cases, an IPC group is not used in the CPC structure. In
+ * this situation, the IPC group will not be present in the CPC structure.
+ * </p>
+ * <p>
+ * The CPC is substantially based on the previous European classification system
+ * (ECLA) of which closely mirrored the IPC Classification System.
+ * </p>
+ * <li>1 January 2013, EPO replaced European Classification (ECLA).
+ * <li>1 January 2015, USPTO replaced most of the USPC System.
  *
- *<p>
- *<h3>Structure Breakout: "A01B33/00"</h3>
- *<li>Section A (one letter A-H and Y)
- *<li>Class 01 (two digits)
- *<li>Sub Class B (1-3 digits)
- *<li>Main Group 33 (1-3 digits)
- *<li>Sub group 00 (at least 2 digits; CPC specific since the IPC does not have subgroups)
- *</p>
- *</br>
- *<p>
- *<h3>Parse classification string:</h3>
- *<pre>
- * {@code
- * CpcClassification cpc = CpcClassification.fromText(originalText);
- * cpc.setIsMainClassification(true);
+ * <p>
+ * <h3>Structure Breakout: "A01B33/00"</h3>
+ * <li>Section A (one letter A-H and Y)
+ * <li>Class 01 (two digits)
+ * <li>Sub Class B (1-3 digits)
+ * <li>Main Group 33 (1-3 digits)
+ * <li>Sub group 00 (at least 2 digits; CPC specific since the IPC does not have
+ * subgroups)
+ * </p>
+ * </br>
+ * <p>
+ * <h3>Parse classification string:</h3>
+ * 
+ * <pre>
+ * {
+ * 	&#64;code
+ * 	CpcClassification cpc = CpcClassification.fromText(originalText);
+ * 	cpc.setIsMainClassification(true);
  * }
- *</pre>
- *</p>
+ * </pre>
+ * </p>
  *
- *<p>
- *<h3>Create Classification by its individual parts:</h3>
- *<pre>
- * {@code
- * CpcClassification cpc = new CpcClassification();
- * cpc.setSection(section);
- * cpc.setMainClass(mainClass);
- * cpc.setSubClass(subClass);
- * cpc.setMainGroup(mainGroup);
- * cpc.setSubGroup(subGroup);
- * cpc.setIsMainClassification(true);
+ * <p>
+ * <h3>Create Classification by its individual parts:</h3>
+ * 
+ * <pre>
+ * {
+ * 	&#64;code
+ * 	CpcClassification cpc = new CpcClassification();
+ * 	cpc.setSection(section);
+ * 	cpc.setMainClass(mainClass);
+ * 	cpc.setSubClass(subClass);
+ * 	cpc.setMainGroup(mainGroup);
+ * 	cpc.setSubGroup(subGroup);
+ * 	cpc.setIsMainClassification(true);
  * }
- *</pre>
- *</p> 
+ * </pre>
+ * </p>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
@@ -66,7 +73,10 @@ import java.util.regex.Pattern;
  */
 public class CpcClassification extends PatentClassification {
 
-	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$"); // test added ?-mark to  /?
+	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$"); // test
+																												// added
+																												// ?-mark
+																												// to /?
 
 	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])(\\d\\d)$");
 
@@ -83,7 +93,6 @@ public class CpcClassification extends PatentClassification {
 	public ClassificationType getType() {
 		return ClassificationType.CPC;
 	}
-
 
 	public String getSection() {
 		return section;
@@ -127,7 +136,7 @@ public class CpcClassification extends PatentClassification {
 
 	@Override
 	public String[] getParts() {
-		return new String[]{section, mainClass, subClass, mainGroup, subGroup};
+		return new String[] { section, mainClass, subClass, mainGroup, subGroup };
 	}
 
 	/**
@@ -184,83 +193,69 @@ public class CpcClassification extends PatentClassification {
 
 		return changed;
 	}
-	
+
 	/**
-	 * Classification depth 
+	 * Classification depth
 	 * 
 	 * (1=section, 2=mainclass, 3=subclass, 4=mainGroup, 5=subGroup)
 	 * 
 	 */
 	@Override
-	public int getDepth(){
+	public int getDepth() {
 		int classDepth = 0;
-		if (subGroup != null && !subGroup.isEmpty()){
+		if (subGroup != null && !subGroup.isEmpty()) {
 			classDepth = 5;
-		}
-		else if (mainGroup != null && !mainGroup.isEmpty()){
+		} else if (mainGroup != null && !mainGroup.isEmpty()) {
 			classDepth = 4;
-		}
-		else if (subClass != null && !subClass.isEmpty()){
+		} else if (subClass != null && !subClass.isEmpty()) {
 			classDepth = 3;
-		}
-		else if (mainClass != null && !mainClass.isEmpty()){
+		} else if (mainClass != null && !mainClass.isEmpty()) {
 			classDepth = 2;
-		}
-		else if (section != null && !section.isEmpty()){
+		} else if (section != null && !section.isEmpty()) {
 			classDepth = 1;
 		}
 		return classDepth;
 	}
 
 	@Override
-	public boolean isContained(PatentClassification check){
+	public boolean isContained(PatentClassification check) {
 		if (check == null || !(check instanceof CpcClassification)) {
 			return false;
 		}
 		CpcClassification cpc = (CpcClassification) check;
-			
+
 		int depth = getDepth();
 
-		if (depth == cpc.getDepth()){
-			if (this.getTextNormalized().equals(cpc.getTextNormalized())){
+		if (depth == cpc.getDepth()) {
+			if (this.getTextNormalized().equals(cpc.getTextNormalized())) {
 				return true;
 			} else {
 				return false;
 			}
 		}
-		if (depth == 5){
-			if (section.equals(cpc.getSection()) 
-					&& mainClass.equals(cpc.getMainClass()) 
-					&& subClass.equals(cpc.getSubClass()) 
-					&& mainGroup.equals(cpc.getMainGroup()) 
-					&& subGroup.equals(cpc.getSubGroup())){
+		if (depth == 5) {
+			if (section.equals(cpc.getSection()) && mainClass.equals(cpc.getMainClass())
+					&& subClass.equals(cpc.getSubClass()) && mainGroup.equals(cpc.getMainGroup())
+					&& subGroup.equals(cpc.getSubGroup())) {
 				return true;
 			}
-		}
-		else if (depth == 4){
-			if (section.equals(cpc.getSection()) 
-					&& mainClass.equals(cpc.getMainClass()) 
-					&& subClass.equals(cpc.getSubClass()) 
-					&& mainGroup.equals(cpc.getMainGroup())){
-					return true;
+		} else if (depth == 4) {
+			if (section.equals(cpc.getSection()) && mainClass.equals(cpc.getMainClass())
+					&& subClass.equals(cpc.getSubClass()) && mainGroup.equals(cpc.getMainGroup())) {
+				return true;
 			}
-		}
-		else if (depth == 3){
-			if (section.equals(cpc.getSection()) 
-					&& mainClass.equals(cpc.getMainClass()) 
-					&& subClass.equals(cpc.getSubClass())){
-					return true;
+		} else if (depth == 3) {
+			if (section.equals(cpc.getSection()) && mainClass.equals(cpc.getMainClass())
+					&& subClass.equals(cpc.getSubClass())) {
+				return true;
 			}
-		}
-		else if (depth == 2){
-			if (section.equals(cpc.getSection()) 
-					&& mainClass.equals(cpc.getMainClass())){
-					return true;
+		} else if (depth == 2) {
+			if (section.equals(cpc.getSection()) && mainClass.equals(cpc.getMainClass())) {
+				return true;
 			}
-		}
-		else if (depth == 1){
-			if (section.equals(cpc.getSection())){
-					return true;
+		} else if (depth == 1) {
+			if (section.equals(cpc.getSection())) {
+				return true;
 			}
 		}
 		return false;
@@ -275,8 +270,8 @@ public class CpcClassification extends PatentClassification {
 			return false;
 		}
 		final CpcClassification other = (CpcClassification) obj;
-		
-		if (other.getDepth() == getDepth() && isContained(other)){
+
+		if (other.getDepth() == getDepth() && isContained(other)) {
 			return true;
 		}
 
@@ -294,7 +289,7 @@ public class CpcClassification extends PatentClassification {
 	public void parseText(final String classificationStr) throws ParseException {
 
 		super.setTextOriginal(classificationStr);
-		
+
 		Matcher matcher = REGEX.matcher(classificationStr);
 		if (matcher.matches()) {
 			String section = matcher.group(1);
@@ -340,10 +335,10 @@ public class CpcClassification extends PatentClassification {
 				+ standardize() + ", toText()=" + toText() + ", originalText()=" + super.getTextOriginal() + "]";
 	}
 
-    /**
-     * Parse Facet back into Classifications
-     */
-    public static List<CpcClassification> fromFacets(List<String> facets) {
-        return ClassificationTokenizer.fromFacets(facets, CpcClassification.class);
-    }
+	/**
+	 * Parse Facet back into Classifications
+	 */
+	public static List<CpcClassification> fromFacets(List<String> facets) {
+		return ClassificationTokenizer.fromFacets(facets, CpcClassification.class);
+	}
 }

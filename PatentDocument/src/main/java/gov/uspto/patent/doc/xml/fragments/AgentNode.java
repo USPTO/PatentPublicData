@@ -31,7 +31,6 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 	public List<Agent> read() {
 		List<Agent> agentList = new ArrayList<Agent>();
 
-		@SuppressWarnings("unchecked")
 		List<Node> agents = document.selectNodes(FRAGMENT_PATH);
 
 		int interationSquence = 0;
@@ -82,7 +81,6 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		 * If Agents are not defined then use correspondence-address if
 		 * available.
 		 */
-		@SuppressWarnings("unchecked")
 		List<Node> correspondenceNodes = document.selectNodes(FRAGMENT_PATH2);
 		for (Node node : correspondenceNodes) {
 			AddressBookNode addressBook = new AddressBookNode(node);

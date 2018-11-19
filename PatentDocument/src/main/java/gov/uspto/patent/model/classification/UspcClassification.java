@@ -33,7 +33,7 @@ import com.google.common.collect.Range;
  * <pre>
  * {
  * 	&#64;code
- *  UspcClassification uspc = new UspcClassification();
+ * 	UspcClassification uspc = new UspcClassification();
  * 	uspc.parseText(uspcTextString);
  * }
  * </pre>
@@ -50,6 +50,14 @@ import com.google.common.collect.Range;
  * 	uspc.setSubClass(subClass);
  * }
  * </pre>
+ * </p>
+ * 
+ * <p>
+ * Patent classification mostly phased out by the USPTO on June 1st , 2015.
+ * </p>
+ * 
+ * <p>
+ * Plant Patents and Design Patents are still classified within USPC.
  * </p>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
@@ -91,7 +99,7 @@ public class UspcClassification extends PatentClassification {
 
 	@Override
 	public String[] getParts() {
-		//return new String[]{mainClass, subClass}; // multiple nesting.
+		// return new String[]{mainClass, subClass}; // multiple nesting.
 		return null;
 	}
 
@@ -99,10 +107,9 @@ public class UspcClassification extends PatentClassification {
 	public int getDepth() {
 		int classDepth = 0;
 
-		if (subClass != null && subClass.isEmpty()){
+		if (subClass != null && subClass.isEmpty()) {
 			classDepth = 2;
-		}
-		else if (mainClass != null){
+		} else if (mainClass != null) {
 			classDepth = 1;
 		}
 
@@ -143,8 +150,8 @@ public class UspcClassification extends PatentClassification {
 
 	/**
 	 * 
-	 * Converts: " 602031" => [060, 060/203, 060/203.1] " 60204" => [060,
-	 * 060/204] "148602" => [148, 148/602]
+	 * Converts: " 602031" => [060, 060/203, 060/203.1] " 60204" => [060, 060/204]
+	 * "148602" => [148, 148/602]
 	 * 
 	 * @return
 	 */
@@ -263,7 +270,7 @@ public class UspcClassification extends PatentClassification {
 	}
 
 	@Override
-	public boolean isContained(PatentClassification check){
+	public boolean isContained(PatentClassification check) {
 		if (check == null || !(check instanceof IpcClassification)) {
 			return false;
 		}
@@ -274,7 +281,7 @@ public class UspcClassification extends PatentClassification {
 		} else {
 			for (String subClass : this.getSubClass()) {
 				for (String checkSubClass : uspc.getSubClass()) {
-					if (subClass.equals(checkSubClass)){
+					if (subClass.equals(checkSubClass)) {
 						return true;
 					}
 				}
@@ -292,10 +299,10 @@ public class UspcClassification extends PatentClassification {
 				+ "]";
 	}
 
-    /**
-     * Parse Facet back into Classifications
-     */
-    public static List<UspcClassification> fromFacets(List<String> facets) {
-        return ClassificationTokenizer.fromFacets(facets, UspcClassification.class);
-    }
+	/**
+	 * Parse Facet back into Classifications
+	 */
+	public static List<UspcClassification> fromFacets(List<String> facets) {
+		return ClassificationTokenizer.fromFacets(facets, UspcClassification.class);
+	}
 }

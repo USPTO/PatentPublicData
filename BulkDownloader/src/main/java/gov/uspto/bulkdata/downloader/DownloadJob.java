@@ -17,11 +17,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
+
 import okhttp3.HttpUrl;
 
 @JsonSerialize
@@ -36,7 +36,7 @@ public class DownloadJob implements Serializable, Iterable<DownloadFile> {
 	static {
 		JSON_MAPPER.registerModule(new Jdk7Module());
 	}
-	
+
 	private Path downloadDir;
 	private boolean isJobComplete;
 	private int taskTotal;
@@ -67,10 +67,11 @@ public class DownloadJob implements Serializable, Iterable<DownloadFile> {
 	 */
 	@JsonCreator
 	private DownloadJob(@JsonProperty("downloadTasks") ArrayList<LinkedHashMap> downloadTasks) throws IOException {
-		this.downloadTasks = JSON_MAPPER.convertValue(downloadTasks, new TypeReference<List<DownloadFile>>() {});
+		this.downloadTasks = JSON_MAPPER.convertValue(downloadTasks, new TypeReference<List<DownloadFile>>() {
+		});
 		this.taskTotal = downloadTasks.size();
-	}	
-	
+	}
+
 	public Path getDownloadDir() {
 		return downloadDir;
 	}

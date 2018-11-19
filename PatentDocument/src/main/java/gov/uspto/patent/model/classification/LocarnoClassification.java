@@ -4,6 +4,23 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Locarno Classification
+ * 
+ * <p>
+ * International classification used for the purposes of the registration of
+ * industrial designs.
+ * </p>
+ * 
+ * <p>
+ * Classification used within Design Patents.
+ * </p>
+ *
+ * @author Brian G. Feldman<brian.feldman@uspto.gov>
+ * 
+ * @see http://www.wipo.int/classifications/locarno/en/
+ *
+ */
 public class LocarnoClassification extends PatentClassification {
 
 	private static Pattern PATTERN = Pattern.compile("^([0-9]{2})[-/]?([0-9]{2})$");
@@ -34,17 +51,16 @@ public class LocarnoClassification extends PatentClassification {
 
 	@Override
 	public String[] getParts() {
-		return new String[]{mainClass, subClass};
+		return new String[] { mainClass, subClass };
 	}
 
 	@Override
 	public int getDepth() {
 		int classDepth = 0;
 
-		if (subClass != null && subClass.isEmpty()){
+		if (subClass != null && subClass.isEmpty()) {
 			classDepth = 2;
-		}
-		else if (mainClass != null){
+		} else if (mainClass != null) {
 			classDepth = 1;
 		}
 
@@ -74,7 +90,7 @@ public class LocarnoClassification extends PatentClassification {
 	}
 
 	@Override
-	public boolean isContained(PatentClassification check){
+	public boolean isContained(PatentClassification check) {
 		if (check == null || !(check instanceof LocarnoClassification)) {
 			return false;
 		}

@@ -27,7 +27,7 @@ public class MatchPatternXPath extends MatchRegexBase {
 	private String XPathNodePath;
 	private XPathExpression xpathExpression;
 
-	public MatchPatternXPath(String regex, String XPathNodePath) throws XPathExpressionException{
+	public MatchPatternXPath(String regex, String XPathNodePath) throws XPathExpressionException {
 		super(regex, false); // TODO set ignorecase from config.
 		Preconditions.checkNotNull(XPathNodePath);
 		this.XPathNodePath = XPathNodePath;
@@ -35,16 +35,16 @@ public class MatchPatternXPath extends MatchRegexBase {
 		XPath xpath = xpathFactory.newXPath();
 		this.xpathExpression = xpath.compile(XPathNodePath);
 	}
-	
+
 	public String getXpathNodePath() {
 		return XPathNodePath;
 	}
 
-	public boolean hasMatch(Document document) throws XPathExpressionException {	
+	public boolean hasMatch(Document document) throws XPathExpressionException {
 		NodeList nodes = (NodeList) xpathExpression.evaluate(document, XPathConstants.NODESET);
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node node = nodes.item(i);
-			if (super.hasMatch(node.getTextContent())){
+			if (super.hasMatch(node.getTextContent())) {
 				return true;
 			}
 		}
@@ -58,7 +58,7 @@ public class MatchPatternXPath extends MatchRegexBase {
 			boolean matched = false;
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Node node = nodes.item(i);
-				if (node.getNodeValue() != null && super.hasMatch(node.getNodeValue())){
+				if (node.getNodeValue() != null && super.hasMatch(node.getNodeValue())) {
 
 					if (super.isPrintSource()) {
 						writer.write(source);
@@ -73,12 +73,11 @@ public class MatchPatternXPath extends MatchRegexBase {
 					if (super.isMatchingNode()) {
 						writer.write(nodeToString(node));
 						writer.write("\n");
-					}
-					else if (super.isOnlyMatching()) {
+					} else if (super.isOnlyMatching()) {
 						writer.write(super.getMatch());
 						writer.write("\n");
-						
-						while(super.hasNext()) {
+
+						while (super.hasNext()) {
 							writer.write(super.getMatch());
 							writer.write("\n");
 						}
@@ -86,13 +85,13 @@ public class MatchPatternXPath extends MatchRegexBase {
 						writer.write(node.getNodeValue());
 						writer.write("\n");
 					}
-					
+
 					writer.flush();
 					matched = true;
 				}
 			}
 			return matched;
-		
+
 		} catch (XPathExpressionException e) {
 			throw new DocumentException(e);
 		}

@@ -18,10 +18,10 @@ public class PublicationIdNode extends DOMFragmentReader<DocumentId> {
 	@Override
 	public DocumentId read() {
 		Node parentNode = document.selectSingleNode(FRAGMENT_PATH);
-		if (parentNode == null){
+		if (parentNode == null) {
 			return null;
 		}
-		
+
 		DocumentId documentId = new DocumentIdNode(parentNode).read();
 
 		if (documentId != null) {

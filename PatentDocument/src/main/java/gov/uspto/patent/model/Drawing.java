@@ -6,17 +6,17 @@ public class Drawing {
 	private String file;
 	private DrawingMetadata metadata;
 
-	Drawing(String id, String num, String file){
+	Drawing(String id, String num, String file) {
 		this.setId(id);
 		this.setNum(num);
 		this.setFile(file);
 	}
-	
-	public void setMetadata(DrawingMetadata metadata){
+
+	public void setMetadata(DrawingMetadata metadata) {
 		this.metadata = metadata;
 	}
-	
-	public DrawingMetadata getMetadata(){
+
+	public DrawingMetadata getMetadata() {
 		return metadata;
 	}
 

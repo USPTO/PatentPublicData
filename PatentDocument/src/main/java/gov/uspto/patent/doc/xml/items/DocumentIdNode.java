@@ -30,7 +30,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 
 	public DocumentIdNode(Node itemNode, CountryCode fallbackCountryCode) {
 		super(itemNode, ITEM_NODE_NAME);
-		//super(itemNode, itemNode.getName());
+		// super(itemNode, itemNode.getName());
 		this.fallbackCountryCode = fallbackCountryCode;
 	}
 
@@ -57,9 +57,10 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 
 		String docNumber = docNumN.getText();
 
-		if (docNumber.substring(0,2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
+		if (docNumber.substring(0, 2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
 			docNumber = docNumber.substring(2).trim();
-			LOGGER.debug("Removed duplicate CountryCode '{}' doc-number: {} => {}", countryCode.toString(), docNumN.getText(), docNumber);
+			LOGGER.debug("Removed duplicate CountryCode '{}' doc-number: {} => {}", countryCode.toString(),
+					docNumN.getText(), docNumber);
 		}
 
 		// Seems application number format changed in 2004 from short year to long year.
@@ -68,8 +69,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 			if (matcher.group(1).equals("0")) {
 				docNumber = "20" + docNumber;
 				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
-			}
-			else if (matcher.group(1).equals("9")) {
+			} else if (matcher.group(1).equals("9")) {
 				docNumber = "19" + docNumber;
 				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
 			}
@@ -82,18 +82,14 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		docNumber = docNumber.replaceAll("[\\s-]", "");
 
 		/*
-		if (docNumber.startsWith("PCT/")) {
-				String countryPCT = docNumber.substring(4, 6);
-				try {
-					countryCode = CountryCode.fromString(countryPCT);
-				} catch (InvalidDataException e2) {
-					LOGGER.warn("Invalid CountryCode '{}', from: {}", countryPCT, itemNode.asXML(), e2);
-				}
-				
-				docNumber = docNumber.substring(4);
-			}
-		}
-		*/
+		 * if (docNumber.startsWith("PCT/")) { String countryPCT =
+		 * docNumber.substring(4, 6); try { countryCode =
+		 * CountryCode.fromString(countryPCT); } catch (InvalidDataException e2) {
+		 * LOGGER.warn("Invalid CountryCode '{}', from: {}", countryPCT,
+		 * itemNode.asXML(), e2); }
+		 * 
+		 * docNumber = docNumber.substring(4); } }
+		 */
 
 		Node kindN = itemNode.selectSingleNode("kind");
 		String kindCode = kindN != null ? kindN.getText().trim() : null;

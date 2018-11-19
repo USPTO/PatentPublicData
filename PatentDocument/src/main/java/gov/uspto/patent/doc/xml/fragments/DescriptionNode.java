@@ -111,7 +111,6 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static List<Node> getSectionNodes(Node parentNode, String name){
 		return parentNode.selectNodes(getXPATHStatement(name));
 	}

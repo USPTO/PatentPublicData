@@ -22,7 +22,7 @@ public class OutputMatchConfig {
 	}
 
 	public void setMatchingWithinRecordLimit(int maxlimit) {
-		this.matchingWithinRecordLimit  = maxlimit;
+		this.matchingWithinRecordLimit = maxlimit;
 	}
 
 	public int getMatchingWithinRecordLimit() {

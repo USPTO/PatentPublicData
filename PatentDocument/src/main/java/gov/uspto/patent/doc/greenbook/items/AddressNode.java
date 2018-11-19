@@ -78,9 +78,8 @@ public class AddressNode extends ItemReader<Address> {
 	/**
 	 * Country Code
 	 * 
-	 * Fix 3 digit country codes, in two digit country code field, by removing
-	 * the trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1,
-	 * GB2).
+	 * Fix 3 digit country codes, in two digit country code field, by removing the
+	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
 	 * 
 	 * @param country
 	 * @return
@@ -111,9 +110,10 @@ public class AddressNode extends ItemReader<Address> {
 	/**
 	 * Country Code
 	 * 
-	 * Fix 3 digit country codes, in two digit country code field, by removing
-	 * the trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1,
-	 * GB2).
+	 * <p>
+	 * Fix 3 digit country codes, in two digit country code field, by removing the
+	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
+	 * </p>
 	 * 
 	 * @param country
 	 * @return

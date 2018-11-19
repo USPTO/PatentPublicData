@@ -30,14 +30,13 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 	@Override
 	public List<Claim> read() {
 		List<Claim> claims = new ArrayList<Claim>();
-		
-		@SuppressWarnings("unchecked")
+
 		List<Node> childNodes = document.selectNodes(CLAIM_CHILDREN_PATH);
 
 		String currentClaimNum = "";
 		StringBuilder stb = new StringBuilder();
 		for (Node childN : childNodes) {
-			
+
 			if (childN.getName().equals("NUM")) {
 				// Close off claim.
 				if (!currentClaimNum.equals("")) {

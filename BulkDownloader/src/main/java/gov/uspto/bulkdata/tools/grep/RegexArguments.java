@@ -10,7 +10,7 @@ public class RegexArguments {
 	private boolean ignoreCase = false;
 	private boolean fullMatch = false;
 
-	public RegexArguments(String regex){
+	public RegexArguments(String regex) {
 		this.regex = regex;
 	}
 
@@ -42,30 +42,28 @@ public class RegexArguments {
 	/**
 	 * Parse String optionally containing list of regexs
 	 * 
-	 * Regex modifiers:
-	 * 		i = ignore case
-	 *      f = full match
+	 * Regex modifiers: i = ignore case f = full match
 	 * 
 	 * regexs="'regex1~if','regex2'"
 	 */
 	public static List<RegexArguments> parseString(String regexesStr) {
-        String[] regexes = regexesStr.split("'\\s*,\\s*'");
-        Matcher flagMatcher = Pattern.compile("^\'?(.+)~([if]+)\'?$").matcher("");
-        List<RegexArguments> regexs = new ArrayList<RegexArguments>(regexes.length+1);
-        for(String regex: regexes) {
-        	String flags = null;
-        	if (flagMatcher.reset(regex).matches()) {
-        		regex = flagMatcher.group(1);
-        		flags = flagMatcher.group(2);
-        	}
-	        RegexArguments regexArg = new RegexArguments(regex);
-	        if (flags != null) {
-	        	regexArg.setFullMatch(flags.contains("f"));
-	        	regexArg.setIgnoreCase(flags.contains("i"));
-	        }
-	        regexs.add(regexArg);
-        }
-        return regexs;
+		String[] regexes = regexesStr.split("'\\s*,\\s*'");
+		Matcher flagMatcher = Pattern.compile("^\'?(.+)~([if]+)\'?$").matcher("");
+		List<RegexArguments> regexs = new ArrayList<RegexArguments>(regexes.length + 1);
+		for (String regex : regexes) {
+			String flags = null;
+			if (flagMatcher.reset(regex).matches()) {
+				regex = flagMatcher.group(1);
+				flags = flagMatcher.group(2);
+			}
+			RegexArguments regexArg = new RegexArguments(regex);
+			if (flags != null) {
+				regexArg.setFullMatch(flags.contains("f"));
+				regexArg.setIgnoreCase(flags.contains("i"));
+			}
+			regexs.add(regexArg);
+		}
+		return regexs;
 	}
 
 	public static Pattern getPattern(RegexArguments regexArg) {

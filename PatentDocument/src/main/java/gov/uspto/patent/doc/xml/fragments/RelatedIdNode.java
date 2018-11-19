@@ -18,13 +18,13 @@ public class RelatedIdNode extends DOMFragmentReader<DocumentId> {
 	@Override
 	public DocumentId read() {
 		Node fragmentNode = document.selectSingleNode(FRAGMENT_PATH);
-		if (fragmentNode == null){
+		if (fragmentNode == null) {
 			return null;
 		}
 
 		DocumentId documentId = new DocumentIdNode(fragmentNode).read();
 
-		if (documentId != null){
+		if (documentId != null) {
 			documentId.setType(DocumentIdType.RELATED_PUBLICATION);
 		}
 

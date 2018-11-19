@@ -12,35 +12,39 @@ import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
 /**
-*<pre><code>
+ * <pre>
+* {@code
 *	<classification-national>
 *		<country>US</country>
 *		<main-classification> 602031</main-classification>
 *	</classification-national>
-*</pre></code>
-*
-*<p>Notes: classification-national are sometimes missing from citations when cited by applicant.
-*</p>
-*/
-public class ClassificationNationalNode extends ItemReader<PatentClassification>{
+* }
+ * </pre>
+ *
+ * <p>
+ * Notes: classification-national are sometimes missing from citations when
+ * cited by applicant.
+ * </p>
+ */
+public class ClassificationNationalNode extends ItemReader<PatentClassification> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNationalNode.class);
 
 	private final static String ITEM_NODE_NAME = "classification-national";
 
-	public ClassificationNationalNode(Node itemNode){
+	public ClassificationNationalNode(Node itemNode) {
 		super(itemNode, ITEM_NODE_NAME);
 	}
 
 	@Override
 	public PatentClassification read() {
-		//Node countryNode = parentNode.selectSingleNode("country");
+		// Node countryNode = parentNode.selectSingleNode("country");
 		Node mainClass = itemNode.selectSingleNode("main-classification");
-		if (mainClass == null){
+		if (mainClass == null) {
 			return null;
 		}
 
 		String mainClassTxt = mainClass.getText();
-		if ("None".equalsIgnoreCase(mainClassTxt)){
+		if ("None".equalsIgnoreCase(mainClassTxt)) {
 			LOGGER.trace("Invalid USPC classification 'main-classification': 'None'");
 			return null;
 		}
@@ -55,14 +59,13 @@ public class ClassificationNationalNode extends ItemReader<PatentClassification>
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		List<Node> furtherClasses = itemNode.selectNodes("further-classification");
-		for (Node subclass: furtherClasses){
+		for (Node subclass : furtherClasses) {
 
 			try {
 				UspcClassification usClass = new UspcClassification();
 				usClass.parseText(subclass.getText());
-				classification.addChild( usClass );
+				classification.addChild(usClass);
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to parse USPC classification 'further-classification': {}", subclass.asXML(), e);
 			}
@@ -71,5 +74,5 @@ public class ClassificationNationalNode extends ItemReader<PatentClassification>
 
 		return classification;
 	}
-	
+
 }

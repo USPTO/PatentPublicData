@@ -7,9 +7,6 @@ import java.util.SortedSet;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
@@ -26,7 +23,6 @@ import gov.uspto.patent.model.classification.UspcClassification;
  *
  */
 public class MatchClassificationPatent implements CorpusMatch<MatchClassificationPatent> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MatchClassificationPatent.class);
 
 	private final List<PatentClassification> wantedClasses;
 
@@ -39,7 +35,6 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 		this.wantedClasses = wantedClasses;
 	}
 
-	@SuppressWarnings("unchecked")
     @Override
 	public void setup() throws XPathExpressionException {
 		wantedCPC = PatentClassification.filterByType(wantedClasses, ClassificationType.CPC);
@@ -66,7 +61,6 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 			return false;
 		}
 
-		@SuppressWarnings("unchecked")
 		SortedSet<PatentClassification> patentCPC = PatentClassification.filterByType(patent.getClassification(), ClassificationType.CPC);
 		for (PatentClassification wantedCpcClass : wantedCPC) {
 			CpcClassification wantedCpc = (CpcClassification) wantedCpcClass;
@@ -82,7 +76,6 @@ public class MatchClassificationPatent implements CorpusMatch<MatchClassificatio
 			}
 		}
 
-		@SuppressWarnings("unchecked")
         SortedSet<PatentClassification> patentUSPC = PatentClassification.filterByType(patent.getClassification(), ClassificationType.USPC);
 		for (PatentClassification wantedUspcClass : wantedUSPC) {
 			UspcClassification wantedUspc = (UspcClassification) wantedUspcClass;

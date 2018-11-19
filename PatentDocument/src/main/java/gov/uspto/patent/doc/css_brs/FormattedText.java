@@ -8,18 +8,18 @@ import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 
 public class FormattedText implements TextProcessor {
 
-    @Override
-    public String getPlainText(String rawText, FreetextConfig textConfig) {
-        return rawText;
-    }
+	@Override
+	public String getPlainText(String rawText, FreetextConfig textConfig) {
+		return rawText;
+	}
 
-    @Override
-    public String getSimpleHtml(String rawText) {
-        return rawText;
-    }
+	@Override
+	public String getSimpleHtml(String rawText) {
+		return rawText;
+	}
 
-    @Override
-    public List<String> getParagraphText(String rawText) {
-        return Collections.emptyList();
-    }
+	@Override
+	public List<String> getParagraphText(String rawText) {
+		return Collections.emptyList();
+	}
 }

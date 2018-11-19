@@ -17,6 +17,7 @@ import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
 
 public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
 
 	private static final String FRAGMENT_PATH = "/DOCUMENT/ASSG";
@@ -29,11 +30,10 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	public List<Assignee> read() {
 		List<Assignee> assigneeList = new ArrayList<Assignee>();
 
-		@SuppressWarnings("unchecked")
 		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
 		for (Node assigneeN : assignees) {
 			Assignee assignee = readAssignee(assigneeN);
-			if (assignee != null){
+			if (assignee != null) {
 				assigneeList.add(assignee);
 			}
 		}
@@ -41,9 +41,9 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		return assigneeList;
 	}
 
-	public Assignee readAssignee(Node assigneeN){
+	public Assignee readAssignee(Node assigneeN) {
 		Name name = new NameNode(assigneeN).read();
-		if (name == null){
+		if (name == null) {
 			return null;
 		}
 
@@ -51,7 +51,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 		Node typeCodeN = assigneeN.selectSingleNode("COD");
 		Assignee assignee = new Assignee(name, address);
-		if (typeCodeN != null){
+		if (typeCodeN != null) {
 			try {
 				assignee.setRole(typeCodeN.getText());
 			} catch (InvalidDataException e) {

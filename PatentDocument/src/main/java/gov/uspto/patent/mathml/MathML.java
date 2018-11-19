@@ -25,8 +25,10 @@ import gov.uspto.patent.PatentReaderException;
  * 
  * Convert MathML XML tree to string format.
  *
- *<p><pre>
- *<{@code
+ * <p>
+ * 
+ * <pre>
+ *{@code
  *<math xmlns="http://www.w3.org/1998/Math/MathML">
  *  <mrow>
  *  <mi>a</mi>
@@ -34,196 +36,194 @@ import gov.uspto.patent.PatentReaderException;
  *  <msup><mi>b</mi><mn>2</mn></msup>
  *</mrow>
  *</math>
- *}</pre></p>
- *<p>
+ *}
+ * </pre>
+ * </p>
+ * <p>
  * String form:<br/>
  * math(mrow(mi(a)mo(+)msup(mi(b)mn(2))))
- *</p>
- *<p>
+ * </p>
+ * <p>
  * Normalized:<br/>
  * math(mrow(mi(id)mo(+)msup(mi(id)mn(2))))
- *</p>
+ * </p>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class MathML {
 
-    private final Node mathNode;
+	private final Node mathNode;
 
-    private final static Pattern REPLACE_VARS = Pattern.compile("mi\\([a-zA-Z]\\)");
-    private final static Pattern REPLACE_CONS = Pattern.compile("mn\\([0-9]+\\)");
+	private final static Pattern REPLACE_VARS = Pattern.compile("mi\\([a-zA-Z]\\)");
+	private final static Pattern REPLACE_CONS = Pattern.compile("mn\\([0-9]+\\)");
 
-    public MathML(Node node) {
-        this.mathNode = node;
-    }
+	public MathML(Node node) {
+		this.mathNode = node;
+	}
 
-    public Node getXMLNode() {
-        return mathNode;
-    }
+	public Node getXMLNode() {
+		return mathNode;
+	}
 
-    public String getXML() {
-        return mathNode.asXML();
-    }
+	public String getXML() {
+		return mathNode.asXML();
+	}
 
-    /**
-     * String Form
-     * 
-     *<p>
-     * math(mrow(mi(a)mo(+)msup(mi(b)mn(2))))
-     *</p>
-     *
-     * @return
-     */
-    public String getStringForm() {
-        return parse(mathNode);
-    }
+	/**
+	 * String Form
+	 * 
+	 * <p>
+	 * math(mrow(mi(a)mo(+)msup(mi(b)mn(2))))
+	 * </p>
+	 *
+	 * @return
+	 */
+	public String getStringForm() {
+		return parse(mathNode);
+	}
 
-    protected String parse(Node node) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("math(");
-        mathmlToString(sb, node);
-        sb.append(")");
-        return sb.toString();
-    }
+	protected String parse(Node node) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("math(");
+		mathmlToString(sb, node);
+		sb.append(")");
+		return sb.toString();
+	}
 
-    private void mathmlToString(StringBuilder sb, Node node) {
+	private void mathmlToString(StringBuilder sb, Node node) {
 
-        @SuppressWarnings("unchecked")
+		List<Node> children = node.selectNodes("*");
 
-        List<Node> children = node.selectNodes("*");
+		if (isMrowOrMathOrMfenced(node.getName()) && children.size() <= 1) {
+			if (children.size() == 1) {
+				mathmlToString(sb, children.get(0));
+			}
+		} else {
+			sb.append(node.getName());
 
-        if (isMrowOrMathOrMfenced(node.getName()) && children.size() <= 1) {
-            if (children.size() == 1) {
-                mathmlToString(sb, children.get(0));
-            }
-        } else {
-            sb.append(node.getName());
+			Element el = (Element) node;
+			el.attributes();
+			for (int i = 0; i < el.attributeCount(); i++) {
+				String attrName = el.attribute(i).getName();
+				String value = el.getStringValue();
+				sb.append("[").append(attrName).append("=").append(value).append("]");
+			}
+		}
 
-            Element el = (Element) node;
-            el.attributes();
-            for (int i = 0; i < el.attributeCount(); i++) {
-                String attrName = el.attribute(i).getName();
-                String value = el.getStringValue();
-                sb.append("[").append(attrName).append("=").append(value).append("]");
-            }
-        }
+		if (children.size() > 1) {
+			sb.append("(");
+			for (int i = 0; i < children.size(); i++) {
+				mathmlToString(sb, children.get(i));
+			}
+			sb.append(")");
+		} else {
+			String value = node.getText().trim();
+			if (!value.isEmpty()) {
+				sb.append("(").append(value).append(")");
+			}
+		}
+	}
 
-        if (children.size() > 1) {
-            sb.append("(");
-            for (int i = 0; i < children.size(); i++) {
-                mathmlToString(sb, children.get(i));
-            }
-            sb.append(")");
-        } else {
-            String value = node.getText().trim();
-            if (!value.isEmpty()) {
-                sb.append("(").append(value).append(")");
-            }
-        }
-    }
+	public String normalizeVariables(String mathMLString) {
+		Matcher mReplace = REPLACE_VARS.matcher(mathMLString);
+		if (mReplace.find()) {
+			mathMLString = mReplace.replaceAll("mi(ids)");
+		}
 
-    public String normalizeVariables(String mathMLString) {
-        Matcher mReplace = REPLACE_VARS.matcher(mathMLString);
-        if (mReplace.find()) {
-            mathMLString = mReplace.replaceAll("mi(ids)");
-        }
+		return mathMLString;
+	}
 
-        return mathMLString;
-    }
+	public String normalizeConstance(String mathMLString) {
+		Matcher mReplace = REPLACE_CONS.matcher(mathMLString);
+		if (mReplace.find()) {
+			mathMLString = mReplace.replaceAll("mn(cons)");
+		}
 
-    public String normalizeConstance(String mathMLString) {
-        Matcher mReplace = REPLACE_CONS.matcher(mathMLString);
-        if (mReplace.find()) {
-            mathMLString = mReplace.replaceAll("mn(cons)");
-        }
+		return mathMLString;
+	}
 
-        return mathMLString;
-    }
+	private List<String> getValues(String mathMLString) {
+		List<String> values = new ArrayList<String>();
 
-    private List<String> getValues(String mathMLString) {
-        List<String> values = new ArrayList<String>();
+		List<Node> textNodes = mathNode.selectNodes("//*[text()]");
+		for (Node node : textNodes) {
+			String value = node.getText().trim();
+			if (!value.isEmpty() && !"=".equals(value)) {
+				values.add(value);
+			}
+		}
 
-        @SuppressWarnings("unchecked")
-        List<Node> textNodes = mathNode.selectNodes("//*[text()]");
-        for (Node node : textNodes) {
-            String value = node.getText().trim();
-            if (!value.isEmpty() && !"=".equals(value)) {
-                values.add(value);
-            }
-        }
+		return values;
+	}
 
-        return values;
-    }
+	public List<String> tokenize() {
+		String mathMLString = parse(mathNode);
+		List<String> tokens = new ArrayList<String>();
+		tokens.add(mathMLString);
+		tokens.add(normalizeVariables(mathMLString));
+		tokens.add(normalizeConstance(mathMLString));
+		tokens.add(normalizeConstance(normalizeVariables(mathMLString)));
 
-    public List<String> tokenize() {
-        String mathMLString = parse(mathNode);
-        List<String> tokens = new ArrayList<String>();
-        tokens.add(mathMLString);
-        tokens.add(normalizeVariables(mathMLString));
-        tokens.add(normalizeConstance(mathMLString));
-        tokens.add(normalizeConstance(normalizeVariables(mathMLString)));
+		List<String> valueLst = getValues(mathMLString);
+		String values = Joiner.on(",").join(valueLst);
+		tokens.add(values);
 
-        List<String> valueLst = getValues(mathMLString);
-        String values = Joiner.on(",").join(valueLst);
-        tokens.add(values);
+		return tokens;
+	}
 
-        return tokens;
-    }
+	private static boolean isMrowOrMathOrMfenced(String nodeName) {
+		return nodeName != null && (nodeName.equals("math") || nodeName.equals("mrow") || nodeName.equals("mfenced"));
+	}
 
-    private static boolean isMrowOrMathOrMfenced(String nodeName) {
-        return nodeName != null && (nodeName.equals("math") || nodeName.equals("mrow") || nodeName.equals("mfenced"));
-    }
+	@Override
+	public String toString() {
+		return "MathML [mathNode=" + getXML() + ",\n getStringForm()=" + getStringForm() + ",\n parse()="
+				+ parse(mathNode) + ",\n tokenize()=" + tokenize() + "]";
+	}
 
-    @Override
-    public String toString() {
-        return "MathML [mathNode=" + getXML() + ",\n getStringForm()=" + getStringForm() + ",\n parse()="
-                + parse(mathNode) + ",\n tokenize()=" + tokenize() + "]";
-    }
+	/**
+	 * @FIXME does not yet work.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public static MathML fromText(String string) {
+		// convert back to XML format. math(mrow(mi(a)mo(+)msup(mi(b)mn(2))))
 
-    
-    /**
-     * @FIXME does not yet work.
-     * 
-     * @param string
-     * @return
-     */
-    public static MathML fromText(String string){
-        // convert back to XML format.  math(mrow(mi(a)mo(+)msup(mi(b)mn(2))))
-    	
-        Pattern pattern = Pattern.compile("(\\w+\\((?:[^()]+)*\\))");
-        
-        Pattern outerPattern = Pattern.compile("(\\w+\\("+pattern+"*\\))");
-        
-        //Document document = DocumentHelper.createDocument();
-        //Element root = document.addElement("math");
-        
-        Matcher matcher = outerPattern.matcher(string);
-        while(matcher.find()){
-            String matched = matcher.group(1);
-            System.out.println(matched);
-        }
-        
-        //Element author1 = root.addElement( "author" ).addText( "James Strachan" );
-        //return new MathML(document.getRootElement());
-        return null;
-    }
+		Pattern pattern = Pattern.compile("(\\w+\\((?:[^()]+)*\\))");
 
-    public static MathML read(Reader reader) throws SAXException, DocumentException{        
-        SAXReader sax = new SAXReader(false);
-        sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        Document document = sax.read(reader);
+		Pattern outerPattern = Pattern.compile("(\\w+\\(" + pattern + "*\\))");
 
-        return new MathML(document.getRootElement());
-    }
+		// Document document = DocumentHelper.createDocument();
+		// Element root = document.addElement("math");
 
-    public static void main(String[] args)
-            throws FileNotFoundException, PatentReaderException, DocumentException, SAXException {
-        String filename = args[0];     
-        
-        FileReader reader = new FileReader(new File(filename));
-        MathML mathml = MathML.read(reader);
+		Matcher matcher = outerPattern.matcher(string);
+		while (matcher.find()) {
+			String matched = matcher.group(1);
+			System.out.println(matched);
+		}
 
-        System.out.println(mathml.toString());
-    }
+		// Element author1 = root.addElement( "author" ).addText( "James Strachan" );
+		// return new MathML(document.getRootElement());
+		return null;
+	}
+
+	public static MathML read(Reader reader) throws SAXException, DocumentException {
+		SAXReader sax = new SAXReader(false);
+		sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+		Document document = sax.read(reader);
+
+		return new MathML(document.getRootElement());
+	}
+
+	public static void main(String[] args)
+			throws FileNotFoundException, PatentReaderException, DocumentException, SAXException {
+		String filename = args[0];
+
+		FileReader reader = new FileReader(new File(filename));
+		MathML mathml = MathML.read(reader);
+
+		System.out.println(mathml.toString());
+	}
 }

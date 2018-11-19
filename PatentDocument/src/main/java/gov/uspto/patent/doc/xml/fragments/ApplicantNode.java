@@ -27,7 +27,6 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 	public List<Applicant> read() {
 		List<Applicant> applicantList = new ArrayList<Applicant>();
 
-		@SuppressWarnings("unchecked")
 		List<Node> applNodes = document.selectNodes(FRAGMENT_PATH);
 		applicantList.addAll(readApplicants(applNodes));
 

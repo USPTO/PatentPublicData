@@ -41,7 +41,8 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 	}
 
 	/**
-	 * Attempt detection of {@link javax.xml.xpath.XPathConstants XPathConstants} by parsing XPath Expression
+	 * Attempt detection of {@link javax.xml.xpath.XPathConstants XPathConstants} by
+	 * parsing XPath Expression
 	 * 
 	 * @return
 	 */
@@ -49,12 +50,16 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 		if (XPathExpression.matches("/+\\*\\[[^\\]]+\\]$")) { // xPath("//*[text() = 'qwerty']")
 			return XPathConstants.NODESET;
 		}
-		//else if (XPathExpression.matches("/(child|descendant|descendant-or-self|parent|ancestor|ancestor-or-self|preceding-sibling|following-sibling|preceding|following|self|attribute)(:?::)?")) { // xPath("//*[text() = 'qwerty']")
-		//	return XPathConstants.NODESET;
-		//}
-		else if (XPathExpression.matches("^(count|sum|min|max|avg|number|string-length|round|floor|ceiling)\\(.+\\)$")) {
+		// else if
+		// (XPathExpression.matches("/(child|descendant|descendant-or-self|parent|ancestor|ancestor-or-self|preceding-sibling|following-sibling|preceding|following|self|attribute)(:?::)?"))
+		// { // xPath("//*[text() = 'qwerty']")
+		// return XPathConstants.NODESET;
+		// }
+		else if (XPathExpression
+				.matches("^(count|sum|min|max|avg|number|string-length|round|floor|ceiling)\\(.+\\)$")) {
 			return XPathConstants.NUMBER;
-		} else if (XPathExpression.matches("(.+[!=><]{1,2}\\s?['A-z0-9]+$|^(not|nilled|boolean)\\(.+\\)$|=\\s?[A-z0-9]$)")) {
+		} else if (XPathExpression
+				.matches("(.+[!=><]{1,2}\\s?['A-z0-9]+$|^(not|nilled|boolean)\\(.+\\)$|=\\s?[A-z0-9]$)")) {
 			return XPathConstants.BOOLEAN;
 		} else if (XPathExpression.matches("(.+ /(text|name|local-name)\\(\\)$|^(string|concat)\\(.+\\)$)")) {
 			return XPathConstants.STRING;
@@ -180,16 +185,17 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 		writer.write(value);
 		writer.write("\n");
 		writer.flush();
-		
+
 	}
 
 	@Override
 	public boolean writeMatches(String source, Document document, Writer writer) throws DocumentException, IOException {
 		try {
-			// If boolean query and want matching node, then change query to get matching node.
+			// If boolean query and want matching node, then change query to get matching
+			// node.
 			if (onlyMatchingNode && XpathConstaint == XPathConstants.BOOLEAN) {
 				XpathConstaint = XPathConstants.NODESET;
-				xpathExpression = xpath.compile(XPathExpression+"/.");
+				xpathExpression = xpath.compile(XPathExpression + "/.");
 			}
 
 			Object evelObj = xpathExpression.evaluate(document, XpathConstaint);
@@ -226,7 +232,7 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 			Transformer t = TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			t.setOutputProperty(OutputKeys.INDENT, "no");
-			if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.ATTRIBUTE_NODE) { 
+			if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.ATTRIBUTE_NODE) {
 				t.transform(new DOMSource(node.getParentNode()), new StreamResult(sw));
 			} else {
 				t.transform(new DOMSource(node), new StreamResult(sw));

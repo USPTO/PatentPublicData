@@ -34,13 +34,12 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	public DumpFile(File file) {
 		Preconditions.checkNotNull(file, "File can not be Null");
 		Preconditions.checkArgument(file.isFile(), "File not found:" + file.getAbsolutePath());
-        MDC.put("SOURCE", String.valueOf(file.getName()));
+		MDC.put("SOURCE", String.valueOf(file.getName()));
 		this.file = file;
 	}
 
 	/**
-	 * @param name
-	 *            - Name use for tracking purposes.
+	 * @param name   - Name use for tracking purposes.
 	 * @param reader
 	 */
 	public DumpFile(String name, BufferedReader reader) {

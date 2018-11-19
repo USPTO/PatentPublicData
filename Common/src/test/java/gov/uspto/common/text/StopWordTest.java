@@ -1,5 +1,6 @@
 package gov.uspto.common.text;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -66,12 +67,12 @@ public class StopWordTest {
 
 	@Test
 	public void stopWordRemoveArray() throws IOException {
-		assertEquals(stopword.remove(new String[] { "the", "mountain" }), new String[] { "mountain" });
+		assertArrayEquals(stopword.remove(new String[] { "the", "mountain" }), new String[] { "mountain" });
 	}
 
 	@Test
 	public void stopWordRemoveArrayLocation() throws IOException {
-		assertEquals(stopword.remove(new String[] { "the", "mountain" }, StopWord.LOCATION.ANY),
+		assertArrayEquals(stopword.remove(new String[] { "the", "mountain" }, StopWord.LOCATION.ANY),
 				new String[] { "mountain" });
 	}
 
@@ -97,13 +98,13 @@ public class StopWordTest {
 
 	@Test
 	public void stopWordRemoveTrailingStringArray() throws IOException {
-		assertEquals(stopword.removeTrailing(new String[] { "the", "mountain", "the" }),
+		assertArrayEquals(stopword.removeTrailing(new String[] { "the", "mountain", "the" }),
 				new String[] { "the", "mountain" });
 	}
 
 	@Test
 	public void stopWordRemoveTrailingStringArrayLocation() throws IOException {
-		assertEquals(stopword.remove(new String[] { "the", "mountain", "the" }, StopWord.LOCATION.TRAILING),
+		assertArrayEquals(stopword.remove(new String[] { "the", "mountain", "the" }, StopWord.LOCATION.TRAILING),
 				new String[] { "the", "mountain" });
 	}
 
@@ -124,7 +125,7 @@ public class StopWordTest {
 
 	@Test
 	public void stopWordRemoveEdgeStringArray() throws IOException {
-		assertEquals(stopword.removeTrailing(new String[] { "the", "mountain", "the" }),
+		assertArrayEquals(stopword.removeTrailing(new String[] { "the", "mountain", "the" }),
 				new String[] { "the", "mountain" });
 	}
 

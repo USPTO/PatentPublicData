@@ -78,17 +78,15 @@ public class DescriptionFigures extends ItemReader<List<Figure>> {
 		}
 
 		if (figure != null) {
-			/* Code correctly finds FIG refs which references another FIG ref; but not currently being utilized.
+			/*
+			 * Code correctly finds FIG refs which references another FIG ref; but not
+			 * currently being utilized.
 			 * 
-			Matcher refFigMatcher = REF_FIGS.matcher(figText);
-			while(refFigMatcher.find()){
-				String id = refFigMatcher.group(1);
-				String mainId = figure.getIds().iterator().next();
-				if (!id.equals(mainId)){
-					LOGGER.info("Found {} description mention another {}", mainId, id);
-				}
-			}
-			*/
+			 * Matcher refFigMatcher = REF_FIGS.matcher(figText);
+			 * while(refFigMatcher.find()){ String id = refFigMatcher.group(1); String
+			 * mainId = figure.getIds().iterator().next(); if (!id.equals(mainId)){
+			 * LOGGER.info("Found {} description mention another {}", mainId, id); } }
+			 */
 
 			figureList.add(figure);
 		}

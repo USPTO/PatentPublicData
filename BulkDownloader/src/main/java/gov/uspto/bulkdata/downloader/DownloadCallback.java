@@ -18,7 +18,7 @@ public class DownloadCallback implements Callback {
 	private final Downloader downloader;
 	private final DownloadFile download;
 
-	public DownloadCallback(Downloader downloader, DownloadFile download){
+	public DownloadCallback(Downloader downloader, DownloadFile download) {
 		this.downloader = downloader;
 		this.download = download;
 	}
@@ -29,7 +29,7 @@ public class DownloadCallback implements Callback {
 			retry(e);
 		} catch (IOException e1) {
 			// logging in the retry..
-		}		
+		}
 	}
 
 	@Override
@@ -37,18 +37,19 @@ public class DownloadCallback implements Callback {
 		LOGGER.info("Downloading: {} - {}", download.getOutFile(), download.getTempFile());
 
 		if (!response.isSuccessful()) {
-			 throw new IOException("Unexpected code " + response);
+			throw new IOException("Unexpected code " + response);
 		}
 
-	    try {	    	
+		try {
 			FileWriteAction writer = new FileWriteAction(response.body(), download);
 			writer.write();
 			download.isComplete();
-		} catch(FileAlreadyExistsException e){
+		} catch (FileAlreadyExistsException e) {
 			LOGGER.error("Download Failed !! {}", download, e);
 			throw e;
-	    } catch(FileNotFoundException e){
-			LOGGER.error("Download Failed, Path Not Found for output file: {} ; {}", download.getOutFile().getAbsolutePath(), download, e);
+		} catch (FileNotFoundException e) {
+			LOGGER.error("Download Failed, Path Not Found for output file: {} ; {}",
+					download.getOutFile().getAbsolutePath(), download, e);
 			throw e;
 		} catch (IOException e) {
 			retry(e);
@@ -56,9 +57,10 @@ public class DownloadCallback implements Callback {
 	}
 
 	private void retry(IOException e) throws IOException {
-		if (download.getTries() <= downloader.getMaxRetryAttempts()){
+		if (download.getTries() <= downloader.getMaxRetryAttempts()) {
 			download.incrementTries();
-			LOGGER.error("Download failed, retrying[{} of {}]... {}", download.getTries(), downloader.getMaxRetryAttempts(), download, e);
+			LOGGER.error("Download failed, retrying[{} of {}]... {}", download.getTries(),
+					downloader.getMaxRetryAttempts(), download, e);
 			downloader.enqueueDownload(download);
 		} else {
 			LOGGER.error("Download Failed, no more retries !! : {}", download, e);

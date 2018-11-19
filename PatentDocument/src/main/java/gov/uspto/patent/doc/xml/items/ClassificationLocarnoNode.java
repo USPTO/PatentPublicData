@@ -8,28 +8,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
-import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.LocarnoClassification;
+import gov.uspto.patent.model.classification.PatentClassification;
 
-public class ClassificationLocarnoNode extends ItemReader<PatentClassification>{
+public class ClassificationLocarnoNode extends ItemReader<PatentClassification> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationLocarnoNode.class);
 
 	private final static String ITEM_NODE_NAME = "classification-locarno";
 
-	public ClassificationLocarnoNode(Node itemNode){
+	public ClassificationLocarnoNode(Node itemNode) {
 		super(itemNode, ITEM_NODE_NAME);
 	}
 
 	@Override
 	public PatentClassification read() {
-		
+
 		Node mainClass = itemNode.selectSingleNode("main-classification");
-		if (mainClass == null){
+		if (mainClass == null) {
 			return null;
 		}
 
 		String mainClassTxt = mainClass.getText();
-		if ("None".equalsIgnoreCase(mainClassTxt)){
+		if ("None".equalsIgnoreCase(mainClassTxt)) {
 			LOGGER.trace("Invalid Locarno classification 'main-classification': 'None'");
 			return null;
 		}
@@ -44,21 +44,18 @@ public class ClassificationLocarnoNode extends ItemReader<PatentClassification>{
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		List<Node> furtherClasses = itemNode.selectNodes("further-classification");
-		for (Node subclass: furtherClasses){
-
+		for (Node subclass : furtherClasses) {
 			try {
 				LocarnoClassification locarnoClass = new LocarnoClassification();
 				locarnoClass.parseText(subclass.getText());
-				classification.addChild( locarnoClass );
+				classification.addChild(locarnoClass);
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to parse Locarno classification 'further-classification': {}", subclass.asXML(), e);
 			}
-
 		}
 
 		return classification;
 	}
-	
+
 }

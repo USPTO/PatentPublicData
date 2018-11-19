@@ -31,14 +31,20 @@ import gov.uspto.patent.model.classification.PatentClassification;
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
- *<p>Note 1: Citations are only available to the public in Grants.</p>
- *<p>Note 2: classification-national are sometimes missing from citations when cited by applicant.</p>
+ *         <p>
+ *         Note 1: Citations are only available to the public in Grants.
+ *         </p>
+ *         <p>
+ *         Note 2: classification-national are sometimes missing from citations
+ *         when cited by applicant.
+ *         </p>
  *
  */
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
-	private static final String FRAGMENT_PATH = "/*/*/us-references-cited|/*/*/references-cited"; // current us-references-cited. 
-	
+	private static final String FRAGMENT_PATH = "/*/*/us-references-cited|/*/*/references-cited"; // current
+																									// us-references-cited.
+
 	public CitationNode(Document document) {
 		super(document);
 	}
@@ -48,7 +54,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Citation> citations = new ArrayList<Citation>();
 
 		Node citationNode = document.selectSingleNode(FRAGMENT_PATH);
-		
+
 		if (citationNode == null) {
 			return citations;
 		}
@@ -65,7 +71,6 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	public List<Citation> readNplCitations(Node citationNode) {
 		List<Citation> nplCitations = new ArrayList<Citation>();
 
-		@SuppressWarnings("unchecked")
 		List<Node> nlpcitNodes = citationNode.selectNodes("us-citation/nplcit|us-citation/nplcite|citation/nplcit");
 
 		for (Node nplcit : nlpcitNodes) {
@@ -74,14 +79,14 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			Node citeTxtN = nplcit.selectSingleNode("othercit");
 
 			String citeTxt = citeTxtN != null ? citeTxtN.getText() : "";
-			
+
 			// <category>cited by examiner</category>
 			Node categoryN = nplcit.getParent().selectSingleNode("category");
 			String categoryTxt = categoryN != null ? categoryN.getText() : "";
 			boolean examinerCited = (categoryTxt.equals("cited by examiner"));
 
 			DocumentId docId = nplParseUSApp(citeTxt);
-			
+
 			NplCitation citation = new NplCitation(num, citeTxt, examinerCited);
 			if (docId != null) {
 				citation.setPatentId(docId);
@@ -92,28 +97,29 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		return nplCitations;
 	}
 
-	private static Pattern US_APP = Pattern.compile("(?:^|.+?\\b)(?:U\\.S\\. Appl\\. No\\. |PCT/US/?)(\\d{2,4}/\\d{3},?\\d{2,})\\b.+");
+	private static Pattern US_APP = Pattern
+			.compile("(?:^|.+?\\b)(?:U\\.S\\. Appl\\. No\\. |PCT/US/?)(\\d{2,4}/\\d{3},?\\d{2,})\\b.+");
 	private static Pattern DATE = Pattern.compile(".+?[,;] [Ff]iled (?:on )?(\\D{3}\\. \\d{1,2}, [12]\\d{3})[,.].+?");
-    private static final DateParser NPL_DATE_FORMAT = FastDateFormat.getInstance("MMM. d, yyyy");
-    private Matcher usAppMatcher = US_APP.matcher("");
+	private static final DateParser NPL_DATE_FORMAT = FastDateFormat.getInstance("MMM. d, yyyy");
+	private Matcher usAppMatcher = US_APP.matcher("");
 	private Matcher dateMatcher = DATE.matcher("");
 
-	public DocumentId nplParseUSApp(String citeText){
+	public DocumentId nplParseUSApp(String citeText) {
 		usAppMatcher.reset(citeText);
 		dateMatcher.reset(citeText);
 		if (usAppMatcher.matches()) {
 			String number = usAppMatcher.group(1);
 			number = number.replaceAll("[^0-9]", "");
 			DocumentDate docDate = null;
-			if (dateMatcher.matches()){
+			if (dateMatcher.matches()) {
 				String dateStr = dateMatcher.group(1);
-				 try {
-					 Date date = NPL_DATE_FORMAT.parse(dateStr);
-					 docDate = new DocumentDate(date);
-				 } catch (ParseException e) {
-					 //LOGGER.warn("NPL date parse failed.");
-				 } catch (InvalidDataException e) {
-					//e.printStackTrace();
+				try {
+					Date date = NPL_DATE_FORMAT.parse(dateStr);
+					docDate = new DocumentDate(date);
+				} catch (ParseException e) {
+					// LOGGER.warn("NPL date parse failed.");
+				} catch (InvalidDataException e) {
+					// e.printStackTrace();
 				}
 			}
 
@@ -131,54 +137,48 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	public List<Citation> readPatCitations(Node citationNode) {
 		List<Citation> patCitations = new ArrayList<Citation>();
 
-		@SuppressWarnings("unchecked")
 		List<Node> patcitNodes = citationNode.selectNodes("citation/patcit|us-citation/patcit");
 		for (Node patcit : patcitNodes) {
 			String num = patcit.selectSingleNode("@num").getText();
 
 			DocumentId documentId = new DocumentIdNode(patcit).read();
-			
-			//if (documentId.getCountryCode() != CountryCode.US){
-			//	System.out.println("PatCite docId: " + documentId);
-			//}
+
+			// if (documentId.getCountryCode() != CountryCode.US){
+			// System.out.println("PatCite docId: " + documentId);
+			// }
 
 			/*
 			 * Applications appear as US2004123455 CountryDate/Number
 			 *
-			String[] parts = documentId.getId().split("/");
-			String date;
-			if (parts.length == 2){
-				String country = parts[0].substring(0, 2);
-				date = parts[0].substring(1);
-				String id2 = country + parts[1];
-				
-				System.out.println("Application ID: " + documentId + " " + id2);
-			}
-			*/
+			 * String[] parts = documentId.getId().split("/"); String date; if (parts.length
+			 * == 2){ String country = parts[0].substring(0, 2); date =
+			 * parts[0].substring(1); String id2 = country + parts[1];
+			 * 
+			 * System.out.println("Application ID: " + documentId + " " + id2); }
+			 */
 
 			// <category>cited by examiner</category>
 			Node category = patcit.getParent().selectSingleNode("category");
 			boolean examinerCited = (category.getText().equals("cited by examiner")); // else "cited by applicant"
 
-			
 			PatCitation citation = new PatCitation(num, documentId, examinerCited);
 
 			PatentClassification mainClassNational = new ClassificationNationalNode(patcit.getParent()).read();
-			if (mainClassNational != null){
-			    citation.addClassification(mainClassNational);
+			if (mainClassNational != null) {
+				citation.addClassification(mainClassNational);
 			}
 
-	        PatentClassification mainClassCpc = new ClassificationCpcNode(patcit.getParent()).read();
-	        if (mainClassCpc != null){
-	            citation.addClassification(mainClassCpc);
-	        }
-	        
-            PatentClassification mainClassIpc = new ClassificationIPCNode(patcit.getParent()).read();
-            if (mainClassCpc != null){
-                citation.addClassification(mainClassIpc);
-            }
-	        
-	        patCitations.add(citation);
+			PatentClassification mainClassCpc = new ClassificationCpcNode(patcit.getParent()).read();
+			if (mainClassCpc != null) {
+				citation.addClassification(mainClassCpc);
+			}
+
+			PatentClassification mainClassIpc = new ClassificationIPCNode(patcit.getParent()).read();
+			if (mainClassCpc != null) {
+				citation.addClassification(mainClassIpc);
+			}
+
+			patCitations.add(citation);
 		}
 
 		return patCitations;

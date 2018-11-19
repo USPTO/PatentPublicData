@@ -11,7 +11,9 @@ import com.google.common.base.Joiner;
 /**
  * Classification Tokenizer
  * 
+ * <p>
  * Build facets and tokens for indexing or matching of classifications.
+ * </p>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
@@ -54,10 +56,10 @@ public class ClassificationTokenizer {
 	}
 
 	/**
-	 * Turns a facet string, as provided by the API into a set of facets that
-	 * would match anywhere along the hierarchy. To be specific, it takes
-	 * something like this: 2/D01/D01101000/D01102000 And turns it into:
-	 * "0/D01", "1/D01/D01101000", "2/D01/D01101000/D01102000"
+	 * Turns a facet string, as provided by the API into a set of facets that would
+	 * match anywhere along the hierarchy. To be specific, it takes something like
+	 * this: 2/D01/D01101000/D01102000 And turns it into: "0/D01",
+	 * "1/D01/D01101000", "2/D01/D01101000/D01102000"
 	 */
 	public static List<String> parseFacets(String facet) {
 		List<String> sections = new ArrayList<String>();
@@ -88,12 +90,11 @@ public class ClassificationTokenizer {
 	/**
 	 * Collapse Classification Facets to list of Specific Classifications
 	 * 
-	 * Returns the classification list extracted from the faceted string stored
-	 * in solr
+	 * Returns the classification list extracted from the faceted string stored in
+	 * solr
 	 * 
-	 * @param cpcVal
-	 *            // e.g. {0/A45B, 0/E04H, 1/A45B/A45B17, 1/E04H/E04H12,
-	 *            2/A45B/A45B17/A45B1700, 2/E04H/E04H12/E04H122284 }
+	 * @param cpcVal // e.g. {0/A45B, 0/E04H, 1/A45B/A45B17, 1/E04H/E04H12,
+	 *               2/A45B/A45B17/A45B1700, 2/E04H/E04H12/E04H122284 }
 	 * @return // {A45B1700, E04H122284}
 	 */
 	public static List<String> getMostSpecificClasses(List<String> facets) {
@@ -122,7 +123,6 @@ public class ClassificationTokenizer {
 	 * D 07 B
 	 * D 07
 	 * D
-	 * 
 	 * </pre>
 	 * 
 	 */

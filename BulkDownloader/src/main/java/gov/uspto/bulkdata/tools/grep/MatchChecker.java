@@ -24,16 +24,16 @@ public class MatchChecker implements Match<MatchPattern> {
 		this.matchPatterns = patterns;
 	}
 
-	public boolean match(String source, CharSequence string, Writer writer, boolean stopOnFirstMatch) throws IOException, DocumentException {
+	public boolean match(String source, CharSequence string, Writer writer, boolean stopOnFirstMatch)
+			throws IOException, DocumentException {
 		return match(source, new StringReader(string.toString()), writer, stopOnFirstMatch);
 	}
 
-
 	@Override
 	public boolean match(Reader reader) throws DocumentException {
-		BufferedReader reader2 = new BufferedReader(reader);		
+		BufferedReader reader2 = new BufferedReader(reader);
 		try {
-			while(reader2.ready()) {
+			while (reader2.ready()) {
 				if (match(reader2.readLine())) {
 					return true;
 				}
@@ -46,9 +46,9 @@ public class MatchChecker implements Match<MatchPattern> {
 
 	@Override
 	public boolean match(String rawStr) throws DocumentException {
-		for(MatchPattern matchPattern: matchPatterns) {
+		for (MatchPattern matchPattern : matchPatterns) {
 			if (matchPattern.hasMatch(rawStr)) {
-				//LOGGER.debug("Matched {} : {}", matchPattern.getRegex(), rawStr);
+				// LOGGER.debug("Matched {} : {}", matchPattern.getRegex(), rawStr);
 				return true;
 			}
 		}
@@ -56,14 +56,15 @@ public class MatchChecker implements Match<MatchPattern> {
 	}
 
 	@Override
-	public boolean match(String source, Reader reader, Writer writer, boolean stopOnFirstMatch) throws IOException, DocumentException {
+	public boolean match(String source, Reader reader, Writer writer, boolean stopOnFirstMatch)
+			throws IOException, DocumentException {
 		int matchCount = 0;
 		BufferedReader reader2 = new BufferedReader(reader);
 
-		while(reader2.ready()) {
+		while (reader2.ready()) {
 			String line = reader2.readLine();
-			
-			for(MatchPattern matchPattern: matchPatterns) {
+
+			for (MatchPattern matchPattern : matchPatterns) {
 				if (matchPattern.writeMatches(source, line, writer)) {
 					matchCount++;
 					if (stopOnFirstMatch) {

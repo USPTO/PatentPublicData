@@ -24,7 +24,9 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 
 	/**
 	 * Constructor
-	 * @param regexOrPatternName - only written in output to track the pattern which matched.
+	 * 
+	 * @param regexOrPatternName - only written in output to track the pattern which
+	 *                           matched.
 	 * @param pattern
 	 */
 	public MatchRegexBase(String regexOrPatternName, Pattern pattern) {
@@ -35,7 +37,7 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 
 	@Override
 	public void negate() {
-		this.negate  = true;
+		this.negate = true;
 	}
 
 	@Override
@@ -55,7 +57,7 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 
 	@Override
 	public void onlyMatching() {
-		this.onlyMatching  = true;
+		this.onlyMatching = true;
 	}
 
 	@Override
@@ -72,14 +74,14 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 	public boolean isMatchingNode() {
 		return onlyMatchingNode;
 	}
-	
+
 	/**
 	 * Set Matcher to match pattern against entire region of the text
 	 * 
 	 * @return
 	 */
 	public MatchRegexBase entire() {
-		this.partial  = false;
+		this.partial = false;
 		return this;
 	}
 
@@ -97,6 +99,7 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 
 	/**
 	 * Check and move Matcher to next match within content.
+	 * 
 	 * @return
 	 */
 	public boolean hasNext() {
@@ -119,7 +122,7 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 		if (partial) {
 			matched = find(text);
 		} else {
-			matched =  matches(text);
+			matched = matches(text);
 		}
 
 		return negate ? !matched : matched;
@@ -128,49 +131,37 @@ public class MatchRegexBase implements MatchPattern<CharSequence> {
 	@Override
 	public boolean writeMatches(String source, CharSequence text, Writer writer) throws IOException {
 		if (hasMatch(text)) {
-			//if (negate) {
-				//writer.write(source + "negate('" + regex + "') - " + text);
-				if (printSource) {
-					writer.write(source);
-					writer.write(" - ");
-					
-					/*
-					if (negate) {
-						writer.write("negate('");
-					} else {
-						writer.write("'");
-					}
-					
-					writer.write(regex);
-					
-					if (negate) {
-						writer.write("') - ");
-					}
-					else {
-						writer.write("' - ");
-					}
-					*/
-				}
+			// if (negate) {
+			// writer.write(source + "negate('" + regex + "') - " + text);
+			if (printSource) {
+				writer.write(source);
+				writer.write(" - ");
 
-				if (onlyMatching) {
+				/*
+				 * if (negate) { writer.write("negate('"); } else { writer.write("'"); }
+				 * 
+				 * writer.write(regex);
+				 * 
+				 * if (negate) { writer.write("') - "); } else { writer.write("' - "); }
+				 */
+			}
+
+			if (onlyMatching) {
+				writer.write(getMatch());
+				writer.write("\n");
+
+				while (hasNext()) {
 					writer.write(getMatch());
 					writer.write("\n");
-
-					while(hasNext()) {
-						writer.write(getMatch());
-						writer.write("\n");
-					}
 				}
-				else {
-					writer.write(text.toString());
-				}
-				writer.write("\n");
-			//}
+			} else {
+				writer.write(text.toString());
+			}
+			writer.write("\n");
+			// }
 			return true;
 		}
 		return false;
 	}
-
-
 
 }

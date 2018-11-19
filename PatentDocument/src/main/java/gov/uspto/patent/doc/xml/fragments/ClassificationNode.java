@@ -33,7 +33,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
     public Set<PatentClassification> read() {
         Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
-        @SuppressWarnings("unchecked")
         List<Node> uspc = document.selectNodes(USPC_PATH);
         for (Node usclass : uspc) {
             UspcClassification classification = (UspcClassification) new ClassificationNationalNode(usclass).read();
@@ -42,7 +41,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
             }
         }
 
-        @SuppressWarnings("unchecked")
         List<Node> cpc = document.selectNodes(CPC_PATH + "/main-cpc");
         for (Node cpclass : cpc) {
             CpcClassification classification = (CpcClassification) new ClassificationCpcNode(cpclass).read();
@@ -52,7 +50,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
             }
         }
 
-        @SuppressWarnings("unchecked")
         List<Node> cpc2 = document.selectNodes(CPC_PATH + "/further-cpc");
         for (Node cpclass : cpc2) {
             CpcClassification classification = (CpcClassification) new ClassificationCpcNode(cpclass).read();
@@ -62,7 +59,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
             }
         }
 
-        @SuppressWarnings("unchecked")
         List<Node> ipc = document.selectNodes(IPC_PATH);
         for (Node ipclass : ipc) {
             IpcClassification classification = (IpcClassification) new ClassificationIPCNode(ipclass).read();
@@ -71,7 +67,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
             }
         }
 
-        @SuppressWarnings("unchecked")
         List<Node> ipc2 = document.selectNodes(IPC_PATH2);
         for (Node ipclass : ipc2) {
             IpcClassification classification = (IpcClassification) new ClassificationIPCNode(ipclass).read();
@@ -80,7 +75,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
             }
         }
 
-        @SuppressWarnings("unchecked")
         List<Node> locarnos = document.selectNodes(LOCARNO_PATH);
         for (Node locarnoClass : locarnos) {
             LocarnoClassification classification = (LocarnoClassification) new ClassificationLocarnoNode(locarnoClass).read();

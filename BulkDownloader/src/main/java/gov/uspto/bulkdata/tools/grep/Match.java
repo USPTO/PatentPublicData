@@ -17,7 +17,7 @@ public interface Match<MatchPattern> {
 	 * True/False if match exists
 	 * 
 	 * @param rawDocStr
-	 * @return
+	 * @return boolean
 	 * @throws DocumentException 
 	 * @throws IOException 
 	 */
@@ -30,7 +30,7 @@ public interface Match<MatchPattern> {
 	 * @param reader
 	 * @param writer
 	 * @param stopOnFirstMatch
-	 * @return
+	 * @return boolean
 	 * @throws IOException
 	 * @throws DocumentException 
 	 */

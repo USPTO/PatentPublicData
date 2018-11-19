@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class DumpFileXml extends DumpFile {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFileXml.class);
 
 	private String xmlStartTag;

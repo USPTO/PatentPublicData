@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class DumpFileAps extends DumpFile {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFileAps.class);
 
 	private static final String startTag = "PATN";

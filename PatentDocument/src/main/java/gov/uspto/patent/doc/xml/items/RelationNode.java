@@ -31,8 +31,8 @@ public class RelationNode extends ItemReader<List<DocumentId>> {
 	private static final String REL_CHILD = "child-doc/document-id";
 
 	private final DocumentIdType docIdType;
-	
-	public RelationNode(Node itemNode, DocumentIdType docIdType){
+
+	public RelationNode(Node itemNode, DocumentIdType docIdType) {
 		super(itemNode, ITEM_NODE_NAME);
 		this.docIdType = docIdType;
 	}
@@ -40,17 +40,17 @@ public class RelationNode extends ItemReader<List<DocumentId>> {
 	@Override
 	public List<DocumentId> read() {
 		List<DocumentId> docIds = new ArrayList<DocumentId>();
-		
+
 		Node parentN = itemNode.selectSingleNode(REL_PARENT);
 		DocumentId parentDocId = new DocumentIdNode(parentN).read();
 		parentDocId.setType(docIdType);
 		docIds.add(parentDocId);
 
 		Node childN = itemNode.selectSingleNode(REL_CHILD);
-		if (childN != null){
+		if (childN != null) {
 			DocumentId childDocId = new DocumentIdNode(childN).read();
 			childDocId.setType(docIdType);
-			if (!childDocId.equals(parentDocId)){
+			if (!childDocId.equals(parentDocId)) {
 				docIds.add(childDocId);
 			}
 		}

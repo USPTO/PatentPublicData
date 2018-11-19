@@ -39,14 +39,13 @@ public class ViewRecordProcessor implements RecordProcessor {
 	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws IOException {
 		if ("raw".equals(config.getOutputType())) {
 			write(writer, " ---------------------------\n", "Patent RAW:\n", rawRecord);
-		}
-		else {
+		} else {
 			try {
 				Patent patent = patentReader.read(new StringReader(rawRecord));
 				if ("fields".equals(config.getOutputType())) {
 					writeField(sourceTxt, patent, writer);
 				} else {
-					writeOutputType(sourceTxt, patent, writer);	
+					writeOutputType(sourceTxt, patent, writer);
 				}
 			} catch (PatentReaderException e) {
 				e.printStackTrace();
@@ -64,85 +63,85 @@ public class ViewRecordProcessor implements RecordProcessor {
 
 	public void writeOutputType(String sourceText, Patent patent, Writer writer) throws IOException {
 		Boolean prettyPrint = true;
-		
-    	writer.write(sourceText);
-    	writer.write(" ---------------------------\n");
+
+		writer.write(sourceText);
+		writer.write(" ---------------------------\n");
 
 		switch (config.getOutputType().toLowerCase()) {
-			case "plaintext":
-        	case "text":
-        	case "txt":
-        		new PlainText(prettyPrint).write(patent, writer);
-        		break;
-			case "json":
-			case "js":
-            	//writer.write("Patent JSON:\n");
-            	JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint);
-        		fileBuilder.write(patent, writer);
-        		break;
-			case "patft":
-			case "apft":
-            	//writer.write("Patent JSON:\n");
-				JsonMapperPATFT builderPatft = new JsonMapperPATFT(prettyPrint, false);
-				builderPatft.write(patent, writer);
-        		break;
-            case "json_flat":
-            case "jsonflat":
-            case "flatjson":
-            	//writer.write("Patent JSON FLAT:\n");
-        		DocumentBuilder<Patent> fileBuilder2 = new JsonMapperFlat(prettyPrint, false);
-        		fileBuilder2.write(patent, writer);
-        		break;
-            case "object":
-            case "obj":
-            	writer.write(patent.toString());
-                break;
-            default:
-            	throw new RuntimeException("Unknown output type: " + config.getOutputType().toLowerCase());
+		case "plaintext":
+		case "text":
+		case "txt":
+			new PlainText(prettyPrint).write(patent, writer);
+			break;
+		case "json":
+		case "js":
+			// writer.write("Patent JSON:\n");
+			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint);
+			fileBuilder.write(patent, writer);
+			break;
+		case "patft":
+		case "apft":
+			// writer.write("Patent JSON:\n");
+			JsonMapperPATFT builderPatft = new JsonMapperPATFT(prettyPrint, false);
+			builderPatft.write(patent, writer);
+			break;
+		case "json_flat":
+		case "jsonflat":
+		case "flatjson":
+			// writer.write("Patent JSON FLAT:\n");
+			DocumentBuilder<Patent> fileBuilder2 = new JsonMapperFlat(prettyPrint, false);
+			fileBuilder2.write(patent, writer);
+			break;
+		case "object":
+		case "obj":
+			writer.write(patent.toString());
+			break;
+		default:
+			throw new RuntimeException("Unknown output type: " + config.getOutputType().toLowerCase());
 		}
 	}
 
 	public void writeField(String sourceText, Patent patent, Writer writer) throws IOException {
 		Boolean prettyPrint = true;
-		
-    	writer.write(sourceText);
-    	writer.write(" ---------------------------\n");
-		
-        for (String field : config.getFields()) {
-        	
-        	String fieldName = field.toLowerCase();
-        	if (fieldName.endsWith("s")) {
-        		fieldName = fieldName.substring(0, fieldName.length()-1);
-        	}
 
-            switch (fieldName) {
-            case "fields":
-            case "help":
-            case "?":
-            	writer.write("\nAvailable Patent Fields:\n\t");
-            	writer.write(Arrays.toString(new PlainText(prettyPrint).definedFields().toArray()));
-            	writer.write("\n");
-            	break;
-            case "id":
-            	new PlainText(prettyPrint, "doc_id").write(patent, writer);
-                break;
-            case "family":
-            case "related":
-            	new PlainText(prettyPrint, "related_id").write(patent, writer);
-                break;
-            default:
-            	if (PlainText.isDefinedField(fieldName)) {
-            		new PlainText(prettyPrint, fieldName).write(patent, writer);
-            	} else {
-            		System.err.println("Field Name not found " + field);
-            	}
-            	break;
-            }
-        }
+		writer.write(sourceText);
+		writer.write(" ---------------------------\n");
+
+		for (String field : config.getFields()) {
+
+			String fieldName = field.toLowerCase();
+			if (fieldName.endsWith("s")) {
+				fieldName = fieldName.substring(0, fieldName.length() - 1);
+			}
+
+			switch (fieldName) {
+			case "fields":
+			case "help":
+			case "?":
+				writer.write("\nAvailable Patent Fields:\n\t");
+				writer.write(Arrays.toString(new PlainText(prettyPrint).definedFields().toArray()));
+				writer.write("\n");
+				break;
+			case "id":
+				new PlainText(prettyPrint, "doc_id").write(patent, writer);
+				break;
+			case "family":
+			case "related":
+				new PlainText(prettyPrint, "related_id").write(patent, writer);
+				break;
+			default:
+				if (PlainText.isDefinedField(fieldName)) {
+					new PlainText(prettyPrint, fieldName).write(patent, writer);
+				} else {
+					System.err.println("Field Name not found " + field);
+				}
+				break;
+			}
+		}
 	}
 
 	public void write(Writer writer, String... content) throws IOException {
-		for(String el: content) {
+		for (String el : content) {
 			writer.write(el);
 		}
 		writer.flush();

@@ -21,20 +21,27 @@ import org.apache.commons.io.input.BoundedInputStream;
 /**
  * <h3>ContentStream</h3>
  * 
- * <p>Uses the same {@link Appendable} interface as {@link StringBuilder}. As content is appended the char count is
- * captured and once the provided char threshold is reached the trailing content can be written to a temp file, 
- * truncated or ignored. Then an {@link InputStream} is provided to read the data from memory, memory and file, or file;
- * depending on the selected LargeAction. Also, sections within the stream can be marked for quick retrieval of
- * sections from within the stream.
+ * <p>
+ * Uses the same {@link Appendable} interface as {@link StringBuilder}. As
+ * content is appended the char count is captured and once the provided char
+ * threshold is reached the trailing content can be written to a temp file,
+ * truncated or ignored. Then an {@link InputStream} is provided to read the
+ * data from memory, memory and file, or file; depending on the selected
+ * LargeAction. Also, sections within the stream can be marked for quick
+ * retrieval of sections from within the stream.
  * </p>
  *
  * <p>
- * Large Actions once byte threshold is exceeded:
- *  *<li>{@link LargeAction.NONE} disabled ; keeps everything in-memory.</li>
- *   <li>{@link LargeAction.DEFAULT} maintains in-memory content and writes all trailing append request to temp file</li>
- *   <li>{@link LargeAction.ALL_TO_TEMP} writes in-memory content and all trailing append request to temp file</li>
- *   <li>{@link LargeAction.TRUNCATE_TAIL} ignores all trailing request to append</li>
- *   <li>{@link LargeAction.SKIP_ALL} clears in-memory content and ignores all request to append; returns empty InputStream</li/>
+ * Large Actions once byte threshold is exceeded: *
+ * <li>{@link LargeAction.NONE} disabled ; keeps everything in-memory.</li>
+ * <li>{@link LargeAction.DEFAULT} maintains in-memory content and writes all
+ * trailing append request to temp file</li>
+ * <li>{@link LargeAction.ALL_TO_TEMP} writes in-memory content and all trailing
+ * append request to temp file</li>
+ * <li>{@link LargeAction.TRUNCATE_TAIL} ignores all trailing request to
+ * append</li>
+ * <li>{@link LargeAction.SKIP_ALL} clears in-memory content and ignores all
+ * request to append; returns empty InputStream</li/>
  * </p>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
@@ -47,7 +54,7 @@ public class ContentStream implements Appendable {
 	private final long threshold;
 	private LargeAction largeAction = LargeAction.DEFAULT;
 	private long charLength;
-	//private OutputStream output;
+	// private OutputStream output;
 	private boolean largeFlag = false;
 	private File tempFile;
 	private OutputStream writer;
@@ -57,11 +64,10 @@ public class ContentStream implements Appendable {
 	private String header = "";
 	private String footer = "";
 
-
 	public enum LargeAction {
-		NONE, DEFAULT, ALL_TO_TEMP, TRUNCATE_TAIL, SKIP_FULLY 
+		NONE, DEFAULT, ALL_TO_TEMP, TRUNCATE_TAIL, SKIP_FULLY
 	}
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -88,7 +94,8 @@ public class ContentStream implements Appendable {
 	 * Constructor
 	 * 
 	 * @param threshold - of chars
-	 * @param capacity - exposed setting the internal StringBuilder capacity for possible optimization.
+	 * @param capacity  - exposed setting the internal StringBuilder capacity for
+	 *                  possible optimization.
 	 */
 	public ContentStream(long threshold, int initialCapacity) {
 		this.threshold = threshold;
@@ -97,7 +104,7 @@ public class ContentStream implements Appendable {
 	}
 
 	/**
-	 * Set Action to Perform  when Large (above threshold has been reached)
+	 * Set Action to Perform when Large (above threshold has been reached)
 	 * 
 	 * @param LargeAction
 	 * @return
@@ -150,14 +157,14 @@ public class ContentStream implements Appendable {
 	}
 
 	/**
-	 * Capture the Start Position of a section of the stream.
-	 * And giving it a name to later fetch the section of the stream by name.
+	 * Capture the Start Position of a section of the stream. And giving it a name
+	 * to later fetch the section of the stream by name.
 	 * 
 	 * <p>
-	 * Note: repeated calls to markStart for same markName has no effect, 
-	 * thus the very first location is kept.
+	 * Note: repeated calls to markStart for same markName has no effect, thus the
+	 * very first location is kept.
 	 * </p>
-	 *  
+	 * 
 	 * @param markName
 	 * @return
 	 */
@@ -171,17 +178,18 @@ public class ContentStream implements Appendable {
 	}
 
 	/**
-	 * Capture the End Position of a section of the stream
-	 * And giving it a name to later fetch the section of the stream by name.
+	 * Capture the End Position of a section of the stream And giving it a name to
+	 * later fetch the section of the stream by name.
 	 * 
 	 * <p>
-	 * Note: repeated calls to markEnd for same markName overrides the previous end location,
-	 * thus last location is kept.
+	 * Note: repeated calls to markEnd for same markName overrides the previous end
+	 * location, thus last location is kept.
 	 * </p>
 	 * 
 	 * <p>
-	 * Repeated calls when within a section like: <code>contentStream.markStart("section1").markEnd("section1");</code>
-	 * Should correctly mark the start and end boundaries for the section.
+	 * Repeated calls when within a section like:
+	 * <code>contentStream.markStart("section1").markEnd("section1");</code> Should
+	 * correctly mark the start and end boundaries for the section.
 	 * </p>
 	 *
 	 * @param markName
@@ -200,7 +208,7 @@ public class ContentStream implements Appendable {
 	 * 
 	 * @return
 	 */
-	public Set<String> getMarkedNames(){
+	public Set<String> getMarkedNames() {
 		return this.marks.keySet();
 	}
 
@@ -208,7 +216,7 @@ public class ContentStream implements Appendable {
 		Long[] mark = this.marks.get(markName);
 		return mark[1] - mark[0];
 	}
-	
+
 	public void setHeader(String header) {
 		this.header = header;
 	}
@@ -217,6 +225,7 @@ public class ContentStream implements Appendable {
 		this.footer = footer;
 	}
 
+	@Override
 	public Appendable append(CharSequence csq) throws IOException {
 		charLength += csq.length();
 
@@ -273,9 +282,10 @@ public class ContentStream implements Appendable {
 	 * Get Stream
 	 * 
 	 * <p>
-	 * Note: if the content is large enough and a temp file is used (LargeAction.DEFAULT or LargeAction.ALL_TO_TEMP)
-	 * calling this function closes and sets the temp file as read only. Further appends after calling this function
-	 * will fail with IOException "Stream Closed".
+	 * Note: if the content is large enough and a temp file is used
+	 * (LargeAction.DEFAULT or LargeAction.ALL_TO_TEMP) calling this function closes
+	 * and sets the temp file as read only. Further appends after calling this
+	 * function will fail with IOException "Stream Closed".
 	 * </p>
 	 * 
 	 * @return InputStream
@@ -289,8 +299,7 @@ public class ContentStream implements Appendable {
 			// Content is only streamed from memory
 			streams.add(buffer.getInputStream());
 			streams.add(new ByteArrayInputStream(footer.getBytes("UTF-8")));
-		}
-		else {
+		} else {
 			// Content streamed from memory, and temp file.
 			if (writer != null) {
 				writer.flush();
@@ -298,16 +307,16 @@ public class ContentStream implements Appendable {
 				writer = null;
 			}
 			tempFile.setReadOnly();
-			
+
 			streams.add(buffer.getInputStream());
 			streams.add(new FileInputStream(tempFile));
 			streams.add(new ByteArrayInputStream(footer.getBytes("UTF-8")));
 		}
-		
+
 		streams.add(new ByteArrayInputStream(footer.getBytes("UTF-8")));
 		return new SequenceInputStream(streams.elements());
 	}
-	
+
 	@SuppressWarnings("resource")
 	public InputStream getInputStream(String markName) throws IOException {
 		Long[] mark = this.marks.get(markName);
@@ -319,10 +328,9 @@ public class ContentStream implements Appendable {
 			// Content is only streamed from memory
 			InputStream in = buffer.getInputStream();
 			in.skip(mark[0]);
-			BoundedInputStream bout = new BoundedInputStream(in, mark[1]-mark[0]);
+			BoundedInputStream bout = new BoundedInputStream(in, mark[1] - mark[0]);
 			streams.add(bout);
-		}
-		else {
+		} else {
 			// Content streamed from memory, and temp file.
 			if (writer != null) {
 				writer.flush();
@@ -330,10 +338,10 @@ public class ContentStream implements Appendable {
 				writer = null;
 			}
 			tempFile.setReadOnly();
-	
+
 			InputStream in = new SequenceInputStream(buffer.getInputStream(), new FileInputStream(tempFile));
 			in.skip(mark[0]);
-			BoundedInputStream bout = new BoundedInputStream(in, mark[1]-mark[0]);
+			BoundedInputStream bout = new BoundedInputStream(in, mark[1] - mark[0]);
 			streams.add(bout);
 		}
 
@@ -344,7 +352,7 @@ public class ContentStream implements Appendable {
 	public InputStream getMarkedInputStream(String markName) throws IOException {
 		return getInputStream(markName);
 	}
-	
+
 	@Override
 	public String toString() {
 		throw new UnsupportedOperationException("Method Not Supported; use getStream() instead.");
@@ -355,7 +363,7 @@ public class ContentStream implements Appendable {
 		byte[] buffer = new byte[1024];
 		int length;
 		while ((length = inputStream.read(buffer)) != -1) {
-		    result.write(buffer, 0, length);
+			result.write(buffer, 0, length);
 		}
 		return result.toString("UTF-8");
 	}

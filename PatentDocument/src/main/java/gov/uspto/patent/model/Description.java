@@ -8,20 +8,22 @@ import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 
 /**
  * Patent Description
- * 
+ *
  * <p>
- * <ul>
- * These are the common sections, and the order they appear within the Patent
- * Description. Any number of the following may or may not appear, since it is
- * up to the patent drafter and the type of patent. Design Patents often contain
- * nothing more than a single sentence, to reference the included drawings.
+ * Descriptions have multiple common subsections. They are listed below
+ * in the order they appear within the Patent Description. Any number of
+ * the subsections may or may not appear, since it is up to the applicant
+ * or patent drafter and the type of patent. For example, Design Patents
+ * often contain a single sentence which tells the examiner or reader
+ * to reference the included drawings.
+ * </p>
  * 
+ * <ul>
  * <li>Other Patent Relations "RELAPP"
  * <li>Brief Summary "BRFSUM"
  * <li>Brief Description of Drawings "DRWDESC"
  * <li>Detailed Description "DETDESC"
  * </ul>
- * </p>
  *
  */
 public class Description {

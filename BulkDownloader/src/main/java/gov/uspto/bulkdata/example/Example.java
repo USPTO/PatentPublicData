@@ -32,7 +32,7 @@ public class Example implements RecordProcessor {
 	public void setPatentDocFormat(PatentDocFormat docFormat) {
 		this.patentReader = new PatentReader(docFormat);
 	}
-	
+
 	@Override
 	public void initialize(Writer writer) throws IOException {
 		System.out.println("--- START ---");

@@ -7,18 +7,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Greenbook Dot Codes for Special Characters mapped to their Unicode symbol.
+ * Greenbook Dot Codes
  * 
+ * <p>
+ * Dot codes are used for Special Characters, this class maps them to their
+ * Unicode symbol.
+ * </p>
+ * 
+ * <p>
  * Unicode was not around when Greenbook dot codes where introduced.
+ * </p>
  * 
- *<p><pre>
- * Dotcode are terminated by a space, a comma (,), a period (.), a right
- * parenthesis ()) or another subscript .sub. or superscript .sup.
- *</p></pre>
+ * <p>
+ * 
+ * <pre>
+ * Dotcode are terminated by:
+ *   a space
+ *   a comma (,)
+ *   a period (.)
+ *   a right parenthesis ()
+ *   or another subscript .sub. 
+ *   or superscript .sup.
+ *</p>
+ * </pre>
  *
- * https://www.w3.org/TR/REC-html40/sgml/entities.html
- * https://r12a.github.io/apps/conversion/
- * http://sites.psu.edu/symbolcodes/accents/math/mathchart
+ * @see https://www.w3.org/TR/REC-html40/sgml/entities.html
+ * @see https://r12a.github.io/apps/conversion/
+ * @see http://sites.psu.edu/symbolcodes/accents/math/mathchart
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  * 
@@ -28,10 +43,12 @@ public class DotCodes {
 	private static final Pattern ENTITY_PATTERN = Pattern
 			.compile("\\.(?:[0\\[\\]]|[^\\p{Z},;\\.)]{2,18})(?:\\.|(?=[\\p{Z},;)]))", Pattern.UNICODE_CHARACTER_CLASS);
 
-	private static final Pattern SUBSUP_PATTERN = Pattern
-			.compile("\\.(su[bp]|s[bp]s[bp])\\.{1,2}([^\\p{Z},;\\.)]{1,10})(?:\\.|(?=[\\p{Z},;)]))", Pattern.UNICODE_CHARACTER_CLASS);
+	private static final Pattern SUBSUP_PATTERN = Pattern.compile(
+			"\\.(su[bp]|s[bp]s[bp])\\.{1,2}([^\\p{Z},;\\.)]{1,10})(?:\\.|(?=[\\p{Z},;)]))",
+			Pattern.UNICODE_CHARACTER_CLASS);
 
-	// private static final Pattern FRACTION_PATTERN = Pattern.compile("\\b[1-9]/[1-9][0-9]*\\b");
+	// private static final Pattern FRACTION_PATTERN =
+	// Pattern.compile("\\b[1-9]/[1-9][0-9]*\\b");
 
 	public static String fraction2number(String fraction) {
 		DecimalFormat df = new DecimalFormat("#.####");
@@ -156,7 +173,7 @@ public class DotCodes {
 		NAME_TO_UNICODE.put(".not >.", '\u226F'); // not greater-than
 		NAME_TO_UNICODE.put(".infin.", '\u221E'); // infinity
 		NAME_TO_UNICODE.put(".multidot.", '\u8901'); // multiplication dot operator
-		
+
 		// Measurement
 		NAME_TO_UNICODE.put(".ANG.", '\u212B'); // Angstrom upper case
 		NAME_TO_UNICODE.put(".ang.", '\u00E5'); // Angstrom lower case
@@ -209,31 +226,27 @@ public class DotCodes {
 		NAME_TO_UNICODE.put(".En.", '\u2025'); // two dot leader
 	}
 
-	/* 
-	.En. found but is NOT a Dot Code in US4238984A:
- 		38 at the timing T.sub.En. In this case, the output Q.sub.1, Q.sub.2 and
-		The dots are NOT shared – we handled this type of exception with a simple change to our code.
-	
-	.En. found again, but is NOT a Dot Code in US3992364A:
- 		F E.As. No Illness 250 245
- 		M O.En. Cerebral Sclerosis
-		The O.En. is an abbreviation used in biology, and this is not nearly as easy in programming logic.
+	/*
+	 * .En. found but is NOT a Dot Code in US4238984A: 38 at the timing T.sub.En. In
+	 * this case, the output Q.sub.1, Q.sub.2 and The dots are NOT shared – we
+	 * handled this type of exception with a simple change to our code.
+	 * 
+	 * .En. found again, but is NOT a Dot Code in US3992364A: F E.As. No Illness 250
+	 * 245 M O.En. Cerebral Sclerosis The O.En. is an abbreviation used in biology,
+	 * and this is not nearly as easy in programming logic.
 	 */
 
 	/*
-	NAME_TO_UNICODE.put(".[.", '['); // open bold bracket (reissue)
-	NAME_TO_UNICODE.put(".].", ']'); // close bold bracket (reissue)
-	NAME_TO_UNICODE.put(".A.", '('); // Open bold bracket (reissue)
-	NAME_TO_UNICODE.put(".1.", ')'); // Close bold bracket (reissue)
- 
-	// Patent Reissue
-	//   oringinal data marked:  .~.   .].
-	//   new data marked:   .Iadd.  .laddend.  (Italic)
-	
-	// Reissue of a Reissue Patent
-	//   .~. .(.     .]. .J.
-	//  .Badd.      .Baddend.  (Bold)
-	*/
+	 * NAME_TO_UNICODE.put(".[.", '['); // open bold bracket (reissue)
+	 * NAME_TO_UNICODE.put(".].", ']'); // close bold bracket (reissue)
+	 * NAME_TO_UNICODE.put(".A.", '('); // Open bold bracket (reissue)
+	 * NAME_TO_UNICODE.put(".1.", ')'); // Close bold bracket (reissue)
+	 * 
+	 * // Patent Reissue // oringinal data marked: .~. .]. // new data marked:
+	 * .Iadd. .laddend. (Italic)
+	 * 
+	 * // Reissue of a Reissue Patent // .~. .(. .]. .J. // .Badd. .Baddend. (Bold)
+	 */
 
 	public static String replace(final String orig) {
 		StringBuffer stb = new StringBuffer();
@@ -261,7 +274,7 @@ public class DotCodes {
 		int additionalChars = 0;
 		while (matcher.find()) {
 			String fullMatch = matcher.group(0);
-			//System.out.println("subsup pattern match: " + fullMatch);
+			// System.out.println("subsup pattern match: " + fullMatch);
 
 			String subSupMatch = matcher.group(1);
 

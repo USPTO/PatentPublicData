@@ -4,8 +4,8 @@ public class Image {
 	private String id;
 	private String file;
 	private String format;
-	
-	public Image(String id, String file, String format){
+
+	public Image(String id, String file, String format) {
 		this.setId(id);
 		this.setFile(file);
 		this.setFormat(format);

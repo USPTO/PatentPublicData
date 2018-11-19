@@ -31,18 +31,18 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
 		@SuppressWarnings("unchecked")
 		List<Node> relNodes = document.selectNodes(RELATED);
 		for (Node relN : relNodes) {
-			//Node parentCodeN = relN.selectSingleNode("COD");
-			//Node parentStatusCodeN = relN.selectSingleNode("PSC");
+			// Node parentCodeN = relN.selectSingleNode("COD");
+			// Node parentStatusCodeN = relN.selectSingleNode("PSC");
 
 			Node patNumN = relN.selectSingleNode("PNO");
 			DocumentId docId;
 			if (patNumN != null) {
-				//Node issueDateN = relN.selectSingleNode("ISD");
+				// Node issueDateN = relN.selectSingleNode("ISD");
 				docId = new DocumentId(CountryCode.US, patNumN.getText());
 			} else {
 				Node appNumN = relN.selectSingleNode("APN");
-				//Node appFilingDate = relN.selectSingleNode("APD");
-				String docNumber = appNumN != null ? appNumN.getText()  : "" ;
+				// Node appFilingDate = relN.selectSingleNode("APD");
+				String docNumber = appNumN != null ? appNumN.getText() : "";
 				docId = new DocumentId(CountryCode.US, docNumber);
 			}
 

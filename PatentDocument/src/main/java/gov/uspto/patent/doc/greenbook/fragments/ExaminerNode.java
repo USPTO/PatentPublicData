@@ -16,6 +16,7 @@ import gov.uspto.patent.model.entity.Examiner;
 import gov.uspto.patent.model.entity.Name;
 
 public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(NameNode.class);
 
 	private static final String ARTUNIT = "/DOCUMENT/PATN/ART";

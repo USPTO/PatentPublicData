@@ -8,7 +8,7 @@ import joptsimple.OptionParser;
 /**
  * View Config from Command-line args
  * 
- *<code><pre>
+ * <code><pre>
  * ViewConfig config = new ViewConfig();
  * config.parseArgs(args);
  * config.readOptions();
@@ -31,50 +31,48 @@ public class ViewConfig extends BulkReaderArguments {
 		super.buildArgs(opParser);
 
 		opParser.accepts("type").withOptionalArg().ofType(String.class)
-			.describedAs("types options: [raw,xml,json,json_flat,patft,object,text]")
-			.defaultsTo("object");
+				.describedAs("types options: [raw,xml,json,json_flat,patft,object,text]").defaultsTo("object");
 
 		opParser.accepts("fields").withOptionalArg().ofType(String.class)
-			.describedAs("comma seperated list of fields; --fields=? will return all available field names")
-			.defaultsTo("object");
+				.describedAs("comma seperated list of fields; --fields=? will return all available field names")
+				.defaultsTo("object");
 
-		opParser.acceptsAll( asList( "num", "record-location" ) )
-			.withOptionalArg().ofType(Integer.class)
-			.describedAs("Record Number to retrive");
-		
+		opParser.acceptsAll(asList("num", "record-location")).withOptionalArg().ofType(Integer.class)
+				.describedAs("Record Number to retrive");
+
 		opParser.accepts("id").withOptionalArg().ofType(String.class).describedAs("Patent Id");
-		
+
 		return opParser;
 	}
 
 	public void readOptions() {
 		super.readOptions();
 
-        if (options.has("num")) {
-        	int loc = (Integer) options.valueOf("num");
-            setRecordLocation(loc);
-        }
+		if (options.has("num")) {
+			int loc = (Integer) options.valueOf("num");
+			setRecordLocation(loc);
+		}
 
-        if (options.has("id")) {
-        	String patentId = (String) options.valueOf("id");
-        	setPatentId(patentId);
-        }
+		if (options.has("id")) {
+			String patentId = (String) options.valueOf("id");
+			setPatentId(patentId);
+		}
 
-        if (options.has("type")) {
-        	String type = (String) options.valueOf("type");
-        	setOutputType(type.toLowerCase());
-        }
+		if (options.has("type")) {
+			String type = (String) options.valueOf("type");
+			setOutputType(type.toLowerCase());
+		}
 
-        String[] fields = ((String) options.valueOf("fields")).split(",");
-        setFields(fields);
+		String[] fields = ((String) options.valueOf("fields")).split(",");
+		setFields(fields);
 
-        if (getRecordReadLimit() == -1) {
-        	setRecordReadLimit(1); // Default for view is one record.
-        }
+		if (getRecordReadLimit() == -1) {
+			setRecordReadLimit(1); // Default for view is one record.
+		}
 	}
 
 	public void setOutputType(String outputType) {
-		this.outputType  = outputType;
+		this.outputType = outputType;
 	}
 
 	public String getOutputType() {
@@ -90,11 +88,11 @@ public class ViewConfig extends BulkReaderArguments {
 	}
 
 	public void setRecordLocation(int loc) {
-        this.recordLocation  = loc;
-        int skip = loc - 1;
-        int limit = 1;
-        setSkipRecordCount(skip);
-        setRecordReadLimit(limit);
+		this.recordLocation = loc;
+		int skip = loc - 1;
+		int limit = 1;
+		setSkipRecordCount(skip);
+		setRecordReadLimit(limit);
 	}
 
 	public int getRecordLocation() {

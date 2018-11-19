@@ -8,13 +8,15 @@ import gov.uspto.patent.TextField;
 /**
  * Referenced Figure
  *
- *<p>
- *The purpose of this class is to capture the figures within the Patent Description sub section for Brief Description of Drawings.
- *</p>
+ * <p>
+ * The purpose of this class is to capture the figures within the Patent
+ * Description sub section for Brief Description of Drawings.
+ * </p>
  *
- *<p>
- *Since Figure Descriptions can contain an id range, the id is stored in a set of IDs.
- *</p>
+ * <p>
+ * Since Figure Descriptions can contain an id range, the id is stored in a set
+ * of IDs.
+ * </p>
  */
 public class Figure implements TextField {
 
@@ -22,7 +24,7 @@ public class Figure implements TextField {
 	private String rawText;
 
 	public Figure(String rawText, String... ids) {
-		for(String id: ids){
+		for (String id : ids) {
 			this.ids.add(id);
 		}
 		this.rawText = rawText;

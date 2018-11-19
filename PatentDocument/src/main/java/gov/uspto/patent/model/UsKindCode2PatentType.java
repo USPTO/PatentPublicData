@@ -10,60 +10,61 @@ import java.util.Map;
  */
 public class UsKindCode2PatentType {
 
-    private Map<String, PatentType> mapping;
-    
-    private static UsKindCode2PatentType kindCode2PatentTpe;
-    
-    private UsKindCode2PatentType(){}
+	private Map<String, PatentType> mapping;
 
-    public static UsKindCode2PatentType getInstance(){
-        if (kindCode2PatentTpe == null){
-            kindCode2PatentTpe = new UsKindCode2PatentType();
-            kindCode2PatentTpe.init();
-        }
-        return kindCode2PatentTpe;
-    }
+	private static UsKindCode2PatentType kindCode2PatentTpe;
 
-    private void init(){
-        mapping = new HashMap<String, PatentType>();
+	private UsKindCode2PatentType() {
+	}
 
-        // UTILITY
-        mapping.put("A", PatentType.UTILITY);
-        mapping.put("A1", PatentType.UTILITY);
-        mapping.put("A2", PatentType.UTILITY);
-        mapping.put("A9", PatentType.UTILITY);
+	public static UsKindCode2PatentType getInstance() {
+		if (kindCode2PatentTpe == null) {
+			kindCode2PatentTpe = new UsKindCode2PatentType();
+			kindCode2PatentTpe.init();
+		}
+		return kindCode2PatentTpe;
+	}
 
-        // Re-examination
-        mapping.put("B1", PatentType.UTILITY);
-        mapping.put("B2", PatentType.UTILITY);
-        mapping.put("B3", PatentType.UTILITY);
-        mapping.put("C1", PatentType.UTILITY);
-        mapping.put("C2", PatentType.UTILITY);
-        mapping.put("C3", PatentType.UTILITY);
+	private void init() {
+		mapping = new HashMap<String, PatentType>();
 
-        // REISSUE
-        mapping.put("E", PatentType.REISSUE);
+		// UTILITY
+		mapping.put("A", PatentType.UTILITY);
+		mapping.put("A1", PatentType.UTILITY);
+		mapping.put("A2", PatentType.UTILITY);
+		mapping.put("A9", PatentType.UTILITY);
 
-        // DESIGN
-        mapping.put("S", PatentType.DESIGN);
+		// Re-examination
+		mapping.put("B1", PatentType.UTILITY);
+		mapping.put("B2", PatentType.UTILITY);
+		mapping.put("B3", PatentType.UTILITY);
+		mapping.put("C1", PatentType.UTILITY);
+		mapping.put("C2", PatentType.UTILITY);
+		mapping.put("C3", PatentType.UTILITY);
 
-        // PLANT
-        mapping.put("P", PatentType.PLANT);
-        mapping.put("P1", PatentType.PLANT);
-        mapping.put("P2", PatentType.PLANT);
-        mapping.put("P3", PatentType.PLANT);
-        mapping.put("P4", PatentType.PLANT);
-        mapping.put("P9", PatentType.PLANT);
+		// REISSUE
+		mapping.put("E", PatentType.REISSUE);
 
-        // STATUTORY_INVENTION_REGISTRATION
-        mapping.put("H", PatentType.STATUTORY_INVENTION_REGISTRATION);
-    }
+		// DESIGN
+		mapping.put("S", PatentType.DESIGN);
 
-    public PatentType lookupPatentType(String kindCode) {
-        PatentType patentType = mapping.get(kindCode);
-        if (patentType == null){
-            patentType = PatentType.UNDEFINED;
-        }
-        return patentType;
-    }
+		// PLANT
+		mapping.put("P", PatentType.PLANT);
+		mapping.put("P1", PatentType.PLANT);
+		mapping.put("P2", PatentType.PLANT);
+		mapping.put("P3", PatentType.PLANT);
+		mapping.put("P4", PatentType.PLANT);
+		mapping.put("P9", PatentType.PLANT);
+
+		// STATUTORY_INVENTION_REGISTRATION
+		mapping.put("H", PatentType.STATUTORY_INVENTION_REGISTRATION);
+	}
+
+	public PatentType lookupPatentType(String kindCode) {
+		PatentType patentType = mapping.get(kindCode);
+		if (patentType == null) {
+			patentType = PatentType.UNDEFINED;
+		}
+		return patentType;
+	}
 }

@@ -54,127 +54,130 @@ import gov.uspto.patent.model.entity.Inventor;
  */
 public class CssBrs extends KvParser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CssBrs.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CssBrs.class);
 
-    @Override
-    public Patent parse(Document document) throws PatentReaderException {
-        
-        DocumentId documentId = new DocumentIdNode(document).read();
-        MDC.put("DOCID", documentId.toText());
+	@Override
+	public Patent parse(Document document) throws PatentReaderException {
 
-        PatentType patentType = UsKindCode2PatentType.getInstance().lookupPatentType(documentId.getKindCode());
-        
-        DocumentId applicationId = new ApplicationIdNode(document).read();
+		DocumentId documentId = new DocumentIdNode(document).read();
+		MDC.put("DOCID", documentId.toText());
 
-        Node titleN = document.selectSingleNode("/DOCUMENT/TTL");
-        String title = titleN != null ? titleN.getText() : null;
+		PatentType patentType = UsKindCode2PatentType.getInstance().lookupPatentType(documentId.getKindCode());
 
-        List<Examiner> examiners = new ExaminerNode(document).read();
-        List<Inventor> inventors = new InventorNode(document).read();
-        List<Assignee> assignees = new AssigneeNode(document).read();
-        List<Agent> agents = new AgentNode(document).read();
+		DocumentId applicationId = new ApplicationIdNode(document).read();
 
-        Set<PatentClassification> classifications = new ClassificationNode(document).read();
+		Node titleN = document.selectSingleNode("/DOCUMENT/TTL");
+		String title = titleN != null ? titleN.getText() : null;
 
-        List<DocumentId> relatedIds = new RelatedIdNode(document).read();
-        List<Citation> citations = new CitationNode(document).read();
+		List<Examiner> examiners = new ExaminerNode(document).read();
+		List<Inventor> inventors = new InventorNode(document).read();
+		List<Assignee> assignees = new AssigneeNode(document).read();
+		List<Agent> agents = new AgentNode(document).read();
 
-        /*
-         * Formatted Text.
-         */
-        FormattedText textProcessor = new FormattedText();
-        //Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
-        Description description = new DescriptionNode(document, textProcessor).read();
-        List<Claim> claims = new ClaimNode(document, textProcessor).read();
+		Set<PatentClassification> classifications = new ClassificationNode(document).read();
 
-        /*
-         * Building Patent Object.
-         */
-        Patent patent = new PatentGranted(documentId, patentType);
+		List<DocumentId> relatedIds = new RelatedIdNode(document).read();
+		List<Citation> citations = new CitationNode(document).read();
 
-        if (documentId != null && documentId.getDate() != null) {
-            patent.setDatePublished(documentId.getDate());
-        }
+		/*
+		 * Formatted Text.
+		 */
+		FormattedText textProcessor = new FormattedText();
+		// Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
+		Description description = new DescriptionNode(document, textProcessor).read();
+		List<Claim> claims = new ClaimNode(document, textProcessor).read();
 
-        if (applicationId != null && applicationId.getDate() != null) {
-            patent.setDateProduced(applicationId.getDate());
-        }
+		/*
+		 * Building Patent Object.
+		 */
+		Patent patent = new PatentGranted(documentId, patentType);
+
+		if (documentId != null && documentId.getDate() != null) {
+			patent.setDatePublished(documentId.getDate());
+		}
+
+		if (applicationId != null && applicationId.getDate() != null) {
+			patent.setDateProduced(applicationId.getDate());
+		}
 
 		patent.setApplicationId(applicationId);
-		//patent.addPriorityId(priorityIds);
-		//patent.addOtherId(pctRegionalIds);
+		// patent.addPriorityId(priorityIds);
+		// patent.addOtherId(pctRegionalIds);
 		patent.addRelationIds(relatedIds);
 
-        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getApplicationId());
 		patent.addOtherId(patent.getPriorityIds());
 		patent.addRelationIds(patent.getOtherIds());
 
-        patent.setTitle(title);
-        patent.setInventor(inventors);
-        patent.setAssignee(assignees);
-        patent.setExaminer(examiners);
-        patent.setAgent(agents);
-        patent.setCitation(citations);		
+		patent.setTitle(title);
+		patent.setInventor(inventors);
+		patent.setAssignee(assignees);
+		patent.setExaminer(examiners);
+		patent.setAgent(agents);
+		patent.setCitation(citations);
 
-        patent.setClassification(classifications);
-        //patent.setAbstract(abstractText);
-        patent.setDescription(description);
-        patent.setClaim(claims);
+		patent.setClassification(classifications);
+		// patent.setAbstract(abstractText);
+		patent.setDescription(description);
+		patent.setClaim(claims);
 
-        LOGGER.trace(patent.toString());
+		LOGGER.trace(patent.toString());
 
-        return patent;
-    }
+		return patent;
+	}
 
-    public static void main(String[] args) throws PatentReaderException, IOException {
+	public static void main(String[] args) throws PatentReaderException, IOException {
 
-        File inputFile = new File(args[0]);
+		File inputFile = new File(args[0]);
 
-        List<FieldGroup> fieldGroups = new ArrayList<FieldGroup>();
-        fieldGroups.add(new FieldGroup("APPLICANT").addField("AANM", true).addField("AACI", "AAST", "AAZP", "AACO",
-                "AATX", "AAGP", "AAAT"));
-        fieldGroups.add(new FieldGroup("INVENTOR").addField("INNM", true).addField("INSA", "INCI", "INST", "INZP",
-                "INCO", "INTX", "INGP"));
-        fieldGroups.add(new FieldGroup("ASSIGNEE").addField("ASNM", true).addField("ASNP", true).addField("ASSA",
-                "ASCI", "ASST", "ASCO", "ASPC", "ASTC", "ASZP", "ASTX", "ASGP"));
+		List<FieldGroup> fieldGroups = new ArrayList<FieldGroup>();
+		fieldGroups.add(new FieldGroup("APPLICANT").addField("AANM", true).addField("AACI", "AAST", "AAZP", "AACO",
+				"AATX", "AAGP", "AAAT"));
+		fieldGroups.add(new FieldGroup("INVENTOR").addField("INNM", true).addField("INSA", "INCI", "INST", "INZP",
+				"INCO", "INTX", "INGP"));
+		fieldGroups.add(new FieldGroup("ASSIGNEE").addField("ASNM", true).addField("ASNP", true).addField("ASSA",
+				"ASCI", "ASST", "ASCO", "ASPC", "ASTC", "ASZP", "ASTX", "ASGP"));
 
-        //fieldGroups.add(new FieldGroup("AGENT").addField("FIRM", true).addField("PATT", "AATT", "ATTY", "ATTN", "LRNM",
-        //        "LRSA", "LRCI", "LRST", "LRZC", "LREA", "LRTX", ""));
+		// fieldGroups.add(new FieldGroup("AGENT").addField("FIRM",
+		// true).addField("PATT", "AATT", "ATTY", "ATTN", "LRNM",
+		// "LRSA", "LRCI", "LRST", "LRZC", "LREA", "LRTX", ""));
 
-        fieldGroups.add(
-                new FieldGroup("US_REFERENCE").addField("URPN", true).addField("URPD", "URNM", "URCL", "URCP", "URGP"));
+		fieldGroups.add(
+				new FieldGroup("US_REFERENCE").addField("URPN", true).addField("URPD", "URNM", "URCL", "URCP", "URGP"));
 
-        fieldGroups.add(new FieldGroup("FOREIGN_REFERENCE").addField("FRCO", true).addField("FRPN", "FRPD", "FRCL",
-                "FRCP", "FRGP"));
+		fieldGroups.add(new FieldGroup("FOREIGN_REFERENCE").addField("FRCO", true).addField("FRPN", "FRPD", "FRCL",
+				"FRCP", "FRGP"));
 
-        fieldGroups.add(new FieldGroup("CORRESPONDENCE").addField("COCN", true).addField("CODR"));
+		fieldGroups.add(new FieldGroup("CORRESPONDENCE").addField("COCN", true).addField("CODR"));
 
-        fieldGroups.add(new FieldGroup("PRIOR").addField("PDID", true).addField("PPNR", "PPPD", "PPKC", "PPCC"));
+		fieldGroups.add(new FieldGroup("PRIOR").addField("PDID", true).addField("PPNR", "PPPD", "PPKC", "PPCC"));
 
-        fieldGroups.add(new FieldGroup("CLAIMS").addField("CLST", true).addField("CLPR"));
-        fieldGroups.add(new FieldGroup("ABSTRACT").addField("ABPR", true));
-        fieldGroups.add(new FieldGroup("EXAMINERS").addField("ART", true).addField("EXP", "EXA"));
+		fieldGroups.add(new FieldGroup("CLAIMS").addField("CLST", true).addField("CLPR"));
+		fieldGroups.add(new FieldGroup("ABSTRACT").addField("ABPR", true));
+		fieldGroups.add(new FieldGroup("EXAMINERS").addField("ART", true).addField("EXP", "EXA"));
 
-        //fieldGroups.add(new FieldGroup("PCT").addField("PCAN", true).addField("PCAC", "PCAK", "PCAD", "PCDV",
-        //       "PCCO", "PCPN", "PCKC", "PCPD", "TDID"));
+		// fieldGroups.add(new FieldGroup("PCT").addField("PCAN", true).addField("PCAC",
+		// "PCAK", "PCAD", "PCDV",
+		// "PCCO", "PCPN", "PCKC", "PCPD", "TDID"));
 
-        //fieldGroups.add(new FieldGroup("CITATION").addField("ASNM", true).addField("RFKC", "RFPD", "RFCO", "RFNM",
-        //        "RFNR", "RFON", "RFAD", "RFIP", "RFRS", "RFNP"));
-        fieldGroups.add(new FieldGroup("CLAIM").addField("CLTX", true));
-        Reader reader = new InputStreamReader(new FileInputStream(inputFile), "UTF-8");
+		// fieldGroups.add(new FieldGroup("CITATION").addField("ASNM",
+		// true).addField("RFKC", "RFPD", "RFCO", "RFNM",
+		// "RFNR", "RFON", "RFAD", "RFIP", "RFRS", "RFNP"));
+		fieldGroups.add(new FieldGroup("CLAIM").addField("CLTX", true));
+		Reader reader = new InputStreamReader(new FileInputStream(inputFile), "UTF-8");
 
-        KvReader kvf = new KvReader();
-        // kvf.setSectionSequence(sections);
+		KvReader kvf = new KvReader();
+		// kvf.setSectionSequence(sections);
 
-        List<KeyValue> keyValues = kvf.parse(reader);
+		List<KeyValue> keyValues = kvf.parse(reader);
 
-        for (KeyValue kv : keyValues) {
-            System.out.println(kv.toString());
-        }
+		for (KeyValue kv : keyValues) {
+			System.out.println(kv.toString());
+		}
 
-        Document xmlDoc = kvf.genXml(keyValues, fieldGroups);
+		Document xmlDoc = kvf.genXml(keyValues, fieldGroups);
 
-        System.out.println(xmlDoc.asXML());
-    }
+		System.out.println(xmlDoc.asXML());
+	}
 
 }

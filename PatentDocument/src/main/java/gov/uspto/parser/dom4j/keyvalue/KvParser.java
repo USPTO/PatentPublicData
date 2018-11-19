@@ -20,7 +20,7 @@ import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
 
 public abstract class KvParser implements Dom4j {
-	//private static final Logger LOGGER = LoggerFactory.getLogger(KvParser.class);
+	// private static final Logger LOGGER = LoggerFactory.getLogger(KvParser.class);
 
 	private final KvReader kvReader;
 
@@ -52,20 +52,16 @@ public abstract class KvParser implements Dom4j {
 	@Override
 	public Patent parse(Reader reader) throws PatentReaderException {
 		/*
-		try {
-			LOGGER.info("RAW: {}", IOUtils.toString(reader));
-			reader.reset();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		*/
+		 * try { LOGGER.info("RAW: {}", IOUtils.toString(reader)); reader.reset(); }
+		 * catch (IOException e) { e.printStackTrace(); }
+		 */
 
 		List<KeyValue> keyValues = kvReader.parse(reader);
-		//LOGGER.info("KeyValues: {}", keyValues);
-		
+		// LOGGER.info("KeyValues: {}", keyValues);
+
 		Document document = kvReader.genXml(keyValues);
-		//LOGGER.info("XML: {}", document.asXML());
-		
+		// LOGGER.info("XML: {}", document.asXML());
+
 		return parse(document);
 	}
 }

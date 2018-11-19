@@ -21,7 +21,9 @@ import gov.uspto.patent.model.PatCitation;
 /**
  * Citation / Referenced Patent Document Ids
  * 
- *<p><pre>
+ * <p>
+ * 
+ * <pre>
  *{@code
  *<UREF>
  *   <PNO>3045849</PNO>
@@ -33,12 +35,14 @@ import gov.uspto.patent.model.PatCitation;
  *	<PAL></PAL>
  *</OREF>
  *}
- *</pre></p>
+ * </pre>
+ * </p>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(CitationNode.class);
 
 	private static final String USPAT = "/DOCUMENT/UREF";
@@ -53,9 +57,8 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	public List<Citation> read() {
 		List<Citation> citations = new ArrayList<Citation>();
 
-		@SuppressWarnings("unchecked")
 		List<Node> usRels = document.selectNodes(USPAT);
-		for(int i=0; i < usRels.size(); i++){
+		for (int i = 0; i < usRels.size(); i++) {
 			Node usRelN = usRels.get(i);
 			DocumentId docId = readDocumentId(usRelN, CountryCode.US);
 			if (docId != null) {
@@ -64,9 +67,8 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			}
 		}
 
-		@SuppressWarnings("unchecked")
 		List<Node> foreignRels = document.selectNodes(FORPAT);
-		for(int i=0; i < foreignRels.size(); i++){
+		for (int i = 0; i < foreignRels.size(); i++) {
 			Node frelN = foreignRels.get(i);
 			CountryCode countryCode = readCountryCode(frelN);
 
@@ -77,9 +79,8 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			}
 		}
 
-		@SuppressWarnings("unchecked")
 		List<Node> nplCites = document.selectNodes(NPL);
-		for(int i=0; i < nplCites.size(); i++){
+		for (int i = 0; i < nplCites.size(); i++) {
 			Node nplCiteN = nplCites.get(i);
 			Citation nplCite = new NplCitation(String.valueOf(i), nplCiteN.getText(), false);
 			citations.add(nplCite);

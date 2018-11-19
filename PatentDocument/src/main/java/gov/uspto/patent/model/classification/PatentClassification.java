@@ -19,7 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class PatentClassification implements Classification {
-    private static Logger LOGGER = LoggerFactory.getLogger(PatentClassification.class);
+
+	private static Logger LOGGER = LoggerFactory.getLogger(PatentClassification.class);
 
 	private String originalText;
 	private Set<PatentClassification> children = new TreeSet<PatentClassification>();
@@ -65,7 +66,7 @@ public abstract class PatentClassification implements Classification {
 		return getChildBySymbol(symbol) != null;
 	}
 
-	public PatentClassification getChildBySymbol(String code) {	
+	public PatentClassification getChildBySymbol(String code) {
 		for (PatentClassification classChild : this.children) {
 			if (classChild.getTextOriginal().equals(code)) {
 				return classChild;
@@ -97,7 +98,8 @@ public abstract class PatentClassification implements Classification {
 	/**
 	 * Text Representation
 	 * 
-	 * Either the original text when created from parsing of text else generates normalized form from calling getTextNormalized().
+	 * Either the original text when created from parsing of text else generates
+	 * normalized form from calling getTextNormalized().
 	 */
 	@Override
 	public String toText() {
@@ -127,11 +129,11 @@ public abstract class PatentClassification implements Classification {
 	public <T extends PatentClassification> List<T> fromFacets(List<String> facets, Class<T> classificationClass) {
 		return ClassificationTokenizer.fromFacets(facets, classificationClass);
 	}
-	
+
 	/**
 	 * Classification Tree, permutation of all classification parts.
 	 * 
-	 *<pre>
+	 * <pre>
 	 * D07B2201/2051 =>
 	 * 
 	 * D 07 B 2201 2051
@@ -139,7 +141,7 @@ public abstract class PatentClassification implements Classification {
 	 * D 07 B
 	 * D 07
 	 * D
-	 *</pre> 
+	 * </pre>
 	 */
 	@Override
 	public String[] getTree() {
@@ -152,23 +154,25 @@ public abstract class PatentClassification implements Classification {
 		return last == 0 ? this.toText().compareTo(other.toText()) : last;
 	}
 
-    public static <T extends PatentClassification> List<T> fromText(Iterable<String> classificationStrings, Class<T> classificationClass) {
-        List<T> retClasses = new ArrayList<T>();
-        for (String textClass : classificationStrings) {
-            try {
-                T classification = classificationClass.newInstance();
-                classification.parseText(textClass);
-                retClasses.add(classification);
-            } catch (ParseException | InstantiationException | IllegalAccessException e) {
-                LOGGER.error("Failed to parse provided Classification: " + textClass, e);
-            }
-        }
-        return retClasses;
-    }
+	public static <T extends PatentClassification> List<T> fromText(Iterable<String> classificationStrings,
+			Class<T> classificationClass) {
+		List<T> retClasses = new ArrayList<T>();
+		for (String textClass : classificationStrings) {
+			try {
+				T classification = classificationClass.newInstance();
+				classification.parseText(textClass);
+				retClasses.add(classification);
+			} catch (ParseException | InstantiationException | IllegalAccessException e) {
+				LOGGER.error("Failed to parse provided Classification: " + textClass, e);
+			}
+		}
+		return retClasses;
+	}
 
-    public static <T extends PatentClassification> boolean match(Collection<T> classes, Predicate<PatentClassification> predicate) {
-        return classes.stream().anyMatch(predicate);
-    }
+	public static <T extends PatentClassification> boolean match(Collection<T> classes,
+			Predicate<PatentClassification> predicate) {
+		return classes.stream().anyMatch(predicate);
+	}
 
 	public static <T extends PatentClassification> SortedSet<T> filter(Collection<T> classes,
 			Predicate<PatentClassification> predicate) {
@@ -180,12 +184,12 @@ public abstract class PatentClassification implements Classification {
 		return filter(classes, isType(wantedType));
 	}
 
-    public static Set<String> getFacetByType(Collection<PatentClassification> classes, ClassificationType wantedType) {
-        Set<PatentClassification> filtered = filter(classes, isType(wantedType));
-        Set<String> facets = new LinkedHashSet<String>();
-        for(PatentClassification clazz: filtered){
-            facets.addAll(Arrays.asList(clazz.toFacet()));
-        }
-        return facets;
-    }
+	public static Set<String> getFacetByType(Collection<PatentClassification> classes, ClassificationType wantedType) {
+		Set<PatentClassification> filtered = filter(classes, isType(wantedType));
+		Set<String> facets = new LinkedHashSet<String>();
+		for (PatentClassification clazz : filtered) {
+			facets.addAll(Arrays.asList(clazz.toFacet()));
+		}
+		return facets;
+	}
 }

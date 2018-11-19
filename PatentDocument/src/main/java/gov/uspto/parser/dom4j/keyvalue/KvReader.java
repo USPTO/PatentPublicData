@@ -25,8 +25,9 @@ import gov.uspto.patent.PatentReaderException;
 /**
  * Transform plaintext Field-Space-Value formated file into an XML Document
  * 
- * Key space value, long values wrap with indentation on next line.
+ * <p>Key space value, long values wrap with indentation on next line.<p>
  * 
+ * <p>
  * Example of flat fields with no sections:
  * 
  * <pre>
@@ -38,7 +39,9 @@ import gov.uspto.patent.PatentReaderException;
  *     and associated apparatus
  * URPN 2003/0169838
  * </pre>
+ * </p>
  * 
+ * <p>
  * Example same as above with the addition of section "PATN" and "INVT" each
  * having subfields directly following underneath.
  * 
@@ -51,6 +54,7 @@ import gov.uspto.patent.PatentReaderException;
  * STR  1 Main St
  * CTY  Springfield
  * </pre>
+ * </p>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
@@ -91,20 +95,21 @@ public class KvReader {
 	}
 
     /**
-     * Generate XML which is either flat, or sections of matching key which are
-     * one level deep.
+     * <p>Generate XML which is either flat, or sections of matching key which are
+     * one level deep.</p>
      * 
+     * <p>
      * Sections are auto detected by being a field without a value.
-     * 
      *<pre>
      * INVT
      * NAM  Doe; John
      * STR  1 Main St
      * CTY  Springfield
      *</pre>
+     *</p>
      * 
      * @param keyValues
-     * @return
+     * @return Document
      */
     public Document genXml(List<KeyValue> keyValues) {    	
         Document document = DocumentHelper.createDocument();
@@ -162,7 +167,7 @@ public class KvReader {
      * 
      * @param keyValues
      * @param sections
-     * @return
+     * @return Document
      */
     public Document genXml(List<KeyValue> keyValues, Collection<String> sections) {
 
@@ -186,12 +191,14 @@ public class KvReader {
     }
 
     /**
-     * Generate XML from fields which are flat, but sequencial fields can be mapped to individual entities.
+     * <p>Generate XML from fields which are flat, but sequencial fields can be mapped to individual entities.</p>
      * 
+     * <pre>
      * Example use case: 
      *  -- Data from database is flat. 
      *  -- to capture an Inventor there is an inventor name and inventor address field
      *  -- when multiple inventors are present, the fields repeats for each inventor in sequence.
+     * </pre>
      *  
      * <pre>
      * INNM Doe; John
@@ -202,15 +209,17 @@ public class KvReader {
      * INCI Springfield 
      * </pre>
      *  
-     * new FieldGroup("INVENTOR").setAncorField("INNM").addField("INSA", "INCI", "INST"); 
-     *  
+     * <p>new FieldGroup("INVENTOR").setAncorField("INNM").addField("INSA", "INCI", "INST");</p> 
+     * 
+     * <pre>
      * Notes: 
      *  -- All fields not defined within a field group will be added to root xml node. 
      *  -- If a field belongs to an entity it needs to be added to that field group else it might split the group apart.
+     * </pre>
      *  
      * @param keyValues
      * @param fieldGroup
-     * @return
+     * @return Document
      */
     public Document genXml(List<KeyValue> keyValues, List<FieldGroup> fieldGroup) {
         FieldIndex index = new FieldIndex(fieldGroup);
@@ -335,7 +344,7 @@ public class KvReader {
      * Process Line, split line by key value, else return line.
      * 
      * @param line
-     * @return
+     * @return String[]
      */
     /*
      * private final static Pattern KEY_VALUE_PATTERN = Pattern.compile("^([A-Z][A-Z0-9]{2,3}):?\\s(.+?)$"); 
@@ -384,15 +393,15 @@ public class KvReader {
     }
 
     /**
-     * Check Key is valid
-     * 
+     * <p>Check Key is valid</p>
+     * <pre>
      * Criteria: 
      * 1) 3 or 4 characters long 
      * 2) First character Uppercase ASCII 
      * 3) characters Uppercase ASCII or number
-     * 
+     * </pre>
      * @param key
-     * @return
+     * @return boolean
      */
     public boolean isValidKey(String key) {
         if (key.length() > 5 || key.length() < 2) {

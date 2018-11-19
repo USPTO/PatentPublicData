@@ -30,7 +30,7 @@ import gov.uspto.patent.doc.simplehtml.HtmlToPlainText;
  */
 public class FormattedText implements TextProcessor {
 
-	private static final String[] HTML_WHITELIST = new String[] { "b", "p", "h2", "pre", "a", "li",	"ul", "span" };
+	private static final String[] HTML_WHITELIST = new String[] { "b", "p", "h2", "pre", "a", "li", "ul", "span" };
 	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "num", "idref", "level" };
 
 	@Override
@@ -56,7 +56,7 @@ public class FormattedText implements TextProcessor {
 	}
 
 	@Override
-	public String getSimpleHtml(String rawText) {	
+	public String getSimpleHtml(String rawText) {
 		rawText = ReferenceTagger.markRefs(rawText);
 
 		// Wrap with body tag so jsoup maintains "<p><pre></pre></p>".
@@ -69,7 +69,7 @@ public class FormattedText implements TextProcessor {
 			Element element = figEls.get(i - 1);
 			element.attr("id", "FR-" + Strings.padStart(String.valueOf(i), 4, '0'));
 		}
-		
+
 		// rename header to "h2"
 		Elements headerEls = jsoupDoc.select("PAC");
 		for (int i = 1; i <= headerEls.size(); i++) {
@@ -96,8 +96,7 @@ public class FormattedText implements TextProcessor {
 		}
 
 		/*
-		 * Greenbook tables are just freetext 
-		 * with newline and white space formating
+		 * Greenbook tables are just freetext with newline and white space formating
 		 * maintain by using a html "pre" tag.
 		 */
 		Elements tblEls = jsoupDoc.select("TBL");
@@ -124,10 +123,10 @@ public class FormattedText implements TextProcessor {
 		outSettings.prettyPrint(false);
 		outSettings.escapeMode(EscapeMode.extended);
 
-        Cleaner cleaner = new Cleaner(whitelist);
-        Document clean = cleaner.clean(jsoupDoc);
-        clean.outputSettings(outSettings);
-        return clean.body().html();
+		Cleaner cleaner = new Cleaner(whitelist);
+		Document clean = cleaner.clean(jsoupDoc);
+		clean.outputSettings(outSettings);
+		return clean.body().html();
 	}
 
 	@Override

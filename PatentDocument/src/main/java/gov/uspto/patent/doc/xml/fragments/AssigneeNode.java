@@ -31,7 +31,6 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	public List<Assignee> read() {
 		List<Assignee> assigneeList = new ArrayList<Assignee>();
 
-		@SuppressWarnings("unchecked")
 		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
 
 		for (Node node : assignees) {
@@ -40,7 +39,8 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 			if (node.selectSingleNode("addressbook") != null) {
 				addressBook = new AddressBookNode(node);
 			} else {
-				// Fix for assignee without addressbook, wrap assignee child nodes with addressbook.
+				// Fix for assignee without addressbook, wrap assignee child nodes with
+				// addressbook.
 				Element addressBookNode = DocumentHelper.createElement("addressbook");
 
 				Iterator<Element> it = ((Element) node).elementIterator();

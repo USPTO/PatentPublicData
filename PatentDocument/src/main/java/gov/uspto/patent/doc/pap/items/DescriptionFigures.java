@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Node;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.model.Figure;
 
 public class DescriptionFigures extends ItemReader<List<Figure>> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionFigures.class);
 
 	public DescriptionFigures(Node itemNode) {
 		super(itemNode);

@@ -14,7 +14,7 @@ import gov.uspto.bulkdata.tools.grep.OutputMatchConfig.OUTPUT_MATCHING;
 import gov.uspto.patent.PatentDocFormat;
 
 public class GrepRecordProcessor implements RecordProcessor {
-	
+
 	private final GrepConfig config;
 	private final Match<MatchPattern> matcher;
 	private final OutputMatchConfig matchArgs;
@@ -35,7 +35,7 @@ public class GrepRecordProcessor implements RecordProcessor {
 	@Override
 	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws DocumentException, IOException {
 		Boolean matched = false;
-        try {
+		try {
 			Reader reader = new InputStreamReader(new ByteArrayInputStream(rawRecord.getBytes()), "UTF-8");
 			recordsChecked++;
 			if (hasMatch(sourceTxt, reader, writer)) {
@@ -47,36 +47,33 @@ public class GrepRecordProcessor implements RecordProcessor {
 			// ignore...
 		}
 
-        return matched;
+		return matched;
 	}
 
 	public boolean hasMatch(String sourceTxt, Reader reader, Writer writer) throws DocumentException, IOException {
 		boolean matched = false;
-	
-		if (outputType == OUTPUT_MATCHING.RECORD ||
-				outputType == OUTPUT_MATCHING.TOTAL_COUNT ||
-						outputType == OUTPUT_MATCHING.RECORD_LOCATION) {
-				matched = matcher.match(reader);
-		}
-		else {
+
+		if (outputType == OUTPUT_MATCHING.RECORD || outputType == OUTPUT_MATCHING.TOTAL_COUNT
+				|| outputType == OUTPUT_MATCHING.RECORD_LOCATION) {
+			matched = matcher.match(reader);
+		} else {
 			matched = matcher.match(sourceTxt, reader, writer, false);
 		}
 
-		//return matcher.isNegate() ? !matched : matched;
+		// return matcher.isNegate() ? !matched : matched;
 		return matched;
 	}
 
 	public void writer(String sourceTxt, String rawRecord, Writer writer) throws IOException {
 		if (outputType == OUTPUT_MATCHING.RECORD) {
 			write(writer, rawRecord, recordSeperator);
-		}
-		else if (outputType == OUTPUT_MATCHING.RECORD_LOCATION) {
+		} else if (outputType == OUTPUT_MATCHING.RECORD_LOCATION) {
 			write(writer, sourceTxt, recordSeperator);
 		}
 	}
 
 	public void write(Writer writer, String... content) throws IOException {
-		for(String el: content) {
+		for (String el : content) {
 			writer.write(el);
 		}
 		writer.flush();
@@ -86,7 +83,7 @@ public class GrepRecordProcessor implements RecordProcessor {
 	public void initialize(Writer writer) throws IOException {
 		// empty
 	}
-	
+
 	@Override
 	public void finish(Writer writer) throws IOException {
 		if (!matchArgs.isNoCount()) {

@@ -12,6 +12,7 @@ import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 
 public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentIdNode.class);
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
