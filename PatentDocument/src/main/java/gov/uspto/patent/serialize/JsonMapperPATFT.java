@@ -383,14 +383,6 @@ public class JsonMapperPATFT implements DocumentBuilder<Patent> {
 		}
 	}
 
-	private String valueOrEmpty(Enum value) {
-		if (value == null) {
-			return "";
-		} else {
-			return value.toString();
-		}
-	}
-
 	private JsonArray mapEntity(Collection<? extends Entity> entities, EntityField entityField, boolean createTokens) {
 		JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
@@ -471,31 +463,11 @@ public class JsonMapperPATFT implements DocumentBuilder<Patent> {
 					arBldr.add(entity.getAddress().getCity());
 				}
 				break;
+			default:
+				break;
 			}
 		}
 
-		return arBldr.build();
-	}
-
-	private JsonArray toJsonArray(Collection<String> strings) {
-		JsonArrayBuilder arBldr = Json.createArrayBuilder();
-		if (strings != null) {
-			for (String tok : strings) {
-				if (tok != null) {
-					arBldr.add(tok);
-				}
-			}
-		}
-		return arBldr.build();
-	}
-
-	private JsonArray toJsonArray(String... strings) {
-		JsonArrayBuilder arBldr = Json.createArrayBuilder();
-		if (strings != null) {
-			for (String tok : strings) {
-				arBldr.add(tok);
-			}
-		}
 		return arBldr.build();
 	}
 

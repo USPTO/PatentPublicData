@@ -23,7 +23,7 @@ import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
 
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.FreetextField;
@@ -33,7 +33,6 @@ import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.DescSection;
 import gov.uspto.patent.model.DescriptionSection;
-import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
 import gov.uspto.patent.model.PatCitation;
@@ -356,20 +355,12 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         }
     }
 
-    private String valueOrEmpty(Enum value) {
+    private String valueOrEmpty(Enum<?> value) {
         if (value == null) {
             return "";
         } else {
             return value.toString();
         }
-    }
-
-    private JsonArray mapDate(DocumentDate date, DateTextType dateType) {
-        JsonArrayBuilder arBldr = Json.createArrayBuilder();
-        if (date != null) {
-            arBldr.add(date.getDateText(dateType));
-        }
-        return arBldr.build();
     }
 
     private JsonArray mapEntity(Collection<? extends Entity> entities, EntityField entityField) {

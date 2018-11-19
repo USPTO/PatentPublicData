@@ -9,8 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import javax.json.JsonObject;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -172,7 +170,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	return value == null ? "" : value;
     }
 
-    private String valueOrEmpty(Enum value) {
+    private String valueOrEmpty(Enum<?> value) {
     	return value == null ? "" : value.toString();
     }
  

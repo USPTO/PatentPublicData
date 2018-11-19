@@ -253,7 +253,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         }
     }
 
-    private String valueOrEmpty(Enum value) {
+    private String valueOrEmpty(Enum<?> value) {
         if (value == null) {
             return "";
         } else {
@@ -433,19 +433,6 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
     private JsonArray toJsonArray(Collection<String> strings) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
-        if (strings != null) {
-            for (String tok : strings) {
-                arBldr.add(tok);
-            }
-        }
-        return arBldr.build();
-    }
-
-    private JsonArray toJsonArray(Collection<String> strings, JsonArray jsonArray) {
-        JsonArrayBuilder arBldr = Json.createArrayBuilder();
-        for (int i = 0; i > jsonArray.size(); i++) {
-            arBldr.add(jsonArray.get(i));
-        }
         if (strings != null) {
             for (String tok : strings) {
                 arBldr.add(tok);
