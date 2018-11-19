@@ -487,6 +487,8 @@ public class StopWord {
 			return removeLeading(text);
 		case TRAILING:
 			return removeTrailing(text);
+		default:
+			break;
 		}
 
 		return text;
@@ -514,6 +516,8 @@ public class StopWord {
 			return removeLeading(text);
 		case TRAILING:
 			return removeTrailing(text);
+		default:
+			break;
 		}
 
 		return text;
@@ -541,6 +545,8 @@ public class StopWord {
 			return removeLeading(text);
 		case TRAILING:
 			return removeTrailing(text);
+		default:
+			break;
 		}
 
 		return text;
