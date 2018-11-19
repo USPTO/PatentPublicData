@@ -7,9 +7,9 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.Priority;
 
 import gov.uspto.bulkdata.RecordReader;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
@@ -52,7 +52,7 @@ public class Xslt {
 	  ConsoleAppender console = new ConsoleAppender();
 	  String PATTERN = "%d [%p|%c|%C{1}] %m%n";
 	  console.setLayout(new PatternLayout(PATTERN)); 
-	  console.setThreshold(Priority.ERROR);
+	  console.setThreshold(Level.ERROR);
 	  console.activateOptions();
 	  Logger.getRootLogger().addAppender(console);
 
