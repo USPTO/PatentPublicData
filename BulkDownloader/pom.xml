@@ -30,19 +30,19 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.21</version>
+			<version>1.7.25</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.21</version>
+			<version>1.7.25</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>26.0-jre</version>
+			<version>27.0-jre</version>
 		</dependency>
 
 		<dependency>
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
-			<version>4.4.4</version>
+			<version>4.4.10</version>
 		</dependency>
 
 		<dependency>
@@ -84,7 +84,7 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>3.3.1</version>
+			<version>3.12.0</version>
 		</dependency>
 
 		<dependency>
