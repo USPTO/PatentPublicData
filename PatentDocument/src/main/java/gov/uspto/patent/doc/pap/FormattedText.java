@@ -27,7 +27,6 @@ import gov.uspto.patent.ReferenceTagger;
 import gov.uspto.patent.TextProcessor;
 import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 import gov.uspto.patent.doc.simplehtml.HtmlToPlainText;
-import gov.uspto.patent.mathml.MathmlEscaper;
 
 /**
  * Parse and Clean Formated Text Fields, such as Description, Abstract and
@@ -125,7 +124,7 @@ public class FormattedText implements TextProcessor {
             newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
             newEl.addClass("math");
             newEl.attr("format", "mathml");
-            newEl.appendChild(new TextNode(mathml, null));
+            newEl.appendChild(new TextNode(mathml));
             element.replaceWith(newEl);         
         }
 
@@ -143,7 +142,7 @@ public class FormattedText implements TextProcessor {
 		for (Element el : jsoupDoc.select("subscript")) {
 			try {
 				String unicode = UnicodeUtil.toSubscript(el.html());
-				el.replaceWith(new TextNode(unicode, null));
+				el.replaceWith(new TextNode(unicode));
 			} catch (ParseException e) {
 				el.tagName("sub");
 			}
@@ -155,7 +154,7 @@ public class FormattedText implements TextProcessor {
 		for (Element el : jsoupDoc.select("superscript")) {
 			try {
 				String unicode = UnicodeUtil.toSuperscript(el.html());
-				el.replaceWith(new TextNode(unicode, null));
+				el.replaceWith(new TextNode(unicode));
 			} catch (ParseException e) {
 				el.tagName("sup");
 			}
