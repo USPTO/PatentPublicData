@@ -12,12 +12,15 @@ import com.google.common.base.Strings;
 import gov.uspto.patent.InvalidDataException;
 
 /**
- * Document ID for only Patents and Patent Applications.
+ * Document ID for Patents and Patent Applications.
  *
  *<p>
- * Note: US Patent Id numbers are not guaranteed to be numeric, they can also
- * have an "X", see X-Patents. For example: "USX9876". They maybe old patents,
- * but they can still be cited in current patents.
+ * Note: US Patent Id numbers are not guaranteed to be numeric, they can 
+ * have a "D" for a Design Patent or have an "X" for an X-Patent. 
+ *<p>
+ *
+ *<p>
+ * Note: X-Patent's even though they are over 100 years old can still be cited in current patents.
  *</p>
  *
  * @see WIPO ST.14.
