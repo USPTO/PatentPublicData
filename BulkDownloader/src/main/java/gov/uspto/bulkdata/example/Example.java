@@ -15,8 +15,8 @@ import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.serialize.DocumentBuilder;
-import gov.uspto.patent.serialize.JsonMapperFlat;
-import gov.uspto.patent.serialize.JsonMapperPATFT;
+//import gov.uspto.patent.serialize.JsonMapperFlat;
+//import gov.uspto.patent.serialize.JsonMapperPATFT;
 import gov.uspto.patent.serialize.JsonMapperStream;
 
 public class Example implements RecordProcessor {

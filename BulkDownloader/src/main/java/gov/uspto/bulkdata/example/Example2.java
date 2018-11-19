@@ -19,20 +19,18 @@ import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.serialize.DocumentBuilder;
-import gov.uspto.patent.serialize.JsonMapper;
+//import gov.uspto.patent.serialize.JsonMapper;
 import gov.uspto.patent.serialize.JsonMapperFlat;
 import gov.uspto.patent.serialize.JsonMapperStream;
 
 public class Example2 {
 
 	private PatentReader patentReader;
-	private JsonMapperStream jsonBuilder;
+	private DocumentBuilder<Patent> jsonBuilder;
 
-	public Example2(PatentReader patentReader) {
+	public Example2(PatentReader patentReader, DocumentBuilder<Patent> jsonBuilder) {
 		this.patentReader = patentReader;
-		this.jsonBuilder = new JsonMapperStream(true);
-		// this.jsonBuilder = new JsonMapperFlat(true, false);
-		// this.jsonBuilder = new JsonMapperPATFT(true, false);
+		this.jsonBuilder = jsonBuilder;
 	}
 
 	public void run(DumpReader dumpReader, int limit, boolean writeFile) throws PatentReaderException, IOException {
@@ -40,9 +38,10 @@ public class Example2 {
 			String xmlDocStr = (String) dumpReader.next();
 
 			Patent patent = patentReader.read(new StringReader(xmlDocStr));
+
 			String patentId = patent.getDocumentId().toText();
 
-			System.out.println(patentId);
+			// System.out.println(patentId);
 			// System.out.println("Patent Object: " + patent.toString());
 
 			Writer writer;
@@ -96,16 +95,17 @@ public class Example2 {
 			dumpReader.skip(skip);
 		}
 
-		DocumentBuilder<Patent> json;
+		DocumentBuilder<Patent> jsonBuilder;
 		if (flatJson) {
-			json = new JsonMapperFlat(jsonPrettyPrint, false);
+			jsonBuilder = new JsonMapperFlat(jsonPrettyPrint, false);
 		} else {
-			json = new JsonMapper(jsonPrettyPrint, false);
+			jsonBuilder = new JsonMapperStream(true);
+			// jsonBuilder = new JsonMapper(jsonPrettyPrint, false);
 		}
 
 		PatentReader patentReader = new PatentReader(dumpReader.getPatentDocFormat());
-		
-		Example2 process = new Example2(patentReader);
+
+		Example2 process = new Example2(patentReader, jsonBuilder);
 		process.run(dumpReader, limit, writeFile);
 	}
 }
