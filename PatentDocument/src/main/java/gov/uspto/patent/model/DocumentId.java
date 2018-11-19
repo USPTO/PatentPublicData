@@ -16,7 +16,8 @@ import gov.uspto.patent.InvalidDataException;
  *
  *<p>
  * Note: US Patent Id numbers are not guaranteed to be numeric, they can 
- * have a "D" for a Design Patent or have an "X" for an X-Patent. 
+ * have a "D" for a Design Patent, "PP" for Plant Patent, or an "X" 
+ * for an X-Patent. 
  *<p>
  *
  *<p>
