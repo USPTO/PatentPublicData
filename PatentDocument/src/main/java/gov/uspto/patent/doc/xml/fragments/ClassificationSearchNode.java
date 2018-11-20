@@ -37,9 +37,12 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 			classifications.add(new ClassificationNationalNode(classNode).read());
 		}
 
-		PatentClassification classification = new ClassificationCpcNode(parentPath).read();
-		if (classification != null) {
-			classifications.add(classification);
+		List<Node> cpcN = parentPath.selectNodes("classification-cpc-text|classification-cpc");
+		for (Node cpc : cpcN) {
+			PatentClassification classification = new ClassificationCpcNode(cpc).read();
+			if (classification != null) {
+				classifications.add(classification);
+			}
 		}
 
 		return classifications;

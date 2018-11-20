@@ -53,7 +53,7 @@ public class ClassificationCpcNode extends ItemReader<PatentClassification> {
 	@Override
 	public PatentClassification read() {
 
-		Node cpcN = itemNode.selectSingleNode("classification-cpc");
+		Node cpcN = itemNode.selectSingleNode("self::classification-cpc|classification-cpc");
 		if (cpcN != null) {
 
 			String section = cpcN.selectSingleNode("section").getText();
@@ -74,7 +74,7 @@ public class ClassificationCpcNode extends ItemReader<PatentClassification> {
 			return cpcClass;
 		}
 
-		Node classTxt = itemNode.selectSingleNode("classification-cpc-text");
+		Node classTxt = itemNode.selectSingleNode("self::classification-cpc-text|classification-cpc-text");
 		if (classTxt != null) {
 
 			CpcClassification classification = null;
