@@ -154,8 +154,10 @@ public class MatchXPathExpression implements MatchPattern<Document> {
 			if (printSource) {
 				writer.write(source);
 				writer.write(" : ");
-				writer.write(node.getParentNode().getNodeName());
-				writer.write("/");
+				if (node.getParentNode() != null) {
+					writer.write(node.getParentNode().getNodeName());
+					writer.write("/");
+				}
 				writer.write(node.getNodeName());
 				writer.write(":[");
 				writer.write(String.valueOf(i));

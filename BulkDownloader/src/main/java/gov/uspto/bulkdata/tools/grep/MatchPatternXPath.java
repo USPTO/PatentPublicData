@@ -63,11 +63,14 @@ public class MatchPatternXPath extends MatchRegexBase {
 					if (super.isPrintSource()) {
 						writer.write(source);
 						writer.write(" : ");
-						writer.write(node.getParentNode().getNodeName());
+						if (node.getParentNode() != null) {
+							writer.write(node.getParentNode().getNodeName());
+							writer.write("/");
+						}
 						writer.write(node.getNodeName());
 						writer.write(":[");
 						writer.write(String.valueOf(i));
-						writer.write("] - ");
+						writer.write("] -- ");
 					}
 
 					if (super.isMatchingNode()) {
