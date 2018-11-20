@@ -1,13 +1,12 @@
-package gov.uspto.patent.doc.xml.items;
+package gov.uspto.patent.doc.xml.fragments;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.StringReader;
 import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
+import org.dom4j.DocumentHelper;
 import org.junit.Test;
 
 import gov.uspto.patent.doc.xml.fragments.Relations;
@@ -17,14 +16,8 @@ import gov.uspto.patent.model.DocumentIdType;
 
 public class RelationsTest {
 
-	public Document readXML(String xml) throws DocumentException {
-		SAXReader reader = new SAXReader();
-		Document doc = reader.read(new StringReader(xml));
-		return doc;
-	}
-
 	@Test
-	public void PCT_Fragment() throws DocumentException {
+	public void continuation() throws DocumentException {
 		String xml = "<xml><continuation><relation>\r\n" + 
 				"	<parent-doc>\r\n" + 
 				"		<document-id>\r\n" + 
@@ -47,9 +40,9 @@ public class RelationsTest {
 				"		</document-id>\r\n" + 
 				"	</child-doc>\r\n" + 
 				"</relation></continuation></xml>";
-		
-		Document doc = readXML(xml);
-		//System.out.println(doc.asXML());
+
+		Document doc = DocumentHelper.parseText(xml);
+
 		List<DocumentId> docIds = new Relations(doc).read();
 
 		//docIds.forEach(System.out::println);
