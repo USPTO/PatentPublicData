@@ -5,8 +5,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Test;
 
@@ -79,5 +82,33 @@ public class CpCClassificationTest {
 		cpcClass.parseText("D07B2201/2051");
 		String expect = "D07B022012051";
 		assertEquals(expect, cpcClass.standardize());
+	}
+
+	@Test
+	public void filterCPC() throws ParseException {
+		Set<PatentClassification> clazs = new TreeSet<PatentClassification>();
+		
+		CpcClassification cpcClass = new CpcClassification();
+		cpcClass.parseText("D21");
+		cpcClass.setInventive(true);
+		clazs.add(cpcClass);
+		
+		CpcClassification cpcClass2 = new CpcClassification();
+		cpcClass2.parseText("D07B2201/2051");
+		cpcClass2.setInventive(false);
+		clazs.add(cpcClass2);
+		
+		CpcClassification cpcClass3 = new CpcClassification();
+		cpcClass3.parseText("D07B2201");
+		cpcClass3.setInventive(false);
+		clazs.add(cpcClass3);
+
+		Map<String, List<CpcClassification>> cpcClasses = CpcClassification.filterCpc(clazs);
+		assertEquals(cpcClasses.get("inventive").size(), 1);
+		assertEquals(cpcClass, cpcClasses.get("inventive").get(0));
+		
+		assertEquals(cpcClasses.get("additional").size(), 2);
+		assertEquals(cpcClass3, cpcClasses.get("additional").get(0));
+		assertEquals(cpcClass2, cpcClasses.get("additional").get(1));
 	}
 }

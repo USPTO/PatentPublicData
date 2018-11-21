@@ -1,9 +1,13 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * <h3>International Patent Classification (IPC)</h3>
@@ -43,6 +47,8 @@ public class IpcClassification extends PatentClassification {
 	private String subClass;
 	private String mainGroup;
 	private String subGroup;
+
+	private boolean inventive = false;
 
 	@Override
 	public ClassificationType getType() {
@@ -87,6 +93,14 @@ public class IpcClassification extends PatentClassification {
 
 	public void setSubGroup(String subGroup) {
 		this.subGroup = subGroup;
+	}
+
+	public void setInventive(boolean bool) {
+		this.inventive = bool;
+	}
+	
+	public boolean isInventive() {
+		return this.inventive;
 	}
 
 	@Override
@@ -144,7 +158,7 @@ public class IpcClassification extends PatentClassification {
 	 * 
 	 */
 	@Override
-    public int getDepth() {
+	public int getDepth() {
 		int classDepth = 0;
 		if (subGroup != null && !subGroup.isEmpty()) {
 			classDepth = 5;
@@ -208,9 +222,9 @@ public class IpcClassification extends PatentClassification {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final CpcClassification other = (CpcClassification) obj;
+		final IpcClassification other = (IpcClassification) obj;
 
-		if (other.getDepth() == getDepth() && isContained(other)) {
+		if (this == other || other.getDepth() == getDepth() && isContained(other)) {
 			return true;
 		}
 
@@ -225,7 +239,7 @@ public class IpcClassification extends PatentClassification {
 	 * @throws ParseException
 	 */
 	@Override
-    public void parseText(final String classificationStr) throws ParseException {
+	public void parseText(final String classificationStr) throws ParseException {
 		super.setTextOriginal(classificationStr);
 
 		Matcher matcher = REGEX_OLD.matcher(classificationStr);
@@ -287,15 +301,30 @@ public class IpcClassification extends PatentClassification {
 	@Override
 	public String toString() {
 		return "IpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", toText()=" + toText()
-				+ ", getTextNormalized()=" + getTextNormalized() + ", standardize()=" + standardize() + ", getDepth()="
-				+ getDepth() + ", getTextOriginal()=" + super.getTextOriginal() + "]";
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", inventive=" + inventive
+				+ ", getTextNormalized()=" + getTextNormalized() + ", standardize()=" + standardize()
+				+ ", getTextOriginal()=" + getTextOriginal() + ", toText()=" + toText() + "]";
 	}
 
-    /**
-     * Parse Facet back into Classifications
-     */
-    public static List<IpcClassification> fromFacets(List<String> facets) {
-        return ClassificationTokenizer.fromFacets(facets, IpcClassification.class);
-    }
+	/**
+	 * IpcClassifications from collection of PatentClassifications, grouped by inventive or additional.
+	 * 
+	 * @param classes
+	 * @return
+	 */
+	public static <T extends PatentClassification> Map<String, List<IpcClassification>> filterCpc(
+			Collection<T> classes) {
+
+		return classes.stream().filter(IpcClassification.class::isInstance).map(IpcClassification.class::cast)
+				.collect(Collectors.groupingBy(s -> (s.isInventive() ? "inventive" : "additional"), TreeMap::new,
+						Collectors.toList()));
+	}
+
+	/**
+	 * Parse Facet back into Classifications
+	 */
+	public static List<IpcClassification> fromFacets(List<String> facets) {
+		return ClassificationTokenizer.fromFacets(facets, IpcClassification.class);
+	}
+
 }

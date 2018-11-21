@@ -335,11 +335,10 @@ public class JsonMapperPATFT implements DocumentBuilder<Patent> {
 		return retArray.build();
 	}
 
-	private JsonArray mapClassifications(Collection<? extends PatentClassification> classes,
+	private JsonArray mapClassifications(Collection<PatentClassification> classes,
 			ClassificationType classType, boolean createTokens) {
 
-		@SuppressWarnings("unchecked")
-		Set<PatentClassification> patClasses = (Set<PatentClassification>) PatentClassification.filterByType(classes,
+		Set<PatentClassification> patClasses = PatentClassification.filterByType(classes,
 				classType);
 
 		JsonArrayBuilder retArray = Json.createArrayBuilder();

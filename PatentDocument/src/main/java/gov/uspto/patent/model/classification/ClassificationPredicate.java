@@ -58,4 +58,5 @@ public class ClassificationPredicate {
 	public static Predicate<PatentClassification> isType(ClassificationType wantedType) {
 		return p -> p.getType() == wantedType;
 	}
+
 }

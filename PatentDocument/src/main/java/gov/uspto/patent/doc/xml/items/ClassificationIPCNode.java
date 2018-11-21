@@ -61,6 +61,8 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 		String subclass = itemNode.selectSingleNode("subclass").getText();
 		String mainGroup = itemNode.selectSingleNode("main-group").getText();
 		String subgroup = itemNode.selectSingleNode("subgroup").getText();
+		// classification-value: I = inventive, A = additional
+		String type = itemNode.selectSingleNode("classification-value").getText();
 
 		IpcClassification ipcClass = new IpcClassification();
 		ipcClass.setSection(section);
@@ -68,6 +70,12 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 		ipcClass.setSubClass(subclass);
 		ipcClass.setMainGroup(mainGroup);
 		ipcClass.setSubGroup(subgroup);
+
+		if ("I".equals(type)) {
+			ipcClass.setInventive(true);
+		} else {
+			ipcClass.setInventive(false);
+		}
 
 		LOGGER.trace("{}", ipcClass);
 

@@ -1,9 +1,13 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * <h3>Cooperative Patent Classification</h3>
@@ -63,6 +67,7 @@ import java.util.regex.Pattern;
  * 	cpc.setMainGroup(mainGroup);
  * 	cpc.setSubGroup(subGroup);
  * 	cpc.setIsMainClassification(true);
+ * 	cpc.setType(CpcClassification.TYPE.INVENTIVE);
  * }
  * </pre>
  * </p>
@@ -87,7 +92,8 @@ public class CpcClassification extends PatentClassification {
 	private String subClass;
 	private String mainGroup;
 	private String subGroup;
-	private Boolean isMainClassification = false;
+	private boolean isMainClassification = false;
+	private boolean inventive = false;
 
 	@Override
 	public ClassificationType getType() {
@@ -132,6 +138,14 @@ public class CpcClassification extends PatentClassification {
 
 	public void setSubGroup(String subGroup) {
 		this.subGroup = subGroup;
+	}
+
+	public void setInventive(boolean bool) {
+		this.inventive = bool;
+	}
+
+	public boolean isInventive() {
+		return inventive;
 	}
 
 	@Override
@@ -271,7 +285,7 @@ public class CpcClassification extends PatentClassification {
 		}
 		final CpcClassification other = (CpcClassification) obj;
 
-		if (other.getDepth() == getDepth() && isContained(other)) {
+		if (this == other || other.getDepth() == getDepth() && isContained(other)) {
 			return true;
 		}
 
@@ -331,8 +345,24 @@ public class CpcClassification extends PatentClassification {
 	public String toString() {
 		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
 				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", isMainClassification="
-				+ isMainClassification + ", getTextNormalized()=" + getTextNormalized() + ", standardize()="
-				+ standardize() + ", toText()=" + toText() + ", originalText()=" + super.getTextOriginal() + "]";
+				+ isMainClassification + ", inventive=" + inventive + ", getTextNormalized()=" + getTextNormalized()
+				+ ", standardize()=" + standardize() + ", getTextOriginal()=" + getTextOriginal() + ", toText()="
+				+ toText() + "]";
+	}
+
+	/**
+	 * CpcClassifications from list of PatentClassifications, grouped by inventive
+	 * or additional.
+	 * 
+	 * @param classes
+	 * @return
+	 */
+	public static <T extends PatentClassification> Map<String, List<CpcClassification>> filterCpc(
+			Collection<T> classes) {
+
+		return classes.stream().filter(CpcClassification.class::isInstance).map(CpcClassification.class::cast)
+				.collect(Collectors.groupingBy(s -> (s.isInventive() ? "inventive" : "additional"), TreeMap::new,
+						Collectors.toList()));
 	}
 
 	/**

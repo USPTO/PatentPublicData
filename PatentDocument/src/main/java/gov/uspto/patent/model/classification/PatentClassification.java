@@ -8,13 +8,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.units.qual.s;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,9 +182,43 @@ public abstract class PatentClassification implements Classification {
 		return classes.stream().filter(predicate).collect(Collectors.toCollection(TreeSet::new));
 	}
 
-	public static <T extends PatentClassification> SortedSet<T> filterByType(Collection<T> classes,
+	/**
+	 * Filter Collection of Classifications by ClassificationType
+	 * 
+	 * @param classes
+	 * @param wantedType
+	 * @return SortedSet
+	 */
+	public static <T extends PatentClassification> Map<ClassificationType, Set<PatentClassification>> groupByType(
+			Collection<PatentClassification> classes) {
+		return classes.stream()
+				.collect(Collectors.groupingBy(PatentClassification::getType, TreeMap::new, Collectors.toSet()));
+	}
+
+	/**
+	 * Filter Collection of Classifications by ClassificationType
+	 * 
+	 * @param classes
+	 * @param wantedType
+	 * @return SortedSet
+	 */
+	public static <T extends PatentClassification> SortedSet<T> filterByType(Collection<PatentClassification> classes,
 			ClassificationType wantedType) {
-		return filter(classes, isType(wantedType));
+
+		return filterByType(classes, wantedType.getJavaClass());
+	}
+
+	/**
+	 * Filter Collection of Classifications by ClassificationType
+	 * 
+	 * @param classes
+	 * @param         class
+	 * @return SortedSet
+	 */
+	public static <T extends PatentClassification> SortedSet<T> filterByType(Collection<PatentClassification> classes,
+			Class<T> wantedClass) {
+		return classes.stream().filter(wantedClass::isInstance).map(wantedClass::cast)
+				.collect(Collectors.toCollection(TreeSet::new));
 	}
 
 	public static Set<String> getFacetByType(Collection<PatentClassification> classes, ClassificationType wantedType) {

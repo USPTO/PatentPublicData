@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -27,7 +28,10 @@ import gov.uspto.patent.model.NplCitation;
 import gov.uspto.patent.model.PatCitation;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.classification.ClassificationType;
+import gov.uspto.patent.model.classification.CpcClassification;
+import gov.uspto.patent.model.classification.IpcClassification;
 import gov.uspto.patent.model.classification.PatentClassification;
+import gov.uspto.patent.model.classification.UspcClassification;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Entity;
@@ -381,23 +385,152 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		}
 	}
 
-    private void writeClassifications(Collection<? extends PatentClassification> classes) throws IOException {
+    private void writeClassifications(Collection<PatentClassification> classes) throws IOException {
     	jGenerator.writeFieldName("classification");
     	jGenerator.writeStartObject();
-        
-        writeSingleClassificationType(classes, ClassificationType.USPC);
-        writeSingleClassificationType(classes, ClassificationType.CPC);
-        writeSingleClassificationType(classes, ClassificationType.IPC);
+
+    	writeUspcClassification(classes);
+    	writeCpcClassification(classes);
+        writeIpcClassification(classes);
+        writeSingleClassificationType(classes, ClassificationType.LOCARNO);
 
         jGenerator.writeEndObject();
     }
 
-    private void writeSingleClassificationType(Collection<? extends PatentClassification> classes, ClassificationType classType) throws IOException {
+    private <T extends PatentClassification> void writeIpcClassification(Collection<PatentClassification> classes) throws IOException {
+
+        Map<String, List<IpcClassification>> retClasses = IpcClassification.filterCpc(classes);
+
+    	jGenerator.writeFieldName("ipc_inventive");
+    	jGenerator.writeStartArray();
+    	if (retClasses.containsKey("inventive")) {
+	    	for (IpcClassification ipc : retClasses.get("inventive")) {
+	        	jGenerator.writeStartObject();
+	        	jGenerator.writeStringField("type", "main");
+	        	jGenerator.writeStringField("raw", ipc.toText());
+	        	jGenerator.writeStringField("normalized", ipc.getTextNormalized());
+	        	writeArray("facets", ipc.toFacet());
+	            jGenerator.writeEndObject();
+	
+	            for (PatentClassification furtherClass : ipc.getChildren()) {
+	            	jGenerator.writeStartObject();
+	            	jGenerator.writeStringField("type", "further");
+	            	jGenerator.writeStringField("raw", furtherClass.toText());
+	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
+	            	writeArray("facets", furtherClass.toFacet());
+	                jGenerator.writeEndObject();
+	            }
+	    	}
+    	}
+    	jGenerator.writeEndArray();
+ 
+    	jGenerator.writeFieldName("ipc_additional");
+    	jGenerator.writeStartArray();
+    	if (retClasses.containsKey("additional")) {
+	    	for (IpcClassification ipc : retClasses.get("additional")) {
+	        	jGenerator.writeStartObject();
+	        	jGenerator.writeStringField("type", "main");
+	        	jGenerator.writeStringField("raw", ipc.toText());
+	        	jGenerator.writeStringField("normalized", ipc.getTextNormalized());
+	        	writeArray("facets", ipc.toFacet());
+	            jGenerator.writeEndObject();
+	
+	            for (PatentClassification furtherClass : ipc.getChildren()) {
+	            	jGenerator.writeStartObject();
+	            	jGenerator.writeStringField("type", "further");
+	            	jGenerator.writeStringField("raw", furtherClass.toText());
+	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
+	            	writeArray("facets", furtherClass.toFacet());
+	                jGenerator.writeEndObject();
+	            }
+	    	}
+    	}
+    	jGenerator.writeEndArray();
+    }
+    
+    private <T extends PatentClassification> void writeCpcClassification(Collection<PatentClassification> classes) throws IOException {
+
+        Map<String, List<CpcClassification>> retClasses = CpcClassification.filterCpc(classes);
+
+    	jGenerator.writeFieldName("cpc_inventive");
+    	jGenerator.writeStartArray();
+    	if (retClasses.containsKey("inventive")) {
+	    	for (CpcClassification cpci : retClasses.get("inventive")) {
+	        	jGenerator.writeStartObject();
+	        	jGenerator.writeStringField("type", "main");
+	        	jGenerator.writeStringField("raw", cpci.toText());
+	        	jGenerator.writeStringField("normalized", cpci.getTextNormalized());
+	        	writeArray("facets", cpci.toFacet());
+	            jGenerator.writeEndObject();
+	
+	            for (PatentClassification furtherClass : cpci.getChildren()) {
+	            	jGenerator.writeStartObject();
+	            	jGenerator.writeStringField("type", "further");
+	            	jGenerator.writeStringField("raw", furtherClass.toText());
+	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
+	            	writeArray("facets", furtherClass.toFacet());
+	                jGenerator.writeEndObject();
+	            }
+	    	}
+    	}
+    	jGenerator.writeEndArray();
+ 
+    	jGenerator.writeFieldName("cpc_additional");
+    	jGenerator.writeStartArray();
+    	if (retClasses.containsKey("additional")) {
+	    	for (CpcClassification cpci : retClasses.get("additional")) {
+	        	jGenerator.writeStartObject();
+	        	jGenerator.writeStringField("type", "main");
+	        	jGenerator.writeStringField("raw", cpci.toText());
+	        	jGenerator.writeStringField("normalized", cpci.getTextNormalized());
+	        	writeArray("facets", cpci.toFacet());
+	            jGenerator.writeEndObject();
+	
+	            for (PatentClassification furtherClass : cpci.getChildren()) {
+	            	jGenerator.writeStartObject();
+	            	jGenerator.writeStringField("type", "further");
+	            	jGenerator.writeStringField("raw", furtherClass.toText());
+	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
+	            	writeArray("facets", furtherClass.toFacet());
+	                jGenerator.writeEndObject();
+	            }
+	    	}
+    	}
+    	jGenerator.writeEndArray();
+    }
+    
+    private <T extends PatentClassification> void writeUspcClassification(Collection<PatentClassification> classes) throws IOException {
+    	jGenerator.writeFieldName("uspc");
+    	jGenerator.writeStartArray();
+
+        Set<UspcClassification> classesOfType = PatentClassification.filterByType(classes, ClassificationType.USPC);
+
+        for (PatentClassification mainClass : classesOfType) {
+        	jGenerator.writeStartObject();
+        	jGenerator.writeStringField("type", "main");
+        	jGenerator.writeStringField("raw", mainClass.toText());
+        	jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
+        	writeArray("facets", mainClass.toFacet());
+            jGenerator.writeEndObject();
+
+            for (PatentClassification furtherClass : mainClass.getChildren()) {
+            	jGenerator.writeStartObject();
+            	jGenerator.writeStringField("type", "further");
+            	jGenerator.writeStringField("raw", furtherClass.toText());
+            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
+            	writeArray("facets", furtherClass.toFacet());
+                jGenerator.writeEndObject();
+            }
+        }
+
+    	jGenerator.writeEndArray();
+    }
+    
+    private void writeSingleClassificationType(Collection<PatentClassification> classes, ClassificationType classType) throws IOException {
     	jGenerator.writeFieldName(classType.name().toLowerCase());
     	jGenerator.writeStartArray();
 
-        @SuppressWarnings("unchecked")
-        Set<PatentClassification> classesOfType = (Set<PatentClassification>) PatentClassification.filterByType(classes, classType);
+        Set<PatentClassification> classesOfType = (Set<PatentClassification>) PatentClassification.filterByType(classes, classType.getJavaClass());
 
         for (PatentClassification mainClass : classesOfType) {
         	jGenerator.writeStartObject();

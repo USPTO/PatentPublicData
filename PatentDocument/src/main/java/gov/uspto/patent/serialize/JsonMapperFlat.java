@@ -213,10 +213,9 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         return arBldr.build();
     }
 
-    private void mapClassifications(Collection<? extends PatentClassification> classes, JsonObjectBuilder builder) {
+    private void mapClassifications(Collection<PatentClassification> classes, JsonObjectBuilder builder) {
 
-        @SuppressWarnings("unchecked")
-        Set<IpcClassification> ipcClasses = (Set<IpcClassification>) PatentClassification.filterByType(classes, ClassificationType.IPC);
+        Set<IpcClassification> ipcClasses = PatentClassification.filterByType(classes, ClassificationType.IPC);
         for (IpcClassification claz : ipcClasses) {
             builder.add("ClassificationIpcMainRaw", claz.toText());
             builder.add("ClassificationIpcMainNormalized", claz.getTextNormalized());
@@ -237,8 +236,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
             builder.add("ClassificationIpcFurtherFacets", toJsonArray(futherFacets));
         }
 
-        @SuppressWarnings("unchecked")
-        Set<UspcClassification> uspcClasses = (Set<UspcClassification>) PatentClassification.filterByType(classes,
+        Set<UspcClassification> uspcClasses = PatentClassification.filterByType(classes,
                 ClassificationType.USPC);
         for (UspcClassification claz : uspcClasses) {
             builder.add("ClassificationUspcMainRaw", claz.toText());
@@ -260,8 +258,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
             builder.add("ClassificationUspcFurtherFacets", toJsonArray(futherFacets));
         }
 
-        @SuppressWarnings("unchecked")
-        Set<CpcClassification> cpcClasses = (Set<CpcClassification>) PatentClassification.filterByType(classes,
+        Set<CpcClassification> cpcClasses = PatentClassification.filterByType(classes,
                 ClassificationType.CPC);
         for (CpcClassification claz : cpcClasses) {
             builder.add("ClassificationCpcMainRaw", claz.toText());
