@@ -45,7 +45,7 @@ public class FormattedText implements TextProcessor {
 
 	private static final String[] HTML_WHITELIST_TAGS = new String[] { "br", "b", "sub", "sup", "h1", "h2", "h3", "h4",
 			"h5", "h6", "p", "table", "tbody", "thead", "th", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a",
-			"span", "colgroup", "col" };
+			"span", "colgroup", "col", "del", "ins" };
 	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "idref", "num", "format",
 			"type", "level", "width", "align", "valign", "rowspan" };
 
@@ -66,14 +66,21 @@ public class FormattedText implements TextProcessor {
 	public String getSimpleHtml(String rawText) {
 
 		/*
-		 * Change xml processing instruction "in-line-formulae" to normal xml
-		 * node, as it was in the Patent PAP format; also making it searchable
-		 * within jsoup.
+		 * Change xml processing instruction "in-line-formulae" to normal xml node, as
+		 * it was in the Patent PAP format; also making it searchable within jsoup.
 		 */
 		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"lead\"\\?>",
 				"<in-line-formula>");
 		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"end\"\\?>",
 				"</in-line-formula>");
+
+		// Change xml processing instruction "delete" to normal xml tag "del"
+		rawText = rawText.replaceAll("<\\?delete-start [^?>]+\\?>", "<del>");
+		rawText = rawText.replaceAll("<\\?delete-end [^?>]+\\?>", "</del>");
+
+		// Change xml processing instruction "insert" to normal xml tag "ins"
+		rawText = rawText.replaceAll("<\\?insert-start [^?>]+\\?>", "<ins>");
+		rawText = rawText.replaceAll("<\\?insert-end [^?>]+\\?>", "</ins>");
 
 		Document document = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
 		document.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_8)
@@ -170,8 +177,8 @@ public class FormattedText implements TextProcessor {
 		}
 
 		/*
-		 * Escape MathML math elements, to maintain all xml elements after
-		 * sending through Cleaner.
+		 * Escape MathML math elements, to maintain all xml elements after sending
+		 * through Cleaner.
 		 */
 		boolean mathFound = false;
 		Elements mathEls = document.select("math");
@@ -305,12 +312,10 @@ public class FormattedText implements TextProcessor {
 	/*
 	 * Capture trailing non-space trailing text back to entity.
 	 *
-	 * <a idref="DRAWINGS">FIG. 4</a><i>a</i>
-	 * (<a idref="DRAWINGS">FIG. 4</a>a)
-	 * <a idref="DRAWINGS">FIG. 4</a>a;
-	 * <a idref="DRAWINGS">FIG. 4</a> <i>(a)</i>;
+	 * <a idref="DRAWINGS">FIG. 4</a><i>a</i> (<a idref="DRAWINGS">FIG. 4</a>a) <a
+	 * idref="DRAWINGS">FIG. 4</a>a; <a idref="DRAWINGS">FIG. 4</a> <i>(a)</i>;
 	 * 
-	 *  ==> <a idref="DRAWINGS">FIG. 4a</a>
+	 * ==> <a idref="DRAWINGS">FIG. 4a</a>
 	 * 
 	 */
 	public void figrefMergeTrailing(Element element) {
@@ -319,7 +324,7 @@ public class FormattedText implements TextProcessor {
 		String trailingTxt;
 		if (next != null && next instanceof TextNode) {
 			trailingTxt = ((TextNode) next).getWholeText();
-			
+
 		} else if (next != null && next instanceof Element) {
 			trailingTxt = ((Element) next).text();
 		} else {
@@ -340,8 +345,7 @@ public class FormattedText implements TextProcessor {
 					nel.text(tail);
 					element.text(element.text() + trailingChar);
 				}
-			}
-			else if (next instanceof TextNode) {
+			} else if (next instanceof TextNode) {
 				TextNode txtNode = (TextNode) next;
 				txtNode.text(tail);
 				element.text(element.text() + trailingChar);
@@ -352,8 +356,7 @@ public class FormattedText implements TextProcessor {
 	/*
 	 * Fix Figref Lists TRAILING
 	 * 
-	 * <figref idref=\"DRAWINGS\">FIGS. 1</figref>, <b>2</b> and <b>3</b>c
-	 *   become 
+	 * <figref idref=\"DRAWINGS\">FIGS. 1</figref>, <b>2</b> and <b>3</b>c become
 	 * <figref>FIGS. 1</figref>, <figref>2</figref> and <figref>3c</figref>
 	 */
 	public void fixFigrefLists(Document document) {
@@ -364,7 +367,7 @@ public class FormattedText implements TextProcessor {
 
 	public void fixFigrefListItem(Element element) {
 		Node next = element.nextSibling();
-		
+
 		String trailingTxt;
 		if (next != null && next instanceof TextNode) {
 			trailingTxt = ((TextNode) next).getWholeText();
@@ -376,9 +379,9 @@ public class FormattedText implements TextProcessor {
 
 		if (trailingTxt.matches("^(, |,? and )")) {
 			next = element.nextSibling().nextSibling();
-			if (next.nodeName().toLowerCase().equals("b")){
+			if (next.nodeName().toLowerCase().equals("b")) {
 				String containedTxt = ((TextNode) next.childNode(0)).getWholeText();
-				if (containedTxt.matches("[0-9]{1,2}[A-z]?")){
+				if (containedTxt.matches("[0-9]{1,2}[A-z]?")) {
 					Element newEl = element.clone();
 					newEl.attr("id", "FR-" + Strings.padStart(containedTxt, 4, '0'));
 					newEl.attr("idref", ReferenceTagger.createFigId(containedTxt));
@@ -386,13 +389,13 @@ public class FormattedText implements TextProcessor {
 					newEl.addClass("figref");
 					newEl.text(containedTxt);
 					next.replaceWith(newEl);
-					
+
 					fixFigrefListItem(newEl);
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public List<String> getParagraphText(String rawText) {
 		String textWithPMarks = getSimpleHtml(rawText);
