@@ -11,8 +11,8 @@ public class PatCitation extends Citation {
 	// A citation can have both the main CPC and the main USPC classifications.
 	private List<PatentClassification> classifications = new ArrayList<PatentClassification>();
 
-	public PatCitation(String num, DocumentId documentId, boolean examinerCited) {
-		super(num, CitationType.PATCIT, examinerCited);
+	public PatCitation(String num, DocumentId documentId, CitedBy citedBy) {
+		super(num, CitationType.PATCIT, citedBy);
 		this.documentId = documentId;
 	}
 
@@ -60,7 +60,7 @@ public class PatCitation extends Citation {
 
 	@Override
 	public String toString() {
-		return "PatCitation [num=" + super.getNum() + ", documentId=" + documentId + ", isExaminerCited="
-				+ super.isExaminerCited() + ", classifications=" + classifications + "]";
+		return "PatCitation [num=" + super.getNum() + ", documentId=" + documentId + ", citedBy=" + super.getCitedBy()
+				+ ", classifications=" + classifications + "]";
 	}
 }

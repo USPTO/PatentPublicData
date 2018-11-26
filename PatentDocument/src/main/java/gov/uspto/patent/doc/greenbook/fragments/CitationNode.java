@@ -12,6 +12,7 @@ import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.greenbook.items.AddressNode;
 import gov.uspto.patent.model.Citation;
+import gov.uspto.patent.model.Citation.CitedBy;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
@@ -62,7 +63,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			Node usRelN = usRels.get(i);
 			DocumentId docId = readDocumentId(usRelN, CountryCode.US);
 			if (docId != null) {
-				Citation patCite = new PatCitation(String.valueOf(i), docId, false);
+				Citation patCite = new PatCitation(String.valueOf(i), docId, CitedBy.UNDEFINED);
 				citations.add(patCite);
 			}
 		}
@@ -74,7 +75,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 			DocumentId docId = readDocumentId(frelN, countryCode);
 			if (docId != null) {
-				Citation patCite = new PatCitation(String.valueOf(i), docId, false);
+				Citation patCite = new PatCitation(String.valueOf(i), docId,  CitedBy.UNDEFINED);
 				citations.add(patCite);
 			}
 		}
@@ -82,7 +83,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Node> nplCites = document.selectNodes(NPL);
 		for (int i = 0; i < nplCites.size(); i++) {
 			Node nplCiteN = nplCites.get(i);
-			Citation nplCite = new NplCitation(String.valueOf(i), nplCiteN.getText(), false);
+			Citation nplCite = new NplCitation(String.valueOf(i), nplCiteN.getText(),  CitedBy.UNDEFINED);
 			citations.add(nplCite);
 		}
 

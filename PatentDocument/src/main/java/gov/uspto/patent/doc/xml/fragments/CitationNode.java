@@ -19,6 +19,7 @@ import gov.uspto.patent.doc.xml.items.ClassificationIPCNode;
 import gov.uspto.patent.doc.xml.items.ClassificationNationalNode;
 import gov.uspto.patent.doc.xml.items.DocumentIdNode;
 import gov.uspto.patent.model.Citation;
+import gov.uspto.patent.model.Citation.CitedBy;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
@@ -82,12 +83,11 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 			// <category>cited by examiner</category>
 			Node categoryN = nplcit.getParent().selectSingleNode("category");
-			String categoryTxt = categoryN != null ? categoryN.getText() : "";
-			boolean examinerCited = (categoryTxt.equals("cited by examiner"));
+			CitedBy citedBy = getCitedBy(categoryN);
 
 			DocumentId docId = nplParseUSApp(citeTxt);
 
-			NplCitation citation = new NplCitation(num, citeTxt, examinerCited);
+			NplCitation citation = new NplCitation(num, citeTxt, citedBy);
 			if (docId != null) {
 				citation.setPatentId(docId);
 			}
@@ -158,10 +158,10 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			 */
 
 			// <category>cited by examiner</category>
-			Node category = patcit.getParent().selectSingleNode("category");
-			boolean examinerCited = (category.getText().equals("cited by examiner")); // else "cited by applicant"
+			Node categoryN = patcit.getParent().selectSingleNode("category");
+			CitedBy citedBy = getCitedBy(categoryN);
 
-			PatCitation citation = new PatCitation(num, documentId, examinerCited);
+			PatCitation citation = new PatCitation(num, documentId, citedBy);
 
 			PatentClassification mainClassNational = new ClassificationNationalNode(patcit.getParent()).read();
 			if (mainClassNational != null) {
@@ -182,5 +182,25 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		}
 
 		return patCitations;
+	}
+
+	private Citation.CitedBy getCitedBy(Node categoryN) {
+		String categoryTxt = categoryN != null ? categoryN.getText() : "";
+		Citation.CitedBy citedBy = null;
+		switch (categoryTxt) {
+		case "cited by examiner":
+			citedBy = CitedBy.EXAMINER;
+			break;
+		case "cited by applicant":
+			citedBy = CitedBy.APPLICANT;
+			break;
+		case "cited by third party":
+			citedBy = CitedBy.THIRD_PARTY;
+			break;
+		default:
+			citedBy = CitedBy.UNDEFINED;
+		}
+
+		return citedBy;
 	}
 }

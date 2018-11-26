@@ -329,7 +329,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
                 NplCitation nplCite = (NplCitation) cite;
 
             	jGenerator.writeStringField("type", "NPL");
-            	jGenerator.writeBooleanField("examinerCited", nplCite.isExaminerCited());
+            	jGenerator.writeStringField("citedBy", nplCite.getCitedBy().toString());
             	jGenerator.writeStringField("text", nplCite.getCiteText());
 
             	jGenerator.writeFieldName("extracted");
@@ -341,7 +341,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
             } else if (cite.getCitType() == CitationType.PATCIT) {
                 PatCitation patCite = (PatCitation) cite;
             	jGenerator.writeStringField("type", "PATENT");
-            	jGenerator.writeBooleanField("examinerCited", patCite.isExaminerCited());
+            	jGenerator.writeStringField("citedBy", patCite.getCitedBy().toString());
             	jGenerator.writeStringField("raw", patCite.getDocumentId().getRawText());
             	jGenerator.writeStringField("text", patCite.getDocumentId().toTextNoKind());
             	jGenerator.writeFieldName("classification");

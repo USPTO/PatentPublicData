@@ -486,10 +486,9 @@ public class JsonMapper implements DocumentBuilder<Patent> {
                 JsonObjectBuilder nplObj = Json.createObjectBuilder()
         		.add("num", nplCite.getNum())
         		.add("type", "NPL")
-                .add("citedBy", nplCite.getCitType().toString())
-                .add("examinerCited", nplCite.isExaminerCited())
+                .add("citedBy", nplCite.getCitedBy().toString())
                 .add("text", nplCite.getCiteText());
-                
+
                 JsonObjectBuilder extractedObj = Json.createObjectBuilder()
                 .add("quotedText", nplCite.getQuotedText())
                 .add("patentId", nplCite.getPatentId() != null ? nplCite.getPatentId().toText() : "");
@@ -502,8 +501,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
                 arBldr.add(Json.createObjectBuilder()
                 		.add("num", patCite.getNum())
                 		.add("type", "PATENT")
-                        .add("citedBy", patCite.getCitType().toString())
-                        .add("examinerCited", patCite.isExaminerCited())
+                        .add("citedBy", patCite.getCitedBy().toString())
                         .add("text", patCite.getDocumentId().toText()));
             }
         }

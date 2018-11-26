@@ -9,8 +9,8 @@ package gov.uspto.patent.model;
  * 
  * <p>
  * A reference to a document considered relevant to the examination of a patent
- * application. Citations may be made by the inventor/applicant, but most tend
- * to be made by the examiner.
+ * application. Citations may be made by the inventor/applicant/third-party, but
+ * most tend to be made by the examiner.
  * </p>
  * 
  * <p>
@@ -19,14 +19,22 @@ package gov.uspto.patent.model;
  */
 public abstract class Citation {
 
+	public enum CitedBy {
+		EXAMINER, // used in Patent XML and SGML.
+		APPLICANT, // only used in Patent XML.
+		THIRD_PARTY,  // only used in Patent XML.
+		UNDEFINED, // only used in Patent Greenbook, since not included.
+		OTHER //  only used in Patent SGML.
+	};
+
 	private final CitationType citeType;
 	private final String num;
-	private boolean examinerCited;
+	private final CitedBy citedBy;
 
-	public Citation(String num, CitationType citeType, boolean examinerCited) {
+	public Citation(String num, CitationType citeType, CitedBy citedBy) {
 		this.num = num;
 		this.citeType = citeType;
-		this.examinerCited = examinerCited;
+		this.citedBy = citedBy;
 	}
 
 	public String getNum() {
@@ -37,7 +45,19 @@ public abstract class Citation {
 		return citeType;
 	}
 
+	public CitedBy getCitedBy() {
+		return citedBy;
+	}
+
 	public boolean isExaminerCited() {
-		return examinerCited;
+		return citedBy == CitedBy.EXAMINER;
+	}
+
+	public boolean isApplicantCited() {
+		return citedBy == CitedBy.APPLICANT;
+	}
+
+	public boolean isThirdPartyCited() {
+		return citedBy == CitedBy.THIRD_PARTY;
 	}
 }

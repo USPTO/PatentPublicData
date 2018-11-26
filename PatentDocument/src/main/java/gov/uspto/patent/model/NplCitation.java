@@ -6,21 +6,24 @@ import java.util.regex.Pattern;
 /**
  * Non-Patent Literature (NPL)
  *
- *<ul> NPL can include a large variety of different citation types, for example:
- *  <li>Books</li>
- *  <li>Magazines</li>
- *  <li>Academic Journals</li>
- *  <li>Product Literature</li>
- *  <li>Websites: (Blogs, Social Media, Online Sale of Similar Product)</li>
- *  <li>Online Videos: (Youtube)</li>
- *</ul>
+ * <ul>
+ * NPL can include a large variety of different citation types, for example:
+ * <li>Books</li>
+ * <li>Magazines</li>
+ * <li>Academic Journals</li>
+ * <li>Product Literature</li>
+ * <li>Websites: (Blogs, Social Media, Online Sale of Similar Product)</li>
+ * <li>Online Videos: (Youtube)</li>
+ * </ul>
  *
- *<ul>
- * Note: Patent numbers occur within NPL, such as, but not limited, and may change, the following:
- * <li>Unpublished "Applications"</li> 
- * <li>Correspondence from US and foreign patent applications (office actions, search reports, ect)</li>
+ * <ul>
+ * Note: Patent numbers occur within NPL, such as, but not limited, and may
+ * change, the following:
+ * <li>Unpublished "Applications"</li>
+ * <li>Correspondence from US and foreign patent applications (office actions,
+ * search reports, ect)</li>
  * <li>Litigation involving the application</li>
- *</ul>
+ * </ul>
  *
  * @author Brian G. Feldman <brian.feldman@uspto>
  *
@@ -31,8 +34,8 @@ public class NplCitation extends Citation {
 	private String citeText; // raw cite text
 	private DocumentId patDocId; // Patent DocumentId parsed from raw text.
 
-	public NplCitation(String num, String citeText, boolean examinerCited) {
-		super(num, CitationType.NPLCIT, examinerCited);
+	public NplCitation(String num, String citeText, Citation.CitedBy citedBy) {
+		super(num, CitationType.NPLCIT, citedBy);
 		this.citeText = citeText;
 	}
 
@@ -85,6 +88,6 @@ public class NplCitation extends Citation {
 	@Override
 	public String toString() {
 		return "NplCitation [num=" + super.getNum() + ", citeText=" + citeText + ", quotedText()=" + getQuotedText()
-				+ " patentId=" + getPatentId() + ", examinerCited=" + super.isExaminerCited() + " ]";
+				+ " patentId=" + getPatentId() + ", citedBy=" + super.getCitedBy() + " ]";
 	}
 }
