@@ -180,4 +180,9 @@ public class CssBrs extends KvParser {
 		System.out.println(xmlDoc.asXML());
 	}
 
+	@Override
+	public Patent parse(Reader reader, Iterable<String> skipPaths) throws PatentReaderException {
+		throw new IllegalArgumentException("Function not currently used");
+	}
+
 }

@@ -10,5 +10,6 @@ import gov.uspto.patent.model.Patent;
 public interface Dom4j {
 	public Patent parse(Reader reader) throws PatentReaderException;
 	public Patent parse(Document document) throws PatentReaderException;
+	public Patent parse(Reader reader, Iterable<String> skipPaths) throws PatentReaderException;
 }
 

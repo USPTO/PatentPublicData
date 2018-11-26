@@ -2,6 +2,7 @@ package gov.uspto.patent.doc.greenbook;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -227,4 +228,8 @@ public class Greenbook extends KvParser {
 		}
 	}
 
+	@Override
+	public Patent parse(Reader reader, Iterable<String> skipPaths) throws PatentReaderException {
+		throw new IllegalArgumentException("Function not currently used");
+	}
 }

@@ -2,8 +2,12 @@ package gov.uspto.patent;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
@@ -22,6 +26,8 @@ import gov.uspto.patent.model.Patent;
  *
  */
 public class PatentReader implements PatentDocReader<Patent> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PatentReader.class);
+
 	private static final long DEFAULT_MAX_BYTES = 100000000; // about 100 MB.
 
 	private PatentDocFormat patentDocFormat;
@@ -47,7 +53,7 @@ public class PatentReader implements PatentDocReader<Patent> {
 		this.patentDocFormat = patentDocFormat;
 	}
 
-	public void setMaxByteSize(long maxByteSize){
+	public void setMaxByteSize(long maxByteSize) {
 		this.maxByteSize = maxByteSize;
 	}
 
@@ -62,9 +68,14 @@ public class PatentReader implements PatentDocReader<Patent> {
 	@Override
 	public Patent read(Reader reader) throws PatentReaderException, IOException {
 		Preconditions.checkNotNull(reader, "reader can not be Null");
+		Preconditions.checkNotNull(patentDocFormat, "patentDocFormat can not be Null");
 
-		if (!checkSize(reader)){
-			throw new PatentReaderException("Patent too Large");
+		if (!checkSize(reader)) {
+			return readLarge(reader);
+			//throw new PatentReaderException("Patent too Large");
+
+		} else if (FORMAT_PARSER.get(patentDocFormat) == null) {
+			throw new PatentReaderException("Detected Patent Type Not Defined" + patentDocFormat);
 		}
 
 		try {
@@ -74,10 +85,46 @@ public class PatentReader implements PatentDocReader<Patent> {
 		}
 	}
 
-	public boolean checkSize(Reader reader) throws IOException{
+	/**
+	 * Partially Read Large Patents
+	 *
+	 * <p>Drop the fields likely to contain the large content (the description 
+	 * and/or the claim fields).</p> 
+	 *
+	 * <p>Justification: Chemical Patents can contain large multiple page tables in the
+	 * claims, other Patents can have large Detailed Descriptions.</p>
+	 *
+	 * @param reader
+	 * @return Patent
+	 * @throws PatentReaderException
+	 */
+	public Patent readLarge(Reader reader) throws PatentReaderException {
+		LOGGER.warn("Patent size over threshold of '{}' bytes, Performing partial read of the large patent. "
+				+ "Skipping the description and claim fields.",	maxByteSize);
+		if (FORMAT_PARSER.get(patentDocFormat) == null) {
+			throw new PatentReaderException("Detected Patent Type Not Defined" + patentDocFormat);
+		}
+
+		String[] skipExactPaths = new String[] { 
+			"/us-patent-grant/description",
+			"/us-patent-grant/claims",
+			"/us-patent-application/description",
+			"/us-patent-application/claims",
+			"/PATDOC/SDODE", // Patent SGML Description
+			"/PATDOC/SDOCL" // Patent SGML Claims
+		};
+
+		try {
+			return FORMAT_PARSER.get(patentDocFormat).newInstance().parse(reader, Arrays.asList(skipExactPaths));
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new PatentReaderException(e);
+		}
+	}
+
+	public boolean checkSize(Reader reader) throws IOException {
 		int c;
 		long charCount = 0;
-		while ( -1 != (c = reader.read()) ){ 
+		while (-1 != (c = reader.read())) {
 			charCount++;
 		}
 		reader.reset();

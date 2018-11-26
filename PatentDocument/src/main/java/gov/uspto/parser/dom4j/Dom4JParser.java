@@ -6,10 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.ElementHandler;
+import org.dom4j.ElementPath;
 import org.dom4j.io.SAXReader;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.ParseSettings;
@@ -91,6 +95,61 @@ public abstract class Dom4JParser implements Dom4j {
 			} catch (IOException e1) {
 				throw new PatentReaderException(e1);
 			}
+		}
+	}
+
+	/**
+	 * Parse Reader (BufferedReader, CharArrayReader, FilterReader, InputStreamReader, PipedReader, StringReader)
+	 * 
+	 * @param reader
+	 * @param skipPaths, XPATH paths to skip when creating the document.
+	 * @return
+	 * @throws PatentReaderException
+	 */
+	public Patent parse(Reader reader, Iterable<String> skipPaths) throws PatentReaderException {
+		try {
+			return parse(readLarge(reader, skipPaths));
+		} catch (IOException e) {
+			throw new PatentReaderException(e);
+		}
+	}
+
+	/**
+	 * Read Large XML using SAX parser, purge xml nodes matching provided paths.
+	 * 
+	 * @param reader
+	 * @param skipExactPaths - Sax paths are literal and does not support xpath, wildcards or tree path transversal.
+	 * @return Document
+	 * @throws PatentReaderException
+	 * @throws IOException
+	 */
+	public Document readLarge(Reader reader, Iterable<String> skipExactPaths) throws PatentReaderException, IOException {
+
+		SAXReader sax = new SAXReader(false);
+
+		ElementHandler skipElementHandler = new ElementHandler() {
+			public void onStart(ElementPath path){ }
+			public void onEnd(ElementPath path) {
+				Element el = path.getCurrent();
+				Element parent = el.getParent();
+				parent.addElement(el.getName()).setText("Note: This field was truncated from the Large XML Document.");
+				//System.err.println("Large Field truncated '"+ el.getName() +"' which has content node(s) -> " + el.content().size());
+				el.detach();
+			}
+		};
+
+		for(String path: skipExactPaths) {
+			sax.addHandler( path, skipElementHandler);
+		}
+
+		try {
+			sax.setIncludeExternalDTDDeclarations(false);
+			sax.setEncoding("UTF-8");
+			//sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			return sax.read(reader);
+		} catch (DocumentException e) {
+			reader.reset();
+			return fixTagsJDOM(IOUtils.toString(reader));
 		}
 	}
 
