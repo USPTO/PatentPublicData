@@ -2,19 +2,21 @@ package gov.uspto.patent.model;
 
 /**
  * Citation
- * 
+ *
  * <p>
  * WIPO 3.14
  * </p>
- * 
+ *
  * <p>
  * A reference to a document considered relevant to the examination of a patent
- * application. Citations may be made by the inventor/applicant/third-party, but
- * most tend to be made by the examiner.
+ * application. Citations may be made by the applicant, examiner or by a
+ * third-party. The large majority are cited by the applicant, some by the
+ * examiner (around 15-17%), and a relatively small number by a third-party.
  * </p>
  * 
  * <p>
- * Examiner citations are generally more limiting in scope.
+ * Examiner and third-party citations have a tendency to be more limiting in
+ * scope.
  * </p>
  */
 public abstract class Citation {
@@ -22,9 +24,9 @@ public abstract class Citation {
 	public enum CitedBy {
 		EXAMINER, // used in Patent XML and SGML.
 		APPLICANT, // only used in Patent XML.
-		THIRD_PARTY,  // only used in Patent XML.
-		UNDEFINED, // only used in Patent Greenbook, since not included.
-		OTHER //  only used in Patent SGML.
+		THIRD_PARTY, // only used in Patent XML.
+		UNDEFINED, // only used in Patent Greenbook, since not available or defined.
+		OTHER // only used in Patent SGML.
 	};
 
 	private final CitationType citeType;
