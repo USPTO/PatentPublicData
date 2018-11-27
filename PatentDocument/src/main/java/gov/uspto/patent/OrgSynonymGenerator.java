@@ -478,6 +478,7 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("operations", new String[]{"Ops."});
 		WORD_TO_ABBREVS.put("department", new String[]{"Dept."});
 		WORD_TO_ABBREVS.put("development", new String[]{"Dev."});
+		WORD_TO_ABBREVS.put("developments", new String[]{"Dev."});
 		WORD_TO_ABBREVS.put("agricultural", new String[]{"Ag.", "Agri."});
 		WORD_TO_ABBREVS.put("communication", new String[]{"Com.", "COMM."});
 		WORD_TO_ABBREVS.put("communications", new String[]{"Com.", "Comm."});
@@ -511,18 +512,22 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("physics", new String[]{"Phys."});
 		WORD_TO_ABBREVS.put("medical", new String[]{"Med."});
 		WORD_TO_ABBREVS.put("medicinal", new String[]{"Med."});
-		WORD_TO_ABBREVS.put("Medicine", new String[]{"Med."});
+		WORD_TO_ABBREVS.put("medicine", new String[]{"Med."});
 		WORD_TO_ABBREVS.put("sciences", new String[]{"Sci."});
 		WORD_TO_ABBREVS.put("science", new String[]{"Sci."});
 		WORD_TO_ABBREVS.put("nutrition", new String[]{"Nutr."});
 		WORD_TO_ABBREVS.put("trust", new String[]{"TRU."});
-		WORD_TO_ABBREVS.put("laboratories", new String[]{"Labs."});
+		WORD_TO_ABBREVS.put("laboratories", new String[]{"Labs.", "Lab."});
+		WORD_TO_ABBREVS.put("laboratory", new String[]{"Lab."});
 		WORD_TO_ABBREVS.put("microelectronics", new String[]{"MT."});
 		WORD_TO_ABBREVS.put("neuroscience", new String[]{"Neurosci."});
 		WORD_TO_ABBREVS.put("microbiology", new String[]{"Microbio.", "Microbiol."});
 		WORD_TO_ABBREVS.put("geochemistry", new String[]{"Geochem."});
+		WORD_TO_ABBREVS.put("geometries", new String[]{"Geom."});
+		WORD_TO_ABBREVS.put("geometry", new String[]{"Geom."});
 		WORD_TO_ABBREVS.put("environmental", new String[]{"Environ."});
 		WORD_TO_ABBREVS.put("optics", new String[]{"Opt."});
+		WORD_TO_ABBREVS.put("optic", new String[]{"Opt."});
 		WORD_TO_ABBREVS.put("exploration", new String[]{"Explor.", "Expl."});
 		WORD_TO_ABBREVS.put("applied", new String[]{"Appl."});
 		WORD_TO_ABBREVS.put("toxicology", new String[]{"Toxicol."});
@@ -542,6 +547,8 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("patent", new String[]{"Pat."});
 		WORD_TO_ABBREVS.put("trademark", new String[]{"TM."});
 		WORD_TO_ABBREVS.put("telephone", new String[]{"phone"});
+		WORD_TO_ABBREVS.put("distribution", new String[]{"Dist."});
+		WORD_TO_ABBREVS.put("alliance", new String[]{"AAC"});
 	}
 
 	/**
