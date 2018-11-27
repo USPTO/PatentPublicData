@@ -6,9 +6,14 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -20,6 +25,7 @@ import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.Claim;
+import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DescriptionSection;
 import gov.uspto.patent.model.DocumentDate;
@@ -76,18 +82,23 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	writeDateObj("publishedDate", patent.getDatePublished());
 
     	jGenerator.writeStringField("documentId", patent.getDocumentId() != null ? patent.getDocumentId().toText() : ""); // Patent ID or Public Application ID.
+    	writeDocTokens("documentId_tokens", patent.getDocumentId());
     	writeDateObj("documentDate", patent.getDocumentDate());
 
     	jGenerator.writeStringField("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
+    	writeDocTokens("applicationId_tokens", patent.getApplicationId());
     	writeDateObj("applicationDate", patent.getApplicationDate());
-    	
+
     	writeDocArray("priorityIds", patent.getPriorityIds(), true);
+    	writeDocTokens("priorityIds_tokens", patent.getPriorityIds());
 
     	writeDocArray("relatedIds", patent.getRelationIds(), false);
+    	writeDocTokens("relatedIds_tokens", patent.getRelationIds());
 
         // OtherIds contain [documentId, applicationId, relatedIds]
     	writeDocArray("otherIds", patent.getOtherIds(), false);
-   	
+    	writeDocTokens("otherIds_tokens", patent.getOtherIds());
+
     	writeEntity("agent", patent.getAgent());
     	writeEntity("applicant", patent.getApplicants());
 
@@ -97,15 +108,17 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
     	jGenerator.writeStringField("title", valueOrEmpty(patent.getTitle()));
 
-    	writeAbstract(patent.getAbstract());
-    	
-    	writeDescription(patent.getDescription());
-        
-        writeClaims(patent.getClaims());
+    	writeAbstract("abstract", patent.getAbstract());
 
-        writeCitations(patent.getCitations());
+    	writeDescription("description", patent.getDescription());
 
-        writeClassifications(patent.getClassification());
+        writeClaims("claims", patent.getClaims());
+
+        writeCitations("citations", patent.getCitations());
+
+        writeClassifications("classification", patent.getClassification());
+
+        writeClassifications("search_classification", patent.getSearchClassification());
 
     	jGenerator.writeEndObject(); // root.
 
@@ -140,11 +153,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         jGenerator.writeEndObject();
     }
 
-    private void writeDocArray(String fieldName, Collection<DocumentId> docIds, boolean withDate) throws IOException {
-    	if (docIds.isEmpty()) {
-    		return;
-    	}
-  
+    private void writeDocArray(String fieldName, Iterable<DocumentId> docIds, boolean withDate) throws IOException {  
     	jGenerator.writeFieldName(fieldName);
     	jGenerator.writeStartArray();
    
@@ -163,6 +172,69 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
  
         jGenerator.writeEndArray();
     }
+
+	private void writeDocTokens(String fieldName, Iterable<DocumentId> docIds) throws IOException {
+		Set<String> idTokens = new LinkedHashSet<String>();
+
+		for(DocumentId docId : docIds) {
+			if (docId != null) {
+				idTokens.addAll(getDocIdTokens(docId));
+			}
+		}
+
+    	jGenerator.writeFieldName(fieldName);
+    	jGenerator.writeStartArray();
+   
+        for (String docid : idTokens) {
+       		if (docid != null) {
+       			jGenerator.writeString(docid);
+        	}
+        }
+ 
+        jGenerator.writeEndArray();
+	}
+	
+	private void writeDocTokens(String fieldName, DocumentId docId) throws IOException {
+		Set<String> idTokens = new LinkedHashSet<String>();
+		if (docId != null) {
+			idTokens.addAll(getDocIdTokens(docId));
+		}
+
+    	jGenerator.writeFieldName(fieldName);
+    	jGenerator.writeStartArray();
+   
+        for (String docid : idTokens) {
+       		if (docid != null) {
+       			jGenerator.writeString(docid);
+        	}
+        }
+ 
+        jGenerator.writeEndArray();
+	}
+
+	/**
+	 * Doc Id Variations Tokens
+	 * 
+	 * [CountryCode+Number+KindCode, CountryCode+Number, NUMBER, OriginalRaw]
+	 *
+	 * @param docId
+	 * @return
+	 * @throws IOException 
+	 */
+	private Set<String> getDocIdTokens(DocumentId docId) {
+		Set<String> idTokens = new LinkedHashSet<String>();
+		if (docId != null) {
+			idTokens.add(docId.toText()); // full normalized.
+			idTokens.add(docId.getCountryCode() + docId.getDocNumber()); // without Kindcode.
+			//idTokens.add(docId.getRawText());
+
+			if (docId.getCountryCode() == CountryCode.US) {
+				// within corpus of US Patents don't need US country code prefix. examiners and others prefer to search without it.
+				idTokens.add(docId.getDocNumber()); 
+			}
+		}
+		return idTokens;
+	}
 
     /**
      * JsonObjects can not set a null value so return empty string.
@@ -267,8 +339,8 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         }
     }
 
-    private void writeAbstract(Abstract abstractObj) throws IOException {
-    	jGenerator.writeFieldName("Abstract");
+    private void writeAbstract(String fieldName, Abstract abstractObj) throws IOException {
+    	jGenerator.writeFieldName(fieldName);
         jGenerator.writeStartObject();
  
         if (abstractObj != null){
@@ -285,8 +357,8 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	jGenerator.writeEndObject();
     }
 
-    private void writeClaims(Collection<Claim> claimList) throws IOException {
-    	jGenerator.writeFieldName("claims");
+    private void writeClaims(String fieldName, Collection<Claim> claimList) throws IOException {
+    	jGenerator.writeFieldName(fieldName);
     	jGenerator.writeStartArray();
 
         for (Claim claim : claimList) {
@@ -317,10 +389,11 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         jGenerator.writeEndArray();
     }    
     
-    private void writeCitations(Collection<Citation> CitationList) throws IOException {
-    	jGenerator.writeFieldName("citations");
+    private void writeCitations(String fieldName, Collection<Citation> CitationList) throws IOException {
+    	jGenerator.writeFieldName(fieldName);
     	jGenerator.writeStartArray();
 
+    	Set<DocumentId> docIds = new LinkedHashSet<DocumentId>();
         for (Citation cite : CitationList) {
             jGenerator.writeStartObject(); // start cited            
         	jGenerator.writeStringField("num", cite.getNum());
@@ -336,10 +409,12 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
                 jGenerator.writeStartObject();
             	jGenerator.writeStringField("quotedText", nplCite.getQuotedText());
             	jGenerator.writeStringField("patentId", nplCite.getPatentId() != null ? nplCite.getPatentId().toText() : "");
+            	docIds.add(nplCite.getPatentId());
             	jGenerator.writeEndObject(); // end extracted.
 
             } else if (cite.getCitType() == CitationType.PATCIT) {
                 PatCitation patCite = (PatCitation) cite;
+                docIds.add(patCite.getDocumentId());
             	jGenerator.writeStringField("type", "PATENT");
             	jGenerator.writeStringField("citedBy", patCite.getCitedBy().toString());
             	jGenerator.writeStringField("raw", patCite.getDocumentId().getRawText());
@@ -356,10 +431,20 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         }
 
     	jGenerator.writeEndArray(); // end citation array
+
+    	jGenerator.writeFieldName(fieldName + "_patent_tokens");
+    	jGenerator.writeStartArray();
+    	for(DocumentId docId: docIds) {
+    		for(String token : getDocIdTokens(docId)) {
+    			jGenerator.writeString(token);
+    		}
+    	}
+    	jGenerator.writeEndArray(); // end citation tokens array
+ 
     }
 
-    private void writeDescription(Description patentDescription) throws IOException {
-    	jGenerator.writeFieldName("description");
+    private void writeDescription(String fieldName, Description patentDescription) throws IOException {
+    	jGenerator.writeFieldName(fieldName);
     	jGenerator.writeStartObject();
 
     	jGenerator.writeStringField("full_raw", patentDescription.getAllRawText());
@@ -385,8 +470,8 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		}
 	}
 
-    private void writeClassifications(Collection<PatentClassification> classes) throws IOException {
-    	jGenerator.writeFieldName("classification");
+    private void writeClassifications(String fieldName, Collection<PatentClassification> classes) throws IOException {
+    	jGenerator.writeFieldName(fieldName);
     	jGenerator.writeStartObject();
 
     	writeUspcClassification(classes);

@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
 import gov.uspto.patent.model.Claim;
+import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DescSection;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DescriptionSection;
@@ -89,17 +91,23 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("publishedDate", mapDate(patent.getDatePublished()));
 
         builder.add("documentId", patent.getDocumentId() != null ? patent.getDocumentId().toText() : ""); // Patent ID or Public Application ID.
+        builder.add("documentId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
+        
         builder.add("documentDate", mapDate(patent.getDocumentDate()));
 
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
+        builder.add("applicationId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
         builder.add("applicationDate", mapDate(patent.getApplicationDate()));
 
         builder.add("priorityIds", mapDocumentIds(patent.getPriorityIds()));
-
+        builder.add("priorityIds_tokens", mapDocumentIdVariations(patent.getPriorityIds()));
+        
         builder.add("relatedIds", mapDocIds(patent.getRelationIds()));
+        builder.add("relatedIds_tokens", mapDocumentIdVariations(patent.getRelationIds()));
 
         // OtherIds contain [documentId, applicationId, relatedIds]
         builder.add("otherIds", mapDocIds(patent.getOtherIds()));
+        builder.add("otherIds_tokens", mapDocumentIdVariations(patent.getOtherIds()));
 
         builder.add("agent", mapAgent(patent.getAgent()));
         builder.add("applicant", mapApplicant(patent.getApplicants()));
@@ -116,6 +124,8 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("citations", mapCitations(patent.getCitations()));
 
         builder.add("classification", mapClassifications(patent.getClassification()));
+        
+        builder.add("search_classification", mapClassifications(patent.getSearchClassification()));
 
         return builder.build();
     }
@@ -134,6 +144,57 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         }
 
         return output;
+    }
+
+	/**
+	 * Doc Id Variations Tokens
+	 * 
+	 * [CountryCode+Number+KindCode, CountryCode+Number, NUMBER, OriginalRaw]
+	 *
+	 * @param docId
+	 * @return
+	 * @throws IOException 
+	 */
+	private Set<String> getDocIdTokens(DocumentId docId) {
+		Set<String> idTokens = new LinkedHashSet<String>();
+		if (docId != null) {
+			idTokens.add(docId.toText()); // full normalized.
+			idTokens.add(docId.getCountryCode() + docId.getDocNumber()); // without Kindcode.
+			//idTokens.add(docId.getRawText());
+
+			if (docId.getCountryCode() == CountryCode.US) {
+				// within corpus of US Patents don't need US country code prefix. examiners and others prefer to search without it.
+				idTokens.add(docId.getDocNumber()); 
+			}
+		}
+		return idTokens;
+	}
+    
+    private JsonArray mapDocumentIdVariations(Collection<DocumentId> docIds) {
+    	
+    	Set<String> docIdVariations = new LinkedHashSet<String>();
+    	for(DocumentId docId : docIds) {
+    		docIdVariations.addAll(getDocIdTokens(docId));
+    	}
+    	    	
+        JsonArrayBuilder arBldr = Json.createArrayBuilder();
+       
+        for (String docid : docIdVariations) {
+            arBldr.add(docid);
+        }
+
+        return arBldr.build();
+    }
+	
+    private JsonArray mapDocumentIdVariations(DocumentId docId) {
+        JsonArrayBuilder arBldr = Json.createArrayBuilder();
+        Set<String> docIds = getDocIdTokens(docId);
+        
+        for (String docid : docIds) {
+            arBldr.add(docid);
+        }
+
+        return arBldr.build();
     }
 
     private JsonArray mapDocumentIds(Collection<DocumentId> docIds) {
