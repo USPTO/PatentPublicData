@@ -112,7 +112,7 @@ public class GrantParser extends Dom4JParser {
 
         List<Citation> citations = new CitationNode(document).read();
         Set<PatentClassification> classifications = new ClassificationNode(document).read();
-        //Set<Classification> searchClassifications = new ClassificationSearchNode(document).read(); // TODO integrate search classifications.
+        Set<PatentClassification> searchClassifications = new ClassificationSearchNode(document).read();
 
         /*
          * Formated Text
@@ -171,6 +171,7 @@ public class GrantParser extends Dom4JParser {
 
         patent.setClaim(claims);
         patent.setClassification(classifications);
+        patent.setSearchClassification(searchClassifications);
 
         LOGGER.trace(patent.toString());
 
