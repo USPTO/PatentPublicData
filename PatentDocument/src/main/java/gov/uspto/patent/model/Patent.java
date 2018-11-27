@@ -35,7 +35,6 @@ import gov.uspto.patent.model.entity.MathFormula;
  * The original public patent and application bulk dumps are not updated once
  * they are created and made public. Updates are made available within
  * additional dump files listed above.
- *
  */
 public abstract class Patent {
 
@@ -55,6 +54,7 @@ public abstract class Patent {
 
 	private List<Citation> citations = new ArrayList<Citation>();
 	private Set<PatentClassification> classifications = new HashSet<PatentClassification>();
+	private Set<PatentClassification> searchClassifications = new HashSet<PatentClassification>();
 	private List<Claim> claims = new ArrayList<Claim>();
 
 	private List<Inventor> inventors = new ArrayList<Inventor>();
@@ -196,6 +196,22 @@ public abstract class Patent {
 	public void addClassification(PatentClassification classification) {
 		if (classification != null) {
 			classifications.add(classification);
+		}
+	}
+
+	public Set<PatentClassification> getSearchClassification() {
+		return searchClassifications;
+	}
+
+	public void setSearchClassification(Iterable<PatentClassification> classifications) {
+		for (PatentClassification clazz : classifications) {
+			addSearchClassification(clazz);
+		}
+	}
+
+	public void addSearchClassification(PatentClassification classification) {
+		if (classification != null) {
+			searchClassifications.add(classification);
 		}
 	}
 
