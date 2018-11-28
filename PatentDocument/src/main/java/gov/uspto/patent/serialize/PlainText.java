@@ -256,6 +256,13 @@ public class PlainText implements DocumentBuilder<Patent> {
 		};
 		methods.put("classification", writeClasses);
 
+		WriteFieldMethod writeSearchClasses = new WriteFieldMethod() {
+			public void invoke(Patent patent, Writer writer) throws IOException {
+				PlainText.writeClassifications(patent.getSearchClassification(), writer);
+			}
+		};
+		methods.put("search_classification", writeSearchClasses);
+
 		WriteFieldMethod writeTitle = new WriteFieldMethod() {
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				writer.write(patent.getTitle());
