@@ -41,7 +41,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
             }
         }
 
-        List<Node> cpc = document.selectNodes(CPC_PATH + "/main-cpc");
+        List<Node> cpc = document.selectNodes(CPC_PATH + "/main-cpc/classification-cpc");
         for (Node cpclass : cpc) {
             CpcClassification classification = (CpcClassification) new ClassificationCpcNode(cpclass).read();
             if (classification != null) {
@@ -50,7 +50,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
             }
         }
 
-        List<Node> cpc2 = document.selectNodes(CPC_PATH + "/further-cpc");
+        List<Node> cpc2 = document.selectNodes(CPC_PATH + "/further-cpc/classification-cpc");
         for (Node cpclass : cpc2) {
             CpcClassification classification = (CpcClassification) new ClassificationCpcNode(cpclass).read();
             if (classification != null) {
