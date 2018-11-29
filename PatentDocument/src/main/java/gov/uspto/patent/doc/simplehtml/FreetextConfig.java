@@ -22,18 +22,24 @@ public class FreetextConfig {
 	private Collection<HtmlFieldType> removeTypes = new HashSet<HtmlFieldType>();
 	private boolean wrapText = false;
 	private int wrapWidth = 0;
-	private final Boolean prettyPrint;
+	private final boolean prettyPrint;
+	private final boolean indentParagraphs;
 
 	/**
 	 * 
 	 * @param prettyPrint -- print newlines, else print commented-out newlines.
 	 */
-	public FreetextConfig(Boolean prettyPrint) {
+	public FreetextConfig(boolean prettyPrint, boolean indentParagraphs) {
 		this.prettyPrint = prettyPrint;
+		this.indentParagraphs = indentParagraphs;
 	}
 
-	public Boolean isPrettyPrint() {
-		return this.prettyPrint;
+	public boolean isPrettyPrint() {
+		return prettyPrint;
+	}
+
+	public boolean isIndentParagraphs() {
+		return indentParagraphs;
 	}
 
 	/**
@@ -64,8 +70,22 @@ public class FreetextConfig {
 	}
 
 	/**
-	 * Replace XML/HTML Element with Text
+	 * Replace entire XML/HTML Element with Text
 	 * 
+	 * <p>
+	 * <code>
+	 *  Example, when calling replace("figref"): 
+	 *  <p>
+	 *  &lt;figref&gt;Fig 1.&lt;figref&gt;  become  PATENT-FIGURE
+	 *  </p>
+	 * </code>
+	 * <p>
+	 *
+	 * <p>
+	 * Use Case: Within an search index "Fig 10B." is not very useful and
+	 * PATENT-FIGURE is easily ignored. This may also enhance number searches.
+	 * </p>
+	 *
 	 * @param replacements
 	 * @return
 	 */
@@ -143,7 +163,9 @@ public class FreetextConfig {
 	 * Default Configuration
 	 *
 	 * <ul>
-	 * <li>Pretty Print true, newlines between sections</li>
+	 * <li>Pretty Print "true", output has newlines ; "false" has commented newline
+	 * characters</li>
+	 * <li>remove ERROR_ANNOTATED html5 fields: [Del,S,Strike]</li>
 	 * <li>remove CROSSREF field</li>
 	 * <li>replace FIGREF field with "Patent-Figure" text</li>
 	 * <li>replace CLAIMREF field with "Patent-Claim"</li>
@@ -155,8 +177,8 @@ public class FreetextConfig {
 	 * @return FreetextConfig
 	 */
 	public static FreetextConfig getDefault() {
-		FreetextConfig config = new FreetextConfig(true);
-
+		FreetextConfig config = new FreetextConfig(true, true);
+		config.remove(HtmlFieldType.ERROR_ANNOTATED);
 		config.remove(HtmlFieldType.CROSSREF);
 
 		config.replace(HtmlFieldType.FIGREF, "Patent-Figure");

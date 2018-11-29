@@ -42,12 +42,21 @@ public class PlainText implements DocumentBuilder<Patent> {
 	private static Map<String, WriteFieldMethod> METHODS;
 	static {
 		METHODS = PlainText.setup();
-		TEXTCONFIG = new FreetextConfig(false);
+		TEXTCONFIG = new FreetextConfig(false, true);
+		TEXTCONFIG.remove("del");
 	}
 
-	private final boolean prettyPrint;
+	// private final boolean prettyPrint;
 	private final String[] wantedFieldNames;
-	
+
+	public PlainText(FreetextConfig config) {
+		this(config, new String[] {});
+	}
+
+	public PlainText(FreetextConfig config, String... wantedFieldNames) {
+		TEXTCONFIG = config;
+		this.wantedFieldNames = wantedFieldNames;
+	}
 
 	public PlainText(Boolean prettyPrint) {
 		this(prettyPrint, new String[] {});
@@ -59,9 +68,8 @@ public class PlainText implements DocumentBuilder<Patent> {
 	 * @param wantedFieldNames
 	 */
 	public PlainText(Boolean prettyPrint, String... wantedFieldNames) {
-		this.prettyPrint = prettyPrint;
 		this.wantedFieldNames = wantedFieldNames;
-		TEXTCONFIG = new FreetextConfig(prettyPrint);
+		TEXTCONFIG = new FreetextConfig(prettyPrint, false);
 	}
 
 	@Override
@@ -92,7 +100,7 @@ public class PlainText implements DocumentBuilder<Patent> {
 
 		METHODS.get(fieldName.toLowerCase()).invoke(patent, writer);
 
-		if (prettyPrint) {
+		if (TEXTCONFIG.isPrettyPrint()) {
 			writer.write("\n");
 		} else {
 			writer.write("\\n");
@@ -272,7 +280,7 @@ public class PlainText implements DocumentBuilder<Patent> {
 
 		WriteFieldMethod writeAbstract = new WriteFieldMethod() { // TODO check abstract field
 			public void invoke(Patent patent, Writer writer) throws IOException {
-				//writer.write(patent.getAbstract().getRawText());
+				// writer.write(patent.getAbstract().getRawText());
 				writer.write(patent.getAbstract().getPlainText(TEXTCONFIG));
 			}
 		};
@@ -281,7 +289,7 @@ public class PlainText implements DocumentBuilder<Patent> {
 		WriteFieldMethod writeDescription = new WriteFieldMethod() { // TODO check description field
 			public void invoke(Patent patent, Writer writer) throws IOException {
 				writer.write(patent.getDescription().getAllPlainText(TEXTCONFIG));
-				//writer.write(patent.getDescription().getAllRawText());
+				// writer.write(patent.getDescription().getAllRawText());
 			}
 		};
 		methods.put("description", writeDescription);
@@ -296,7 +304,7 @@ public class PlainText implements DocumentBuilder<Patent> {
 					writer.write(claim.getClaimType().toString());
 					writer.write(" ");
 					writer.write(claim.getPlainText(TEXTCONFIG));
-					//writer.write(claim.getRawText());
+					// writer.write(claim.getRawText());
 					if (i != claims.size() - 1) {
 						writer.write(LIST_ITEM_SEPERATOR);
 					}

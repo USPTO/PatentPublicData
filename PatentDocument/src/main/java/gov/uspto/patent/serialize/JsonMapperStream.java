@@ -57,6 +57,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
     private JsonGenerator jGenerator;
 	private JsonFactory jfactory = new JsonFactory();
+
 	private final boolean pretty;
 
     public JsonMapperStream(boolean pretty) {
@@ -366,7 +367,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         	jGenerator.writeStringField("id", claim.getId());
         	jGenerator.writeStringField("type", claim.getClaimType().toString());
         	jGenerator.writeStringField("raw",  claim.getRawText());
-        	jGenerator.writeStringField("raw",  claim.getSimpleHtml());
+        	jGenerator.writeStringField("normalized",  claim.getSimpleHtml());
         	jGenerator.writeStringField("plain",  claim.getPlainText());
            
         	jGenerator.writeFieldName("claimTree");

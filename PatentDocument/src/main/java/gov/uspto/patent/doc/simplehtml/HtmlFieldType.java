@@ -10,7 +10,10 @@ public enum HtmlFieldType {
 	CLAIMREF("a[class=claim-ref]"),
 	PATCITE("a[class=patcite]"),
 	NPLCITE("a[class=nplcite]"),
-	CROSSREF("a[class=crossref]");
+	CROSSREF("a[class=crossref]"),
+
+	ERROR_ANNOTATED("del", "s", "strike"),
+	FORMATED("i", "b", "bold", "em", "strong", "strike", "s", "u", "small", "smallcaps");
 
 	private String[] nodeNames;
 

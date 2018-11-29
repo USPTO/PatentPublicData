@@ -16,6 +16,9 @@ import org.jsoup.select.NodeVisitor;
  * 
  * <h3>Changes</h3>
  * <ul>
+ * <li>Added text shorthand "_" for SUB and "^" for SUP</li>
+ * <li>Added optional Paragraph indenting</li>
+ * <li>Added block indenting (blockquote,ul,ol,dl)</li>
  * <li>Added FreetextConfig</li>
  * <li>Added PrettyPrint - when false, created newlines are commented out</li>
  * <li>Copied traverse method and added ability to Filter and Replace Nodes
@@ -30,6 +33,7 @@ public class HtmlToPlainText implements NodeVisitor {
 	private int width = 0;
 	private StringBuilder accum = new StringBuilder();
 	private final FreetextConfig config;
+	private boolean insideIndentBlock = false;
 
 	public HtmlToPlainText(FreetextConfig config) {
 		this.maxWidth = config.getWrapWidth() != 0 ? config.getWrapWidth() : MAX_WIDTH_DEFAULT;
@@ -116,28 +120,77 @@ public class HtmlToPlainText implements NodeVisitor {
 			}
 		} else if (name.equals("dt")) {
 			append("  ");
-		} else if (StringUtil.in(name, "p", "h1", "h2", "h3", "h4", "h5", "tr", "table")) {
+		} else if (StringUtil.in(name, "blockquote", "ul", "ol", "dl")) {
+			insideIndentBlock = true;
 			if (config.isPrettyPrint()) {
 				append("\n");
 			} else {
 				append("\\n");
 			}
+		} else if (name.equals("q")) {
+			append("\u201C"); // open quote.
+		} else if (name.equals("p")) {
+			if (config.isPrettyPrint()) {
+				if (config.isIndentParagraphs()) {
+					append("\n\t");
+				} else {
+					append("\n");
+				}
+			} else {
+				if (config.isIndentParagraphs()) {
+					append("\\n\t");
+				} else {
+					append("\\n");
+				}
+			}
+		} else if (StringUtil.in(name, "h1", "h2", "h3", "h4", "h5", "h6", "tr", "table")) {
+			if (config.isPrettyPrint()) {
+				append("\n");
+			} else {
+				append("\\n");
+			}
+		} else if (name.equals("sup")) {
+			append("^{"); // Math superscript TeX block
+		} else if (name.equals("sub")) {
+			append("_{"); // Math subscript TeX block
 		}
 	}
 
 	public void tail(Node node, int depth) {
 		String name = node.nodeName();
 
-		if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5", "table")) {
+		if (name.equals("q")) {
+			append("\u201d"); // close quote.
+		} else if (StringUtil.in(name, "blockquote", "ul", "ol", "dl")) {
+			insideIndentBlock = false;
+		} else if (StringUtil.in(name, "br", "dd", "dt", "p", "h1", "h2", "h3", "h4", "h5", "h6", "table")) {
 			if (config.isPrettyPrint()) {
 				append("\n");
 			} else {
 				append("\\n");
 			}
+		} else if (StringUtil.in(name, "sup", "sub")) {
+			append("}"); // Math close superscript or subscript block
 		}
 	}
 
 	private void append(String text) {
+		append(text, insideIndentBlock);
+	}
+
+	private void append(String text, boolean tabIndentBlock) {
+		if (StringUtil.in(text, "\n", "\\n", "\n\t", "\\n\t")) {
+			accum.append(text);
+			return;
+		}
+
+		int maxWidth = this.maxWidth;
+		int indentLen = 0;
+		if (tabIndentBlock) {
+			indentLen = "\t".length();
+			maxWidth -= indentLen;
+		}
+
 		if (text.startsWith("\n")) {
 			width = 0;
 		}
@@ -157,20 +210,29 @@ public class HtmlToPlainText implements NodeVisitor {
 				}
 				if (word.length() + width > maxWidth) {
 					if (config.isPrettyPrint()) {
-						accum.append("\n");
+						accum.append('\n');
 					} else {
 						accum.append("\\n");
 					}
+					if (tabIndentBlock) {
+						accum.append('\t');
+					}
 					accum.append(word);
-					width = word.length();
+					width = word.length() + indentLen;
 				} else {
+					if (tabIndentBlock) {
+						accum.append('\t');
+					}
 					accum.append(word);
-					width += word.length();
+					width += word.length() + indentLen;
 				}
 			}
 		} else {
+			if (tabIndentBlock) {
+				accum.append('\t');
+			}
 			accum.append(text);
-			width += text.length();
+			width += text.length() + indentLen;
 		}
 	}
 

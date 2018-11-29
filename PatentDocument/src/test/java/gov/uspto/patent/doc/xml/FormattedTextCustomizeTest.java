@@ -47,7 +47,7 @@ public class FormattedTextCustomizeTest {
         expectStb.append("  math(mrow(mrow(msup(mi(x)mn(2))mo(+)mrow(mn(4)mo(+)mi(x))mo(+)mn(4))mo(=)mn(0)))  \n");
         String expect = expectStb.toString();
 
-        String actual = format.getPlainText(stb.toString(), new FreetextConfig(true));
+        String actual = format.getPlainText(stb.toString(), new FreetextConfig(true, false));
         //assertEquals(expect, actual);
     }
 
@@ -64,7 +64,7 @@ public class FormattedTextCustomizeTest {
 
         String expect = "\nSECTION TITLE\n\n";
 
-        FreetextConfig textConfig = new FreetextConfig(true);
+        FreetextConfig textConfig = new FreetextConfig(true, false);
         textConfig.remove(HtmlFieldType.MATHML);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
@@ -81,7 +81,7 @@ public class FormattedTextCustomizeTest {
 
         String expect = "\nSection Text here\n";
 
-        FreetextConfig textConfig = new FreetextConfig(true);
+        FreetextConfig textConfig = new FreetextConfig(true, false);
         textConfig.remove(HtmlFieldType.HEADER);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
@@ -100,7 +100,7 @@ public class FormattedTextCustomizeTest {
         expectStb.append("\nSECTION TITLE\n\n\n\n");
         String expect = expectStb.toString();
 
-        FreetextConfig textConfig = new FreetextConfig(true);
+        FreetextConfig textConfig = new FreetextConfig(true, false);
         textConfig.remove(HtmlFieldType.TABLE);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
@@ -119,7 +119,7 @@ public class FormattedTextCustomizeTest {
 
         String expect = "\\nSECTION TITLE\\n\\n\\ntext\\n\\n\\n\\n";
 
-        FreetextConfig textConfig = new FreetextConfig(prettyPrint);
+        FreetextConfig textConfig = new FreetextConfig(prettyPrint, false);
 
         String actual = format.getPlainText(stb.toString(), textConfig);
         assertEquals(expect, actual);
@@ -138,7 +138,7 @@ public class FormattedTextCustomizeTest {
 
         String expect = "\nFIG-REF\n";
 
-        FreetextConfig textConfig = new FreetextConfig(prettyPrint);
+        FreetextConfig textConfig = new FreetextConfig(prettyPrint, false);
         textConfig.replace(HtmlFieldType.FIGREF, "FIG-REF");
 
         String actual = format.getPlainText(stb.toString(), textConfig);

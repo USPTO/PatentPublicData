@@ -45,7 +45,7 @@ public class FormattedText implements TextProcessor {
 
 	private static final String[] HTML_WHITELIST_TAGS = new String[] { "br", "b", "sub", "sup", "h1", "h2", "h3", "h4",
 			"h5", "h6", "p", "table", "tbody", "thead", "th", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a",
-			"span", "colgroup", "col", "del", "ins" };
+			"span", "colgroup", "col", "del", "ins", "q" };
 	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "idref", "num", "format",
 			"type", "level", "width", "align", "valign", "rowspan" };
 
@@ -73,6 +73,9 @@ public class FormattedText implements TextProcessor {
 				"<in-line-formula>");
 		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"end\"\\?>",
 				"</in-line-formula>");
+
+		rawText = rawText.replaceAll("“", "<q>");
+		rawText = rawText.replaceAll("”", "</q>");
 
 		// Change xml processing instruction "delete" to normal xml tag "del"
 		rawText = rawText.replaceAll("<\\?delete-start [^?>]+\\?>", "<del>");
