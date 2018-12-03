@@ -43,10 +43,10 @@ public class FormattedText implements TextProcessor {
 
 	private static final Pattern TRAILING_REGEX = Pattern.compile("^\\s?(?:[.,;(])?([a-z])([.,;)]|\\b)");
 
-	private static final String[] HTML_WHITELIST_TAGS = new String[] { "br", "b", "sub", "sup", "h1", "h2", "h3", "h4",
+	private static final String[] HTML_WHITELIST_TAGS = new String[] { "br", "b", "sub", "sup", "sup2", "sub2", "h1", "h2", "h3", "h4",
 			"h5", "h6", "p", "table", "tbody", "thead", "th", "tr", "td", "ul", "ol", "li", "dl", "dt", "dd", "a",
-			"span", "colgroup", "col", "del", "ins", "q" };
-	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "class", "id", "idref", "num", "format",
+			"span", "colgroup", "col", "del", "ins", "q", "smallcaps", "o", "u" };
+	private static final String[] HTML_WHITELIST_ATTRIB = new String[] { "style", "class", "id", "idref", "num", "format",
 			"type", "level", "width", "align", "valign", "rowspan" };
 
 	public static final ImmutableSet<String> HEADER_ELEMENTS = ImmutableSet.of("heading", "p[id^=h-]");
@@ -91,6 +91,17 @@ public class FormattedText implements TextProcessor {
 
 		document.select("bold").tagName("b");
 
+		/*
+		 * Overscore/Overline
+		 */
+		for (Element el : document.select("o")) {
+			if (el.hasAttr("ostyle")) {
+				el.attr("class", el.attr("ostyle"));
+			} else {
+				el.attr("class", el.attr("single"));
+			}
+		}
+		
 		Elements forEls = document.select("in-line-formula");
 		for (int i = 1; i <= forEls.size(); i++) {
 			Element element = forEls.get(i - 1);
@@ -230,13 +241,27 @@ public class FormattedText implements TextProcessor {
 			}
 		}
 
-		// document.select("sub2").prepend("_");
-		// document.select("sup2").prepend("^");
-
 		/*
 		 * List
 		 */
-		document.select("ol").tagName("ul");
+		for (Element el : document.select("ul")) {
+			if (el.hasAttr("list-style")) {
+				if (el.attr("list-style").equals("none")) {
+					el.attr("style", "list-style-type:none");
+				}
+				else if (el.attr("list-style").equals("bullet")) {
+					el.attr("style", "list-style-type:disc");
+				}
+				else if (el.attr("list-style").equals("dash")) {
+					el.attr("class", "ul-dash");
+				}
+			}
+		}
+
+		for (Element el : document.select("ol")) {
+			String type = el.hasAttr("style") ? el.attr("style") : el.attr("ol-style");
+			el.attr("type", type);
+		}
 
 		/*
 		 * Tables: Convert CALS Table to HTML Table

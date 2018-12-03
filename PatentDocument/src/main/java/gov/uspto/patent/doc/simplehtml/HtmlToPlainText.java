@@ -16,6 +16,7 @@ import org.jsoup.select.NodeVisitor;
  * 
  * <h3>Changes</h3>
  * <ul>
+ * <li>Added ul list decorator from list-style-type or class</li>
  * <li>Added text shorthand "_" for SUB and "^" for SUP</li>
  * <li>Added optional Paragraph indenting</li>
  * <li>Added block indenting (blockquote,ul,ol,dl)</li>
@@ -34,6 +35,7 @@ public class HtmlToPlainText implements NodeVisitor {
 	private StringBuilder accum = new StringBuilder();
 	private final FreetextConfig config;
 	private boolean insideIndentBlock = false;
+	private String listDecorator = "*";
 
 	public HtmlToPlainText(FreetextConfig config) {
 		this.maxWidth = config.getWrapWidth() != 0 ? config.getWrapWidth() : MAX_WIDTH_DEFAULT;
@@ -114,13 +116,27 @@ public class HtmlToPlainText implements NodeVisitor {
 			append(((TextNode) node).text());
 		} else if (name.equals("li")) {
 			if (config.isPrettyPrint()) {
-				append("\n * ");
+				append("\n " + listDecorator + " ");
 			} else {
-				append("\\n *");
+				append("\\n " + listDecorator + " ");
 			}
 		} else if (name.equals("dt")) {
 			append("  ");
 		} else if (StringUtil.in(name, "blockquote", "ul", "ol", "dl")) {
+			if (name.equals("ul") && node.hasAttr("style")) {
+				if (node.attr("style").endsWith("none")) { // list-style-type:none
+					listDecorator = "";
+				}
+				else if (node.attr("style").endsWith("disc")) { // list-style-type:disc
+					listDecorator = "*";
+				}
+				else if (node.attr("class").endsWith("ul-dash")) {
+					listDecorator = "-";
+				}
+				else {
+					listDecorator = "*";
+				}
+			}
 			insideIndentBlock = true;
 			if (config.isPrettyPrint()) {
 				append("\n");
