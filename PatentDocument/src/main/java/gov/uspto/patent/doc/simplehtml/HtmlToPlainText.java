@@ -124,19 +124,20 @@ public class HtmlToPlainText implements NodeVisitor {
 			append("  ");
 		} else if (StringUtil.in(name, "blockquote", "ul", "ol", "dl")) {
 			if (name.equals("ul") && node.hasAttr("style")) {
-				if (node.attr("style").endsWith("none")) { // list-style-type:none
+				if (node.attr("style").contains("list-style-type:none")) {
 					listDecorator = "";
-				}
-				else if (node.attr("style").endsWith("disc")) { // list-style-type:disc
-					listDecorator = "*";
-				}
-				else if (node.attr("class").endsWith("ul-dash")) {
-					listDecorator = "-";
 				}
 				else {
 					listDecorator = "*";
 				}
 			}
+			else if (node.hasAttr("class") && node.attr("class").equals("ul-dash")) {
+				listDecorator = "-";
+			}
+			else {
+				listDecorator = "*";
+			}
+
 			insideIndentBlock = true;
 			if (config.isPrettyPrint()) {
 				append("\n");
