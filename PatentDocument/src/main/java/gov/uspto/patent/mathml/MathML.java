@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,8 +58,8 @@ public class MathML {
 
 	private final Node mathNode;
 
-	private final static Pattern REPLACE_VARS = Pattern.compile("mi\\([a-zA-Z]\\)");
-	private final static Pattern REPLACE_CONS = Pattern.compile("mn\\([0-9]+\\)");
+	private final static Pattern REPLACE_VARS = Pattern.compile("mi\\(([a-zA-Z])\\)");
+	private final static Pattern REPLACE_CONS = Pattern.compile("mn\\(([0-9]+)\\)");
 
 	public MathML(Node node) {
 		this.mathNode = node;
@@ -111,7 +114,7 @@ public class MathML {
 			}
 		}
 
-		if (children.size() > 1) {
+		if (children.size() > 1 || isMtable(node.getName())) {
 			sb.append("(");
 			for (int i = 0; i < children.size(); i++) {
 				mathmlToString(sb, children.get(i));
@@ -125,19 +128,35 @@ public class MathML {
 		}
 	}
 
-	public String normalizeVariables(String mathMLString) {
+	public String generalizeVariables(String mathMLString) {
 		Matcher mReplace = REPLACE_VARS.matcher(mathMLString);
 		if (mReplace.find()) {
-			mathMLString = mReplace.replaceAll("mi(ids)");
+			mathMLString = mReplace.replaceAll("mi(id)");
 		}
 
 		return mathMLString;
 	}
 
-	public String normalizeConstance(String mathMLString) {
+	public String normalizeVariables(String mathMLString) {
+		int currentConstantNum = 0;
+		Map<String, Integer> constantMap = new HashMap<String, Integer>();
+		Matcher mReplace = REPLACE_VARS.matcher(mathMLString);
+		StringBuffer stb = new StringBuffer();
+		while (mReplace.find()) {
+			String constant = mReplace.group(1);
+			if (!constantMap.containsKey(constant)) {
+				constantMap.put(constant, ++currentConstantNum);
+			}
+			mReplace.appendReplacement(stb, "mi(id" + constantMap.get(constant) + ")");
+		}
+
+		return stb.toString();
+	}
+
+	public String generalizeConstance(String mathMLString) {
 		Matcher mReplace = REPLACE_CONS.matcher(mathMLString);
 		if (mReplace.find()) {
-			mathMLString = mReplace.replaceAll("mn(cons)");
+			mathMLString = mReplace.replaceAll("mn(con)");
 		}
 
 		return mathMLString;
@@ -157,19 +176,50 @@ public class MathML {
 		return values;
 	}
 
+	/**
+	 * Tokenized Mathematical Equation for Searching
+	 * 
+	 * <p>
+	 * Each descending token in the list returned is more generalized, less
+	 * exacting, or more fuzzy of a match.
+	 * </p>
+	 *
+	 * <ul>
+	 * <li>Text Form</li>
+	 * <li>Text Form, normalize variables</li>
+	 * <li>Text Form, normalize variables and generalize constants</li>
+	 * <li>Text Form, generalized variables and original constants</li>
+	 * <li>Text Form, original variables and generalized constants</li>
+	 * <li>Text Form, generalized variables and constants</li>
+	 * <li>list of variables and constants</li>
+	 * <li>sorted list of variables and constants</li>
+	 * </ul>
+	 *
+	 * @return
+	 */
 	public List<String> tokenize() {
 		String mathMLString = parse(mathNode);
 		List<String> tokens = new ArrayList<String>();
 		tokens.add(mathMLString);
 		tokens.add(normalizeVariables(mathMLString));
-		tokens.add(normalizeConstance(mathMLString));
-		tokens.add(normalizeConstance(normalizeVariables(mathMLString)));
+		tokens.add(generalizeConstance(normalizeVariables(mathMLString)));
+		tokens.add(generalizeVariables(mathMLString));
+		tokens.add(generalizeConstance(mathMLString));
+		tokens.add(generalizeConstance(generalizeVariables(mathMLString)));
 
 		List<String> valueLst = getValues(mathMLString);
 		String values = Joiner.on(",").join(valueLst);
 		tokens.add(values);
 
+		Collections.sort(valueLst);
+		String sortedValues = Joiner.on(",").join(valueLst);
+		tokens.add(sortedValues);
+
 		return tokens;
+	}
+
+	private static boolean isMtable(String nodeName) {
+		return nodeName != null && (nodeName.equals("mtable") || nodeName.equals("mtr") || nodeName.equals("mtd"));
 	}
 
 	private static boolean isMrowOrMathOrMfenced(String nodeName) {
