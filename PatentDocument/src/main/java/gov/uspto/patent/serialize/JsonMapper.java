@@ -237,15 +237,17 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             ipcObj.add("facets", toJsonArray(claz.toFacet()));
             ipcAr.add(ipcObj.build());
 
-            JsonObjectBuilder ipcObj2 = Json.createObjectBuilder();
-            for (PatentClassification furtherClassification : claz.getChildren()) {
-                IpcClassification furtherIpc = (IpcClassification) furtherClassification;
-                ipcObj2.add("type", claz.isInventive() ? "inventive" : "additional");
-                ipcObj2.add("raw", furtherIpc.toText());
-                ipcObj2.add("normalized", furtherIpc.getTextNormalized());
-                ipcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+            if (!claz.getChildren().isEmpty()) {
+	            JsonObjectBuilder ipcObj2 = Json.createObjectBuilder();
+	            for (PatentClassification furtherClassification : claz.getChildren()) {
+	                IpcClassification furtherIpc = (IpcClassification) furtherClassification;
+	                ipcObj2.add("type", claz.isInventive() ? "inventive" : "additional");
+	                ipcObj2.add("raw", furtherIpc.toText());
+	                ipcObj2.add("normalized", furtherIpc.getTextNormalized());
+	                ipcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+	            }
+	            ipcAr.add(ipcObj2.build());
             }
-            ipcAr.add(ipcObj2.build());
         }
         builder.add("ipc", ipcAr.build());
 
@@ -261,15 +263,17 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             uspcObj.add("facets", toJsonArray(claz.toFacet()));
             uspcAr.add(uspcObj.build());
 
-            JsonObjectBuilder uspcObj2 = Json.createObjectBuilder();
-            for (PatentClassification furtherClassification : claz.getChildren()) {
-                UspcClassification furtherIpc = (UspcClassification) furtherClassification;
-                uspcObj.add("type", claz.isMainClassification() ? "main" : "additional");
-                uspcObj2.add("raw", furtherIpc.toText());
-                uspcObj2.add("normalized", furtherIpc.getTextNormalized());
-                uspcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+            if (!claz.getChildren().isEmpty()) {
+	            JsonObjectBuilder uspcObj2 = Json.createObjectBuilder();
+	            for (PatentClassification furtherClassification : claz.getChildren()) {
+	                UspcClassification furtherIpc = (UspcClassification) furtherClassification;
+	                uspcObj.add("type", claz.isMainClassification() ? "main" : "additional");
+	                uspcObj2.add("raw", furtherIpc.toText());
+	                uspcObj2.add("normalized", furtherIpc.getTextNormalized());
+	                uspcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+	            }
+	            uspcAr.add(uspcObj2.build());
             }
-            uspcAr.add(uspcObj2.build());
         }
         builder.add("uspc", uspcAr.build());
 
@@ -284,15 +288,17 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             cpcObj.add("facets", toJsonArray(claz.toFacet()));
             cpcAr.add(cpcObj.build());
 
-            JsonObjectBuilder cpcObj2 = Json.createObjectBuilder();
-            for (PatentClassification furtherClassification : claz.getChildren()) {
-                CpcClassification furtherIpc = (CpcClassification) furtherClassification;
-                cpcObj2.add("type", furtherIpc.isInventive() ? "inventive" : "additional");
-                cpcObj2.add("raw", furtherIpc.toText());
-                cpcObj2.add("normalized", furtherIpc.getTextNormalized());
-                cpcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+            if (!claz.getChildren().isEmpty()) {
+	            JsonObjectBuilder cpcObj2 = Json.createObjectBuilder();
+	            for (PatentClassification furtherClassification : claz.getChildren()) {
+	                CpcClassification furtherIpc = (CpcClassification) furtherClassification;
+	                cpcObj2.add("type", furtherIpc.isInventive() ? "inventive" : "additional");
+	                cpcObj2.add("raw", furtherIpc.toText());
+	                cpcObj2.add("normalized", furtherIpc.getTextNormalized());
+	                cpcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
+	            }
+	            cpcAr.add(cpcObj2.build());
             }
-            cpcAr.add(cpcObj2.build());
         }
         builder.add("cpc", cpcAr.build());
 

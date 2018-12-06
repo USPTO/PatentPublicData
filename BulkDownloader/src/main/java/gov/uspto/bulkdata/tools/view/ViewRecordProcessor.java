@@ -11,6 +11,7 @@ import gov.uspto.patent.PatentReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.serialize.DocumentBuilder;
+import gov.uspto.patent.serialize.JsonMapper;
 import gov.uspto.patent.serialize.JsonMapperFlat;
 import gov.uspto.patent.serialize.JsonMapperPATFT;
 import gov.uspto.patent.serialize.JsonMapperStream;
@@ -78,6 +79,11 @@ public class ViewRecordProcessor implements RecordProcessor {
 			// writer.write("Patent JSON:\n");
 			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint);
 			fileBuilder.write(patent, writer);
+			break;
+		case "json_old":
+			// writer.write("Patent JSON:\n");
+			JsonMapper oldJsonBuilder = new JsonMapper(prettyPrint, false);
+			oldJsonBuilder.write(patent, writer);
 			break;
 		case "patft":
 		case "apft":
