@@ -17,7 +17,6 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.checkerframework.checker.units.qual.s;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,7 @@ public abstract class PatentClassification implements Classification {
 
 	private String originalText;
 	private Set<PatentClassification> children = new TreeSet<PatentClassification>();
-	private Boolean isMainClassification;
+	private boolean inventive = false; // the main or inventive classification
 
 	@Override
 	public void setTextOriginal(String originalText) {
@@ -39,12 +38,20 @@ public abstract class PatentClassification implements Classification {
 		return originalText;
 	}
 
-	public void setIsMainClassification(Boolean isMainClassification) {
-		this.isMainClassification = isMainClassification;
+	public void setInventive(boolean bool) {
+		this.inventive = bool;
+	}
+	
+	public boolean isInventive() {
+		return this.inventive;
 	}
 
-	public Boolean isMainClassification() {
-		return isMainClassification;
+	public void setIsMainClassification(boolean bool) {
+		this.inventive = bool;
+	}
+
+	public boolean isMainClassification() {
+		return this.inventive;
 	}
 
 	public Set<PatentClassification> getChildren() {
@@ -156,6 +163,16 @@ public abstract class PatentClassification implements Classification {
 		int last = this.toText().compareTo(other.toText());
 		return last == 0 ? this.toText().compareTo(other.toText()) : last;
 	}
+
+	/*
+	@Override
+	public int compareTo(Classification other) {
+        int b1 = this.isInventive() ? 1 : 0;
+        int b2 = ((PatentClassification) other).isInventive() ? 1 : 0;
+        int main = b2 - b1;
+		return main == 0 ? this.toText().compareTo(other.toText()) : main;
+	}
+	*/
 
 	public static <T extends PatentClassification> List<T> fromText(Iterable<String> classificationStrings,
 			Class<T> classificationClass) {

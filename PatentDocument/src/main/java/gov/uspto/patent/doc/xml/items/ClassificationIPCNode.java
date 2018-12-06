@@ -105,7 +105,7 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 
 		String mainClassTxt = mainClass.getText();
 		if ("None".equalsIgnoreCase(mainClassTxt)) {
-			LOGGER.trace("Invalid USPC classification 'main-classification': 'None'");
+			LOGGER.trace("Invalid IPC classification 'main-classification': 'None'");
 			return null;
 		}
 
@@ -122,9 +122,9 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 		List<Node> furtherClasses = itemNode.selectNodes("further-classification");
 		for (Node subclass : furtherClasses) {
 			try {
-				IpcClassification usClass = new IpcClassification();
-				usClass.parseText(subclass.getText());
-				classification.addChild(usClass);
+				IpcClassification ipcClass = new IpcClassification();
+				ipcClass.parseText(subclass.getText());
+				classification.addChild(ipcClass);
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to parse IPC classification 'further-classification': {}", subclass.asXML(), e);
 			}

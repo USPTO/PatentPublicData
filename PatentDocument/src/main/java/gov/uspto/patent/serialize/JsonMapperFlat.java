@@ -273,13 +273,20 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
 
         Set<IpcClassification> ipcClasses = PatentClassification.filterByType(classes, ClassificationType.IPC);
         for (IpcClassification claz : ipcClasses) {
-            builder.add(prefixFieldName + "IpcMainRaw", claz.toText());
-            builder.add(prefixFieldName + "IpcMainNormalized", claz.getTextNormalized());
-            builder.add(prefixFieldName + "IpcMainFacets", toJsonArray(claz.toFacet()));
-
             JsonArrayBuilder futherRawAr = Json.createArrayBuilder();
             JsonArrayBuilder futherNormAr = Json.createArrayBuilder();
             SortedSet<String> futherFacets = new TreeSet<String>();
+        	
+        	if (claz.isInventive()) {
+        		builder.add(prefixFieldName + "IpcInventiveRaw", claz.toText());
+        		builder.add(prefixFieldName + "IpcInventiveNormalized", claz.getTextNormalized());
+        		builder.add(prefixFieldName + "IpcInventiveFacets", toJsonArray(claz.toFacet()));
+        	}
+        	else {
+                futherRawAr.add(claz.toText());
+                futherNormAr.add(claz.getTextNormalized());
+                futherFacets.addAll(Arrays.asList(claz.toFacet()));
+        	}
 
             for (PatentClassification furtherClassification : claz.getChildren()) {
                 IpcClassification furtherClass = (IpcClassification) furtherClassification;
@@ -287,9 +294,10 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
                 futherNormAr.add(furtherClass.getTextNormalized());
                 futherFacets.addAll(Arrays.asList(furtherClass.toFacet()));
             }
-            builder.add(prefixFieldName + "IpcFurtherRaw", futherRawAr.build());
-            builder.add(prefixFieldName + "IpcFurtherNormalized", futherNormAr.build());
-            builder.add(prefixFieldName + "IpcFurtherFacets", toJsonArray(futherFacets));
+
+            builder.add(prefixFieldName + "IpcAdditionalRaw", futherRawAr.build());
+            builder.add(prefixFieldName + "IpcAdditionalNormalized", futherNormAr.build());
+            builder.add(prefixFieldName + "IpcAdditionalFacets", toJsonArray(futherFacets));
         }
 
         Set<UspcClassification> uspcClasses = PatentClassification.filterByType(classes,
@@ -309,21 +317,26 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
                 futherNormAr.add(furtherClass.getTextNormalized());
                 futherFacets.addAll(Arrays.asList(furtherClass.toFacet()));
             }
-            builder.add(prefixFieldName + "UspcFurtherRaw", futherRawAr.build());
-            builder.add(prefixFieldName + "UspcFurtherNormalized", futherNormAr.build());
-            builder.add(prefixFieldName + "UspcFurtherFacets", toJsonArray(futherFacets));
+            builder.add(prefixFieldName + "UspcAdditionalRaw", futherRawAr.build());
+            builder.add(prefixFieldName + "UspcAdditionalNormalized", futherNormAr.build());
+            builder.add(prefixFieldName + "UspcAdditionalFacets", toJsonArray(futherFacets));
         }
 
         Set<CpcClassification> cpcClasses = PatentClassification.filterByType(classes,
                 ClassificationType.CPC);
+        JsonArrayBuilder futherRawAr = Json.createArrayBuilder();
+        JsonArrayBuilder futherNormAr = Json.createArrayBuilder();
+        SortedSet<String> futherFacets = new TreeSet<String>();
         for (CpcClassification claz : cpcClasses) {
-            builder.add(prefixFieldName + "CpcMainRaw", claz.toText());
-            builder.add(prefixFieldName + "CpcMainNormalized", claz.getTextNormalized());
-            builder.add(prefixFieldName + "CpcMainFacets", toJsonArray(claz.toFacet()));
-
-            JsonArrayBuilder futherRawAr = Json.createArrayBuilder();
-            JsonArrayBuilder futherNormAr = Json.createArrayBuilder();
-            SortedSet<String> futherFacets = new TreeSet<String>();
+        	if (claz.isInventive()) {
+        		builder.add(prefixFieldName + "CpcInventiveRaw", claz.toText());
+        		builder.add(prefixFieldName + "CpcInventiveNormalized", claz.getTextNormalized());
+        		builder.add(prefixFieldName + "CpcInventiveFacets", toJsonArray(claz.toFacet()));
+        	} else {
+                futherRawAr.add(claz.toText());
+                futherNormAr.add(claz.getTextNormalized());
+                futherFacets.addAll(Arrays.asList(claz.toFacet()));
+        	}
 
             for (PatentClassification furtherClassification : claz.getChildren()) {
                 CpcClassification furtherClass = (CpcClassification) furtherClassification;
@@ -331,10 +344,12 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
                 futherNormAr.add(furtherClass.getTextNormalized());
                 futherFacets.addAll(Arrays.asList(furtherClass.toFacet()));
             }
-            builder.add(prefixFieldName + "IpcFurtherRaw", futherRawAr.build());
-            builder.add(prefixFieldName + "IpcFurtherNormalized", futherNormAr.build());
-            builder.add(prefixFieldName + "IpcFurtherFacets", toJsonArray(futherFacets));
         }
+        builder.add(prefixFieldName + "CpcAdditionalRaw", futherRawAr.build());
+        builder.add(prefixFieldName + "CpcAdditionalNormalized", futherNormAr.build());
+        builder.add(prefixFieldName + "CpcAdditionalFacets", toJsonArray(futherFacets));
+        
+        
     }
 
     private JsonArray mapExaminerDepartment(Collection<Examiner> examiners) {

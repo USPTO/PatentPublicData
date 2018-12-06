@@ -48,8 +48,6 @@ public class IpcClassification extends PatentClassification {
 	private String mainGroup;
 	private String subGroup;
 
-	private boolean inventive = false;
-
 	@Override
 	public ClassificationType getType() {
 		return ClassificationType.IPC;
@@ -93,14 +91,6 @@ public class IpcClassification extends PatentClassification {
 
 	public void setSubGroup(String subGroup) {
 		this.subGroup = subGroup;
-	}
-
-	public void setInventive(boolean bool) {
-		this.inventive = bool;
-	}
-	
-	public boolean isInventive() {
-		return this.inventive;
 	}
 
 	@Override
@@ -301,7 +291,7 @@ public class IpcClassification extends PatentClassification {
 	@Override
 	public String toString() {
 		return "IpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", inventive=" + inventive
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", inventive=" + super.isInventive()
 				+ ", getTextNormalized()=" + getTextNormalized() + ", standardize()=" + standardize()
 				+ ", getTextOriginal()=" + getTextOriginal() + ", toText()=" + toText() + "]";
 	}

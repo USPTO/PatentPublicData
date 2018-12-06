@@ -492,15 +492,15 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	if (retClasses.containsKey("inventive")) {
 	    	for (IpcClassification ipc : retClasses.get("inventive")) {
 	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("type", "main");
 	        	jGenerator.writeStringField("raw", ipc.toText());
 	        	jGenerator.writeStringField("normalized", ipc.getTextNormalized());
 	        	writeArray("facets", ipc.toFacet());
 	            jGenerator.writeEndObject();
-	
+
+	            // TODO fix nested classifications.
 	            for (PatentClassification furtherClass : ipc.getChildren()) {
 	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("type", "further");
+	            	jGenerator.writeStringField("type", "additional");
 	            	jGenerator.writeStringField("raw", furtherClass.toText());
 	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
 	            	writeArray("facets", furtherClass.toFacet());
@@ -515,15 +515,13 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	if (retClasses.containsKey("additional")) {
 	    	for (IpcClassification ipc : retClasses.get("additional")) {
 	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("type", "main");
 	        	jGenerator.writeStringField("raw", ipc.toText());
 	        	jGenerator.writeStringField("normalized", ipc.getTextNormalized());
 	        	writeArray("facets", ipc.toFacet());
 	            jGenerator.writeEndObject();
-	
+
 	            for (PatentClassification furtherClass : ipc.getChildren()) {
 	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("type", "further");
 	            	jGenerator.writeStringField("raw", furtherClass.toText());
 	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
 	            	writeArray("facets", furtherClass.toFacet());
@@ -543,7 +541,6 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	if (retClasses.containsKey("inventive")) {
 	    	for (CpcClassification cpci : retClasses.get("inventive")) {
 	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("type", "main");
 	        	jGenerator.writeStringField("raw", cpci.toText());
 	        	jGenerator.writeStringField("normalized", cpci.getTextNormalized());
 	        	writeArray("facets", cpci.toFacet());
@@ -551,7 +548,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 	
 	            for (PatentClassification furtherClass : cpci.getChildren()) {
 	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("type", "further");
+	            	jGenerator.writeStringField("type", "additional");
 	            	jGenerator.writeStringField("raw", furtherClass.toText());
 	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
 	            	writeArray("facets", furtherClass.toFacet());
@@ -566,15 +563,14 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	if (retClasses.containsKey("additional")) {
 	    	for (CpcClassification cpci : retClasses.get("additional")) {
 	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("type", "main");
 	        	jGenerator.writeStringField("raw", cpci.toText());
 	        	jGenerator.writeStringField("normalized", cpci.getTextNormalized());
 	        	writeArray("facets", cpci.toFacet());
 	            jGenerator.writeEndObject();
-	
+
 	            for (PatentClassification furtherClass : cpci.getChildren()) {
 	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("type", "further");
+	            	jGenerator.writeStringField("type", "additional");
 	            	jGenerator.writeStringField("raw", furtherClass.toText());
 	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
 	            	writeArray("facets", furtherClass.toFacet());
@@ -601,7 +597,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
             for (PatentClassification furtherClass : mainClass.getChildren()) {
             	jGenerator.writeStartObject();
-            	jGenerator.writeStringField("type", "further");
+            	jGenerator.writeStringField("type", "additional");
             	jGenerator.writeStringField("raw", furtherClass.toText());
             	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
             	writeArray("facets", furtherClass.toFacet());
@@ -620,7 +616,6 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
         for (PatentClassification mainClass : classesOfType) {
         	jGenerator.writeStartObject();
-        	jGenerator.writeStringField("type", "main");
         	jGenerator.writeStringField("raw", mainClass.toText());
         	jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
         	writeArray("facets", mainClass.toFacet());
@@ -628,7 +623,6 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
             for (PatentClassification furtherClass : mainClass.getChildren()) {
             	jGenerator.writeStartObject();
-            	jGenerator.writeStringField("type", "further");
             	jGenerator.writeStringField("raw", furtherClass.toText());
             	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
             	writeArray("facets", furtherClass.toFacet());

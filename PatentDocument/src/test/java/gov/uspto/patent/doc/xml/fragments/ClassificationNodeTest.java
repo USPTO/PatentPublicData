@@ -1,6 +1,7 @@
 package gov.uspto.patent.doc.xml.fragments;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
@@ -14,6 +15,7 @@ import org.dom4j.DocumentHelper;
 import org.junit.Test;
 
 import gov.uspto.patent.model.classification.ClassificationType;
+import gov.uspto.patent.model.classification.CpcClassification;
 import gov.uspto.patent.model.classification.PatentClassification;
 
 public class ClassificationNodeTest {
@@ -36,7 +38,7 @@ public class ClassificationNodeTest {
 				"<classification-status>B</classification-status>\r\n" + 
 				"<classification-data-source>H</classification-data-source>\r\n" + 
 				"<scheme-origination-code>C</scheme-origination-code>\r\n" + 
-				"</classification-cpc>\r\n" + 
+				"</classification-cpc>\r\n" +
 				"</main-cpc>\r\n" + 
 				"</classifications-cpc>\r\n" + 
 				"<classification-locarno>\r\n" + 
@@ -93,6 +95,21 @@ public class ClassificationNodeTest {
 				"<subclass>F</subclass>\r\n" + 
 				"<main-group>12</main-group>\r\n" + 
 				"<subgroup>444</subgroup>\r\n" + 
+				"<symbol-position>F</symbol-position>\r\n" + 
+				"<classification-value>I</classification-value>\r\n" + 
+				"<action-date><date>20170328</date></action-date>\r\n" + 
+				"<generating-office><country>US</country></generating-office>\r\n" + 
+				"<classification-status>B</classification-status>\r\n" + 
+				"<classification-data-source>H</classification-data-source>\r\n" + 
+				"<scheme-origination-code>C</scheme-origination-code>\r\n" + 
+				"</classification-cpc>\r\n" + 
+				"<classification-cpc>\r\n" + 
+				"<cpc-version-indicator><date>20130101</date></cpc-version-indicator>\r\n" + 
+				"<section>A</section>\r\n" + 
+				"<class>01</class>\r\n" + 
+				"<subclass>F</subclass>\r\n" + 
+				"<main-group>12</main-group>\r\n" + 
+				"<subgroup>222</subgroup>\r\n" + 
 				"<symbol-position>F</symbol-position>\r\n" + 
 				"<classification-value>I</classification-value>\r\n" + 
 				"<action-date><date>20170328</date></action-date>\r\n" + 
@@ -171,15 +188,35 @@ public class ClassificationNodeTest {
 		//clazs.forEach(System.out::println);
 
 		SortedSet<PatentClassification> cpcClazs = PatentClassification.filterByType(clazs, ClassificationType.CPC);
+		Iterator<PatentClassification> it = cpcClazs.iterator();
+		assertTrue(cpcClazs.size() == 6);
+
+		CpcClassification cpc1 = (CpcClassification) it.next();
+		CpcClassification cpc2 = (CpcClassification) it.next();
+		CpcClassification cpc3 = (CpcClassification) it.next();
+		CpcClassification cpc4 = (CpcClassification) it.next();
+		CpcClassification cpc5 = (CpcClassification) it.next();
+		CpcClassification cpc6 = (CpcClassification) it.next();
+
 		//cpcClazs.forEach(System.out::println);
 
-		assertTrue(cpcClazs.size() == 5);
-		Iterator<PatentClassification> it = cpcClazs.iterator();
-		assertEquals("A01B 71/08", it.next().getTextNormalized());
-		assertEquals("A01F 12/444", it.next().getTextNormalized());
-		assertEquals("B07B 1/12", it.next().getTextNormalized());
-		assertEquals("B07B 1/526", it.next().getTextNormalized());
-		assertEquals("B08B 1/008", it.next().getTextNormalized());
+		assertEquals("A01F 12/222", cpc1.getTextNormalized());
+		assertTrue(cpc1.isMainClassification());
+
+		assertEquals("A01F 12/444", cpc2.getTextNormalized());
+		assertTrue(cpc2.isMainClassification());
+
+		assertEquals("A01B 71/08", cpc3.getTextNormalized());
+		assertFalse(cpc3.isMainClassification());
+
+		assertEquals("B07B 1/12", cpc4.getTextNormalized());
+		assertFalse(cpc4.isMainClassification());
+
+		assertEquals("B07B 1/526", cpc5.getTextNormalized());
+		assertFalse(cpc5.isMainClassification());
+
+		assertEquals("B08B 1/008", cpc6.getTextNormalized());
+		assertFalse(cpc6.isMainClassification());
 	}
 
 	@Test
