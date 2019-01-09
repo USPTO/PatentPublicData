@@ -25,13 +25,13 @@ public abstract class Citation {
 		EXAMINER, // used in Patent XML and SGML.
 		APPLICANT, // only used in Patent XML.
 		THIRD_PARTY, // only used in Patent XML.
-		UNDEFINED, // only used in Patent Greenbook, since not available or defined.
+		UNDEFINED, // when unknown or in Patent Greenbook since not available or defined.
 		OTHER // only used in Patent SGML.
 	};
 
 	private final CitationType citeType;
 	private final String num;
-	private final CitedBy citedBy;
+	private CitedBy citedBy;
 
 	public Citation(String num, CitationType citeType, CitedBy citedBy) {
 		this.num = num;
@@ -41,6 +41,10 @@ public abstract class Citation {
 
 	public String getNum() {
 		return num;
+	}
+
+	public void setCitedBy(CitedBy citedBy) {
+		this.citedBy = citedBy;
 	}
 
 	public CitationType getCitType() {
