@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.greenbook;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class FormattedText implements TextProcessor {
 
 		// Wrap with body tag so jsoup maintains "<p><pre></pre></p>".
 		Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
-		jsoupDoc.outputSettings().prettyPrint(false);
+		jsoupDoc.outputSettings().prettyPrint(false).charset(StandardCharsets.UTF_16);
 
 		// Give id to each FigRef
 		Elements figEls = jsoupDoc.select("a.figref");
@@ -119,9 +120,9 @@ public class FormattedText implements TextProcessor {
 		whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
 
 		OutputSettings outSettings = new Document.OutputSettings();
-		outSettings.charset(Charsets.UTF_8);
+		outSettings.charset(Charsets.UTF_16);
 		outSettings.prettyPrint(false);
-		outSettings.escapeMode(EscapeMode.extended);
+		//outSettings.escapeMode(EscapeMode.extended);
 
 		Cleaner cleaner = new Cleaner(whitelist);
 		Document clean = cleaner.clean(jsoupDoc);

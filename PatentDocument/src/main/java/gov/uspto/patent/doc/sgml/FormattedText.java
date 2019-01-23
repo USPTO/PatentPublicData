@@ -70,7 +70,8 @@ public class FormattedText implements TextProcessor {
 		rawText = rawText.replaceAll("”", "</q>");
 
         Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
-		jsoupDoc.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_8).escapeMode(EscapeMode.xhtml);
+		jsoupDoc.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_16);
+			//.escapeMode(EscapeMode.xhtml);
 
 		jsoupDoc.select("bold").tagName("b");
 
@@ -214,12 +215,12 @@ public class FormattedText implements TextProcessor {
 		whitelist.addAttributes(":all", HTML_WHITELIST_ATTRIB);
 
 		OutputSettings outSettings = new Document.OutputSettings();
-		outSettings.charset(Charsets.UTF_8);
+		outSettings.charset(Charsets.UTF_16);
 		outSettings.syntax(Syntax.xml);
 		outSettings.outline(true);
 		outSettings.prettyPrint(false);
 		//outSettings.escapeMode(EscapeMode.extended);
-        outSettings.escapeMode(EscapeMode.xhtml);
+        //outSettings.escapeMode(EscapeMode.xhtml);
 
 
 		String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
@@ -229,7 +230,7 @@ public class FormattedText implements TextProcessor {
         if (mathFound) {
             // Reload document and un-base64 the mathml sections.
             jsoupDoc = Jsoup.parse("<body>" + fieldTextCleaned + "</body>", "", Parser.xmlParser());
-            jsoupDoc.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_8);
+            jsoupDoc.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_16);
 
             for (Element el : jsoupDoc.select("span[class=math]")) {
                 try {
