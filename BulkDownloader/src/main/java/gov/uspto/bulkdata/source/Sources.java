@@ -64,7 +64,8 @@ public class Sources {
 
 	public static void main(String... args) throws JAXBException {
 		Sources sources = Sources.read();
-
-		System.out.println(sources);
+		for(Source source: sources.sources) {
+			System.out.println(source + "\n");
+		}
 	}
 }

@@ -10,6 +10,14 @@
 -->
 
 <sources>
+    <source>
+    	<name>WITHDRAWN</name>
+    	<type>WITHDRAWN</type>
+    	<download>
+    		<url>https://www.uspto.gov/sites/default/files/documents/withdrawn.zip</url>
+		</download>
+    </source>
+
 	<source>
 		<name>CPC</name>
 		<type>CPC_SCHEME</type>

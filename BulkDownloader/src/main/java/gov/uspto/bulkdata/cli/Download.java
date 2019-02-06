@@ -139,9 +139,9 @@ public class Download {
     }
 
     private List<HttpUrl> fetchLinks() throws IOException {
-        if (source.getDownload().getDownloadUrl() != null) {
+        if (source.getDownload().getUrl() != null) {
             List<HttpUrl> urls = new ArrayList<HttpUrl>(1);
-            urls.add(source.getDownload().getDownloadUrl());
+            urls.add(HttpUrl.parse(source.getDownload().getUrl()));
             return urls;
         }
 
@@ -240,7 +240,7 @@ public class Download {
             System.exit(0);
         }
 
-        String source = (String) options.valueOf("source"); // google.
+        String sourceName = (String) options.valueOf("source"); // google.
 
         String type = null;
         if (options.has("type")) {
@@ -265,10 +265,10 @@ public class Download {
         }
 
         Sources sources = Sources.read();
-        Source retSource = sources.getSource(source.toLowerCase(), type);
+        Source retSource = sources.getSource(sourceName, type);
         LOGGER.info("Source: {}", retSource);
         if (retSource == null) {
-            throw new IllegalArgumentException("Unknown Download Source: " + source);
+            throw new IllegalArgumentException("Unknown Download Source: " + sourceName);
         }
 
         Download app = new Download(retSource, downloadToDir, isAsync);
