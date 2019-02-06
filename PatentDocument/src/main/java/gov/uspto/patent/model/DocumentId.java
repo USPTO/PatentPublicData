@@ -12,17 +12,86 @@ import com.google.common.base.Strings;
 import gov.uspto.patent.InvalidDataException;
 
 /**
- * Document ID for Patents and Patent Applications.
+ * Document ID for Patents and Patent Applications
  *
- *<p>
- * Note: US Patent Id numbers are not guaranteed to be numeric, they can 
- * have a "D" for a Design Patent, "PP" for Plant Patent, or an "X" 
- * for an X-Patent. 
- *<p>
+ * <p>
+ * <h3>US Patent Document IDs are alpha-numeric (letters and numbers)</h3>
+ * <ul>
+ * <li>Design Patent</li>
+ * <ul>
+ * <li>start with "D" e.g. D321987</li>
+ * </ul>
+ * <li>Plant Patent</li>
+ * <ul>
+ * <li>start with "PP" e.g. PP07514</li>
+ * </ul>
+ * <li>Reissued Patents</li>
+ * <ul>
+ * <li>start with "RE" e.g. RE12345</li>
+ * </ul>
+ * <li>Fractional Patents</li>
+ * <ul>
+ * <li>end with [A-O] e.g. D90793½ becomes D90793H</li>
+ * <li>issued ____ to 1966</li>
+ * <li>purpose was to group patent families issued together</li>
+ * </ul>
+ * <li>Additions of Improvements</li>
+ * <ul>
+ * <li>start with "AI" e.g. AI000318</li>
+ * <li>issued 1838 to 1861</li>
+ * <li>about 300 issued</li>
+ * <li>replace by a continuing patent application (continuation, divisional, or
+ * continuation-in-part)</li>
+ * </ul>
+ * <li>X-Patents</li>
+ * <ul>
+ * <li>start with "X" e.g. X007640 or X9670H</li>
+ * <li>issued July 1790 to July 1836</li>
+ * <li>USPTO fire of July 1836, majority of patents destroyed</li>
+ * <li>approximately 106 patent where recovered; inventors where asked to
+ * provide their copies</li>
+ * </ul>
+ * <li>X-Patents Reissued</li>
+ * <ul>
+ * <li>start with "RX" e.g. RX00116</li>
+ * </ul>
+ * </ul>
+ * </p>
  *
- *<p>
- * Note: X-Patent's even though they are over 100 years old can still be cited in current patents.
- *</p>
+ * <p>
+ * <h3>Defensive Publication or Disclosure</h3> Mostly unneeded once
+ * applications became public after 18 months, started in 1999 from the American
+ * Inventors Protection Act "AIPA"; Similar protections exist by filing and
+ * abandoning an application.
+ * <ul>
+ * <li>Statutory Invention Registration (SIR) / H-Documents</li>
+ * <ul>
+ * <li>start with "H" e.g. H001234</li>
+ * <li>issued May 8, 1985 to March 16, 2013 (America Invents Act "AIA")</li>
+ * <li>replaced Defensive Publication</li>
+ * <li>replaced by the publishing of applications</li>
+ * </ul>
+ * <li>Defensive Publication / Technical Disclosure / T-Documents</li>
+ * <ul>
+ * <li>start with "T" e.g. T855019</li>
+ * <li>issued April 1968 to May 8, 1985</li>
+ * <li>replaced by Statutory Invention Registration (SIR)</li>
+ * </ul>
+ * <li>IBM technical disclosure bulletin (TDB)</li>
+ * <ul>
+ * <li>issued 1968 to 1998</li>
+ * <li>more than 83,500 issued</li>
+ * <li>Used by patent examiners</li>
+ * <li>cited 48,000+ times in US patents</li>
+ * <li>example cite: IBM Technical Disclosure Bulletin, vol. 36, No. 6A, Jun.
+ * 1993, pp. 261-264.</li>
+ * </ul>
+ * </ul>
+ *
+ * <p>
+ * <h3>Take Note</h3> Any patent can cite anything from the past, which includes
+ * disclosures, X-Patents and Fractional Patents.
+ * </p>
  *
  * @see WIPO ST.14.
  * @see https://en.wikipedia.org/wiki/X-Patent
@@ -229,9 +298,11 @@ public class DocumentId implements Comparable<DocumentId> {
 	/**
 	 * Parse Patent DocumentId into its parts.
 	 * 
-	 * <p>Note: this may not work for all variations from all countries, may countries
+	 * <p>
+	 * Note: this may not work for all variations from all countries, may countries
 	 * may have a different numbering system, many also have multiple different
-	 * numbering systems.</p>
+	 * numbering systems.
+	 * </p>
 	 * 
 	 * @see http://www.wipo.int/export/sites/www/standards/en/pdf/07-02-02.pdf
 	 * 
