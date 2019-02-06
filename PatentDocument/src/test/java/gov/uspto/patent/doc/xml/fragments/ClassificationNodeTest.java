@@ -190,7 +190,8 @@ public class ClassificationNodeTest {
 		SortedSet<PatentClassification> cpcClazs = PatentClassification.filterByType(clazs, ClassificationType.CPC);
 		Iterator<PatentClassification> it = cpcClazs.iterator();
 		assertTrue(cpcClazs.size() == 6);
-
+ 		it = cpcClazs.iterator();
+		 
 		CpcClassification cpc1 = (CpcClassification) it.next();
 		CpcClassification cpc2 = (CpcClassification) it.next();
 		CpcClassification cpc3 = (CpcClassification) it.next();
@@ -199,15 +200,15 @@ public class ClassificationNodeTest {
 		CpcClassification cpc6 = (CpcClassification) it.next();
 
 		//cpcClazs.forEach(System.out::println);
+		
+		assertEquals("A01B 71/08", cpc1.getTextNormalized());
+		assertFalse(cpc1.isMainClassification());
 
-		assertEquals("A01F 12/222", cpc1.getTextNormalized());
-		assertTrue(cpc1.isMainClassification());
-
-		assertEquals("A01F 12/444", cpc2.getTextNormalized());
+		assertEquals("A01F 12/222", cpc2.getTextNormalized());
 		assertTrue(cpc2.isMainClassification());
 
-		assertEquals("A01B 71/08", cpc3.getTextNormalized());
-		assertFalse(cpc3.isMainClassification());
+		assertEquals("A01F 12/444", cpc3.getTextNormalized());
+		assertTrue(cpc3.isMainClassification());
 
 		assertEquals("B07B 1/12", cpc4.getTextNormalized());
 		assertFalse(cpc4.isMainClassification());
