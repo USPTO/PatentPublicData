@@ -8,9 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import gov.uspto.common.filter.SuffixFilter;
+
 public class DumpFileXml extends DumpFile {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFileXml.class);
+
+	private static SuffixFilter DEFAULT_SUFFIXES = new SuffixFilter("xml", "sgml", "sgm");
 
 	private String xmlStartTag;
 	private String xmlEndTag;
@@ -22,10 +26,12 @@ public class DumpFileXml extends DumpFile {
 
 	public DumpFileXml(File file) {
 		super(file);
+		super.setFileFilter(DEFAULT_SUFFIXES);
 	}
 
 	public DumpFileXml(String name, BufferedReader reader) {
 		super(name, reader);
+		super.setFileFilter(DEFAULT_SUFFIXES);
 	}
 
 	@Override
