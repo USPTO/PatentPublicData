@@ -13,9 +13,11 @@ import gov.uspto.common.text.StringCaseUtil;
 public class StringCaseTest {
 
 	// meta-analysis, anti-inflammatory, neo-orthodox, de-emphasize, re-enact, pre-election
-	
+
 	private static Map<String, String> TitleValidFromTo = new LinkedHashMap<String, String>();
 	static {
+		TitleValidFromTo.put(null, null); // null returns null.
+		TitleValidFromTo.put("", ""); // empty returns empty.
 		TitleValidFromTo.put("LED Lamp", "LED Lamp");
 		TitleValidFromTo.put("Light emitting diode lamp", "Light Emitting Diode Lamp");
 		TitleValidFromTo.put("LIGHT-EMITTING DIODE CIRCLE LAMP", "Light-emitting Diode Circle Lamp");

@@ -1,18 +1,29 @@
 package gov.uspto.parser.dom4j;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class Dom4jUtil {
 
+	public static Document read(String xmlString) throws SAXException, DocumentException {
+		SAXReader sax = new SAXReader(false);
+		sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+		return sax.read(new InputSource(new StringReader(xmlString)));
+	}
+
 	public static String getTextOrNull(Node document, String xPath) {
 		Node node = document.selectSingleNode(xPath);
-		return node != null ? node.getText() : null;
+		return node != null ? node.getStringValue() : null;
 	}
 
 	/**

@@ -78,6 +78,8 @@ public class StringCaseUtil {
 	public static String toTitleCase(String text) {
 		if (text == null) {
 			return null;
+		} else if (text.isEmpty()) {
+			return text;
 		}
 
 		/*
