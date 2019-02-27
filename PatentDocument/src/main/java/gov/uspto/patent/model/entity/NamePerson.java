@@ -1,5 +1,7 @@
 package gov.uspto.patent.model.entity;
 
+import org.apache.commons.text.WordUtils;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
@@ -24,12 +26,16 @@ public class NamePerson extends Name {
 		this.lastName = lastName;
 	}
 
-	public String getLastName() {
-		return lastName;
-	}
-
 	public String getFirstName() {
 		return firstName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public String getLastName() {
+		return lastName;
 	}
 
 	public boolean validate() throws InvalidDataException {
@@ -79,8 +85,20 @@ public class NamePerson extends Name {
 		}
 	}
 
-	public String getMiddleName() {
-		return middleName;
+	public String getInitials() {
+		StringBuilder stb = new StringBuilder();
+		if (!Strings.isNullOrEmpty(firstName)) {
+			stb.append(firstName);
+			stb.append(" ");
+		}
+
+		if (!Strings.isNullOrEmpty(middleName)) {
+			stb.append(middleName);
+			stb.append(" ");
+		}
+
+		stb.append(lastName);
+		return WordUtils.initials(stb.toString());
 	}
 
 	private static String buildFullName(String firstName, String middleName, String lastName) {
