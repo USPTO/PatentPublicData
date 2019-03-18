@@ -54,7 +54,7 @@ public class ValidatePatent {
 	public static void methodsReturnNonNull(Patent patent) {
 		for (Method method : Patent.class.getMethods()) {
 			if (method.getName().startsWith("get") && method.getParameterCount() == 0) {
-				System.out.println(method.getName());
+				//System.out.println(method.getName());
 				try {
 					Object ret = method.invoke(patent, null);
 					assertNotNull("!! This Patent.class method is returning null: '" + method.getName()
