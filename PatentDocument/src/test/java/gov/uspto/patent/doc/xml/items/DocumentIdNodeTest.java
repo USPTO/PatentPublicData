@@ -40,6 +40,19 @@ public class DocumentIdNodeTest {
 	}
 
 	@Test
+	public void RemoveRepeatCountryCode2() throws DocumentException {
+		// country code appears again in doc-number. WO/03/001333 => 03/001333 ==>
+		// 2003/001333
+		String xml = "<xml><document-id><country>WO</country><doc-number>WO/03/001333</doc-number><date>20030101</date></document-id></xml>";
+		Document xmlDoc = createDocument(xml);
+		DocumentId docId = new DocumentIdNode(xmlDoc.getRootElement()).read();
+		assertEquals(CountryCode.WO, docId.getCountryCode());
+		assertEquals("2003001333", docId.getDocNumber());
+		assertEquals("20030101", docId.getDate().getDateText(DateTextType.RAW));
+		assertEquals("WO2003001333", docId.toText());
+	}
+
+	@Test
 	public void WO_PCT() throws DocumentException {
 		String xml = "<xml><document-id><country>WO</country><doc-number>PCT/EP/12345678</doc-number><date>20010101</date></document-id></xml>";
 		Document xmlDoc = createDocument(xml);
@@ -69,7 +82,7 @@ public class DocumentIdNodeTest {
 		assertEquals(CountryCode.JP, docId.getCountryCode());
 		assertEquals("1999123456", docId.getDocNumber());
 		assertEquals("JP1999123456", docId.toText());
-		
+
 		String xml2 = "<xml><document-id><country>JP</country><doc-number>2000-123456</doc-number></document-id></xml>";
 		Document xmlDoc2 = createDocument(xml2);
 		DocumentId docId2 = new DocumentIdNode(xmlDoc2.getRootElement()).read();
@@ -80,7 +93,7 @@ public class DocumentIdNodeTest {
 
 	@Test
 	public void KR_S_KOREA() throws DocumentException {
-		// yy-nnnnnn  yy-nnnnnnn  1948-1993
+		// yy-nnnnnn yy-nnnnnnn 1948-1993
 		String xml = "<xml><document-id><country>KR</country><doc-number>93-1234567</doc-number></document-id></xml>";
 		Document xmlDoc = createDocument(xml);
 		DocumentId docId = new DocumentIdNode(xmlDoc.getRootElement()).read();
@@ -88,7 +101,7 @@ public class DocumentIdNodeTest {
 		assertEquals("19931234567", docId.getDocNumber());
 		assertEquals("KR19931234567", docId.toText());
 
-		// yyyy-nnnnnn  yyyy-nnnnnnn 1994-2004
+		// yyyy-nnnnnn yyyy-nnnnnnn 1994-2004
 		String xml2 = "<xml><document-id><country>KR</country><doc-number>1997-1234567</doc-number></document-id></xml>";
 		Document xmlDoc2 = createDocument(xml2);
 		DocumentId docId2 = new DocumentIdNode(xmlDoc2.getRootElement()).read();
@@ -96,7 +109,8 @@ public class DocumentIdNodeTest {
 		assertEquals("19971234567", docId2.getDocNumber());
 		assertEquals("KR19971234567", docId2.toText());
 
-		// tt-yyyy-nnnnnnn 2004-current   tt=[10 patent, 20 utility model, 30 design 40 trademark]
+		// tt-yyyy-nnnnnnn 2004-current tt=[10 patent, 20 utility model, 30 design 40
+		// trademark]
 		String xml3 = "<xml><document-id><country>KR</country><doc-number>10-2004-1234567</doc-number></document-id></xml>";
 		Document xmlDoc3 = createDocument(xml3);
 		DocumentId docId3 = new DocumentIdNode(xmlDoc3.getRootElement()).read();
@@ -122,9 +136,10 @@ public class DocumentIdNodeTest {
 	public void IN_INDIA() throws DocumentException {
 		// nnnnnn patent 1912-current
 		// nnnnn/LLL/yyyy application 1972-2016
-		// yyyyJTnnnnnn application 2016-current 
-		// 		J=jurisdictions of Indian Patent Offices:[1 Delhi, 2 Mumbai, 3 Kolkata, 4 Chennai] 
-		//		T=type of application [1-9]
+		// yyyyJTnnnnnn application 2016-current
+		// J=jurisdictions of Indian Patent Offices:[1 Delhi, 2 Mumbai, 3 Kolkata, 4
+		// Chennai]
+		// T=type of application [1-9]
 		// yynnnnnn application 1992-2000
 
 		String xml = "<xml><document-id><country>IN</country><doc-number>12345/LLL/1997</doc-number></document-id></xml>";
@@ -153,8 +168,8 @@ public class DocumentIdNodeTest {
 		assertEquals("DE29906432U1", docId.toText());
 	}
 
-	private Document createDocument(String xml) throws DocumentException{
-        SAXReader reader = new SAXReader();
+	private Document createDocument(String xml) throws DocumentException {
+		SAXReader reader = new SAXReader();
 		return reader.read(new StringReader(xml));
 	}
 }

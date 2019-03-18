@@ -57,21 +57,49 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 
 		String docNumber = docNumN.getText();
 
+		/*
+		 * Normalize CountryCode duplicate occurrence, appears in country and doc number fields.
+		 */
 		if (docNumber.substring(0, 2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
+			// WO 2005/023894 => 2005/023894
 			docNumber = docNumber.substring(2).trim();
-			LOGGER.debug("Removed duplicate CountryCode '{}' doc-number: {} => {}", countryCode.toString(),
-					docNumN.getText(), docNumber);
+			if (docNumber.startsWith("/")) {
+				// WO/03/001333 => 03/001333
+				docNumber = docNumber.substring(1);
+			}
+			LOGGER.info("Removed duplicate CountryCode '{}' -- from: '{}' doc-number: {} => {}",
+					countryCode.toString(), itemNode.getParent().getName(), docNumN.getText(), docNumber);
 		}
 
-		// Seems application number format changed in 2004 from short year to long year.
+		Node dateN = itemNode.selectSingleNode("date");
+		DocumentDate docDate = null;
+		if (dateN != null) {
+			try {
+				docDate = new DocumentDate(dateN.getText());
+			} catch (InvalidDataException e) {
+				LOGGER.warn("Failed to parse date from: {}", itemNode.asXML(), e);
+			}
+		}
+
+		/*
+		 * Normalize YEAR in application number, in 2004 they changed, from two digit year form to four digit year
+		 */
 		Matcher matcher = SHORT_YEAR.matcher(docNumber);
 		if (matcher.matches()) {
 			if (matcher.group(1).equals("0")) {
-				docNumber = "20" + docNumber;
-				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+				if (docDate != null && docDate.getYear() <= 2000) {
+					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}", matcher.group(0), docDate.getYear());
+				} else {
+					docNumber = "20" + docNumber;
+					LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+				}
 			} else if (matcher.group(1).equals("9")) {
-				docNumber = "19" + docNumber;
-				LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+				if (docDate != null && docDate.getYear() <= 1900 && docDate.getYear() > 2000 ) {
+					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}", matcher.group(0), docDate.getYear());
+				} else {
+					docNumber = "19" + docNumber;
+					LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+				}
 			}
 		}
 
@@ -100,13 +128,8 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		DocumentId documentId = new DocumentId(countryCode, docNumber, kindCode);
 		documentId.setRawText(docNumN.getText());
 
-		Node dateN = itemNode.selectSingleNode("date");
-		if (dateN != null) {
-			try {
-				documentId.setDate(new DocumentDate(dateN.getText()));
-			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date from: {}", itemNode.asXML(), e);
-			}
+		if (dateN != null && docDate != null) {
+			documentId.setDate(docDate);
 		}
 
 		return documentId;
