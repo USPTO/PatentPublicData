@@ -80,7 +80,9 @@ public class StringCaseUtil {
 			return null;
 		} else if (text.isEmpty()) {
 			return text;
-		}
+		} else if (text.trim().isEmpty()) {
+            return text.trim();
+        }
 
 		/*
 		 * If text is not all capitals then maintain capitals
@@ -90,7 +92,11 @@ public class StringCaseUtil {
 			maintainCapitals = true;
 		}
 
-		String[] words = text.split("\\s+");
+        /*
+         * Split on whitespace (after after trimming leading and trailing
+         * whitespace.)
+         */
+		String[] words = text.trim().split("\\s+");
 
 		boolean inBlock = false;
 		char wantCloseBlockChar = '?';
