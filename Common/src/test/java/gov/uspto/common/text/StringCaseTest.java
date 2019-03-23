@@ -18,6 +18,7 @@ public class StringCaseTest {
 	static {
 		TitleValidFromTo.put(null, null); // null returns null.
 		TitleValidFromTo.put("", ""); // empty returns empty.
+		TitleValidFromTo.put(" Leading space ", "Leading Space"); // Test for Fixed #58 index out of range when leading space.
 		TitleValidFromTo.put("LED Lamp", "LED Lamp");
 		TitleValidFromTo.put("Light emitting diode lamp", "Light Emitting Diode Lamp");
 		TitleValidFromTo.put("LIGHT-EMITTING DIODE CIRCLE LAMP", "Light-emitting Diode Circle Lamp");
