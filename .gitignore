@@ -21,3 +21,15 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+
+# IDE and Java Project Files #
+##############################
+.settings/
+BulkDownloader/.settings/org.eclipse.core.resources.prefs
+BulkDownloader/.settings/org.eclipse.jdt.apt.core.prefs
+Common/.settings/org.eclipse.core.resources.prefs
+Common/.settings/org.eclipse.jdt.apt.core.prefs
+PatentDocument/.settings/org.eclipse.core.resources.prefs
+PatentDocument/.settings/org.eclipse.jdt.apt.core.prefs
+
