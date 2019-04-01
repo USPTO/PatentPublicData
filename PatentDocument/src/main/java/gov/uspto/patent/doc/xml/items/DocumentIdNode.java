@@ -58,16 +58,16 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		String docNumber = docNumN.getText();
 
 		/*
-		 * Normalize CountryCode duplicate occurrence, appears in country and doc number fields.
+		 * Fix for duplication of CountryCode, country reappears in the doc number field
 		 */
-		if (docNumber.substring(0, 2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
+		if (docNumber.length() > 2 && docNumber.substring(0, 2).equalsIgnoreCase(countryCode.toString())) {
 			// WO 2005/023894 => 2005/023894
 			docNumber = docNumber.substring(2).trim();
 			if (docNumber.startsWith("/")) {
 				// WO/03/001333 => 03/001333
 				docNumber = docNumber.substring(1);
 			}
-			LOGGER.info("Removed duplicate CountryCode '{}' -- from: '{}' doc-number: {} => {}",
+			LOGGER.debug("Removed duplicate CountryCode '{}' -- from: '{}' doc-number: {} => {}",
 					countryCode.toString(), itemNode.getParent().getName(), docNumN.getText(), docNumber);
 		}
 
@@ -82,23 +82,28 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		}
 
 		/*
-		 * Normalize YEAR in application number, in 2004 they changed, from two digit year form to four digit year
+		 * Normalize YEAR in application number, in 2004 they changed, from two digit
+		 * year form to four digit year
 		 */
 		Matcher matcher = SHORT_YEAR.matcher(docNumber);
 		if (matcher.matches()) {
 			if (matcher.group(1).equals("0")) {
 				if (docDate != null && docDate.getYear() <= 2000) {
-					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}", matcher.group(0), docDate.getYear());
+					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}",
+							matcher.group(0), docDate.getYear());
 				} else {
 					docNumber = "20" + docNumber;
-					LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+					LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode,
+							docNumber);
 				}
 			} else if (matcher.group(1).equals("9")) {
-				if (docDate != null && docDate.getYear() <= 1900 && docDate.getYear() > 2000 ) {
-					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}", matcher.group(0), docDate.getYear());
+				if (docDate != null && docDate.getYear() <= 1900 && docDate.getYear() > 2000) {
+					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}",
+							matcher.group(0), docDate.getYear());
 				} else {
 					docNumber = "19" + docNumber;
-					LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode, docNumber);
+					LOGGER.debug("Expanded Short Year, doc-number: {} => {}{}", matcher.group(0), countryCode,
+							docNumber);
 				}
 			}
 		}
