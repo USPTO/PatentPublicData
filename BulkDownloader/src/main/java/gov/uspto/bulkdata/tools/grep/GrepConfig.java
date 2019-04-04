@@ -42,7 +42,10 @@ public class GrepConfig extends BulkReaderArguments {
 				.describedAs("XPath - XML node to perform match on");
 
 		opParser.acceptsAll(asList("regex", "regexp", "e")).withOptionalArg().ofType(String.class).describedAs(
-				"Regex Pattern; flags 'i' for ignore-case and 'f' for full-match; \"'regex1~i','\regex2~if' ");
+				"Regex Pattern; multiple patterns are allowed with multiple occurance, flags 'i' for ignore-case and 'f' for full-match; \"'regex1~i','\regex2~if' ");
+
+		opParser.accepts("regexs").withOptionalArg().ofType(String.class).describedAs(
+				"Regex Patterns; multiple patterns seperated with comma; flags 'i' for ignore-case and 'f' for full-match; \"'regex1~i','\regex2~if' ");
 
 		opParser.acceptsAll(asList("not", "invert-match", "v")).withOptionalArg().ofType(Boolean.class)
 				.describedAs("Records NOT matching").defaultsTo(false);
@@ -82,11 +85,16 @@ public class GrepConfig extends BulkReaderArguments {
 		/*
 		 * Regex Options
 		 * 
-		 * "'regex1~i','regex2'
+		 * --regexs="'regex1~i','regex2'"
 		 */
-		if (options.has("regex")) {
+		if (options.has("regexs")) {
 			String regexStr = (String) options.valueOf("regex");
 			setRegex(RegexArguments.parseString(regexStr));
+		}
+		if (options.has("regex")) {
+			@SuppressWarnings("unchecked")
+			List<String> regexs = (List<String>) options.valuesOf("regex");
+			setRegex(RegexArguments.parseString(regexs));
 		}
 
 		if (options.has("max-count")) {

@@ -53,8 +53,8 @@ public class DownloadConfig extends BulkReaderArguments {
 				.describedAs("Patent Document Type [grant, application, gazette] ; type=? will show available types.")
 				.required();
 
-		opParser.accepts("fetch-date").withRequiredArg().ofType(String.class)
-				.describedAs("Single Date Range or list, example: 20150801-20150901,20160501-20160601").required();
+		opParser.accepts("fetch-date").withOptionalArg().ofType(String.class)
+				.describedAs("Single Date Range or list, example: 20150801-20150901,20160501-20160601");
 
 		opParser.accepts("fetch-limit").withOptionalArg().ofType(Integer.class)
 				.describedAs("download file limit ; 0 is unlimited").defaultsTo(0);
