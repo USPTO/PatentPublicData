@@ -1,7 +1,5 @@
 package gov.uspto.common.io;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Partition Predicate with threshold on line record row count and file size
  * 
@@ -9,16 +7,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 public class PartitionPredicateDefault implements PartitionPredicate {
-	private AtomicInteger recordCount = new AtomicInteger(0);
-	private AtomicInteger currentSize = new AtomicInteger(0);
+	private int recordCount = 0;
+	private long currentSize = 0;
 
 	private final int recordLimit;
-	private final int sizeLimitMB;
+	private final long sizeLimitMB;
 
+	/**
+	 * Uses recordLimit default of Integer.MAX_VALUE (2,147,483,647).
+	 * @param sizeLimitMB - size limit in MB
+	 */
 	PartitionPredicateDefault(final int sizeLimitMB) {
 		this(Integer.MAX_VALUE, sizeLimitMB);
 	}
 
+	/**
+	 * @param recordLimit - integer with max value of 2,147,483,647 is large enough to keep partition size digestible
+	 * @param sizeLimitMB - size limit in MB
+	 */
 	PartitionPredicateDefault(final int recordLimit, final int sizeLimitMB) {
 		this.recordLimit = recordLimit;
 		this.sizeLimitMB = sizeLimitMB * 1048576;
@@ -26,9 +32,9 @@ public class PartitionPredicateDefault implements PartitionPredicate {
 
 	@Override
 	public boolean thresholdReached(String str) {
-		currentSize.addAndGet(str.length());
-		recordCount.incrementAndGet();
-		if (recordCount.intValue() == recordLimit || currentSize.intValue() >= sizeLimitMB) {
+		currentSize += str.length();
+		recordCount++;
+		if (recordCount == recordLimit || currentSize >= sizeLimitMB) {
 			return true;
 		}
 		return false;
@@ -36,8 +42,8 @@ public class PartitionPredicateDefault implements PartitionPredicate {
 
 	@Override
 	public void restCounts() {
-		recordCount.set(0);
-		currentSize.set(0);
+		recordCount = 0;
+		currentSize = 0;
 	}
 
 	@Override
