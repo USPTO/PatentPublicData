@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.xml.items;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import gov.uspto.patent.model.entity.NamePerson;
  * Address Book Node
  * 
  * <p>
+ * 
  * <pre>
  * {@code
  * <!ELEMENT addressbook ((%name_group;, address?, phone*, fax*, email*, url*, ead*, dtext?) | text)>
@@ -42,6 +44,9 @@ public class AddressBookNode extends ItemReader<Name> {
 
 	private static final String ITEM_NODE_NAME = "addressbook";
 	private static final String ITEM_ELSE_PREFIX = "-examiner";
+
+	public static final Set<String> COMMON_SUFFIXES = new HashSet<String>(
+			Arrays.asList("JR", "SR", "II", "III", "IV", "ESQ"));
 
 	public AddressBookNode(Node itemNode) {
 		super(itemNode, ITEM_NODE_NAME, ITEM_ELSE_PREFIX);
@@ -78,6 +83,25 @@ public class AddressBookNode extends ItemReader<Name> {
 
 		Node suffixN = itemNode.selectSingleNode("suffix");
 		String suffix = suffixN != null ? suffixN.getText() : null;
+
+		/*
+		 * Parse Common Suffixes from Lastname
+		 */
+		if (suffix == null && lastName != null && lastName.contains(",")) {
+			String[] parts = lastName.split(",");
+			if (parts.length == 2) {
+				String suffixCheck = parts[1].trim().replaceFirst("\\.$", "").toUpperCase();
+				if (suffixCheck.length() < 4 && COMMON_SUFFIXES.contains(suffixCheck)) {
+					LOGGER.debug("Suffix Fixed, parsed common suffix '{}' from lastname: '{}'", suffixCheck, lastName);
+					lastName = parts[0];
+					suffix = suffixCheck;
+				}
+				// else if (suffixCheck.length() < 4) {
+				// LOGGER.warn("Possible Suffix, not found in common suffixes: {}",
+				// suffixCheck);
+				// }
+			}
+		}
 
 		List<Node> synonymNodes = itemNode.selectNodes("synonym");
 		Set<String> synonyms = new HashSet<String>(synonymNodes.size());
