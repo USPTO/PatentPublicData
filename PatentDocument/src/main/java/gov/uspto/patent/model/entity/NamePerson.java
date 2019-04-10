@@ -5,7 +5,7 @@ import org.apache.commons.text.WordUtils;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
-import gov.uspto.common.text.StringCaseUtil;
+import gov.uspto.common.text.NameUtil;
 import gov.uspto.patent.InvalidDataException;
 
 public class NamePerson extends Name {
@@ -19,11 +19,32 @@ public class NamePerson extends Name {
 	}
 
 	public NamePerson(String firstName, String middleName, String lastName) {
-		super(buildFullName(firstName, middleName, lastName));
-
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;
+	}
+
+	@Override
+	public String getName() {
+		StringBuilder sb = new StringBuilder();
+		if (!Strings.isNullOrEmpty(lastName)) {
+			sb.append(lastName).append(", ");
+		}
+
+		if (!Strings.isNullOrEmpty(firstName)) {
+			sb.append(Joiner.on(" ").skipNulls().join(firstName, middleName));
+		}
+
+		if (!Strings.isNullOrEmpty(super.getSuffix())) {
+			sb.append(", ").append(super.getSuffix());
+		}
+
+		return sb.toString().trim();
+	}
+
+	@Override
+	public String getNameNormalizeCase() {
+		return NameUtil.normalizeCase(getName());
 	}
 
 	public String getFirstName() {
@@ -39,7 +60,7 @@ public class NamePerson extends Name {
 	}
 
 	public boolean validate() throws InvalidDataException {
-		String fullName = super.getName();
+		String fullName = getName();
 
 		if (Strings.isNullOrEmpty(lastName)) {
 			throw new InvalidDataException("Invalid NamePerson, lastname can not be blank");
@@ -60,7 +81,7 @@ public class NamePerson extends Name {
 	 */
 	private String normalizeCase(String part) {
 		if (part.matches("^[A-Z]+$")) {
-			return StringCaseUtil.toTitleCase(part);
+			return NameUtil.normalizeCase(part);
 		} else {
 			return part;
 		}
@@ -78,8 +99,7 @@ public class NamePerson extends Name {
 			stb.append(", ");
 			stb.append(firstName.substring(0, 1).toUpperCase());
 			stb.append(".");
-
-			return stb.toString();
+			return NameUtil.normalizeCase(stb.toString());
 		} else {
 			return normalizeCase(lastName);
 		}
@@ -101,23 +121,11 @@ public class NamePerson extends Name {
 		return WordUtils.initials(stb.toString());
 	}
 
-	private static String buildFullName(String firstName, String middleName, String lastName) {
-		StringBuilder sb = new StringBuilder();
-		if (!Strings.isNullOrEmpty(lastName)) {
-			sb.append(lastName).append(", ");
-		}
-
-		if (!Strings.isNullOrEmpty(firstName)) {
-			sb.append(Joiner.on(" ").skipNulls().join(firstName, middleName));
-		}
-
-		return sb.toString().trim();
-	}
-
 	@Override
 	public String toString() {
 		return "PersonName[firstName=" + firstName + ", middleName=" + middleName + ", lastName=" + lastName
-				+ ", fullName=" + super.getName() + ", prefix=" + super.getPrefix() + ", suffix=" + super.getSuffix()
+				+ ", fullName=" + getName() + ", prefix=" + super.getPrefix() + ", suffix=" + super.getSuffix()
 				+ ", synonym=" + super.getSynonyms() + "]";
 	}
+
 }

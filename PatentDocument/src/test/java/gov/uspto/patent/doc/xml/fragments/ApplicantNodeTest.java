@@ -40,7 +40,7 @@ public class ApplicantNodeTest {
 		//appls.forEach(System.out::println);
 
 		assertEquals("JACQUET DOE DISTRIBUTION", ((NameOrg) appls.get(0).getName()).getName());
-		assertEquals("Jacquet Doe Distribution", ((NameOrg) appls.get(0).getName()).getNameTitleCase());
+		assertEquals("Jacquet Doe Distribution", ((NameOrg) appls.get(0).getName()).getNameNormalizeCase());
 		assertEquals(CountryCode.FR, appls.get(0).getAddress().getCountry());
 		assertEquals("Paris", appls.get(0).getAddress().getCity());
 	}
