@@ -18,6 +18,10 @@ public class WordUtil {
 	private static List<String> LOWERCASE_WORDS = Arrays.asList(new String[] { "a", "an", "and", "as", "at", "but",
 			"by", "for", "in", "nor", "of", "off", "on", "or", "per", "so", "the", "to", "up", "via", "with", "yet" });
 
+	private static String VOWELS = "AEIOUYaeiouy";
+
+	private static String CONSONANTS = "bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ";
+
 	private static Map<Character, Character> surroundPairs = new HashMap<Character, Character>();
 	static {
 		surroundPairs.put('(', ')');
@@ -83,6 +87,39 @@ public class WordUtil {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Check for vowel (AEIOUY) Characters in Text
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasVowel(String str) {
+		return hasCharacter(str, VOWELS);
+	}
+
+	/**
+	 * Check for consonant Characters in Text
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasConsonant(String str) {
+		return hasCharacter(str, CONSONANTS);
+	}
+
+	/**
+	 * Check for both vowel and consonant Characters in Text
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasVowelAndConsonant(String str) {
+		return hasVowel(str) && hasConsonant(str);
 	}
 
 	/**
@@ -166,6 +203,21 @@ public class WordUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check for Capital Letters in Word or Sequence of Words
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean hasAllCapitals(String str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (Character.isLowerCase(str.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

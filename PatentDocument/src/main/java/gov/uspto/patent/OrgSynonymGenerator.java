@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Entity;
 import gov.uspto.patent.model.entity.NameOrg;
+import gov.uspto.patent.model.entity.NamePerson;
 
 /**
  * Company Synonym Expansion Generator
@@ -47,7 +48,7 @@ public class OrgSynonymGenerator {
 
 	// https://en.wikipedia.org/wiki/List_of_legal_entity_types_by_country
 	private static final Pattern ORG_SUFFIX_PATTERN = Pattern.compile(
-			"^(.+?),? (Co\\.?, [Ll]td|Co(?:\\.|mpany)?, LLC|(?:P\\.?)?(?:L\\.?)?L\\.?[CP]|[Pp][Ll][Cc]|(?:P(?:ty|TY|vt|VT|te|TE)[,\\.]? )?(?:L(?:td|TD)|Limited)|LLP|LTD|Inc(?:orporated)?|(?:G|Ges)?mbH|Cooperative Association Ltd|Limited Partnership|Ltda|(?:GmbH|Ltd\\.?|Limited|AG) & Co\\.? (?:KG(?:aA)?|OHG)|A[BGS]|(?:[Nn]aamloze|[Bb]esloten) [Vv]ennootschap|Kabu(?:sh|hs)iki Kaisha|[BN]\\.?\\s?V\\.?|S\\.?A\\.?(:?S\\.?)?|S\\.?p\\.?A\\.?|[SGL]\\.?P\\.?|A/S|S\\.?L\\.?|S\\.([Aa]\\.?)?[Rr]\\.[Ll]\\.?|K\\.?K\\.?)\\.?$");
+			"^(.+?),? (Co\\.?, [Ll]td|Co(?:\\.|mpany)?, LLC|(?:P\\.?)?(?:L\\.?)?L\\.?[CP]|[Pp][Ll][Cc]|(?:P(?:ty|TY|vt|VT|te|TE)[,\\.]? )?(?:L(?:td|TD)|Limited)|LLP|LTD|Inc(?:orporated)?|(?:G|Ges)?mbH|Cooperative Association Ltd|Limited Partnership|Ltda|(?:GmbH|Ltd\\.?|Limited|AG) & Co\\.? (?:[KO]G(?:aA)?|[Oo]HG)|A[BGS]|(?:[Nn]aamloze|[Bb]esloten) [Vv]ennootschap|Kabu(?:sh|hs)iki Kaisha|[BN]\\.?\\s?V\\.?|S\\.?A\\.?(:?S\\.?)?|S\\.?p\\.?A\\.?|[SGL]\\.?P\\.?|A/S|S\\.?L\\.?|S\\.([Aa]\\.?)?[Rr]\\.[Ll]\\.?|K\\.?K\\.?|S\\.A\\./N\\.V\\.)\\.?$");
 
 	private static final Pattern COMPANY_PATTERN = Pattern
 			.compile("(.+) ((?:Operating|Holding|Public Limited) Company|(?<!(:?&|[Aa]nd) )Co(?:\\.|mpany)|Corp(?:oration|orate|\\.)|CORPORATION|Coop(\\\\.?|erative)?(?: Association)?|Association|Incorporation|PTE|P\\.?[AC]\\.?),?$");
@@ -285,14 +286,21 @@ public class OrgSynonymGenerator {
 		MULTI_WORD_ABBREVS.put(" ip holding company", new String[]{" IPHC", " IP HC."});
 		MULTI_WORD_ABBREVS.put(" ip holding", new String[]{" IPHC", " IP HC."});
 		MULTI_WORD_ABBREVS.put(" ip hc", new String[]{" IPHC", " IP HC."});
+		MULTI_WORD_ABBREVS.put(" innovative properties", new String[]{" IP"});
+		MULTI_WORD_ABBREVS.put(" intellectual property", new String[]{" IP"}); // IP Law Firm
 		MULTI_WORD_ABBREVS.put(" intellectual property holding company", new String[]{" IPHC ", " IP HC."});
 		MULTI_WORD_ABBREVS.put(" intellectual property", new String[]{" IP"}); // IP Law Firm
+		MULTI_WORD_ABBREVS.put(" intelectual property", new String[]{" IP"}); // Miss-spelled IP Law Firm
 		MULTI_WORD_ABBREVS.put(" operating company", new String[]{" OC.", " OpCo "}); // OpCo, O.C.
+		MULTI_WORD_ABBREVS.put(" holding n.v.", new String[]{" HC."});
+		MULTI_WORD_ABBREVS.put(" holdings limited", new String[]{" HC."});
+		MULTI_WORD_ABBREVS.put(" holding limited", new String[]{" HC."});
+		MULTI_WORD_ABBREVS.put(" holdings company", new String[]{" HC."});
 		MULTI_WORD_ABBREVS.put(" holding company", new String[]{" HC."});
-		MULTI_WORD_ABBREVS.put(" holdings, inc", new String[]{" HC"});
-		MULTI_WORD_ABBREVS.put(" holdings inc", new String[]{" HC"});
-		MULTI_WORD_ABBREVS.put(" holdings, llc", new String[]{" HC"});
-		MULTI_WORD_ABBREVS.put(" holdings llc", new String[]{" HC"});
+		MULTI_WORD_ABBREVS.put(" holdings, inc", new String[]{" HC."});
+		MULTI_WORD_ABBREVS.put(" holdings inc", new String[]{" HC."});
+		MULTI_WORD_ABBREVS.put(" holdings, llc", new String[]{" HC."});
+		MULTI_WORD_ABBREVS.put(" holdings llc", new String[]{" HC."});
 		MULTI_WORD_ABBREVS.put(" public limited company", new String[]{" P.L.C", ""});
 		MULTI_WORD_ABBREVS.put(" patent law firm", new String[]{"", " Patent Law", " Pat. Law Firm", " Pat. Law Group", " Pat. Law Grp.",
 												" Patent Law Group", " Patent Law Firm", " Patent Law Grp."});
@@ -302,6 +310,15 @@ public class OrgSynonymGenerator {
 		MULTI_WORD_ABBREVS.put(" law firm", new String[]{"", " Law Group", " Law Grp."});
 		MULTI_WORD_ABBREVS.put(" et al.", new String[]{""});
 		MULTI_WORD_ABBREVS.put(" kabushiki kaisha", new String[]{"", " KK", " K.K.", " K.K"});
+		MULTI_WORD_ABBREVS.put(" research and development", new String[]{" R&D", " RND", "RAND", " Research and Dev"});
+		MULTI_WORD_ABBREVS.put(" science and technology", new String[]{" S&T", " SNT"});
+		MULTI_WORD_ABBREVS.put(" bio tech", new String[]{" Biotechnology", " bio-tech", " biotech"});
+		MULTI_WORD_ABBREVS.put(" pharm tech", new String[]{" pharma tech", " pharmtech", " pharm-tech"});
+		MULTI_WORD_ABBREVS.put(" med tech", new String[]{" medtech"});
+		MULTI_WORD_ABBREVS.put(" agricultural science", new String[]{" AgriScience", " AgriSci.", " Ag Sciences"});
+		MULTI_WORD_ABBREVS.put(" physical therapy", new String[]{" PT."});
+		MULTI_WORD_ABBREVS.put(" health care", new String[]{"HHC."});
+		MULTI_WORD_ABBREVS.put(" dental care", new String[]{"DC."});
 	}
 
 	protected void multiWordAbbrev(NameOrg name) {
@@ -407,6 +424,7 @@ public class OrgSynonymGenerator {
 		ABBREVS.put("s.p.a", new String[]{"Societa per Azioni", "Società per Azioni", "Sociedad por Acciones", "SpA", ""}); // S.p.A. valid in USA (Connecticut), mostly many other countries. Società Per Azioni (italian), Sociedad por Acciones
 		ABBREVS.put("s.a", new String[]{""}); // France, Canada,... S.A => Société anonyme (French) Sociedad Anónima (Spanish) Sociedade Anônima (Brazil) ... 
 		ABBREVS.put("sa", new String[]{""}); // France, Canada,...
+		ABBREVS.put("s.a/n.v", new String[]{"", "naamloze vennootschap", "NV"});
 		ABBREVS.put("a/s", new String[]{"aktieselskab", ""}); // Danish
 		ABBREVS.put("i/s", new String[]{"interessentskab", ""}); // Danish
 		ABBREVS.put("k/s", new String[]{"kommanditselskab", ""}); // Danish
@@ -414,15 +432,20 @@ public class OrgSynonymGenerator {
 		ABBREVS.put("mfg", new String[]{"Manufacturing"});
 		ABBREVS.put("mgmt", new String[]{"Management"});
 		ABBREVS.put("labs", new String[]{"Labratories"});
+		ABBREVS.put("r&d", new String[]{"research and development", "RND", "RAND"});
+		ABBREVS.put("d/b/a", new String[]{" doing buisness as"});
+		ABBREVS.put("dba", new String[]{" doing buisness as"});
 	}
 
 	private static Map<String, String[]> WORD_TO_ABBREVS = new HashMap<String, String[]>();
 	static {
+		WORD_TO_ABBREVS.put("college", new String[]{"Coll."});
 		WORD_TO_ABBREVS.put("company", new String[]{"Co."});
 		WORD_TO_ABBREVS.put("corporation", new String[]{"Corp."});
 		WORD_TO_ABBREVS.put("corporate", new String[]{"Corp."});
 		WORD_TO_ABBREVS.put("incorporated", new String[]{"Inc.", ""});
 		WORD_TO_ABBREVS.put("incorporation", new String[]{"Inc.", ""});
+		WORD_TO_ABBREVS.put("hospital", new String[]{"Hosp."});
 		WORD_TO_ABBREVS.put("limited", new String[]{"Ltd.", ""});
 		WORD_TO_ABBREVS.put("limitada", new String[] {"Ltda.", "Lda.", ""}); // Spanish and Portuguese  Ltda. or Lda
 		WORD_TO_ABBREVS.put("handelsbolag", new String[]{"HB", ""});
@@ -450,28 +473,40 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("osakeyhtio", new String[]{"Oy", "Osakeyhtiö", ""}); // Finnish
 		WORD_TO_ABBREVS.put("osakeyhtiö", new String[]{"Oy", "Osakeyhtio", ""}); // Finnish
 		WORD_TO_ABBREVS.put("partnerschaftsgesellschaft", new String[]{"mbB", ""}); // Germany
+		WORD_TO_ABBREVS.put("fabrication", new String[]{"Fab.", "Fabn."});
 		WORD_TO_ABBREVS.put("manufacturing", new String[]{"Mfg."});
 		WORD_TO_ABBREVS.put("management", new String[]{"Mgmt."});
+		WORD_TO_ABBREVS.put("appliances", new String[]{"Appl."});
+		WORD_TO_ABBREVS.put("appliance", new String[]{"Appl."});
 		WORD_TO_ABBREVS.put("laboratory", new String[]{"Lab"});
 		WORD_TO_ABBREVS.put("industry", new String[]{"Ind."});
 		WORD_TO_ABBREVS.put("institute", new String[]{"Inst."});
 		WORD_TO_ABBREVS.put("services", new String[]{"Svcs."});
 		WORD_TO_ABBREVS.put("service", new String[]{"Svc."});
+		WORD_TO_ABBREVS.put("design", new String[]{"DESG.", "Dsgn."});
 		WORD_TO_ABBREVS.put("products", new String[]{"Prod."});
 		WORD_TO_ABBREVS.put("product", new String[]{"Prod."});
 		WORD_TO_ABBREVS.put("systems", new String[]{"Sys."});
 		WORD_TO_ABBREVS.put("system", new String[]{"Sys."});
 		WORD_TO_ABBREVS.put("information", new String[]{"Info."});
+		WORD_TO_ABBREVS.put("innovation", new String[]{"Innov."});
 		WORD_TO_ABBREVS.put("partnership", new String[]{"Partners"});
+		WORD_TO_ABBREVS.put("pharmaceutica", new String[]{"Pharma.", "Pharm"});
+		WORD_TO_ABBREVS.put("pharmaceutical", new String[]{"Pharma.", "Pharm"});
 		WORD_TO_ABBREVS.put("pharmaceuticals", new String[]{"Pharma.", "Pharm"});
+		WORD_TO_ABBREVS.put("biopharmaceutical", new String[]{"BioPharma.", "BioPharm"});
+		WORD_TO_ABBREVS.put("biopharmaceuticals", new String[]{"BioPharma.", "BioPharm"});
 		WORD_TO_ABBREVS.put("industries", new String[]{"Ind."});
 		WORD_TO_ABBREVS.put("international", new String[]{"Intl."});
 		WORD_TO_ABBREVS.put("internacional", new String[]{"Intl.", "International"}); // spanish spelling with "c"
+		WORD_TO_ABBREVS.put("organization", new String[]{"Org."});
 		WORD_TO_ABBREVS.put("association", new String[]{"Assoc."});
 		WORD_TO_ABBREVS.put("asociación", new String[]{"Assoc."});
 		WORD_TO_ABBREVS.put("associates", new String[]{"Assocs."});
+		WORD_TO_ABBREVS.put("advanced", new String[]{"Adv."});
 		WORD_TO_ABBREVS.put("engineering", new String[]{"Eng."});
 		WORD_TO_ABBREVS.put("cooperative", new String[]{"Coop."});
+		WORD_TO_ABBREVS.put("enterprises", new String[]{"Ent."});
 		WORD_TO_ABBREVS.put("enterprise", new String[]{"Ent."});
 		WORD_TO_ABBREVS.put("agency", new String[]{"Agcy."});
 		WORD_TO_ABBREVS.put("consultancy", new String[]{"consultant", "consult"});
@@ -490,6 +525,7 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("graphics", new String[]{"GFX."});
 		WORD_TO_ABBREVS.put("mobility", new String[]{"mobile"});
 		WORD_TO_ABBREVS.put("university", new String[]{"Uni.", "Univ"});
+		WORD_TO_ABBREVS.put("foundation", new String[]{"fdn.", "fndn."});
 		WORD_TO_ABBREVS.put("institute", new String[] {"Inst."});
 		WORD_TO_ABBREVS.put("research", new String[]{"Res."});
 		WORD_TO_ABBREVS.put("performance", new String[]{"Perform."});
@@ -497,24 +533,45 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("technology", new String[]{"Tech.", "Technol."});
 		WORD_TO_ABBREVS.put("technologies", new String[]{"Tech.", "Technol."});
 		WORD_TO_ABBREVS.put("nanotechnology", new String[]{"NanoTech."});
-		WORD_TO_ABBREVS.put("biotechnology", new String[]{"Biotech."});
+		WORD_TO_ABBREVS.put("biotechnology", new String[]{"Biotech.", "Bio-tech"});
+		WORD_TO_ABBREVS.put("agriscience", new String[]{"Agricultural Science"});
+		WORD_TO_ABBREVS.put("dentistry", new String[]{"Dent."});
+		WORD_TO_ABBREVS.put("dentist", new String[]{"Dent."});
+		WORD_TO_ABBREVS.put("cardiology", new String[]{"Cardio."});
+		WORD_TO_ABBREVS.put("cardiovascular", new String[]{"Cardio.", "CV."});
 		WORD_TO_ABBREVS.put("chemical", new String[]{"Chem."});
+		WORD_TO_ABBREVS.put("biosciences", new String[]{"Biosci."});
 		WORD_TO_ABBREVS.put("bioscience", new String[]{"Biosci."});
 		WORD_TO_ABBREVS.put("biochemical", new String[]{"BioChem."});
+		WORD_TO_ABBREVS.put("biochemicals", new String[]{"BioChem."});
 		WORD_TO_ABBREVS.put("biochemistry", new String[]{"BioChem."});
+		WORD_TO_ABBREVS.put("biologics", new String[]{"Bio.", "Biologic."});
 		WORD_TO_ABBREVS.put("biological", new String[]{"Bio.", "Biologic."});
 		WORD_TO_ABBREVS.put("biologicals", new String[]{"Bio.", "Biologic."});
+		WORD_TO_ABBREVS.put("biopharmaceuticals", new String[]{"BioPharm.", "BioPharma."});
+		WORD_TO_ABBREVS.put("biopharma", new String[]{"biopharmaceuticals", "BioPharm."});
 		WORD_TO_ABBREVS.put("property", new String[]{"Prop.", "Propty."});
 		WORD_TO_ABBREVS.put("security", new String[]{"Sec.", "Secur."});
 		WORD_TO_ABBREVS.put("national", new String[]{"NAT'L", "NATL"});
+		WORD_TO_ABBREVS.put("healthcare", new String[]{"HHC."});
+		WORD_TO_ABBREVS.put("dentalcare", new String[]{"DC."});
 		WORD_TO_ABBREVS.put("group", new String[]{"Grp."});
 		WORD_TO_ABBREVS.put("section", new String[]{"Sec."});
+		WORD_TO_ABBREVS.put("division", new String[]{"Div.", "Divn."});
 		WORD_TO_ABBREVS.put("physics", new String[]{"Phys."});
 		WORD_TO_ABBREVS.put("medical", new String[]{"Med."});
 		WORD_TO_ABBREVS.put("medicinal", new String[]{"Med."});
 		WORD_TO_ABBREVS.put("medicine", new String[]{"Med."});
 		WORD_TO_ABBREVS.put("sciences", new String[]{"Sci."});
 		WORD_TO_ABBREVS.put("science", new String[]{"Sci."});
+		WORD_TO_ABBREVS.put("surgical", new String[]{"Surg."});
+		WORD_TO_ABBREVS.put("scientifique", new String[]{"Sci."});
+		WORD_TO_ABBREVS.put("technique", new String[]{"Tech."});
+		WORD_TO_ABBREVS.put("industrial", new String[]{"Ind.", "Indust."});
+		WORD_TO_ABBREVS.put("construction", new String[]{"Const.", "Constr."});
+		WORD_TO_ABBREVS.put("equipment", new String[]{"Equip.", "Eqpt."});
+		WORD_TO_ABBREVS.put("Semiconductor", new String[]{"Semicon."});
+		WORD_TO_ABBREVS.put("machinery", new String[]{"Mach."});
 		WORD_TO_ABBREVS.put("nutrition", new String[]{"Nutr."});
 		WORD_TO_ABBREVS.put("trust", new String[]{"TRU."});
 		WORD_TO_ABBREVS.put("laboratories", new String[]{"Labs.", "Lab."});
@@ -528,6 +585,12 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("environmental", new String[]{"Environ."});
 		WORD_TO_ABBREVS.put("optics", new String[]{"Opt."});
 		WORD_TO_ABBREVS.put("optic", new String[]{"Opt."});
+		WORD_TO_ABBREVS.put("orthopedic", new String[]{"Ortho."});
+		WORD_TO_ABBREVS.put("orthopedics", new String[]{"Ortho."});
+		WORD_TO_ABBREVS.put("orthopaedics", new String[]{"Ortho."});
+		WORD_TO_ABBREVS.put("orthopaedic", new String[]{"Ortho."});
+		WORD_TO_ABBREVS.put("rehabilitation", new String[]{"Rehab."});
+		WORD_TO_ABBREVS.put("pediatrics", new String[]{"Peds."});
 		WORD_TO_ABBREVS.put("exploration", new String[]{"Explor.", "Expl."});
 		WORD_TO_ABBREVS.put("applied", new String[]{"Appl."});
 		WORD_TO_ABBREVS.put("toxicology", new String[]{"Toxicol."});
@@ -537,6 +600,7 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("phytopathology", new String[]{"Phytopathol."});
 		WORD_TO_ABBREVS.put("solutions", new String[]{"Soln."});
 		WORD_TO_ABBREVS.put("storage", new String[]{"Stg."});
+		WORD_TO_ABBREVS.put("diabetes", new String[]{"Diab.", "Dia."});
 		//WORD_TO_ABBREVS.put("network", new String[]{"Netwrk.", "Ntwrk"});
 		WORD_TO_ABBREVS.put("licensing", new String[]{"license", "licence", "licencing"});
 		WORD_TO_ABBREVS.put("lecensing", new String[]{"license", "licence", "licencing"});

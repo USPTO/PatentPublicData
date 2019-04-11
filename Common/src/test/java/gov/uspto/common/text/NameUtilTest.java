@@ -89,5 +89,48 @@ public class NameUtilTest {
 		assertEquals("John Doe", actual2[0]);
 		assertEquals("VI", actual2[1]);
 	}
-	
+
+	@Test
+	public void orgName() {
+		String companyName = "B&B TECHNOLOGIES L.P.";
+		String actual = NameUtil.normalizeOrgNameCase(companyName);
+		assertEquals("B&B Technologies L.P.", actual);
+
+		String companyName2 = "BB TECHNOLOGIES L.P.";
+		String actual2 = NameUtil.normalizeOrgNameCase(companyName2);
+		assertEquals("BB Technologies L.P.", actual2);
+
+		String companyName3 = "THE UNIVERSITY OF CALIFORNIA";
+		String actual3 = NameUtil.normalizeOrgNameCase(companyName3);
+		assertEquals("The University of California", actual3);
+
+		String companyName4 = "L'OREAL";
+		String actual4 = NameUtil.normalizeOrgNameCase(companyName4);
+		assertEquals("L'Oreal", actual4);
+
+		String companyName5 = "MCDONALD'S";
+		String actual5 = NameUtil.normalizeOrgNameCase(companyName5);
+		assertEquals("McDonald's", actual5);
+
+		String companyName6 = "VIA TECHNOLOGIES, INC.";
+		String actual6 = NameUtil.normalizeOrgNameCase(companyName6);
+		assertEquals("Via Technologies, Inc.", actual6);
+
+		String companyName7 = "VIA OF THE LEHIGH VALLEY";
+		String actual7 = NameUtil.normalizeOrgNameCase(companyName7);
+		assertEquals("Via of the Lehigh Valley", actual7);
+
+		String companyName8 = "3SHAPE A/S";
+		String actual8 = NameUtil.normalizeOrgNameCase(companyName8);
+		assertEquals("3Shape A/S", actual8);
+
+		String companyName9 = "COLGATE-PALMOLIVE COMPANY";
+		String actual9 = NameUtil.normalizeOrgNameCase(companyName9);
+		assertEquals("Colgate-Palmolive Company", actual9);
+
+		// Maintain case of mixed case words.
+		String companyName10 = "SharkNinja Operating LLC";
+		String actual10 = NameUtil.normalizeOrgNameCase(companyName10);
+		assertEquals("SharkNinja Operating LLC", actual10);
+	}
 }

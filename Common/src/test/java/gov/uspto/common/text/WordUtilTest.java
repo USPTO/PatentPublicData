@@ -107,6 +107,48 @@ public class WordUtilTest {
 	}
 
 	@Test
+	public void hasVowels() {
+		boolean found = WordUtil.hasVowel("Apple");
+		assertEquals(true, found);
+
+		boolean found2 = WordUtil.hasVowel("1234");
+		assertEquals(false, found2);
+
+		boolean found3 = WordUtil.hasVowel("BSTMR");
+		assertEquals(false, found3);
+	}
+
+	@Test
+	public void hasConsonant() {
+		boolean found = WordUtil.hasConsonant("BSTMR");
+		assertEquals(true, found);
+
+		boolean found2 = WordUtil.hasConsonant("1234");
+		assertEquals(false, found2);
+	}
+
+	@Test
+	public void hasVowelAndConsonant() {
+		boolean found = WordUtil.hasVowelAndConsonant("Apple");
+		assertEquals(true, found);
+
+		boolean found2 = WordUtil.hasVowelAndConsonant("BSTMR");
+		assertEquals(false, found2);
+	}
+
+	@Test
+	public void hasAllCapitals() {
+		String check = "AEIOU";
+		assertTrue(check, WordUtil.hasAllCapitals(check));
+
+		String check2 = "AEIOUaa";
+		assertFalse(check2, WordUtil.hasAllCapitals(check2));
+
+		String check3 = "AEIOU AEIOU";
+		assertTrue(check3, WordUtil.hasAllCapitals(check3));
+	}
+
+	@Test
 	public void wordCount() {
 		int wordCount = WordUtil.countWords("Wireless LAN", new char[] { ' ' });
 		assertEquals(2, wordCount);

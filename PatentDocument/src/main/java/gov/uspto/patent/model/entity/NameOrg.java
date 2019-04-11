@@ -1,8 +1,8 @@
 package gov.uspto.patent.model.entity;
 
 import java.text.Normalizer;
-import java.util.Arrays;
 
+import gov.uspto.common.text.NameUtil;
 import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.InvalidDataException;
 
@@ -19,9 +19,12 @@ public class NameOrg extends Name {
 		return fullName;
 	}
 
+	/**
+	 * Get name normalized if all capitals, else get name as is.
+	 */
 	@Override
 	public String getNameNormalizeCase() {
-		return StringCaseUtil.toTitleCase(getName());
+		return NameUtil.normalizeOrgNameCase(getName());
 	}
 
 	/**

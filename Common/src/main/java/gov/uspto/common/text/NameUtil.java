@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import com.google.common.base.Joiner;
 
 /**
- * Utility for normalizing people names.
+ * Utility for normalizing names of companies and people.
  *
  * @author Brian G. Feldman <brian.feldman@uspto.gov>
  *
@@ -22,10 +22,16 @@ public class NameUtil {
 	private static final Set<String> lowerCaseLeadSurname = new HashSet<String>(Arrays.asList("van", "de", "da", "do",
 			"du", "den", "der", "bin", "la", "le", "na", "te", "ter", "ten", "von", "della", "van't"));
 
+	private static Set<String> LOWERCASE_WORDS = new HashSet<String>(
+			Arrays.asList("and", "by", "for", "in", "of", "off", "on", "or", "the", "to", "up", "via", "with"));
+
 	private static final Pattern surnamePrefixes = Pattern.compile("^(Ma?c|[A-Z]['’])(.+)$", Pattern.CASE_INSENSITIVE);
 
+	private static final Pattern orgPrefixes = Pattern.compile("^(Ma?c|[A-Z]['’]|[0-9]{1,2})(.+)$",
+			Pattern.CASE_INSENSITIVE);
+
 	/**
-	 * Normalize Name Case
+	 * Normalize Case on People Names
 	 *
 	 * @param text
 	 * @return
@@ -98,7 +104,6 @@ public class NameUtil {
 	 *         String["input lastname"]
 	 * 
 	 */
-	@SuppressWarnings("unused")
 	public static String[] lastnameSuffix(String surname) {
 		String[] parts = surname.split(",");
 		if (parts.length == 2) {
@@ -109,6 +114,42 @@ public class NameUtil {
 		}
 
 		return new String[] { surname };
+	}
+
+	/**
+	 * Normalize Case on Company Names
+	 * 
+	 * @param companyName
+	 * @return
+	 */
+	public static String normalizeOrgNameCase(String companyName) {
+		Matcher matcher = orgPrefixes.matcher("");
+
+		String[] words = companyName.trim().split("\\s+");
+
+		for (int i = 0; i < words.length; i++) {
+			if (words[i].length() < 5 && WordUtil.hasCharacter(words[i].replaceFirst("\\.$", ""), "&./")) {
+				words[i] = words[i].toUpperCase();
+			} else if (words.length > 2 && LOWERCASE_WORDS.contains(words[i].toLowerCase())) {
+				if (i == 0) {
+					words[i] = capitalizeFirstLetter(words[i]);
+				} else {
+					words[i] = words[i].toLowerCase();
+				}
+			} else if (matcher.reset(words[i]).matches()) {
+				words[i] = capitalizeFirstLetter(matcher.group(1)) + capitalizeFirstLetter(matcher.group(2));
+			} else if (words[i].length() < 3) {
+				words[i] = words[i].toUpperCase();
+			} else if (WordUtil.hasVowelAndConsonant(words[i])) {
+				if (WordUtil.hasAllCapitals(words[i])) {
+					words[i] = capitalizeFirstLetter(words[i]);
+					words[i] = normHyphenWord(words[i]);
+				}
+			} else {
+				words[i] = words[i].toUpperCase();
+			}
+		}
+		return (Joiner.on(" ").join(words));
 	}
 
 }
