@@ -22,6 +22,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
 
 	private static final String FRAGMENT_PATH = "//assignees/assignee";
+	private static final String APPLICANT_ASSIGNEE_PATH = "//us-parties/us-applicants/us-applicant[@applicant-authority-category='assignee']";
 
 	public AssigneeNode(Document document) {
 		super(document);
@@ -31,9 +32,23 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	public List<Assignee> read() {
 		List<Assignee> assigneeList = new ArrayList<Assignee>();
 
-		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
+		List<Node> applicantAssignees = document.selectNodes(APPLICANT_ASSIGNEE_PATH);
+		if (!applicantAssignees.isEmpty()) {
+			assigneeList.addAll(readEntityNodes(applicantAssignees));
+		}
 
-		for (Node node : assignees) {
+		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
+		if (!assignees.isEmpty()) {
+			assigneeList.addAll(readEntityNodes(assignees));
+		}
+
+		return assigneeList;
+	}
+	
+	private List<Assignee> readEntityNodes(List<Node> nodes) {
+		List<Assignee> assigneeList = new ArrayList<Assignee>();
+
+		for (Node node : nodes) {
 
 			AddressBookNode addressBook;
 			if (node.selectSingleNode("addressbook") != null) {
