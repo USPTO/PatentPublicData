@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.parser.dom4j.Dom4jUtil;
 import gov.uspto.patent.InvalidDataException;
@@ -66,7 +65,6 @@ public class GrantParser extends Dom4JParser {
         }
 
         String title = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-grant/invention-title");
-        title = StringCaseUtil.toTitleCase(title);
 
         String dateProduced = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-produced");
         String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");

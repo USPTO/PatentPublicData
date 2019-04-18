@@ -64,7 +64,6 @@ public class ApplicationParser extends Dom4JParser {
         
         String title = Dom4jUtil.getTextOrNull(document,
                 XML_ROOT + "/us-bibliographic-data-application/invention-title");
-        title = StringCaseUtil.toTitleCase(title);
 
         String dateProduced = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-produced");
         String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");
