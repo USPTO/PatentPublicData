@@ -20,6 +20,7 @@ import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.model.Abstract;
@@ -115,7 +116,10 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("assignees", mapAssignees(patent.getAssignee()));
         builder.add("examiners", mapExaminers(patent.getExaminers()));
 
-        builder.add("title", valueOrEmpty(patent.getTitle()));
+        JsonObjectBuilder titleObj = Json.createObjectBuilder();
+        titleObj.add("raw", valueOrEmpty(patent.getTitle()));
+        titleObj.add("normalized", valueOrEmpty(StringCaseUtil.toTitleCase(patent.getTitle())));
+        builder.add("title", titleObj);
 
         builder.add("abstract", mapAbstract(patent.getAbstract()));
 
@@ -459,23 +463,28 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         if (name instanceof NamePerson) {
             NamePerson perName = (NamePerson) name;
             jsonObj.add("type", "person");
-            jsonObj.add("raw", valueOrEmpty(perName.getName()));
+            jsonObj.add("name", valueOrEmpty(perName.getName()));
+            jsonObj.add("name_normcase", valueOrEmpty(perName.getNameNormalizeCase()));
             jsonObj.add("prefix", valueOrEmpty(perName.getPrefix()));
             jsonObj.add("firstName", valueOrEmpty(perName.getFirstName()));
             jsonObj.add("middleName", valueOrEmpty(perName.getMiddleName()));
             jsonObj.add("lastName", valueOrEmpty(perName.getLastName()));
             jsonObj.add("suffix", valueOrEmpty(perName.getPrefix()));
-            jsonObj.add("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
             jsonObj.add("synonyms", toJsonArray(perName.getSynonyms()));
+            jsonObj.add("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
+            jsonObj.add("initials", valueOrEmpty(perName.getInitials()));
         } else {
             NameOrg orgName = (NameOrg) name;
             jsonObj.add("type", "org");
-            jsonObj.add("raw", valueOrEmpty(orgName.getName()));
+            jsonObj.add("name", valueOrEmpty(orgName.getName()));
+            jsonObj.add("name_normcase", valueOrEmpty(orgName.getNameNormalizeCase()));
             jsonObj.add("prefix", valueOrEmpty(orgName.getPrefix()));
             jsonObj.add("suffix", valueOrEmpty(orgName.getSuffix()));
-            
+
             new OrgSynonymGenerator().computeSynonyms(entity);
             jsonObj.add("synonyms", toJsonArray(orgName.getSynonyms()));
+            jsonObj.add("abbreviated", valueOrEmpty(orgName.getShortestSynonym()));
+            jsonObj.add("initials", valueOrEmpty(orgName.getInitials()));
         }
         return jsonObj.build();
     }

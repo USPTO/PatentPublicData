@@ -23,6 +23,7 @@ import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.TextType;
@@ -226,6 +227,7 @@ public class JsonMapperPATFT implements DocumentBuilder<Patent> {
 
 		// TITLE
 		builder.add("TTL", valueOrEmpty(patent.getTitle()));
+		builder.add("TTL_normcase", valueOrEmpty(StringCaseUtil.toTitleCase(patent.getTitle())));
 
 		builder.add("ABST", patent.getAbstract().getText(BODY_FORMAT));
 

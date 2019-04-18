@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
+import org.apache.commons.text.CaseUtils;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.model.Abstract;
@@ -107,7 +106,11 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	writeEntity("assignees", patent.getAssignee());
     	writeEntity("examiners", patent.getExaminers());
 
-    	jGenerator.writeStringField("title", valueOrEmpty(patent.getTitle()));
+    	jGenerator.writeFieldName("title");
+        jGenerator.writeStartObject();
+    	jGenerator.writeStringField("raw", valueOrEmpty(patent.getTitle()));
+    	jGenerator.writeStringField("normalized", valueOrEmpty(StringCaseUtil.toTitleCase(patent.getTitle())));
+    	jGenerator.writeEndObject();
 
     	writeAbstract("abstract", patent.getAbstract());
 
@@ -226,7 +229,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		Set<String> idTokens = new LinkedHashSet<String>();
 		if (docId != null) {
 			idTokens.add(docId.toText()); // full normalized.
-			idTokens.add(docId.getCountryCode() + docId.getDocNumber()); // without Kindcode.
+			idTokens.add(docId.toTextNoKind()); // without Kindcode.
 			//idTokens.add(docId.getRawText());
 
 			if (docId.getCountryCode() == CountryCode.US) {
@@ -249,8 +252,8 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
     private String valueOrEmpty(Enum<?> value) {
     	return value == null ? "" : value.toString();
-    }
- 
+    }  
+
     /**
      * Entities[Agents,Applicants,Inventor,Assignee,Examiner]
      * @param entities
@@ -300,22 +303,27 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         if (name instanceof NamePerson) {
             NamePerson perName = (NamePerson) name;
         	jGenerator.writeStringField("type", "person");
-        	jGenerator.writeStringField("raw", valueOrEmpty(perName.getName()));
+        	jGenerator.writeStringField("name", valueOrEmpty(perName.getName()));
+        	jGenerator.writeStringField("name_normcase", valueOrEmpty(perName.getNameNormalizeCase()));
         	jGenerator.writeStringField("prefix", valueOrEmpty(perName.getPrefix()));
         	jGenerator.writeStringField("firstName", valueOrEmpty(perName.getFirstName()));
         	jGenerator.writeStringField("middleName", valueOrEmpty(perName.getMiddleName()));
         	jGenerator.writeStringField("lastName", valueOrEmpty(perName.getLastName()));
         	jGenerator.writeStringField("suffix", valueOrEmpty(perName.getSuffix()));
         	jGenerator.writeStringField("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
+        	jGenerator.writeStringField("initials", valueOrEmpty(perName.getInitials()));
         	writeArray("synonyms", perName.getSynonyms());
         } else {
             NameOrg orgName = (NameOrg) name;
         	jGenerator.writeStringField("type", "org");
-        	jGenerator.writeStringField("raw", valueOrEmpty(orgName.getName()));
+        	jGenerator.writeStringField("name", valueOrEmpty(orgName.getName()));
+        	jGenerator.writeStringField("name_normcase", valueOrEmpty(orgName.getNameNormalizeCase()));
         	jGenerator.writeStringField("prefix", valueOrEmpty(orgName.getPrefix()));
         	jGenerator.writeStringField("suffix", valueOrEmpty(orgName.getSuffix()));
 
             new OrgSynonymGenerator().computeSynonyms(entity);
+        	jGenerator.writeStringField("abbreviated", valueOrEmpty(orgName.getShortestSynonym()));
+        	jGenerator.writeStringField("initials", valueOrEmpty(orgName.getInitials()));
         	writeArray("synonyms", orgName.getSynonyms());
         }
         
