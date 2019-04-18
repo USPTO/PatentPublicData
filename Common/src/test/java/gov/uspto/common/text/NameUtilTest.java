@@ -60,9 +60,9 @@ public class NameUtilTest {
 
 	@Test
 	public void normalizeCase_letterApostrophe() {
-		String name = "O’NEAL, shaquille";
+		String name = "O\u2019NEAL, shaquille";
 		String actual = NameUtil.normalizeCase(name);
-		assertEquals("O’Neal, Shaquille", actual);
+		assertEquals("O\u2019Neal, Shaquille", actual);
 
 		String name2 = "DINESH D'SOUZA";
 		String actual2 = NameUtil.normalizeCase(name2);
@@ -132,5 +132,10 @@ public class NameUtilTest {
 		String companyName10 = "SharkNinja Operating LLC";
 		String actual10 = NameUtil.normalizeOrgNameCase(companyName10);
 		assertEquals("SharkNinja Operating LLC", actual10);
+
+		// Maintain case of mixed case suffix
+		String companyName11 = "Anton Paar GmbH";
+		String actual11 = NameUtil.normalizeOrgNameCase(companyName11);
+		assertEquals("Anton Paar GmbH", actual11);
 	}
 }

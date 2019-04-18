@@ -25,9 +25,9 @@ public class NameUtil {
 	private static Set<String> LOWERCASE_WORDS = new HashSet<String>(
 			Arrays.asList("and", "by", "for", "in", "of", "off", "on", "or", "the", "to", "up", "via", "with"));
 
-	private static final Pattern surnamePrefixes = Pattern.compile("^(Ma?c|[A-Z]['’])(.+)$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern surnamePrefixes = Pattern.compile("^(Ma?c|[A-Z]['\u2019])(.+)$", Pattern.CASE_INSENSITIVE);
 
-	private static final Pattern orgPrefixes = Pattern.compile("^(Ma?c|[A-Z]['’]|[0-9]{1,2})(.+)$",
+	private static final Pattern orgPrefixes = Pattern.compile("^(Ma?c|[A-Z]['\u2019]|[0-9]{1,2})(.+)$",
 			Pattern.CASE_INSENSITIVE);
 
 	/**
@@ -128,6 +128,9 @@ public class NameUtil {
 		String[] words = companyName.trim().split("\\s+");
 
 		for (int i = 0; i < words.length; i++) {
+			if (WordUtil.isMixedCase(words[i])){
+				continue;
+			}
 			if (words[i].length() < 5 && WordUtil.hasCharacter(words[i].replaceFirst("\\.$", ""), "&./")) {
 				words[i] = words[i].toUpperCase();
 			} else if (words.length > 2 && LOWERCASE_WORDS.contains(words[i].toLowerCase())) {
