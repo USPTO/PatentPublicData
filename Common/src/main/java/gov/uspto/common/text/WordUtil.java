@@ -60,6 +60,33 @@ public class WordUtil {
 	}
 
 	/**
+	 * Check for both LowerCase and UpperCase Characters
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isMixedCase(String str) {
+		int upper = 0;
+		int lower = 0;
+		for (int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
+			if (Character.isUpperCase(ch)) {
+				upper++;
+				if (lower > 0) {
+					return true;
+				}
+			}
+			else if (Character.isLowerCase(ch)) {
+				lower++;
+				if (upper > 0) {
+					return true;
+				}
+			}
+		}
+		return upper > 0 && lower > 0;
+	}
+
+	/**
 	 * Check for ONLY Uppercase letters and numbers in Word or Sequence of Words
 	 * 
 	 * @param str

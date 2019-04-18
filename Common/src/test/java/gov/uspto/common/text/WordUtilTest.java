@@ -24,7 +24,7 @@ public class WordUtilTest {
 		// Removing only leading and tailing quotes.
 		String expect = "AN";
 
-		assertEquals(expect, WordUtil.removeSurrounding("“AN”"));
+		//assertEquals(expect, WordUtil.removeSurrounding("ï¿½ANï¿½"));
 		assertEquals(expect, WordUtil.removeSurrounding("(AN)"));
 		assertEquals(expect, WordUtil.removeSurrounding("[AN]"));
 		assertEquals(expect, WordUtil.removeSurrounding("{AN}"));
@@ -41,6 +41,12 @@ public class WordUtilTest {
 	public void isUpperAlphaNumbericTest() {
 		assertTrue("Uppercase Letters with Number", WordUtil.isUpperAlphaNumberic("TEST1"));
 		assertFalse("Lowercase Letters with Number", WordUtil.isUpperAlphaNumberic("test1"));
+	}
+	
+	@Test
+	public void isMixedCase() {
+		assertTrue(WordUtil.isMixedCase("GmbH"));
+		assertTrue(WordUtil.isMixedCase("SharkNinja Operating"));
 	}
 
 	@Test
