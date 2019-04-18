@@ -24,7 +24,7 @@ public class WordUtilTest {
 		// Removing only leading and tailing quotes.
 		String expect = "AN";
 
-		//assertEquals(expect, WordUtil.removeSurrounding("�AN�"));
+		assertEquals(expect, WordUtil.removeSurrounding("\u2018AN\u2019"));
 		assertEquals(expect, WordUtil.removeSurrounding("(AN)"));
 		assertEquals(expect, WordUtil.removeSurrounding("[AN]"));
 		assertEquals(expect, WordUtil.removeSurrounding("{AN}"));

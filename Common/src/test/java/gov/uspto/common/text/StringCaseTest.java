@@ -23,8 +23,8 @@ public class StringCaseTest {
 		TitleValidFromTo.put("PRICE-AFFIXING MACHINE", "Price-affixing Machine");
 		TitleValidFromTo.put("IN-LINE MIXER", "In-line Mixer");
 		TitleValidFromTo.put("Dual-Tip Marker", "Dual-tip Marker");
-		TitleValidFromTo.put("LIRIOPE MUSCARI PLANT NAMED ‘LIRF’", "Liriope Muscari Plant Named 'LIRF'");
-		TitleValidFromTo.put("CHESTNUT PLANT NAMED ‘AU BUCK IV’", "Chestnut Plant Named 'AU BUCK IV'");
+		TitleValidFromTo.put("LIRIOPE MUSCARI PLANT NAMED \u2018LIRF\u2019", "Liriope Muscari Plant Named 'LIRF'");
+		TitleValidFromTo.put("CHESTNUT PLANT NAMED \u2018AU BUCK IV\u2019", "Chestnut Plant Named 'AU BUCK IV'");
 		TitleValidFromTo.put("IN-WHEEL MOTOR WITH HIGH DURABILITY", "In-wheel Motor with High Durability");
 		TitleValidFromTo.put("WIND-POWERED PNEUMATIC ENGINE AND A MOTOR VEHICLE EQUIPPED WITH THE ENGINE",
 				"Wind-powered Pneumatic Engine and a Motor Vehicle Equipped with the Engine");

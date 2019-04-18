@@ -6,11 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.Joiner;
-
-import joptsimple.internal.Strings;
 
 public class StringCaseUtil {
 
@@ -133,16 +129,16 @@ public class StringCaseUtil {
 			 */
 			char firstChar = words[i].charAt(0);
 			char lastChar = words[i].charAt(words[i].length()-1);
-			if (('‘' == firstChar && '’' == lastChar) || '(' == firstChar && ')' == lastChar || (')' == lastChar && !inBlock)) {
-				if ('‘' == firstChar) {
+			if (('\u2018' == firstChar && '\u2019' == lastChar) || '(' == firstChar && ')' == lastChar || (')' == lastChar && !inBlock)) {
+				if ('\u2018' == firstChar) {
 					words[i] = "'" + words[i].substring(1, words[i].length()-1) + "'";
 				}
 				continue;
 			}
-			else if ('‘' == firstChar || '(' == firstChar || words[i].indexOf('(') != -1) {
-				if ('‘' == firstChar) {
+			else if ('\u2018' == firstChar || '(' == firstChar || words[i].indexOf('(') != -1) {
+				if ('\u2018' == firstChar) {
 					words[i] = "'" + words[i].substring(1);
-					wantCloseBlockChar = '’';
+					wantCloseBlockChar = '\u2019';
 				} else {
 					wantCloseBlockChar = ')';
 				}
@@ -150,7 +146,7 @@ public class StringCaseUtil {
 				continue;
 			}
 			else if (wantCloseBlockChar == lastChar) {
-				if ('’' == lastChar) {
+				if ('\u2019' == lastChar) {
 					words[i] = words[i].substring(0, words[i].length()-1) + "'";
 				}
 				inBlock = false;
