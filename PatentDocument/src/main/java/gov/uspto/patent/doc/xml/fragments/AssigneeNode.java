@@ -1,8 +1,11 @@
 package gov.uspto.patent.doc.xml.fragments;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -30,21 +33,25 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 	@Override
 	public List<Assignee> read() {
-		List<Assignee> assigneeList = new ArrayList<Assignee>();
+		Map<String, Assignee> assigneeList = new LinkedHashMap<String, Assignee>();
 
 		List<Node> applicantAssignees = document.selectNodes(APPLICANT_ASSIGNEE_PATH);
 		if (!applicantAssignees.isEmpty()) {
-			assigneeList.addAll(readEntityNodes(applicantAssignees));
+			for (Assignee assign : readEntityNodes(applicantAssignees)) {
+				assigneeList.put(assign.getName().getName().toLowerCase(), assign);
+			}
 		}
 
 		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
 		if (!assignees.isEmpty()) {
-			assigneeList.addAll(readEntityNodes(assignees));
+			for (Assignee assign : readEntityNodes(assignees)) {
+				assigneeList.put(assign.getName().getName().toLowerCase(), assign);
+			}
 		}
 
-		return assigneeList;
+		return new ArrayList<Assignee>(assigneeList.values());
 	}
-	
+
 	private List<Assignee> readEntityNodes(List<Node> nodes) {
 		List<Assignee> assigneeList = new ArrayList<Assignee>();
 
