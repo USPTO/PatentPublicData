@@ -31,6 +31,7 @@ import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DescSection;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DescriptionSection;
+import gov.uspto.patent.model.DocType;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
@@ -91,14 +92,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("productionDate", mapDate(patent.getDateProduced()));
         builder.add("publishedDate", mapDate(patent.getDatePublished()));
 
-        builder.add("documentId", patent.getDocumentId() != null ? patent.getDocumentId().toText() : ""); // Patent ID or Public Application ID.
-        builder.add("documentId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
-        
-        builder.add("documentDate", mapDate(patent.getDocumentDate()));
+        builder.add("documentId", mapDocumentId(patent.getDocumentId(), true));
 
-        builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
-        builder.add("applicationId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
-        builder.add("applicationDate", mapDate(patent.getApplicationDate()));
+        //builder.add("documentId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
+
+        builder.add("applicationId", mapDocumentId(patent.getApplicationId(), false));
 
         builder.add("priorityIds", mapDocumentIds(patent.getPriorityIds()));
         builder.add("priorityIds_tokens", mapDocumentIdVariations(patent.getPriorityIds()));
@@ -173,7 +171,31 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 		}
 		return idTokens;
 	}
-    
+	
+    private JsonObject mapDocumentId(DocumentId docId, boolean wantNoKind) {
+
+		JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+		if (docId != null) {
+			jsonObj.add("id", docId.toText());
+			if (wantNoKind) {
+				jsonObj.add("idNoKind", docId.toTextNoKind());
+				jsonObj.add("kind", docId.getKindCode());
+			}
+			jsonObj.add("number", docId.getDocNumber());
+			jsonObj.add("date", mapDate(docId.getDate()));
+		} else {
+			jsonObj.add("id", "");
+			if (wantNoKind) {
+				jsonObj.add("idNoKind", "");
+				jsonObj.add("kind", "");
+			}
+			jsonObj.add("number", "");
+			jsonObj.add("date", mapDate(null));			
+		}
+
+        return jsonObj.build();
+    }
+
     private JsonArray mapDocumentIdVariations(Collection<DocumentId> docIds) {
     	
     	Set<String> docIdVariations = new LinkedHashSet<String>();
@@ -189,31 +211,18 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
         return arBldr.build();
     }
-	
-    private JsonArray mapDocumentIdVariations(DocumentId docId) {
-        JsonArrayBuilder arBldr = Json.createArrayBuilder();
-        Set<String> docIds = getDocIdTokens(docId);
-        
-        for (String docid : docIds) {
-            arBldr.add(docid);
-        }
-
-        return arBldr.build();
-    }
 
     private JsonArray mapDocumentIds(Collection<DocumentId> docIds) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
         for (DocumentId docid : docIds) {
-            JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-            jsonObj.add("id", docid.toText());
-            jsonObj.add("date", mapDate(docid.getDate()));
+        	JsonObject jsonObj = mapDocumentId(docid, true);
             arBldr.add(jsonObj);
         }
 
         return arBldr.build();
     }
-    
+
     private JsonArray mapDocIds(Collection<DocumentId> docIds) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
         if (docIds != null) {
@@ -562,7 +571,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
                 JsonObjectBuilder nplObj = Json.createObjectBuilder()
         		.add("num", nplCite.getNum())
-        		.add("type", "NPL")
+        		.add("type", "NPLCITE")
                 .add("citedBy", nplCite.getCitedBy().toString())
                 .add("text", nplCite.getCiteText());
 
@@ -575,11 +584,16 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
             } else if (cite.getCitType() == CitationType.PATCIT) {
                 PatCitation patCite = (PatCitation) cite;
+                DocType docType = patCite.getDocumentId().getDocType();
                 arBldr.add(Json.createObjectBuilder()
                 		.add("num", patCite.getNum())
-                		.add("type", "PATENT")
+                		.add("type", "PATCITE")
+                		.add("doctype", docType != null ? docType.toString().toUpperCase(): "")
                         .add("citedBy", patCite.getCitedBy().toString())
-                        .add("text", patCite.getDocumentId().toText()));
+                        .add("raw", patCite.getDocumentId().getRawText())
+                        .add("text", patCite.getDocumentId().toTextNoKind())
+                        //.add("name", patCite.getDocumentId().getName())
+                		);
             }
         }
 

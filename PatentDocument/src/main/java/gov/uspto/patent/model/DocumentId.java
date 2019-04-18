@@ -164,6 +164,48 @@ public class DocumentId implements Comparable<DocumentId> {
 		return docIdType;
 	}
 
+	/**
+	 * Determine DocType
+	 *
+	 * <p>
+	 * 1) DocumentIdType.APPLICATION or DocumentIdType.PROVISIONAL then DocType.Application <br/>
+	 * 2) CountryCode.US & docNumber starts with date year then DocType.Application
+	 * <br/>
+	 * 2.1) CountryCode.WO & docNumber starts with PCT/US with date year then
+	 * DocType.Application <br/>
+	 * 3) CountryCode.US and kindCode then DocType.Patent </br>
+	 * 4) CountryCode.US and docNumber starts with any of (D|PP|RE|AI|X|RX) then
+	 * DocType.Patent <br/>
+	 * <br/>
+	 * </p>
+	 * 
+	 * @return DocType (Patent, Application) or Null
+	 */
+	public DocType getDocType() {
+		if (docIdType == DocumentIdType.APPLICATION || docIdType == DocumentIdType.PROVISIONAL) {
+			return DocType.Application;
+		}
+		
+		if (CountryCode.US.equals(countryCode)
+				|| CountryCode.WO.equals(countryCode) && docNumber.startsWith("PCT/US")) {
+
+			String docYear = getDate() != null ? String.valueOf(getDate().getYear()) : null;
+
+			// docNumber should be normalized to 4 digit year at this point.
+			if (docYear != null && (docNumber.startsWith(docYear)) || docNumber.startsWith("PCT/US" + docYear)) {
+				return DocType.Application;
+			} else if (kindCode != null && kindCode.length() > 0) {
+				return DocType.Patent;
+			} else if (docNumber.matches("^(?:D|PP|RE|AI|X|RX).+$")) {
+				return DocType.Patent;
+			} else if (docNumber.length() <= 8) {
+				return DocType.Patent;
+			}
+		}
+
+		return null;
+	}
+
 	private void setDocNumber(String publicationId) {
 		Preconditions.checkNotNull(publicationId, "DocNumber can not be set to Null!");
 		// Remove Leading Zeros.
@@ -329,6 +371,7 @@ public class DocumentId implements Comparable<DocumentId> {
 
 			DocumentId docId = new DocumentId(cntyCode, id, kindCode);
 			if (applicationYear != null && applicationYear.length() == 4) {
+				docId.setType(DocumentIdType.APPLICATION);
 				docId.setDate(new DocumentDate(applicationYear.replace("/", "")));
 			}
 			docId.setRawText(documentIdStr);
@@ -343,6 +386,18 @@ public class DocumentId implements Comparable<DocumentId> {
 
 		for (DocumentId docId : docIds) {
 			if (docId != null && docId.getType() == type) {
+				redIds.add(docId);
+			}
+		}
+
+		return redIds;
+	}
+
+	public static List<DocumentId> getByDocType(Collection<DocumentId> docIds, DocType type) {
+		List<DocumentId> redIds = new LinkedList<DocumentId>();
+
+		for (DocumentId docId : docIds) {
+			if (docId != null && docId.getDocType() == type) {
 				redIds.add(docId);
 			}
 		}

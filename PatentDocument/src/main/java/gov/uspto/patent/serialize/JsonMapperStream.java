@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.text.CaseUtils;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
@@ -27,6 +25,7 @@ import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DescriptionSection;
+import gov.uspto.patent.model.DocType;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
@@ -81,13 +80,8 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	writeDateObj("productionDate", patent.getDateProduced());
     	writeDateObj("publishedDate", patent.getDatePublished());
 
-    	jGenerator.writeStringField("documentId", patent.getDocumentId() != null ? patent.getDocumentId().toText() : ""); // Patent ID or Public Application ID.
-    	writeDocTokens("documentId_tokens", patent.getDocumentId());
-    	writeDateObj("documentDate", patent.getDocumentDate());
-
-    	jGenerator.writeStringField("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
-    	writeDocTokens("applicationId_tokens", patent.getApplicationId());
-    	writeDateObj("applicationDate", patent.getApplicationDate());
+    	writeDocId("documentId", patent.getDocumentId(), true);
+    	writeDocId("applicationId", patent.getApplicationId(), false);
 
     	writeDocArray("priorityIds", patent.getPriorityIds(), true);
     	writeDocTokens("priorityIds_tokens", patent.getPriorityIds());
@@ -155,6 +149,31 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
         	jGenerator.writeStringField("iso", "");
         }
         jGenerator.writeEndObject();
+    }
+
+    private void writeDocId(String fieldName, DocumentId docId, boolean wantNoKind) throws IOException {
+    	jGenerator.writeFieldName(fieldName);
+    	jGenerator.writeStartObject();
+    	
+    	if (docId != null) {
+	    	jGenerator.writeStringField("id", docId.toText());
+	    	if (wantNoKind) {
+	    		jGenerator.writeStringField("idNoKind", docId.toTextNoKind());
+	    		jGenerator.writeStringField("kind", docId.getKindCode());
+	    	}
+	    	jGenerator.writeStringField("number", docId.getDocNumber());
+	    	writeDateObj("date", docId.getDate());
+    	} else {
+	    	jGenerator.writeStringField("id", "");
+	    	if (wantNoKind) {
+	    		jGenerator.writeStringField("idNoKind", "");
+	    		jGenerator.writeStringField("kind", "");
+	    	}
+	    	jGenerator.writeStringField("number", "");
+	    	writeDateObj("date", null);
+    	}
+
+    	jGenerator.writeEndObject();
     }
 
     private void writeDocArray(String fieldName, Iterable<DocumentId> docIds, boolean withDate) throws IOException {  
@@ -410,7 +429,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
             if (cite.getCitType() == CitationType.NPLCIT) {
                 NplCitation nplCite = (NplCitation) cite;
 
-            	jGenerator.writeStringField("type", "NPL");
+            	jGenerator.writeStringField("type", "NPLCITE");
             	jGenerator.writeStringField("citedBy", nplCite.getCitedBy().toString());
             	jGenerator.writeStringField("text", nplCite.getCiteText());
 
@@ -423,11 +442,15 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
             } else if (cite.getCitType() == CitationType.PATCIT) {
                 PatCitation patCite = (PatCitation) cite;
+                DocType docType = patCite.getDocumentId().getDocType();
+
                 docIds.add(patCite.getDocumentId());
-            	jGenerator.writeStringField("type", "PATENT");
+            	jGenerator.writeStringField("type", "PATCITE");
+            	jGenerator.writeStringField("doctype", docType != null ? docType.toString().toUpperCase() : "");
             	jGenerator.writeStringField("citedBy", patCite.getCitedBy().toString());
             	jGenerator.writeStringField("raw", patCite.getDocumentId().getRawText());
             	jGenerator.writeStringField("text", patCite.getDocumentId().toTextNoKind());
+            	//jGenerator.writeStringField("name", patCite.getDocumentId().getName());
             	jGenerator.writeFieldName("classification");
             	jGenerator.writeStartObject();
 	                writeSingleClassificationType(patCite.getClassification(), ClassificationType.USPC);
