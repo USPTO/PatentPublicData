@@ -246,6 +246,7 @@ public enum CountryCode {
 	VG("Virgin Islands (British)"),
 	VN("Viet Nam"),
 	VU("Vanuatu"),
+	WF("Wallis and Futuna"),
 	WO("World IP Organization (WIPO)"),
 	WS("Samoa"),
 	XN("Nordic Patent Institute (NPI)"),
