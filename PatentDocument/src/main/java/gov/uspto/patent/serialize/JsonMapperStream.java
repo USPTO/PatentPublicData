@@ -57,9 +57,15 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 	private JsonFactory jfactory = new JsonFactory();
 
 	private final boolean pretty;
+	private final boolean specOnly;
 
     public JsonMapperStream(boolean pretty) {
+    	this(pretty, false);
+    }	
+
+    public JsonMapperStream(boolean pretty, boolean specOnly) {
         this.pretty = pretty;
+        this.specOnly = specOnly;
     }
 
     @Override
@@ -93,12 +99,14 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
     	writeDocArray("otherIds", patent.getOtherIds(), false);
     	writeDocTokens("otherIds_tokens", patent.getOtherIds());
 
-    	writeEntity("agent", patent.getAgent());
-    	writeEntity("applicant", patent.getApplicants());
-
-    	writeEntity("inventors", patent.getInventors());
-    	writeEntity("assignees", patent.getAssignee());
-    	writeEntity("examiners", patent.getExaminers());
+    	if (!specOnly) {
+	    	writeEntity("agent", patent.getAgent());
+	    	writeEntity("applicant", patent.getApplicants());
+	
+	    	writeEntity("inventors", patent.getInventors());
+	    	writeEntity("original_assignees", patent.getAssignee());
+	    	writeEntity("examiners", patent.getExaminers());
+    	}
 
     	jGenerator.writeFieldName("title");
         jGenerator.writeStartObject();
@@ -114,7 +122,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
         writeCitations("citations", patent.getCitations());
 
-        writeClassifications("classification", patent.getClassification());
+        writeClassifications("original_classification", patent.getClassification());
 
         writeClassifications("search_classification", patent.getSearchClassification());
 
