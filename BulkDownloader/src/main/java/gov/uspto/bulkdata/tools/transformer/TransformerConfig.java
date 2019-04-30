@@ -68,7 +68,7 @@ public class TransformerConfig extends BulkReaderArguments {
 			String type = (String) options.valueOf("type");
 			setOutputType(type.toLowerCase());
 		}
-
+		
 		/*
 		 * OutputBulk should never prettyPrint (single line-per-record)
 		 */
@@ -80,6 +80,7 @@ public class TransformerConfig extends BulkReaderArguments {
 			setPrettyPrint((Boolean) options.valueOf("prettyPrint"));
 		}
 
+		setPrettyPrint((Boolean) options.valueOf("prettyPrint"));
 	}
 
 	public void setOutputDir(Path outDir) {
