@@ -45,6 +45,14 @@ import joptsimple.OptionSet;
  * --outputBulkFile=true --xpath="//invention-title[starts-with(text(),
  * 'Food')]"
  * </p>
+ *
+ * <h3>Corpus Generation: Sequentially download and match</h3>
+ * <p>
+ * -f="." --fetch-type="grant" --outDir="./target/output"
+ * --fetch-date="20181101-20181115"
+ * --xpath="//publication-reference/document-id/doc-number/text()"
+ * --values="D0833118"
+ * <p>
  * 
  * @author Brian G. Feldman <brian.feldman@uspto.gov>
  *
@@ -56,33 +64,39 @@ public class Fetch {
 
 		DownloadConfig downloadConfig = new DownloadConfig();
 		OptionParser opParser = downloadConfig.buildArgs();
-		opParser.accepts("transform").withOptionalArg().ofType(Boolean.class).describedAs("Transform while downloading")
-				.defaultsTo(false);
-		downloadConfig.parseArgs(args);
-		downloadConfig.readOptions();
+		opParser.accepts("transform").withOptionalArg().ofType(Boolean.class).describedAs("Transform while downloading");
 
 		GrepConfig grepConfig = new GrepConfig();
 		grepConfig.buildArgs(opParser);
-		grepConfig.parseArgs(args);
-		grepConfig.readOptions();
-		boolean doGrep = grepConfig.getMatcher() != null ? true : false;
 
 		TransformerConfig transConfig = new TransformerConfig();
 		transConfig.buildArgs(opParser);
+
+		downloadConfig.parseArgs(args);
+		downloadConfig.readOptions();
+
+		grepConfig.parseArgs(args);
+		grepConfig.readOptions();
+		boolean doGrep = grepConfig.getMatcher() != null ? true : false;
+		
 		transConfig.parseArgs(args);
 		transConfig.readOptions();
-
+		
 		OptionSet options = opParser.parse(args);
-		boolean doTransform = options.has("transform") | transConfig.isBulkOutput() ? true : false;
+		boolean doTransform = options.has("transform");// | transConfig.isBulkOutput() ? true : false;
 
 		DownloadTool tool = null;
-		if (doGrep || doTransform) {
+		if (doTransform) {
 			TransformerRecordProcessor processor = new TransformerRecordProcessor(transConfig);
 			if (grepConfig.getMatcher() != null) {
 				processor.setMatchProcessor(new GrepRecordProcessor(grepConfig));
 			}
 			tool = new DownloadTool(downloadConfig, processor);
-		} else {
+		}
+		else if (doGrep) {
+			tool = new DownloadTool(downloadConfig, new GrepRecordProcessor(grepConfig));
+		} 
+		else {
 			tool = new DownloadTool(downloadConfig);
 		}
 
