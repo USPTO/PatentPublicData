@@ -1,11 +1,15 @@
 package gov.uspto.bulkdata.tools.grep;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -22,6 +26,8 @@ public class GrepRecordProcessor implements RecordProcessor {
 	private final String recordSeperator;
 	private long recordsChecked = 0;
 	private long recordsMatched = 0;
+	private Writer currentWriter;
+	private String currentFilename;
 
 	public GrepRecordProcessor(GrepConfig config) throws XPathExpressionException {
 		this.config = config;
@@ -66,7 +72,18 @@ public class GrepRecordProcessor implements RecordProcessor {
 
 	public void writer(String sourceTxt, String rawRecord, Writer writer) throws IOException {
 		if (outputType == OUTPUT_MATCHING.RECORD) {
-			write(writer, rawRecord, recordSeperator);
+			String filename = sourceTxt.replaceFirst("\\.zip:\\d+$", "");
+			filename = filename + ".out";
+			if (!filename.equals(currentFilename)) {
+				if (currentWriter != null) {
+					currentWriter.close();
+				}
+				currentWriter = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream(config.getOutputDir().resolve(filename).toFile(), true),
+						StandardCharsets.UTF_8));
+				currentFilename = filename;
+			}
+			write(currentWriter, rawRecord, recordSeperator);
 		} else if (outputType == OUTPUT_MATCHING.RECORD_LOCATION) {
 			write(writer, sourceTxt, recordSeperator);
 		}
