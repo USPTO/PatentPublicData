@@ -124,7 +124,7 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		case "json":
 		case "js":
 			// writer.write("Patent JSON:\n");
-			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint);
+			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint, false);
 			fileBuilder.write(patent, writer);
 			break;
 		case "patft":
