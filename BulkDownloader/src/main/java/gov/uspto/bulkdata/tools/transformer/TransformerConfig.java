@@ -40,7 +40,7 @@ public class TransformerConfig extends BulkReaderArguments {
 		opParser.accepts("outDir").withRequiredArg().ofType(String.class).describedAs("Output Directory").required();
 
 		opParser.acceptsAll(asList("outBulk", "outputBulkFile")).withOptionalArg().ofType(Boolean.class)
-				.describedAs("Output bulk file, single file record per line").defaultsTo(true);
+				.describedAs("true: Output bulk file, patent record per line ; false: creates individual patent files within bulkfile named directory").defaultsTo(true);
 
 		opParser.accepts("bulkRecLimit").withOptionalArg().ofType(Integer.class)
 				.describedAs("Limit of records per bulk file").defaultsTo(-1);

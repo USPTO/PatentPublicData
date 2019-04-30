@@ -1,12 +1,15 @@
 package gov.uspto.bulkdata.tools.transformer;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.xml.transform.TransformerConfigurationException;
 
@@ -72,23 +75,28 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		String patentId = patent.getDocumentId() != null ? patent.getDocumentId().toText() : "";
 		MDC.put("DOCID", patentId);
 
+		String sourceFilename = sourceTxt.replaceFirst("\\.zip:\\d+$", "");
+
 		if (!config.isBulkOutput()) {
+			Path outPath = config.getOutputDir().resolve(sourceFilename);
+			if (!outPath.toFile().isDirectory()) {
+				outPath.toFile().mkdir();
+			}
 			String currentFileName = patentId + fileExt;
 			Writer currentWriter = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(config.getOutputDir().resolve(currentFileName).toFile(), true),
-					StandardCharsets.UTF_8));
+					new FileOutputStream(outPath.resolve(currentFileName).toFile(), false),
+					StandardCharsets.UTF_16));
 			writeOutputType(sourceTxt, patent, currentWriter);
 			currentWriter.close();
 		} else {
-			String filename = sourceTxt.replaceFirst("\\.zip:\\d+$", "");
-			filename = filename + fileExt;
+			String filename = sourceFilename + fileExt;
 			if (!filename.equals(currentFilename)) {
 				if (currentWriter != null) {
 					currentWriter.close();
 				}
 				currentWriter = new BufferedWriter(new OutputStreamWriter(
 						new FileOutputStream(config.getOutputDir().resolve(filename).toFile(), true),
-						StandardCharsets.UTF_8));
+						StandardCharsets.UTF_16));
 				currentFilename = filename;
 			}
 			writeOutputType(sourceTxt, patent, currentWriter);
