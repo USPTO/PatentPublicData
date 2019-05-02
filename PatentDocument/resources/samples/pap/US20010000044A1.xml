@@ -1,0 +1,245 @@
+<!DOCTYPE simple PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<patent-application-publication>
+<subdoc-bibliographic-information>
+<document-id>
+<doc-number>20010000044</doc-number>
+<kind-code>A1</kind-code>
+<document-date>20010315</document-date></document-id>
+<publication-filing-type>voluntary</publication-filing-type>
+<domestic-filing-data>
+<application-number>
+<doc-number>09342866</doc-number>
+</application-number>
+<application-number-series-code>09</application-number-series-code>
+<filing-date>19990629</filing-date>
+</domestic-filing-data>
+<technical-information>
+<classification-ipc>
+<classification-ipc-primary>
+<ipc>G06F017/60</ipc>
+</classification-ipc-primary>
+<classification-ipc-edition>07</classification-ipc-edition>
+</classification-ipc>
+<classification-us>
+<classification-us-primary>
+<uspc>
+<class>705</class>
+<subclass>026000</subclass>
+</uspc>
+</classification-us-primary>
+<classification-us-secondary>
+<uspc>
+<class>705</class>
+<subclass>037000</subclass>
+</uspc>
+</classification-us-secondary>
+</classification-us>
+<title-of-invention> Systems and Methods For Transacting Business Over A Global Communications Network Such As The Internet
+          </title-of-invention>
+</technical-information>
+<inventors>
+<first-named-inventor>
+<name>
+<name-prefix> Mr.
+                         </name-prefix>
+<given-name> Wayne
+                         </given-name>
+<middle-name> W
+                         </middle-name>
+<family-name> Lin
+                         </family-name>
+</name>
+<address>
+<address-1> c/o Law Offices of Neal M. Cohen
+                         </address-1>
+<address-2> 2424 S.E. Bristol Street, Suite 300
+                         </address-2>
+<city> Newport Beach
+                         </city>
+<state> California
+                         </state>
+<postalcode> CA
+                         </postalcode>
+<country>
+<country-code> US
+                              </country-code>
+</country>
+<email> nmcohen@home.com
+                         </email>
+<telephone> 949-724-1849
+                         </telephone>
+<fax> 949-724-8806
+                         </fax>
+</address>
+<residence>
+<residence-us>
+<city> Irvine
+                              </city>
+<state> CA
+                              </state>
+<country-code> US
+                                   </country-code>
+</residence-us>
+<citizenship><country-code>TW</country-code></citizenship>
+</residence>
+</first-named-inventor>
+</inventors>
+<correspondence-address>
+<name-1> Neal
+               </name-1>
+<name-2> Cohen
+               </name-2>
+<address>
+<address-1> 2424 S.E. Bristol Street, Suite 300
+                    </address-1>
+<city> Newport Beach
+                    </city>
+<state> California
+                    </state>
+<postalcode> CA
+                    </postalcode>
+<country>
+<country-code> US
+                         </country-code>
+</country>
+<email> nmcohen@home.com
+                    </email>
+<telephone> 949-724-1849
+                    </telephone>
+<fax> 949-724-8806
+                    </fax>
+</address>
+</correspondence-address>
+</subdoc-bibliographic-information>
+<subdoc-abstract>
+<heading lvl="0">Abstract of Disclosure</heading>
+<paragraph id="A-00001" lvl="0">A business model / process is described for conducting business transactions over the Internet, allowing buyers to reduce the price of the selected product / service based on the buyer&apos;s performance during a collateral activity. Sellers offer the product / service within a specified price range, and buyers accept the offer, in exchange for the opportunity to close the transaction at the lowest price offered by achieving a high score during the collateral activity. The ultimate price is within the agreed upon range, but is determined based upon the buyer&apos;s performance during the collateral activity. The activity may be a video game, electronic board game, sports bet, card game, or any other activity, and may be performed against the seller, a pre-programmed software opponent, a computer opponent, another buyer competing for the same or a different product, a player participating as a player only and not as a buyer, or anyone or anything else. </paragraph>
+</subdoc-abstract>
+<subdoc-description>
+<background-of-invention>
+<heading lvl="0">Field OF Invention</heading>
+<paragraph id="P-00001" lvl="0"><number>1.</number> The present invention relates generally to systems and methods of doing business over a global communications network such as the Internet, and more particularly to systems and methods wherein various forms of competition and/or entertainment are used to determine transaction prices between buyers and sellers.</paragraph>
+<section>
+<heading lvl="0">Background Of Invention</heading>
+<paragraph id="P-00002" lvl="0"><number>2.</number> Many businesses have recently begun expanding into e-commerce in an effort to attract some of the seemingly endless source of potential buyers. In fact, many new businesses actually offer their products and services solely via e-commerce. Some e-commerce businesses provide traditional transaction methods, wherein the seller offers a specified product at a specified price, and the buyer &quot;buys&quot; the product by performing a required set of tasks acknowledging the formation of a binding buy-sell contract. This occurs at Amazon.com, e.g., which began as an on-line book seller, but has recently expanded into other fields such as music and videos. </paragraph>
+<paragraph id="P-00003" lvl="0"><number>3.</number> Various other business models have also emerged, apparently in an effort to attract a greater portion of the on-line market.  For example, Priceline.com uses a model which allows the <highlight><italic>buyer</italic></highlight> to present a bid or offer price they wish to pay for a product or service, and a <highlight><italic>seller</italic></highlight> then accepts the buyer&apos;s offer to enter into a binding contract, typically as the result of a reverse auction process. See, e.g., U.S. Patent No. 5,794,207, the contents of which are hereby incorporated herein by reference. VerticalNet.com uses a model which allows businesses to find information regarding manufacturers of specific products, after which time the business (buyer) then contacts the manufacturer directly to purchase the products. Onsale.com and eBay.com use auction models allowing sellers to submit their products to an electronic auction, which buyers then bid on electronically. Onsale.com has also announced an &quot;at-cost&quot; program, claiming to sell various computer and other electronic products at wholesale cost. Other e-commerce companies simply use their websites as an advertising activity to promote their products. </paragraph>
+<paragraph id="P-00004" lvl="0"><number>4.</number> These various e-commerce business models all have certain advantages and disadvantages, but as a fundamental principle of a free market economy such as in the United States, their common goal likely is to attract as many customers as possible, to ultimately lead to more transactions and hence more profit for the companies employing the models. As such, they all seem to focus in one way or another on factors typically considered important by potential buyers - namely price and convenience. None of them, however, allow a potential buyer to engage in a competitive / entertaining collateral price-determining activity (PDA) which ultimately determines the price of the product or service to be secured, depending on the buyer&apos;s performance during the collateral activity.</paragraph>
+<paragraph id="P-00005" lvl="0"><number>5.</number> Off-line sweepstakes systems are also known, which allow a game player to win cash or other prizes or credits depending on the player&apos;s performance of a specified set of tasks. A simple example involves a player scratching off one of a number of covered areas on a card, to reveal a prize.  However, such systems typically do not bind the player to a contract, but merely provide an offer to the player / buyer to enter into a contract on the specified terms.</paragraph>
+<paragraph id="P-00006" lvl="0"><number>6.</number> Systems and methods are thus desirable to allow a potential buyer to engage in competitive / entertaining activities wherein the activities ultimately determine the price of the product or service to be bought, depending on the buyer&apos;s performance while participating in the PDA. Such systems and methods using a global communications network such as the Internet would provide buyers and sellers an alternative method of conducting e-commerce.</paragraph>
+</section>
+</background-of-invention>
+<summary-of-invention>
+<heading lvl="0">Summary of Invention</heading>
+<paragraph id="P-00007" lvl="0"><number>7.</number> The present invention comprises a business model used to determine the price of goods and/or services to be provided from a seller or sellers to a buyer or buyers. Various forms of electronic competition and/or entertainment are used as intermediary activities between said buyers and sellers to ultimately determine a contract price.  Sellers offer a product or service within a specified price range, and buyers enter into a contract to buy the product or service within that price range. The ultimate price (within the range) is determined based upon the buyer&apos;s performance rating, or score, which the buyer receives from participating in a collateral activity. Thus, if a buyer performs poorly at the activity, the price will be higher, whereas if the buyer does well, the price will be lower. The activity may be a video game (including audio / visual games), electronic board game, crossword puzzle or other word game, sports bet, card game, or any other activity or combination of activities, and may be performed against the seller, a pre-programmed software opponent, a computer opponent, another buyer competing for the same or a different product, a player participating as a player only and not as a buyer, or anyone or anything else. The actual range may be a scaled set of prices (e.g., $1000.00, $1100.00, $1200.00, etc.), or it may be simply a single price, such as a discounted price, for which the buyer will either &quot;win&quot; the contract or &quot;lose&quot;, and not be entitled to the product at the specified price, or it may even include a lower boundary of $0.00, such that the product or service might be attainable for free if the buyer can achieve a certain performance level while participating in the PDA. </paragraph>
+<paragraph id="P-00008" lvl="0"><number>8.</number> Sellers are able to attract buyers using the marketing incentive that buyers can reduce the price of the offered product or service by performing well at the specified activity. Sellers are willing to put forth the initial offer of a certain price range, in hopes that the average price of the product over time will be a profitable price within the range, based upon the average performance of potential buyers that is expected to occur.</paragraph>
+<paragraph id="P-00009" lvl="0"><number>9.</number> Buyers, on the other hand, are willing to accept the possibility of paying the highest price within the range, in exchange for the opportunity to pay the lowest price (or any lower price) within the range if they can achieve a certain level of performance at the specified activity. Buyers also receive a side benefit of the entertainment value of the activity, during which they are attempting to lower the price of a product or service.</paragraph>
+<paragraph id="P-00010" lvl="0"><number>10.</number> Thus, one aspect of the present invention involves a method of doing business over a global communications network comprising the steps of: communicating to a buyer via the global communications network, a description of a product; accepting a first request from the buyer to buy the product for a price to be determined within a price range; accepting a second request from the buyer to allow the price to be determined based upon a performance of the buyer while participating in a Price-Determining-Activity (PDA) selected by the buyer; receiving data from the buyer over the global communications network, said data representing the performance of the buyer during the selected PDA; and determining the price of the product based at least partially upon the data received, said price being within the price range.</paragraph>
+<paragraph id="P-00011" lvl="0"><number>11.</number> Another aspect of the present invention involves a method of determining a price of a product using a global communications network, comprising the steps: communicating to a buyer via the global communications network, data representing a plurality of products available, said plurality of products including a first product; accepting acknowledgement from the buyer representing an intent of the buyer to buy the first product at a price to be determined based upon a performance of the buyer while participating in a Price-Determining-Activity (PDA), said acknowledgement being communicated over the global communications network; determining the performance of the buyer; and assigning a price to the product, said price being dependent upon the performance of the buyer.</paragraph>
+<paragraph id="P-00012" lvl="0"><number>12.</number> Another aspect of the present invention involves a system for conducting e-commerce over a global communications network, comprising: a computer server having access to the global communications network, and being programmed to communicate to a buyer via the global communications network, data representing a plurality of products, said plurality of products including a first product; and to accept acknowledgement from the buyer representing an intent of the buyer to buy the first product at a price to be determined dependent on a performance of the buyer while participating in a Price-Determining-Activity (PDA), said acknowledgement being communicated over the global communications network; and to determine the performance of the buyer based upon data received over the global communications network; and to assign a price to the product, said price being dependent upon the performance of the buyer.</paragraph>
+<paragraph id="P-00013" lvl="0"><number>13.</number> Methods are thus described wherein buyers participate in selected activities, the outcomes of which  are used to determine the ultimate price the buyer is to pay for a selected product or service. Other objects and advantages of the present invention will be apparent from the detailed description which follows, when read in conjunction with the associated drawings.</paragraph>
+</summary-of-invention>
+<brief-description-of-drawings>
+<heading lvl="0">Brief Description of Drawings</heading>
+<paragraph id="P-00014" lvl="0"><number>14.</number> FIG. 1is a flow-chart illustrating the steps involved in a typical transaction performed in accordance with the concepts of the present invention.</paragraph>
+<paragraph id="P-00015" lvl="0"><number>15.</number> FIG. 2is a block diagram showing an embodiment of an operation controller as used in accordance with the present invention.</paragraph>
+<paragraph id="P-00016" lvl="0"><number>16.</number> <cross-reference target="DRAWINGS">FIG. 3</cross-reference> is a block diagram showing one embodiment of a buyer or seller interface in accordance with the present invention.</paragraph>
+</brief-description-of-drawings>
+<detailed-description>
+<heading lvl="0">Detailed Description</heading>
+<paragraph id="P-00017" lvl="0"><number>17.</number> The present invention describes business systems and business models / processes for conducting business transactions wherein the buyer and seller agree to a price range at which a transaction will take place. Sellers offer their product / service within a specified price range, and buyers accept the offer, in exchange for the opportunity to close the transaction at the lowest price offered by achieving a high score during a collateral activity. The ultimate price is within the agreed upon range, but is determined based upon the buyer&apos;s performance during the collateral PDA. The activity may be a video game, electronic board game, sports bet, card game, or any other activity, and may be performed against the seller, a pre-programmed software opponent, a computer opponent, another buyer competing for the same or a different product, a player participating as a player only and not as a buyer, a predetermined achievement level, or anyone or anything else. The activity may be conducted on-line, or off-line.</paragraph>
+<paragraph id="P-00018" lvl="0"><number>18.</number> Application of the present invention is especially beneficial using a global communications network such as the Internet, because the massive numbers of buyers and sellers, combined with the ability to conduct transactions across time zones, makes the Internet especially suitable for practicing the present invention. A centralized server or controller may be implemented to manage all transactions, allowing access through various front-ends such as existing Internet portals or e-commerce sites. Such control would allow for efficient management of quality control, buyer-seller qualification screening, association of PDAs with corresponding products and services, and other database and e-commerce customer service and data control issues.</paragraph>
+<paragraph id="P-00019" lvl="0"><number>19.</number> Turning to <cross-reference target="DRAWINGS">FIG. 1</cross-reference>, a flow-chart is shown illustrating the steps involved in a typical transaction performed in accordance with the concepts of the present invention. At step 110, the buyer selects a desired product or service to be purchased. The selection may occur via a website managed by the seller or the seller&apos;s agent (e.g., a master controller), using typical selection techniques such as point-and-click, pop-up menus, etc. The website may offer the products or services as common offerings always available, auction items (e.g.,  like eBay.com), reverse auction items (e.g., like Priceline.com), or any other way. The present invention thus may be used independently of other business models, or in combination therewith, to form binding contracts. For example, using the auction or reverse auction models, the buyer may be entitled to a further discount of the auction or reverse auction price, which discount may be greater if the buyer performs well at the PDA, and not so great if the buyer performs poorly. The offerings of various products and services, and the associated PDAs, may be presented via a seller&apos;s website, or a host website acting as a front end to systems embodying the concepts described herein.</paragraph>
+<paragraph id="P-00020" lvl="0"><number>20.</number> At step 120, the buyer selects a PDA from a set of those available. The available set of PDAs may be pre-set by the seller or seller&apos;s agent, and may be a subset of the actual set of activities in a PDA database. The PDAs available may vary depending upon many factors, such as the product / service being offered, the price range being offered, the quantity of products available, the demand for the product, etc. For example, a seller may allow a buyer to choose from any PDA in the PDA database, for a particular item that the seller wants to offload as a promotional item, and for which the seller is unconcerned as to the probabilities of receiving a specified average price over time for the product. On the other hand, for a popular product that is capable of commanding a full market price, the seller may wish to only allow certain PDAs to be associated with the product, where those PDAs will typically result in a higher sale price than other PDAs. The association of a particular PDA with any given product or service, any given seller, any given buyer or class of buyers, any given time period, any given source of entry to the website implementing the present invention, or to any other database, database entry, event, or other factor, or to any combination of the aforementioned, may be managed and controlled using well-known database management software.</paragraph>
+<paragraph id="P-00021" lvl="0"><number>21.</number> After the buyer selects a PDA, the buyer may provide payment information, as seen at step 130. The information may be input and processed using well-known e-commerce financial software, taking advantage of integrated or independent encryption technology. Alternatively, the buyer may provide financial information via phone, regular mail, e-mail, or any other means, and may gain access to the seller&apos;s offers via a password or other secure identification method already associated with the buyer&apos;s financial information. This step, of course, may occur at any stage in the process, but preferably occurs prior to allowing the buyer to participate in the PDA.</paragraph>
+<paragraph id="P-00022" lvl="0"><number>22.</number> Once the buyer selects the PDA at step 120 (and preferably after the buyer provides payment info at step 130), the PDA may begin, as seen at step 140. Actual start of the PDA may require additional input from the buyer, indicating he or she is ready to begin, and/or that he or she agrees to and understands that by beginning the PDA, he or she has entered into a binding contract. The PDA may be a video game, electronic board game, gambling game, sports bet, or any other activity, and may be single-player or multi-player, and may comprise computer-executable code sent to the buyer over a global communications network such as the Internet. Various PDAs are described in more detail herein.</paragraph>
+<paragraph id="P-00023" lvl="0"><number>23.</number> When the PDA is complete as to the buyer (step 150) the actual price of the product or service at issue is determined (step 160), and if the contract is binding, the transaction may then be completed. If the contract is not binding, because e.g., the buyer was given the opportunity of engaging the PDA on a &quot;no commitment basis&quot;, then at this point the buyer is asked if he or she wants to close the transaction at the determined price. </paragraph>
+<paragraph id="P-00024" lvl="0"><number>24.</number> The following example will illustrate in more detail a buyer-seller transaction occurring using the flow-chart of <cross-reference target="DRAWINGS">FIG. 1</cross-reference>. Buyer Bobby accesses the Internet using a typical PC with browser software. Bobby sends a request though his browser to link to a website implementing the concepts described in <cross-reference target="DRAWINGS">FIG. 1</cross-reference>. For this example, we will call the website www.pdaportal.com (No such website is known to exist at this time). Bobby navigates the website, and finds that he can buy a Mark McGwire rookie card in mint condition, if he is willing to pay anywhere between $500.00 to $$575.00. He decides to check it out, and clicks on the Mark McGwire image to proceed (step 110).</paragraph>
+<paragraph id="P-00025" lvl="0"><number>25.</number> He is then presented with a pull-down menu of five different &quot;games&quot; (PDAs) to choose from, along with price determination rules explaining how each PDA will be used to determine the ultimate price of the McGwire card. The &quot;games&quot; are: 1) a bridge game where he would be dealer and North, and would be playing with three other individuals who have selected bridge as their PDA for other products offered by www.pdaportal.com; 2) a Mark McGwire trivia quiz of ten questions; 3) an offer to predict which major league baseball player will be the first to reach fifty home-runs this season; 4) a game of keno; and 5 a classic PacMan video arcade game. After browsing through each option, and learning what type of performance would be necessary from him to achieve a buying price of $500.00, he decides to go for the trivia quiz  (step 120), in which he is informed that he only needs to answer 9 of 10 multiple choice questions correctly within a fifteen minute period to achieve the $500.00 price. Even if he only gets 5 out of 10 correct, he will get the card for $560.00, and he figures that isn&apos;t so bad.</paragraph>
+<paragraph id="P-00026" lvl="0"><number>26.</number> He then sends his VISA card information to the pdaportal.com server (step 130), and is informed that he may begin the &quot;game&quot; by selecting &quot;START&quot;, or by returning within 48 hours to pdaportal.com and entering code &quot;MC9915432&quot; into the &quot;Active request?&quot; field. He decides to go for it now, and clicks on the &quot;START&quot; button. The game begins (step 140). Bobby gets through the first 8 questions, and has them all right so far, but realizes he has only nine seconds remaining. He has no time to read the next two questions, so he simply guesses &quot;b&quot; for both of them. The clock runs out, and the game is over (step 150). Bobby is informed that the answer to number 9 was &quot;c&quot;, but the answer to number 10 was &quot;b&quot;. He gets 9 answers correct, and according to the predetermined algorithm as presented to him at the start of the game, his performance locks in the price at $500.00! (Step 160). The shipping, customer service, and other e-commerce details are handled by the www.pdaportal.com software, which is well-known in the art.</paragraph>
+<paragraph id="P-00027" lvl="0"><number>27.</number> As previously mentioned, the transactions may be handled by a master operation controller or content server for efficient processing and marketability. <cross-reference target="DRAWINGS">FIG. 2</cross-reference> is a block diagram showing one embodiment of an operation controller 206 as used in accordance with the present invention. The operation controller may be a computer server which provides content to and manages a website implementing the concepts described herein. The buyer and seller interfaces (202 and 204 respectively) may comprise a PC 216 (see <cross-reference target="DRAWINGS">FIG. 3</cross-reference>) connected to the master operation controller 206, and may each have browser software installed. The connection may be via an electronic network interface 207 and connection 208 to a modem or other communication device 210, which in turn is connected to the content server 206 via any Internet connection 212 such as phone lines, cable lines, ISDN, T-1, etc. The network interface 208 and connection 207 is shown for simplicity to be the same for the buyer and seller interfaces 202 and 204, but this is not required, and in most instances would not be the case. Connection to the master operation controller 206 may be directly via an Internet connection 212, and may occur via a hyperlink from another website acting as a front-end to the master operation controller.</paragraph>
+<paragraph id="P-00028" lvl="0"><number>28.</number> The content server 206 has access to a database 214, which may be one physical database, or multiple physical databases, as is well-known in the art. Various physical or logical databases may include the following: a goods offered database 214a, a seller database 214b, a buyer database 214c, a payment info database 214d, a price acceptance database 214e, a PDA database 214f (containing data regarding the available PDAs), a price decisions database 214g, a seller account database 214h, a buyer account database 214i, a buyer history database 214j, and many others. The relationships between the various databases 214 may be programmed using well-known programming techniques. For example, relationships may be set up as previously described to associate specified PDAs with specified products offered by specified sellers during specified time periods. The databases may be organized and partitioned in any convenient manner, and the format shown in <cross-reference target="DRAWINGS">FIG. 2</cross-reference> is merely an example. </paragraph>
+<paragraph id="P-00029" lvl="0"><number>29.</number> Turning now to <cross-reference target="DRAWINGS">FIG. 3</cross-reference>, a sample configuration of the Buyer Interface is shown. (The same configuration may be used for a Seller Interface). As can be seen, the buyer interface 202 may comprise a PC 216 connected to the master operation controller 206, and may have browser software installed. The connection may be via an electronic network connection 207 to a modem or other communication device 210, which in turn is connected to the content server 206 via any Internet connection 212 such as phone lines, cable lines, ISDN, T-1, etc. Connection to the master operation controller 206 may be directly via an Internet connection 212, and may occur via a hyperlink from another hosting website acting as a front-end to the master operation controller content. A monitor 218 or other output display device may be attached to the buyer&apos;s PC, as is well-known in the art. In an exemplary embodiment, a buyer interface 202 simply needs to have Internet access and browser software installed, to allow a buyer to navigate the Internet and access a website hosting content which implements the methods described herein. <cross-reference target="DRAWINGS">FIG. 3</cross-reference> is merely a simple example of such a configuration.</paragraph>
+<paragraph id="P-00030" lvl="0"><number>30.</number> Turning now to the Price Determining Activities, or PDAs, the present invention contemplates a wide variety of PDAs to be used as described herein. It is to be understood, therefore, that various PDAs available, along with price determination rules explaining how the PDAs are used to determine the ultimate price of a specified product or service, may be pre-programmed and/or programmable, as needed. Thus, upon execution of a PDA in one case, a score of 100,000 may entitle the buyer to a $500.00 price, whereas the same PDA may entitle a different buyer to a price of only $525.00 for the same product.</paragraph>
+<paragraph id="P-00031" lvl="0"><number>31.</number> PDAs may be added, modified, and/or deleted. The availability of any given PDA  may also change and be set based upon any combination of the associated product or service offered, the identity of the seller, the time of the offer from the seller, the source of entry into the PDA&apos;s host website (e.g., special promotions may be offered to buyers accessing the PDA website through a Yahoo! link), the skill level of the buyer participant, the number of players involved in the PDA, the changing popularity of the PDA, and many other external factors. It is preferred that the price determination rules explaining how a particular PDA is used to determine the price of a given product or service, are communicated to the buyer prior to the buyer engaging the PDA. This will likely facilitate the creation of a binding contract upon the buyer. </paragraph>
+<paragraph id="P-00032" lvl="0"><number>32.</number> A classic example of a PDA is a video game, wherein at the end of the game, the player has earned a certain point total or score. The score is then used to determine the price of the product or service at issue, in accordance with a mapping algorithm. Using the Mark McGwire card example described earlier, a score of less than 100,000 points may correspond to the $575.00 price; 100,000 to 199,999 may correspond to a $550.00 price; 200,000 to 299,999 may correspond to a $525.00 price; and a score of 300,000 or more may correlate to the lowest price available, $500.00. The various score ranges and corresponding resulting prices may of course be adjusted by the seller or seller&apos;s agent as needed.</paragraph>
+<paragraph id="P-00033" lvl="0"><number>33.</number> Another example of a PDA involves a simulated investment in a stock market. A buyer may submit his or her prediction on the value of a certain stock, mutual fund, sample portfolio, index fund, either U.S. or foreign, at the close of a specified trading day. Or a buyer may be given a set amount of simulated &quot;money&quot; to &quot;invest&quot; in various public markets, his final portfolio value being compared to a raw score or the score of other players and/or buyers to determine the price he is entitled to pay for the specified product or service. The difference (either in percentage or raw points) between the buyer&apos;s prediction, and the actual closing price or value, may then be used to determine the price of the specified product or service. </paragraph>
+<paragraph id="P-00034" lvl="0"><number>34.</number> Another example of a PDA involves sports wagering. A buyer may submit his or her wager or prediction on the outcome of a sporting event, or a combination of sporting events, or individual or team achievements during the course of a sporting event. &quot;Odds&quot; may be posted which correspond to the price the buyer will be entitled to depending on the accuracy of his or her wager. </paragraph>
+<paragraph id="P-00035" lvl="0"><number>35.</number> Other PDAs include electronic card games, such as bridge, cribbage, black jack, poker, or other card games, craps, roulette, and electronic board games such as chess, backgammon, checkers, or a proprietary game such as Trivial Pursuit, Monopoly, or other game. It is to be understood that a price determining algorithm associated with a PDA may involve considerations of the number of players or buyers involved, and the skill level of those players.</paragraph>
+<paragraph id="P-00036" lvl="0"><number>36.</number> For example, a particular seller may have nine widgets available for sale, for which he desires to get an average of $100.00 each. He therefore configures his offer to extend to the first nine buyers interested in the widget, with a single PDA of a simulated horse race being the only PDA available. He configures the horse racing PDA to post &quot;odds&quot; such that three horses with the best times will receive the widget for only $75.00; numbers 4-6 will pay $100.00, and numbers 7-9 will pay $125.00, thus securing an average price of $100.00 per product for the seller.</paragraph>
+<paragraph id="P-00037" lvl="0"><number>37.</number> In the horse race example, as in any multi-player situation, the simulated horse race may occur with all participants simultaneously, or it may occur at various times depending on when each buyer is available to participate. In the former case, participants may be notified by e-mail, audio or visual indicator, or any other way as to the specific start time of the multi-player PDA. For example, a player may sign-up for the race, and await at his terminal for the trumpet noise, which he would then acknowledge. The server might actually sign-up twenty or more players, and send the trumpet noise to each one until nine players have acknowledged. Once the server has received nine acknowledgements, the ten second countdown could begin and the PDA would then occur. As for the other players who did not get the trumpet call, they could remain on the trumpet call wait list until the next trumpet call. Various algorithms may be employed to remove a player from a wait list after a predetermined amount of time has elapsed. In the case of asynchronous racing, each player may engage the PDA which will be programmed to have that player&apos;s designated horse compete against the remaining horses which would be electronic opponents, as opposed to actual players.</paragraph>
+<paragraph id="P-00038" lvl="0"><number>38.</number> Another application of the present invention involves a scenario wherein a buyer may participate multiple times in the same or various PDAs, in an effort to accumulate points that correspond to various price levels. For example, a Gateway 2000 computer costs may retail for $3000.00.  For each certain level or accumulation of certain amounts of points, the buyer would be entitled to reduce the price of the computer. The decrease in price can be in dollar amount or percentage points, and may or may not have a bottom limit.  The actual transaction price between a buyer and a seller would be determined by the buyer, when he or she decides a price has been reached to his or her acceptable level.</paragraph>
+<paragraph id="P-00039" lvl="0"><number>39.</number> The actual opponents of a buyer in a multi-player PDA may even be buyers for other products or services, offered by other sellers. Or the opponent may be a pre-programmed software opponent, as in the previous asynchronous horse racing example.  The opponent may even be an independent computer, as in the case when a human buyer competes against a computer opponent in a chess game. The opponent or opponents may even be people who are not buyers, but are merely players, participating in the PDA merely for the inherent entertainment value thereof.</paragraph>
+<paragraph id="P-00040" lvl="0"><number>40.</number> The players and/or buyers may be required to pay a fee based on their participation in the PDA. The fee may be based upon pay-per-play, or on a predetermined time-basis such as quarterly, annual, lifetime, etc. Trial participation may be available, allowing a buyer or player / non-buyer  to try the PDA  for free, up to a specified number of times. Similarly, sellers may be required to pay a fee to list their products and services for sale, or they may pay a percentage of their gross or net sales, or an amount based upon number of participants, etc.</paragraph>
+<paragraph id="P-00041" lvl="0"><number>41.</number> While certain embodiments are illustrated in the drawings and are described herein, including preferred embodiments, it will be apparent to those skilled in the art that the specific embodiments described herein may be modified without departing from the inventive concepts described. For example, well-known e-commerce software for order processing, order fulfillment, shipping, billing, customer service, security, general ledger, and other applications may be integrated into an overall e-commerce application package to provide a complete e-commerce solution for a business desiring to capitalize on the concepts described herein. Additionally, software implementing the concepts and methods described herein may generally be programmed to allow escape or exit at any stage, so long as the appropriate request is provided by the buyer. Also, use of the word &quot;product&quot; in the appended claims is intended to include both products and services. Accordingly, the invention is not to be restricted except by the claims which follow.</paragraph>
+</detailed-description>
+</subdoc-description>
+<subdoc-claims>
+<heading lvl="0">Claims</heading>
+<claim id="CLM-00001"><claim-text><highlight><bold>1.</bold></highlight>A method of doing business over a global communications network comprising the steps:</claim-text>
+<claim-text>communicating to a buyer via the global communications network, a description of a product;</claim-text>
+<claim-text>accepting a first request from the buyer to buy the product for a price to be determined within a price range;</claim-text>
+<claim-text>accepting a second request from the buyer to allow the price to be determined based upon a performance of the buyer while participating in a Price-Determining-Activity (PDA) selected by the buyer;</claim-text>
+<claim-text>receiving data from the buyer over the global communications network, said data representing the performance of the buyer during the selected PDA; and</claim-text>
+<claim-text>determining the price of the product based at least partially upon the data received, said price being within the price range.</claim-text>
+</claim>
+<claim id="CLM-00002"><claim-text><highlight><bold>2.</bold></highlight>The method of claim 1, further comprising the step of accepting payment information from the buyer over the global communications network.</claim-text>
+</claim>
+<claim id="CLM-00003"><claim-text><highlight><bold>3.</bold></highlight>The method of claim 1, further comprising the step of presenting to the buyer over the global communications network, a plurality of PDAs to choose from, said presentation of the plurality of PDAs occurring before accepting the second request from the buyer.</claim-text>
+</claim>
+<claim id="CLM-00004"><claim-text><highlight><bold>4.</bold></highlight>The method of claim 3,  further comprising the step of presenting price determination rules to the buyer over the global communications network, said price determination rules being associated with the plurality of PDAs.</claim-text>
+</claim>
+<claim id="CLM-00005"><claim-text><highlight><bold>5.</bold></highlight>The method of claim 4, wherein the PDA is a video game.</claim-text>
+</claim>
+<claim id="CLM-00006"><claim-text><highlight><bold>6.</bold></highlight>The method of claim 1, further comprising the step of associating the selected PDA with the product based at least partially upon a number of participants required for execution of the selected PDA.</claim-text>
+</claim>
+<claim id="CLM-00007"><claim-text><highlight><bold>7.</bold></highlight>The method of claim 1, further comprising the step of sending price data to the buyer via the global communications network, said price data representing the price.</claim-text>
+</claim>
+<claim id="CLM-00008"><claim-text><highlight><bold>8.</bold></highlight>The method of claim 1, further comprising the step of accepting offer data from the seller representing an offer from the seller to sell the product within the price range.</claim-text>
+</claim>
+<claim id="CLM-00009"><claim-text><highlight><bold>9.</bold></highlight>The method of claim 1, wherein the selected PDA requires participation of at least one person in addition to the buyer.</claim-text>
+</claim>
+<claim id="CLM-00010"><claim-text><highlight><bold>10.</bold></highlight>The method of claim 1, wherein the steps of accepting the first request from the buyer, accepting the second request from the buyer, and receiving the performance data from the buyer, are performed by a master controller.</claim-text>
+</claim>
+<claim id="CLM-00011"><claim-text><highlight><bold>11.</bold></highlight>The method of claim 1, wherein the price is determined at least partially upon participation of the buyer in an auction.</claim-text>
+</claim>
+<claim id="CLM-00012"><claim-text><highlight><bold>12.</bold></highlight>The method of claim 1, wherein the global communications network is the Internet. </claim-text>
+</claim>
+<claim id="CLM-00013"><claim-text><highlight><bold>13.</bold></highlight>A method of determining a price of a product using a global communications network, comprising the steps:</claim-text>
+<claim-text>communicating to a buyer via the global communications network, data representing a plurality of products available, said plurality of products including a first product;</claim-text>
+<claim-text>accepting acknowledgement from the buyer representing an intent of the buyer to buy the first product at a price to be determined based upon a performance of the buyer while participating in a Price-Determining-Activity (PDA), said acknowledgement being communicated over the global communications network;</claim-text>
+<claim-text>determining the performance of the buyer; and</claim-text>
+<claim-text>assigning a price to the product, said price being dependent upon the performance of the buyer.</claim-text>
+</claim>
+<claim id="CLM-00014"><claim-text><highlight><bold>14.</bold></highlight>The method of claim 13, further comprising the step of receiving data over the global communications network representing an election of the buyer to select the PDA. </claim-text>
+</claim>
+<claim id="CLM-00015"><claim-text><highlight><bold>15.</bold></highlight>The method of claim 13, further comprising the step of accepting payment information from the buyer over the global communications network.</claim-text>
+</claim>
+<claim id="CLM-00016"><claim-text><highlight><bold>16.</bold></highlight>The method of claim 13, wherein the price to be determined is within a price range, and further comprising the step of communicating the price range to the buyer over the global communications network.</claim-text>
+</claim>
+<claim id="CLM-00017"><claim-text><highlight><bold>17.</bold></highlight>The method of claim 16, wherein the PDA includes participation of a second buyer, and further comprising the step of communicating to the buyer and to the second buyer over the global communications network, price determination rules.</claim-text>
+</claim>
+<claim id="CLM-00018"><claim-text><highlight><bold>18.</bold></highlight>The method of claim 13 wherein the price is dependent at least partially upon a bid selected by the buyer and received over the global communications network.</claim-text>
+</claim>
+<claim id="CLM-00019"><claim-text><highlight><bold>19.</bold></highlight>A system for conducting e-commerce over a global communications network, comprising:</claim-text>
+<claim-text>a computer server having access to the global communications network, and being programmed to:</claim-text>
+<claim-text>a) communicate to a buyer via the global communications network, data representing a plurality of products, said plurality of products including a first product;</claim-text>
+<claim-text>b) accept acknowledgement from the buyer representing an intent of the buyer to buy the first product at a price to be determined dependent on a performance of the buyer while participating in a Price-Determining-Activity (PDA), said acknowledgement being communicated over the global communications network;</claim-text>
+<claim-text>c) determine the performance of the buyer based upon data received over the global communications network; and</claim-text>
+<claim-text>d) assign a price to the product, said price being dependent upon the performance of the buyer.</claim-text>
+</claim>
+<claim id="CLM-00020"><claim-text><highlight><bold>20.</bold></highlight>The system of claim 19, wherein the PDA comprises computer-executable code sent to the buyer over the global communications network.</claim-text>
+</claim>
+<claim id="CLM-00021"><claim-text><highlight><bold>21.</bold></highlight>The system of claim 20, wherein the server is further programmed to process payment information of the buyer communicated over the global communications network.</claim-text>
+</claim>
+</subdoc-claims>
+<subdoc-drawings id="DRAWINGS">
+<heading lvl="0" align="CENTER">Drawings</heading>
+<representative-figure></representative-figure>
+<figure id="figure-D00001">
+<image id="EMI-D00001" file="US20010000044A1-20010315-D00001.TIF" imf="TIFF" ti="DR"/>
+</figure>
+<figure id="figure-D00002">
+<image id="EMI-D00002" file="US20010000044A1-20010315-D00002.TIF" imf="TIFF" ti="DR"/>
+</figure>
+</subdoc-drawings>
+</patent-application-publication>

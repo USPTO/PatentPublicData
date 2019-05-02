@@ -19,7 +19,7 @@ public class DescriptionFigures extends ItemReader<List<Figure>> {
 		List<Figure> figures = new ArrayList<Figure>();
 
 		@SuppressWarnings("unchecked")
-		List<Node> paragraphNodes = itemNode.selectNodes("paragraph");
+		List<Node> paragraphNodes = itemNode.selectNodes("section/paragraph|paragraph");
 
 		for (Node paragraphN : paragraphNodes) {
 			@SuppressWarnings("unchecked")

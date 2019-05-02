@@ -13,7 +13,7 @@ import gov.uspto.patent.model.PatentType;
  * <pre>
  * 1) Abstract Field Exists
  * 2) Abstract length more than 10 characters
- * 3) Abstract length less than 150 words
+ * 3) Abstract length less than 160 words
  * </pre>
  * </p>
  * 
@@ -25,16 +25,20 @@ import gov.uspto.patent.model.PatentType;
 public class AbstractRule implements Validator<Patent> {
 
 	private static String NAME = "Abstact";
-	private static String MESSAGE = "Utility Patent ABSTRACT field: missing or failed size constraints";
+	private static String MESSAGE = "Patent ABSTRACT field: missing or failed size constraints : ";
 
 	@Override
 	public boolean test(Patent patent) {
-		if (PatentType.UTILITY.equals(patent.getPatentType())) {
+		if (!PatentType.DESIGN.equals(patent.getPatentType())){ 
 
 			StringTokenizer tokenizer = tokenize(patent.getAbstract().getPlainText());
 
-			if (patent.getAbstract() == null || patent.getAbstract().getPlainText().length() < 10
-					|| tokenizer.countTokens() > 150) {
+			if (patent.getAbstract() == null || patent.getAbstract().getPlainText().length() < 10) {
+				MESSAGE = MESSAGE + " BELOW MINIMUM SIZE: 10; " + patent.getAbstract().getPlainText();
+				return false;
+			}
+			else if (tokenizer.countTokens() > 160) {
+				MESSAGE = MESSAGE + " ABOVE MAX SIZE: 160; " + patent.getAbstract().getPlainText();
 				return false;
 			}
 		}

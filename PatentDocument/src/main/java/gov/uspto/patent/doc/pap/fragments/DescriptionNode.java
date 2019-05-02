@@ -18,7 +18,7 @@ import gov.uspto.patent.model.Figure;
 public class DescriptionNode extends DOMFragmentReader<Description> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionNode.class);
 
-	private static final String FRAGMENT_PATH = "//subdoc-description";
+	private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-description";
 
 	public DescriptionNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);
@@ -39,22 +39,27 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 			desc.addSection(new DescriptionSection(DescSection.REL_APP_DESC, relAppDesc.asXML(), textProcessor));
 		}
 
-		Node briefSummary = descN.selectSingleNode("summary-of-invention/section");
-		if (briefSummary != null) {
-			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, briefSummary.getParent().asXML(), textProcessor));
+		Node backgroundOfInvention = descN.selectSingleNode("background-of-invention");
+		if (backgroundOfInvention != null) {
+			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, backgroundOfInvention.asXML(), textProcessor));
 		}
 
-		Node drawingDesc = descN.selectSingleNode("brief-description-of-drawings/section");
+		Node briefSummary = descN.selectSingleNode("summary-of-invention");
+		if (briefSummary != null) {
+			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, briefSummary.asXML(), textProcessor));
+		}
+
+		Node drawingDesc = descN.selectSingleNode("brief-description-of-drawings");
 		if (drawingDesc != null) {
-			desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, drawingDesc.getParent().asXML(), textProcessor));
+			desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, drawingDesc.asXML(), textProcessor));
 			
 			List<Figure> figures = new DescriptionFigures(drawingDesc).read();
 			desc.addFigures(figures);			
 		}
 
-		Node detailedDesc = descN.selectSingleNode("detailed-description/section");
+		Node detailedDesc = descN.selectSingleNode("detailed-description");
 		if (detailedDesc != null) {
-			desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc.getParent().asXML(), textProcessor));
+			desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc.asXML(), textProcessor));
 		}
 
 		return desc;
