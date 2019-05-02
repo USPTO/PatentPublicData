@@ -59,19 +59,19 @@ public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
 
 	public NamePerson getPersonName(Node node) {
 		Node prefixN = node.selectSingleNode("name-prefix");
-		String prefix = prefixN != null ? prefixN.getText() : null;
+		String prefix = prefixN != null ? prefixN.getText().trim() : null;
 
 		Node firstN = node.selectSingleNode("given-name");
-		String firstName = firstN != null ? firstN.getText() : null;
+		String firstName = firstN != null ? firstN.getText().trim() : null;
 
 		Node middleN = node.selectSingleNode("middle-name");
-		String middleName = middleN != null ? middleN.getText() : null;
+		String middleName = middleN != null ? middleN.getText().trim() : null;
 
 		Node lastN = node.selectSingleNode("family-name");
-		String lastName = lastN != null ? lastN.getText() : null;
+		String lastName = lastN != null ? lastN.getText().trim() : null;
 
 		Node suffixN = node.selectSingleNode("name-suffix");
-		String suffix = suffixN != null ? suffixN.getText() : null;
+		String suffix = suffixN != null ? suffixN.getText().trim() : null;
 
 		NamePerson name = null;
 		if (lastName != null || firstName != null) {

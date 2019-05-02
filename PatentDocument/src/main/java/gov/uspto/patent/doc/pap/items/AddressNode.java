@@ -53,22 +53,22 @@ public class AddressNode extends ItemReader<Address> {
 
 	public Address readAddress(Node node) {
 		Node emailN = node.selectSingleNode("email");
-		String email = emailN != null ? emailN.getText() : null;
+		String email = emailN != null ? emailN.getText().trim() : null;
 
 		Node phoneN = node.selectSingleNode("telephone");
-		String phone = phoneN != null ? phoneN.getText() : null;
+		String phone = phoneN != null ? phoneN.getText().trim() : null;
 
 		Node faxN = node.selectSingleNode("fax");
-		String fax = faxN != null ? faxN.getText() : null;
+		String fax = faxN != null ? faxN.getText().trim() : null;
 
 		Node cityN = node.selectSingleNode("city");
-		String city = cityN != null ? cityN.getText() : null;
+		String city = cityN != null ? cityN.getText().trim() : null;
 
 		Node stateN = node.selectSingleNode("state");
-		String state = stateN != null ? stateN.getText() : null;
+		String state = stateN != null ? stateN.getText().trim() : null;
 
 		Node zipCodeN = node.selectSingleNode("postalcode");
-		String zipCode = zipCodeN != null ? zipCodeN.getText() : null;
+		String zipCode = zipCodeN != null ? zipCodeN.getText().trim() : null;
 
 		Node countryN = node.selectSingleNode("country-code");
 		CountryCode countryCode = CountryCode.UNDEFINED;
