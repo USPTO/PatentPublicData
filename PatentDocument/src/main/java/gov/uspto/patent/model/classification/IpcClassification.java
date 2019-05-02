@@ -38,9 +38,9 @@ public class IpcClassification extends PatentClassification {
 	private final static Pattern REGEX_OLD = Pattern
 			.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
 
-	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$");
-	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])(\\d\\d)$");
-	private final static Pattern REGEX_LEN4 = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])$");
+	private final static Pattern REGEX = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$");
+	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])\\s?(\\d\\d)$");
+	private final static Pattern REGEX_LEN4 = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])$");
 
 	private String section;
 	private String mainClass;
@@ -262,7 +262,9 @@ public class IpcClassification extends PatentClassification {
 			setMainGroup(mainGroup);
 			setSubGroup(subGroup);
 			return;
-		} else if (classificationStr.length() == 3) {
+		}
+
+		if (classificationStr.length() >= 3) {
 			Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
 			if (matchL3.matches()) {
 				String section = matchL3.group(1);
@@ -271,7 +273,9 @@ public class IpcClassification extends PatentClassification {
 				setMainClass(mainClass);
 				return;
 			}
-		} else if (classificationStr.length() == 4) {
+		}
+
+		if (classificationStr.length() >= 4) {
 			Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
 			if (matchL4.matches()) {
 				String section = matchL4.group(1);
@@ -297,7 +301,8 @@ public class IpcClassification extends PatentClassification {
 	}
 
 	/**
-	 * IpcClassifications from collection of PatentClassifications, grouped by inventive or additional.
+	 * IpcClassifications from collection of PatentClassifications, grouped by
+	 * inventive or additional.
 	 * 
 	 * @param classes
 	 * @return

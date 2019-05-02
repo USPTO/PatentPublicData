@@ -41,8 +41,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 			Node uspcPrimarySubClassN = uspcN.selectSingleNode("classification-us-primary/uspc/subclass");
 
 			if (uspcPrimaryClassN != null && uspcPrimarySubClassN != null){
-				String mainClass = uspcPrimaryClassN.getText();
-				String subClass = uspcPrimarySubClassN.getText();
+				String mainClass = uspcPrimaryClassN.getText().trim();
+				String subClass = uspcPrimarySubClassN.getText().trim();
 
 				UspcClassification uspc = new UspcClassification();
 				uspc.setTextOriginal(mainClass + subClass);
@@ -60,8 +60,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 				Node subClassN = uspcSecoundary.selectSingleNode("uspc/subclass");
 
 				if (mainClassN != null && mainClassN != null){
-					String mainClass = uspcPrimaryClassN.getText();
-					String subClass = subClassN.getText();
+					String mainClass = uspcPrimaryClassN.getText().trim();
+					String subClass = subClassN.getText().trim();
 					
 					UspcClassification uspc = new UspcClassification();
 					uspc.setTextOriginal(mainClass + subClass);
@@ -78,7 +78,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 		if (ipcN != null){
 			Node ipcPrimaryClassN = ipcN.selectSingleNode("classification-ipc-primary/ipc");
 			if (ipcPrimaryClassN != null){
-				String ipcPrimaryClassStr = ipcPrimaryClassN != null ? ipcPrimaryClassN.getText() : null;
+				String ipcPrimaryClassStr = ipcPrimaryClassN != null ? ipcPrimaryClassN.getText().trim() : null;
 				try {
 					IpcClassification ipcPrimaryClass = new IpcClassification();
 					ipcPrimaryClass.parseText(ipcPrimaryClassStr);
@@ -92,7 +92,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 			@SuppressWarnings("unchecked")
 			List<Node> ipcSecondaries = ipcN.selectNodes("classification-ipc-secondary/ipc");
 			for(Node ipcSecoundary: ipcSecondaries){
-				String ipcSecondaryClassStr = ipcSecoundary != null ? ipcSecoundary.getText() : null;
+				String ipcSecondaryClassStr = ipcSecoundary != null ? ipcSecoundary.getText().trim() : null;
 				try {
 					IpcClassification ipcSecondaryClass = new IpcClassification();
 					ipcSecondaryClass.parseText(ipcSecondaryClassStr);
