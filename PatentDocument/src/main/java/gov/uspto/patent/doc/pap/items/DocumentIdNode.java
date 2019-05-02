@@ -46,7 +46,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		    countryCode = fallbackCountryCode;
 		} else {
     		try {
-    			countryCode = CountryCode.fromString(countryN.getText());
+    			countryCode = CountryCode.fromString(countryN.getText().trim());
     			if (CountryCode.UNDEFINED.equals(countryCode)){
     			    countryCode = fallbackCountryCode;
     			}
@@ -56,14 +56,14 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		}
 
 		Node kindN = itemNode.selectSingleNode("kind-code");
-		String kindCode = kindN != null ? kindN.getText() : null;
+		String kindCode = kindN != null ? kindN.getText().trim() : null;
 
-		DocumentId documentId = new DocumentId(countryCode, docNumN.getText(), kindCode);
+		DocumentId documentId = new DocumentId(countryCode, docNumN.getText().trim(), kindCode);
 
 		Node dateN = itemNode.selectSingleNode("document-date");
 		if (dateN != null) {
 			try {
-				documentId.setDate(new DocumentDate(dateN.getText()));
+				documentId.setDate(new DocumentDate(dateN.getText().trim()));
 			} catch (InvalidDataException e) {
 				LOGGER.warn("Failed to parse date from: {}", itemNode.asXML(), e);
 			}
