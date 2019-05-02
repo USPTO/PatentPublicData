@@ -42,13 +42,13 @@ public class DocumentDate {
 	public void setDate(String date) throws InvalidDataException {
 		if (date != null && date.trim().length() == 8) {
 			try {
-				this.date = DATE_PATENT_FORMAT.parse(date);
+				this.date = DATE_PATENT_FORMAT.parse(date.trim());
 			} catch (ParseException e) {
 				throw new InvalidDataException("Invalid Date: " + date, e);
 			}
 		} else if (date != null && date.trim().length() == 4) {
 			try {
-				this.date = DATE_YEAR_FORMAT.parse(date);
+				this.date = DATE_YEAR_FORMAT.parse(date.trim());
 			} catch (ParseException e) {
 				throw new InvalidDataException("Invalid Date: " + date, e);
 			}
