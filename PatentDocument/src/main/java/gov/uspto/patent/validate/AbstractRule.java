@@ -13,7 +13,7 @@ import gov.uspto.patent.model.PatentType;
  * <pre>
  * 1) Abstract Field Exists
  * 2) Abstract length more than 10 characters
- * 3) Abstract length less than 160 words
+ * 3) Abstract length less than 250 words
  * </pre>
  * </p>
  * 
@@ -37,8 +37,8 @@ public class AbstractRule implements Validator<Patent> {
 				MESSAGE = MESSAGE + " BELOW MINIMUM SIZE: 10; " + patent.getAbstract().getPlainText();
 				return false;
 			}
-			else if (tokenizer.countTokens() > 160) {
-				MESSAGE = MESSAGE + " ABOVE MAX SIZE: 160; " + patent.getAbstract().getPlainText();
+			else if (tokenizer.countTokens() > 250) {
+				MESSAGE = MESSAGE + " ABOVE MAX SIZE: 250; " + patent.getAbstract().getPlainText();
 				return false;
 			}
 		}
