@@ -29,8 +29,8 @@ OUTPUT=${2:-json}
 # Exec
 #----------------------
 
-if [ ! -f "$FILE" ]; then
-   if [ -f "${PROJECTPATH}/download/${FILE}" ]; then
+if [ ! -e "$FILE" ]; then
+   if [ -e "${PROJECTPATH}/download/${FILE}" ]; then
 	  FILE = "${PROJECTPATH}/download/${FILE}"
    else
       echo "File $FILE not found!" >&2
