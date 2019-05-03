@@ -7,12 +7,18 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import gov.uspto.bulkdata.cli.Download;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.common.filter.FileFilterChain;
 import gov.uspto.common.io.DummyWriter;
@@ -25,6 +31,7 @@ import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
 
 public class RecordReader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RecordReader.class);
 
 	private final BulkReaderArguments bulkReaderArgs;
 
@@ -79,6 +86,11 @@ public class RecordReader {
 
 	public RunStats read(File inputFile, RecordProcessor processor, Writer writer)
 			throws PatentReaderException, DocumentException, IOException {
+
+		if (inputFile.isDirectory()) {
+			return readDirectory(inputFile, processor, writer);
+		}
+
 		FileFilterChain filters = new FileFilterChain();
 		DumpReader dumpReader;
 		if (bulkReaderArgs.isApsPatent()) {
@@ -107,6 +119,33 @@ public class RecordReader {
 		}
 
 		return read(dumpReader, processor, writer);
+	}
+
+	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer)
+			throws PatentReaderException, DocumentException, IOException {
+
+		RunStats runStats = new RunStats("directory:" + inputDirectory.getName());
+
+		DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+			// regular files modified over 20 seconds ago
+			public boolean accept(Path file) throws IOException {
+				long twentySecsAgo = System.currentTimeMillis() - 20000;
+				long lastModified = file.toFile().lastModified();
+				return (Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) && lastModified < twentySecsAgo);
+			}
+		};
+
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inputDirectory.toPath(), filter)) {
+			for (Path filePath : stream) {
+				String filename = filePath.getFileName().toString();
+				MDC.put("DOCID", filename);
+				LOGGER.info("Reading File: {}", filename);
+				RunStats fileStats = read(filePath.toFile(), processor, writer);
+				runStats.add(fileStats);
+			}
+		}
+
+		return runStats;
 	}
 
 	public RunStats read(DumpReader dumpReader, RecordProcessor processor, Writer writer)
