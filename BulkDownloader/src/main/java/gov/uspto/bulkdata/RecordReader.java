@@ -131,7 +131,7 @@ public class RecordReader {
 			public boolean accept(Path file) throws IOException {
 				long twentySecsAgo = System.currentTimeMillis() - 20000;
 				long lastModified = file.toFile().lastModified();
-				return (Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) && lastModified < twentySecsAgo);
+				return (file.getFileName().toString().endsWith(".zip") && Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) && lastModified < twentySecsAgo);
 			}
 		};
 
