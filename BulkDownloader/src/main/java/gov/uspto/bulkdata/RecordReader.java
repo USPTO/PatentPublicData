@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import gov.uspto.bulkdata.cli.Download;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.common.filter.FileFilterChain;
 import gov.uspto.common.io.DummyWriter;
@@ -76,9 +75,9 @@ public class RecordReader {
 		Writer writer = null;
 		if (outputFilePath != null) {
 			writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(outputFilePath.toFile()), Charset.forName("UTF-8")));
+					new OutputStreamWriter(new FileOutputStream(outputFilePath.toFile()), Charset.forName("UTF-16")));
 		} else {
-			writer = new BufferedWriter(new OutputStreamWriter(System.out, Charset.forName("UTF-8")));
+			writer = new BufferedWriter(new OutputStreamWriter(System.out, Charset.forName("UTF-16")));
 		}
 
 		return read(inputFile, processor, writer);
@@ -121,7 +120,7 @@ public class RecordReader {
 		return read(dumpReader, processor, writer);
 	}
 
-	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer) throws IOException{
+	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer){
 
 		RunStats runStats = new RunStats("directory:" + inputDirectory.getName());
 
@@ -143,10 +142,13 @@ public class RecordReader {
 					RunStats fileStats = read(filePath.toFile(), processor, writer);
 					runStats.add(fileStats);
 				} catch (PatentReaderException | IOException e) {
-					 LOGGER.error("Failed Reading Bulk File", e);
+					 LOGGER.error("Failed on Bulk File: {}", filename, e);
 				}
 				LOGGER.info("--- Done Reading File: {}", filename);
 			}
+		} catch (IOException e1) {
+			runStats.incrementFailure(inputDirectory.toString());
+			LOGGER.error("Failed to read directory: {}", inputDirectory, e1);
 		}
 
 		return runStats;
@@ -170,6 +172,10 @@ public class RecordReader {
 		for (int checked = 1; dumpReader.hasNext(); checked++) {
 			runStats.incrementRecord();
 
+			if (dumpReader.getCurrentRecCount() % 1 == 0) {
+				LOGGER.info("Records Processed {} : {}", runStats.getTaskName(), dumpReader.getCurrentRecCount());
+			}
+
 			String sourceTxt = currentFileName + ":" + dumpReader.getCurrentRecCount();
 
 			MDC.put("DOCID", sourceTxt);
@@ -189,7 +195,7 @@ public class RecordReader {
 					runStats.incrementFailure(sourceTxt);
 				}
 			} catch (DocumentException | IOException e) {
-				LOGGER.error("Failed on document", e);
+				LOGGER.error("Exception occured on {}", sourceTxt, e);
 				runStats.incrementFailure(sourceTxt);
 			}
 
@@ -205,9 +211,6 @@ public class RecordReader {
 		} catch (Exception e1) {
 			throw new PatentReaderException(e1);
 		}
-
-		writer.close();
-		dumpReader.close();
 
 		return runStats;
 	}

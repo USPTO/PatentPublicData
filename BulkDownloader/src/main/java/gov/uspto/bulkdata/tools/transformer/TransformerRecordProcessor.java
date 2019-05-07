@@ -62,7 +62,7 @@ public class TransformerRecordProcessor implements RecordProcessor {
 	}
 
 	@Override
-	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws IOException, DocumentException, PatentReaderException {
+	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws PatentReaderException, DocumentException, IOException {
 		MDC.put("DOCID", sourceTxt);
 
 		if (matchProcessor != null && !matchProcessor.process(sourceTxt, rawRecord, new DummyWriter())) {
@@ -82,11 +82,13 @@ public class TransformerRecordProcessor implements RecordProcessor {
 				outPath.toFile().mkdir();
 			}
 			String currentFileName = patentId + fileExt;
-			Writer currentWriter = new BufferedWriter(new OutputStreamWriter(
+
+			try( Writer currentWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(outPath.resolve(currentFileName).toFile(), false),
-					StandardCharsets.UTF_16));
-			writeOutputType(sourceTxt, patent, currentWriter);
-			currentWriter.close();
+					StandardCharsets.UTF_16)) ){
+				writeOutputType(sourceTxt, patent, currentWriter);
+			}
+
 		} else {
 			String filename = sourceFilename + fileExt;
 			if (!filename.equals(currentFilename)) {
@@ -98,9 +100,17 @@ public class TransformerRecordProcessor implements RecordProcessor {
 						StandardCharsets.UTF_16));
 				currentFilename = filename;
 			}
-			writeOutputType(sourceTxt, patent, currentWriter);
-			currentWriter.write('\n');
-			currentWriter.flush();
+
+			try {
+				writeOutputType(sourceTxt, patent, currentWriter);
+				currentWriter.write('\n');
+				currentWriter.flush();
+			} catch (IOException e) {
+				LOGGER.error("File Write Failed", e);
+				currentWriter.close();
+				throw e;
+			}
+
 		}
 
 		return true;
