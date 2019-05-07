@@ -172,7 +172,7 @@ public class RecordReader {
 		for (int checked = 1; dumpReader.hasNext(); checked++) {
 			runStats.incrementRecord();
 
-			if (dumpReader.getCurrentRecCount() % 1 == 0) {
+			if (LOGGER.isDebugEnabled() || dumpReader.getCurrentRecCount() % 100 == 0) {
 				LOGGER.info("Records Processed {} : {}", runStats.getTaskName(), dumpReader.getCurrentRecCount());
 			}
 
