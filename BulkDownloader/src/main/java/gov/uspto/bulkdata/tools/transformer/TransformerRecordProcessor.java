@@ -13,9 +13,12 @@ import java.nio.file.Paths;
 
 import javax.xml.transform.TransformerConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import gov.uspto.bulkdata.RecordProcessor;
+import gov.uspto.bulkdata.RecordReader;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.bulkdata.tools.grep.GrepRecordProcessor;
 import gov.uspto.common.io.DummyWriter;
@@ -30,6 +33,7 @@ import gov.uspto.patent.serialize.JsonMapperStream;
 import gov.uspto.patent.serialize.PlainText;
 
 public class TransformerRecordProcessor implements RecordProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformerRecordProcessor.class);
 
 	private final TransformerConfig config;
 	private PatentReader patentReader;
@@ -58,19 +62,14 @@ public class TransformerRecordProcessor implements RecordProcessor {
 	}
 
 	@Override
-	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws IOException, DocumentException {
+	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws IOException, DocumentException, PatentReaderException {
 		MDC.put("DOCID", sourceTxt);
 
 		if (matchProcessor != null && !matchProcessor.process(sourceTxt, rawRecord, new DummyWriter())) {
 			return false;
 		}
 
-		Patent patent;
-		try {
-			patent = patentReader.read(new StringReader(rawRecord));
-		} catch (PatentReaderException e) {
-			return false;
-		}
+		Patent patent = patentReader.read(new StringReader(rawRecord));
 
 		String patentId = patent.getDocumentId() != null ? patent.getDocumentId().toText() : "";
 		MDC.put("DOCID", patentId);
@@ -124,7 +123,7 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		case "json":
 		case "js":
 			// writer.write("Patent JSON:\n");
-			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint, false);
+			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint, true);
 			fileBuilder.write(patent, writer);
 			break;
 		case "patft":

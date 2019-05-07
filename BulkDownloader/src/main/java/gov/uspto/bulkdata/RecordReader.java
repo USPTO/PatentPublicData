@@ -85,7 +85,7 @@ public class RecordReader {
 	}
 
 	public RunStats read(File inputFile, RecordProcessor processor, Writer writer)
-			throws PatentReaderException, DocumentException, IOException {
+			throws PatentReaderException, IOException {
 
 		if (inputFile.isDirectory()) {
 			return readDirectory(inputFile, processor, writer);
@@ -121,8 +121,7 @@ public class RecordReader {
 		return read(dumpReader, processor, writer);
 	}
 
-	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer)
-			throws PatentReaderException, DocumentException, IOException {
+	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer) throws IOException{
 
 		RunStats runStats = new RunStats("directory:" + inputDirectory.getName());
 
@@ -139,9 +138,14 @@ public class RecordReader {
 			for (Path filePath : stream) {
 				String filename = filePath.getFileName().toString();
 				MDC.put("DOCID", filename);
-				LOGGER.info("Reading File: {}", filename);
-				RunStats fileStats = read(filePath.toFile(), processor, writer);
-				runStats.add(fileStats);
+				LOGGER.info("--- Reading File: {}", filename);
+				try {
+					RunStats fileStats = read(filePath.toFile(), processor, writer);
+					runStats.add(fileStats);
+				} catch (PatentReaderException | IOException e) {
+					 LOGGER.error("Failed Reading Bulk File", e);
+				}
+				LOGGER.info("--- Done Reading File: {}", filename);
 			}
 		}
 
@@ -149,7 +153,7 @@ public class RecordReader {
 	}
 
 	public RunStats read(DumpReader dumpReader, RecordProcessor processor, Writer writer)
-			throws PatentReaderException, DocumentException, IOException {
+			throws PatentReaderException, IOException {
 
 		dumpReader.open();
 		dumpReader.skip(bulkReaderArgs.getSkipRecordCount());
@@ -177,10 +181,15 @@ public class RecordReader {
 				break;
 			}
 
-			Boolean success = processor.process(sourceTxt, rawRecord, writer);
-			if (success) {
-				runStats.incrementSucess();
-			} else {
+			try {
+				Boolean success = processor.process(sourceTxt, rawRecord, writer);
+				if (success) {
+					runStats.incrementSucess();
+				} else {
+					runStats.incrementFailure(sourceTxt);
+				}
+			} catch (DocumentException | IOException e) {
+				LOGGER.error("Failed on document", e);
 				runStats.incrementFailure(sourceTxt);
 			}
 
