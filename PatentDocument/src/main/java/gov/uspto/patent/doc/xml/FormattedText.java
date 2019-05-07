@@ -407,7 +407,7 @@ public class FormattedText implements TextProcessor {
 
 		if (trailingTxt.matches("^(, |,? and )")) {
 			next = element.nextSibling().nextSibling();
-			if (next.nodeName().toLowerCase().equals("b")) {
+			if (next != null && next.nodeName().toLowerCase().equals("b")) {
 				String containedTxt = ((TextNode) next.childNode(0)).getWholeText();
 				if (containedTxt.matches("[0-9]{1,2}[A-z]?")) {
 					Element newEl = element.clone();
