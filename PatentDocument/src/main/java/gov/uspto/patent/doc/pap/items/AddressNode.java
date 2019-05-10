@@ -88,7 +88,7 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			address.validate();
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Address: {}", node.getParent().asXML(), e);
+			LOGGER.warn("Invalid Address: {}", node.getParent().asXML());
 		}
 		return address;
 	}

@@ -99,7 +99,7 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			address.validate();
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Address Invalid: {}", addrNode.getParent().asXML(), e);
+			LOGGER.warn("Address Invalid: {}", addrNode.getParent().asXML());
 		}
 
 		return address;

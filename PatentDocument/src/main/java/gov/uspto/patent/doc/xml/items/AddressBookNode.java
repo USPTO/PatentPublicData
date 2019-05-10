@@ -220,7 +220,7 @@ public class AddressBookNode extends ItemReader<Name> {
 		try {
 			address.validate();
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Address: {}", addressN.getParent().asXML(), e);
+			LOGGER.warn("Invalid Address: {}", addressN.getParent().asXML());
 		}
 		return address;
 
