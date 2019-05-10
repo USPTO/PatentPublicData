@@ -74,9 +74,9 @@ public class AddressNode extends ItemReader<Address> {
 		CountryCode countryCode = CountryCode.UNDEFINED;
 		if (countryN != null) {
 			try {
-				countryCode = CountryCode.fromString(countryN.getText());
+				countryCode = CountryCode.fromString(countryN.getText().trim());
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid CountryCode: {} from: {}", countryN.getText(), node.asXML());
+				LOGGER.warn("Invalid CountryCode: '{}' from: {}", countryN.getText(), node.asXML());
 			}
 		}
 

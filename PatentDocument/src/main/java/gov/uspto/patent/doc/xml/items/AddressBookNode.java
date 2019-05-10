@@ -216,7 +216,14 @@ public class AddressBookNode extends ItemReader<Name> {
 		address.setPhoneNumber(phone);
 		address.setFaxNumber(fax);
 		address.setEmail(email);
+
+		try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("Invalid Address: {}", addressN.getParent().asXML(), e);
+		}
 		return address;
+
 	}
 
 	@Override
