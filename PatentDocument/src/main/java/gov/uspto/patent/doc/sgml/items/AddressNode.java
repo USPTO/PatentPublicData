@@ -79,7 +79,7 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			countryCode = CountryCode.fromString(country);
 		} catch (InvalidDataException e1) {
-			LOGGER.warn("Invalid Country Code: '{}'", country);
+			LOGGER.warn("{} : {}", e1.getMessage(), addrNode.getParent().asXML());
 		}
 
 		Node emailN = addrNode.selectSingleNode("EAD/PDAT");
@@ -99,7 +99,7 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			address.validate();
 		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", addrNode.getParent().asXML(), e.getCause());
+			LOGGER.warn("{} : {}", e.getMessage(), addrNode.getParent().asXML());
 		}
 
 		return address;

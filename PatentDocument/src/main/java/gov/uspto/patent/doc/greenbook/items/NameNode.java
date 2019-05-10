@@ -40,14 +40,14 @@ public class NameNode extends ItemReader<Name> {
 			try {
 				((NamePerson) entityName).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Person Name Invalid: {}", nameN.getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), nameN.getParent().asXML());
 			}
 		} else {
 			entityName = new NameOrg(fullName);
 			try {
 				((NameOrg) entityName).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Org Name Invalid: {}", nameN.getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), nameN.getParent().asXML());
 			}
 		}
 
@@ -64,13 +64,15 @@ public class NameNode extends ItemReader<Name> {
 	 */
 	public Name createName(String fullName) throws InvalidDataException {
 		if (fullName == null) {
-			return null;
+			throw new InvalidDataException("Full Name is Null");
 		}
+
 		List<String> nameParts = Splitter.onPattern("[,;]").limit(2).trimResults().splitToList(fullName);
 
 		Name entityName;
 		if (nameParts.size() == 2) {
 			entityName = new NamePerson(nameParts.get(1), nameParts.get(0));
+			
 		} else {
 			entityName = new NameOrg(fullName);
 		}

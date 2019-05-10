@@ -99,6 +99,10 @@ public class PatentDocFormatDetect {
 	 * @return
 	 */
 	public static PatentDocFormat fromPatent(Patent patent) {
+		if (patent.getDateProduced() == null) {
+			return PatentDocFormat.Unknown;
+		}
+
 		int yearProduced = patent.getDateProduced().getDate().getYear();
 		if (PatentCorpus.PGPUB.equals(patent.getPatentCorpus())) {
 			if (yearProduced < 2004) {

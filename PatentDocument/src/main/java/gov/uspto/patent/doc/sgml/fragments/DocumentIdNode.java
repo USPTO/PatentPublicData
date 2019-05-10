@@ -51,7 +51,7 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 		try {
 			countryCode = CountryCode.fromString(country);
 		} catch (InvalidDataException e2) {
-			LOGGER.warn("Invalid CountryCode: {}, from: {}", country, patentNode.asXML(), e2);
+			LOGGER.warn("{} : {}", e2.getMessage(), patentNode.asXML());
 		}
 
 		DocumentId documentId = new DocumentId(countryCode, docNumN.getText(), kindCode);
@@ -61,7 +61,7 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date from: {}", patentNode.asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), patentNode.asXML());
 			}
 		}
 

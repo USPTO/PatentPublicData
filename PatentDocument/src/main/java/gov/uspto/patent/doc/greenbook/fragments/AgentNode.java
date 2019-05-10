@@ -134,11 +134,22 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 	}
 
 	private Name parseName(Node fullNameNode) {
+		Name name = null;
+
 		try {
-			return nameParser.createName(fullNameNode.getText());
+			name = nameParser.createName(fullNameNode.getText());
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Failed to Parse Name from: {}", fullNameNode.getName(), e);
+			LOGGER.warn("{} : {}", e.getMessage(), fullNameNode.asXML());
 		}
-		return null;
+
+		if (name != null) {
+			try {
+				name.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), fullNameNode.asXML());
+			}
+		}
+
+		return name;
 	}
 }

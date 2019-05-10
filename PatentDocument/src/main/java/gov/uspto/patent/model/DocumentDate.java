@@ -44,16 +44,16 @@ public class DocumentDate {
 			try {
 				this.date = DATE_PATENT_FORMAT.parse(date.trim());
 			} catch (ParseException e) {
-				throw new InvalidDataException("Invalid Date: " + date, e);
+				throw new InvalidDataException("Invalid Date: '" + date + "'", e);
 			}
 		} else if (date != null && date.trim().length() == 4) {
 			try {
 				this.date = DATE_YEAR_FORMAT.parse(date.trim());
 			} catch (ParseException e) {
-				throw new InvalidDataException("Invalid Date: " + date, e);
+				throw new InvalidDataException("Invalid Date: '" + date + "'", e);
 			}
 		} else {
-			throw new InvalidDataException("Invalid Date: " + date);
+			throw new InvalidDataException("Invalid Date: '" + date + "'");
 		}
 	}
 

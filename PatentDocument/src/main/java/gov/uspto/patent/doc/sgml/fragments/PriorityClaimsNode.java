@@ -54,7 +54,7 @@ public class PriorityClaimsNode extends DOMFragmentReader<List<DocumentId>> {
 			try {
 				countryCode = CountryCode.fromString(docCtryStr);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse CountryCode {}", docCtryStr);
+				LOGGER.warn("{} : {}", e.getMessage(), fragmentNode.asXML());
 			}
 		}
 
@@ -73,7 +73,7 @@ public class PriorityClaimsNode extends DOMFragmentReader<List<DocumentId>> {
 						docDate = new DocumentDate(docDateStr);
 						documentId.setDate(docDate);
 					} catch (InvalidDataException e) {
-						LOGGER.warn("Failed to parse document date: {}", docDateStr);
+						LOGGER.warn("{} : {}", idNode.asXML());
 					}
 				}
 			}

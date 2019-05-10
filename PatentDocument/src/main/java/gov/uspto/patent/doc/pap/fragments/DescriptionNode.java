@@ -57,6 +57,12 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 			desc.addFigures(figures);			
 		}
 
+		Node sequenceDesc = descN.selectSingleNode("brief-description-of-sequences");
+		if (sequenceDesc != null) {
+			LOGGER.warn("brief-description-of-sequences");
+			desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, sequenceDesc.asXML(), textProcessor));
+		}
+
 		Node detailedDesc = descN.selectSingleNode("detailed-description");
 		if (detailedDesc != null) {
 			desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc.asXML(), textProcessor));

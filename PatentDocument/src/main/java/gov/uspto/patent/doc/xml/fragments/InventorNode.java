@@ -107,7 +107,7 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 		try {
 			residenceCC = residenceN != null ? CountryCode.fromString(residenceN.getText()) : null;
 		} catch (InvalidDataException e1) {
-			LOGGER.warn("Invalid Residence Country Code", e1);
+			LOGGER.warn("{} : {}", e1.getMessage(), residenceN.asXML());
 		}
 
 		Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();

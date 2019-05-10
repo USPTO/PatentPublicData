@@ -57,7 +57,7 @@ public class Assignee extends Entity {
 		if (AssigneeRoleType.containsKey(roleType)) {
 			this.roleType = roleType;
 		} else {
-			throw new InvalidDataException("Invalid Assignee Role Type: " + roleType);
+			throw new InvalidDataException("Invalid Assignee Role Type, must be 1-9 : '" + roleType + "'");
 		}
 	}
 

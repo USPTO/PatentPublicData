@@ -119,7 +119,7 @@ public class AddressBookNode extends ItemReader<Name> {
 			try {
 				name.validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Person Name Invalid: {}", itemNode.getParent().getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), itemNode.getParent().getParent().asXML());
 			}
 		}
 
@@ -146,7 +146,7 @@ public class AddressBookNode extends ItemReader<Name> {
 			try {
 				name.validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Org Name Invalid: {}", orgnameN.getParent().getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), orgnameN.getParent().getParent().asXML());
 			}
 		}
 
@@ -208,7 +208,7 @@ public class AddressBookNode extends ItemReader<Name> {
 			try {
 				countryCode = CountryCode.fromString(countryN.getText());
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid CountryCode: {} from: {}", countryN.getText(), addressN.asXML());
+				LOGGER.warn("{} : {}", e.getMessage(), addressN.getParent().asXML());
 			}
 		}
 

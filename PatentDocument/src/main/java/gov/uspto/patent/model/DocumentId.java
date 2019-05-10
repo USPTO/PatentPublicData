@@ -377,7 +377,7 @@ public class DocumentId implements Comparable<DocumentId> {
 			docId.setRawText(documentIdStr);
 			return docId;
 		} else {
-			throw new InvalidDataException("Failed to parse DocumentId text: " + documentIdStr);
+			throw new InvalidDataException("Failed to parse DocumentId text: '" + documentIdStr + "'");
 		}
 	}
 

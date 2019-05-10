@@ -78,6 +78,7 @@ public class NameOrg extends Name {
 		String check1 = check.toUpperCase().trim();
 		check1 = Normalizer.normalize(check1, Normalizer.Form.NFD);
 		check1 = check1.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		
 		// check1 = check1.replaceAll("[^\\p{ASCII}]", "");
 		check1 = check1.replaceAll("[^A-Z0-9]", "");
 		
@@ -95,12 +96,10 @@ public class NameOrg extends Name {
 		check1 = check1.replaceAll("Z", "S");
 		check1 = check1.replaceAll("(?:V|PH)", "F");
 		check1 = check1.replaceAll("B", "P");
-		
-		// Remove aeiouyhw
-		check1 = check1.replaceAll(
-				"[HWAÀÁÂÃÄÅĀĂĄǺȀȂẠẢẤẦẨẪẬẮẰẲẴẶḀÆǼEȄȆḔḖḘḚḜẸẺẼẾỀỂỄỆĒĔĖĘĚÈÉÊËIȈȊḬḮỈỊĨĪĬĮİÌÍÎÏĲOŒØǾȌȎṌṎṐṒỌỎỐỒỔỖỘỚỜỞỠỢŌÒÓŎŐÔÕÖUŨŪŬŮŰŲÙÚÛÜȔȖṲṴṶṸṺỤỦỨỪỬỮỰYẙỲỴỶỸŶŸÝ]",
-				"");
-		
+
+		// Remove AaEeIiOoUuYyHhWw
+		check1 = check1.replaceAll("[AaEeIiOoUuYyHhWw]", "");
+
 		check1 = firstLetter + check1;
 		check1 = check1.replaceAll("(.)\\1{1,}", "$1");
 
@@ -110,8 +109,8 @@ public class NameOrg extends Name {
 	public boolean validate() throws InvalidDataException {
 		String fullName = getName();
 
-		if (fullName == null || fullName.length() < 2) {
-			throw new InvalidDataException("Invalid NameOrg, lastname can not be blank");
+		if (fullName == null || fullName.trim().length() < 2) {
+			throw new InvalidDataException("Invalid NameOrg: name can not be blank");
 		}
 
 		return true;

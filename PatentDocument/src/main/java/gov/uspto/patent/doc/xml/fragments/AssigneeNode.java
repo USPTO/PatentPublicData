@@ -99,7 +99,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 			try {
 				assignee.setRole(roleType);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Assignee RoleType: {}", node.asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
 			}
 		}
 

@@ -85,7 +85,7 @@ public class Address {
 	}
 
 	public boolean hasCountry() {
-		return (country != null && (! CountryCode.UNDEFINED.equals(country) || ! CountryCode.UNKNOWN.equals(country)));
+		return (country != null && (! CountryCode.UNDEFINED.equals(country) && ! CountryCode.UNKNOWN.equals(country)));
 	}
 
 	public boolean validate() throws InvalidDataException {

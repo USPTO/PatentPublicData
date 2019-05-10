@@ -41,7 +41,7 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 		try {
 			countryCode = CountryCode.fromString(cntryCodeStr);
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Failed to lookup CountryCode: {}", cntryCodeStr);
+			LOGGER.warn("{} : {}", e.getMessage(), pctGroupN.asXML());
 		}
 
 		Node priorityIdN = pctGroupN.selectSingleNode("APN");
@@ -55,7 +55,7 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 					DocumentDate filingDate = new DocumentDate(dateStr);
 					priorityDocId.setDate(filingDate);
 				} catch (InvalidDataException e) {
-					LOGGER.warn("Invalid Priority Filing Date: {}", dateStr);
+					LOGGER.warn("{} : {}", e.getMessage(), priorityIdN.asXML());
 				}
 			}
 			docIds.add(priorityDocId);

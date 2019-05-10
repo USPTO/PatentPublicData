@@ -74,15 +74,19 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
         		}
 
         		Node countryN = fragNode.selectSingleNode("country");
-        		CountryCode countryCode = CountryCode.US;
+        		CountryCode countryCode = CountryCode.UNDEFINED;
         		String country = countryN != null ? countryN.getText() : null;
-        		try {
-        			countryCode = CountryCode.fromString(country);
-        		} catch (InvalidDataException e2) {
-        			LOGGER.warn("Invalid CountryCode '{}', from : {}", country, fragNode.asXML(), e2);
+        		if (country == null || country.trim().isEmpty()) {
+        			LOGGER.warn("Invalid CountryCode missing, using default countryCode 'US': {}", fragNode.asXML());
+        			countryCode = CountryCode.US;
+        		} else {
+	        		try {
+	        			countryCode = CountryCode.fromString(country);
+	        		} catch (InvalidDataException e2) {
+	        			LOGGER.warn("{} : {}", e2.getMessage(), fragNode.asXML());
+	        		}
         		}
 
-        		
         		String docNumber = docNumN.getText();
         		
         		if (docNumber.substring(0,2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
@@ -122,7 +126,7 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
         			try {
         				documentId.setDate(new DocumentDate(dateN.getText()));
         			} catch (InvalidDataException e) {
-        				LOGGER.warn("Failed to parse date from : {}", fragNode.asXML(), e);
+        				LOGGER.warn("{} : {}", e.getMessage(), fragNode.asXML());
         			}
         		}
 

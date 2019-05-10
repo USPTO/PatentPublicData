@@ -147,15 +147,7 @@ public class PatentAppPubParser extends Dom4JParser {
 			try {
 				patent.setDateProduced(dateProduced);
 			} catch (InvalidDataException e) {
-				LOGGER.error("Invalid Date: {}", dateProduced, e);
-			}
-		}
-
-		if (dateProduced != null) {
-			try {
-				patent.setDateProduced(dateProduced);
-			} catch (InvalidDataException e) {
-				LOGGER.error("Invalid Date: {}", dateProduced, e);
+				LOGGER.warn("{} : {}", e.getMessage(), "dateProduced");
 			}
 		}
 

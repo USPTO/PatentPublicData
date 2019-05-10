@@ -3,6 +3,7 @@ package gov.uspto.patent.model.entity;
 import javax.naming.directory.InvalidAttributesException;
 
 import gov.uspto.common.text.StringCaseUtil;
+import gov.uspto.patent.InvalidDataException;
 
 public class NameLocation extends Name {
 
@@ -26,6 +27,11 @@ public class NameLocation extends Name {
 	public String getInitials() {
 		//throw new RuntimeException("Not Implemented");
 		return null;
+	}
+
+	@Override
+	public boolean validate() throws InvalidDataException {
+		return true;
 	}
 
 	@Override

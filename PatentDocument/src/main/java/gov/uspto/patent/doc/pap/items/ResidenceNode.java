@@ -50,20 +50,16 @@ public class ResidenceNode extends ItemReader<Address> {
 		Node usResident = itemNode.selectSingleNode(US_RESIDENT);
 		Node nonUS = itemNode.selectSingleNode(NONUS_RESIDENT);
 
-		try {
-			if (usResident != null) {
-				return readResidence(usResident);
-			} else if (nonUS != null) {
-				return readResidence(nonUS);
-			}
-		} catch (InvalidDataException e) {
-			LOGGER.error("Invalid Address from {}", itemNode, e);
+		if (usResident != null) {
+			return readResidence(usResident);
+		} else if (nonUS != null) {
+			return readResidence(nonUS);
 		}
 
 		return null;
 	}
 
-	private Address readResidence(Node residence) throws InvalidDataException {
+	private Address readResidence(Node residence) {
 
 		Node cityN = residence.selectSingleNode("city");
 		String city = cityN != null ? cityN.getText() : null;
@@ -79,13 +75,18 @@ public class ResidenceNode extends ItemReader<Address> {
 			try {
 				countryCode = CountryCode.fromString(country);
 			} catch (InvalidDataException e) {
-				LOGGER.error("Invalid CountryCode: {} from: {}", country, residence.asXML());
+				LOGGER.warn("{} : {}", e.getMessage(), residence.asXML());
 			}
 		} else {
 			countryCode = CountryCode.US;
 		}
 
 		Address address = new Address(city, state, countryCode);
+		try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getCause(), residence.asXML());
+		}
 
 		return address;
 	}

@@ -92,8 +92,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 	public CountryCode readCountryCode(Node itemNode) {
 		Node countryN = itemNode.selectSingleNode("CNT");
-		String country = countryN != null ? countryN.getText() : null;
-		CountryCode countryCode = AddressNode.getCountryCode(country);
+		CountryCode countryCode = AddressNode.getCountryCode(countryN);
 		return countryCode;
 	}
 
@@ -113,7 +112,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			try {
 				documentId.setDate(new DocumentDate(dateTxt));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date: {}", dateTxt, e);
+				LOGGER.warn("{} : {}", e.getMessage(), itemNode.asXML());
 			}
 		}
 

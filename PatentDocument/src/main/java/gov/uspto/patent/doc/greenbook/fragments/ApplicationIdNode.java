@@ -39,11 +39,10 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 		Node dateN = document.selectSingleNode("/DOCUMENT/PATN/APD");
 		if (dateN != null) {
-			String dateTxt = dateN.getText();
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date: '{}'", dateTxt, e);
+				LOGGER.warn("{} : {}", e.getMessage(), dateN.getParent().asXML());
 			}
 		}
 

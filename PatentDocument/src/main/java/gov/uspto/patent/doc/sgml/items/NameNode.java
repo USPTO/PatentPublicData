@@ -60,7 +60,7 @@ public class NameNode extends ItemReader<Name> {
 			try {
 				((NameOrg)name).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Org Name Invalid: {}", nameNode.getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), nameNode.getParent().asXML());
 			}
 		} else {
 			Node firstNameN = nameNode.selectSingleNode("FNM/PDAT");
@@ -72,7 +72,7 @@ public class NameNode extends ItemReader<Name> {
 			try {
 				((NamePerson)name).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Person Name Invalid: {}", nameNode.getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), nameNode.getParent().asXML());
 			}
 		}
 

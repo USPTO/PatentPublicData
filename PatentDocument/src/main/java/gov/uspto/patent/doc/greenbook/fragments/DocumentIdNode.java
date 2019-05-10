@@ -45,7 +45,7 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 			try {
 				documentId.setDate(new DocumentDate(dateTxt));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date: {}", dateTxt, e);
+				LOGGER.warn("{} : {}", e.getMessage(), dateN.getParent().asXML());
 			}
 		}
 

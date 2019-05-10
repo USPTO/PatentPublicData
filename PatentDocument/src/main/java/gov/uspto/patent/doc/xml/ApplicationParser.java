@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.parser.dom4j.Dom4jUtil;
 import gov.uspto.patent.InvalidDataException;
@@ -73,7 +72,7 @@ public class ApplicationParser extends Dom4JParser {
             try {
                 dateProducedDate = new DocumentDate(dateProduced);
             } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Produced: '{}'", dateProduced, e);
+                LOGGER.warn("{} : {}", e.getMessage(), "dateProduced");
             }
         }
 
@@ -82,7 +81,7 @@ public class ApplicationParser extends Dom4JParser {
             try {
                 datePublishedDate = new DocumentDate(datePublished);
             } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Published: '{}'", datePublished, e);
+                LOGGER.warn("{} : {}", e.getMessage(), "datePublished");
             }
         }
 
@@ -91,7 +90,7 @@ public class ApplicationParser extends Dom4JParser {
         try {
             patentType = PatentType.fromString(patentTypeStr);
         } catch (InvalidDataException e1) {
-            LOGGER.warn("Invalid Patent Type: '{}'", patentTypeStr, e1);
+            LOGGER.warn("{} : {}", e1.getMessage(), "patentTypeStr");
         }
 
         DocumentId applicationId = new ApplicationIdNode(document).read();

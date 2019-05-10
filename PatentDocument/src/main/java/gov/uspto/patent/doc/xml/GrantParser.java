@@ -74,7 +74,7 @@ public class GrantParser extends Dom4JParser {
             try {
                 dateProducedDate = new DocumentDate(dateProduced);
             } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Produced: '{}'", dateProduced, e);
+                LOGGER.warn("{} : {}", e.getMessage(), "dateProduced");
             }
         }
 
@@ -83,7 +83,7 @@ public class GrantParser extends Dom4JParser {
             try {
                 datePublishedDate = new DocumentDate(datePublished);
             } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Published: '{}'", datePublished, e);
+                LOGGER.warn("{} : {}", e.getMessage(), "datePublished");
             }
         }
 
@@ -92,7 +92,7 @@ public class GrantParser extends Dom4JParser {
         try {
             patentType = PatentType.fromString(patentTypeStr);
         } catch (InvalidDataException e1) {
-            LOGGER.warn("Invalid Patent Type: '{}'", patentTypeStr, e1);
+            LOGGER.warn("{} : {}", e1.getMessage(), "patentTypeStr");
         }
   
         DocumentId applicationId = new ApplicationIdNode(document).read();

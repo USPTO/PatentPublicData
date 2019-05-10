@@ -36,13 +36,14 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 
 		Node docNumN = itemNode.selectSingleNode("doc-number");
 		if (docNumN == null) {
-			LOGGER.warn("Invalid doc-number can not be Null, from: {}", itemNode.asXML());
+			LOGGER.warn("Invalid doc-number missing : {}", itemNode.asXML());
 			return null;
 		}
 
 		Node countryN = itemNode.selectSingleNode("country-code");
 		CountryCode countryCode = CountryCode.UNKNOWN;
-		if (countryN == null){
+		if (countryN == null || countryN.getText().trim().isEmpty()){
+			LOGGER.warn("Invalid CountryCode missing: using fallback CountryCode '{}' : {}", fallbackCountryCode, itemNode.asXML());
 		    countryCode = fallbackCountryCode;
 		} else {
     		try {
@@ -51,7 +52,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
     			    countryCode = fallbackCountryCode;
     			}
     		} catch (InvalidDataException e2) {
-    			LOGGER.warn("Invalid CountryCode '{}', from: {}", countryN.getText(), itemNode.asXML(), e2);
+    			LOGGER.warn("{} : {}", e2.getMessage(), itemNode.asXML());
     		}
 		}
 
@@ -65,7 +66,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText().trim()));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date from: {}", itemNode.asXML(), e);
+				LOGGER.warn("{} : {}", itemNode.asXML());
 			}
 		}
 

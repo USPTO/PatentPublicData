@@ -52,7 +52,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		try {
 			countryCode = CountryCode.fromString(country);
 		} catch (InvalidDataException e2) {
-			LOGGER.warn("Invalid CountryCode '{}', from: {}", country, itemNode.asXML(), e2);
+			LOGGER.warn("{} : {}", e2.getMessage(), itemNode.asXML());
 		}
 
 		String docNumber = docNumN.getText();
@@ -77,7 +77,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 			try {
 				docDate = new DocumentDate(dateN.getText());
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date from: {}", itemNode.asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), itemNode.asXML());
 			}
 		}
 
@@ -89,7 +89,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		if (matcher.matches()) {
 			if (matcher.group(1).equals("0")) {
 				if (docDate != null && docDate.getYear() <= 2000) {
-					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}",
+					LOGGER.debug("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}",
 							matcher.group(0), docDate.getYear());
 				} else {
 					docNumber = "20" + docNumber;
@@ -98,7 +98,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 				}
 			} else if (matcher.group(1).equals("9")) {
 				if (docDate != null && docDate.getYear() <= 1900 && docDate.getYear() > 2000) {
-					LOGGER.warn("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}",
+					LOGGER.debug("Expand of possible Short Year, skipped due to year mismatch; doc-number: {} year: {}",
 							matcher.group(0), docDate.getYear());
 				} else {
 					docNumber = "19" + docNumber;

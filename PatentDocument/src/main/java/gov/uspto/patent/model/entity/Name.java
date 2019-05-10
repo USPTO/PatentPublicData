@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import gov.uspto.patent.InvalidDataException;
+
 public abstract class Name {
 
 	private Set<String> synonym = new HashSet<String>(); // nickname, aliases, variants.
@@ -113,4 +115,6 @@ public abstract class Name {
 	public abstract String getNameNormalizeCase();
 
 	public abstract String getInitials();
+	
+	public abstract boolean validate() throws InvalidDataException;
 }

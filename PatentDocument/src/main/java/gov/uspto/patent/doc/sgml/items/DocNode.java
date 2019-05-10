@@ -78,7 +78,7 @@ public class DocNode extends ItemReader<DocumentId> {
             try {
                 countryCode = CountryCode.fromString(countryCodeStr);
             } catch (InvalidDataException e1) {
-                LOGGER.warn("Invalid Country Code: {} from: {}", countryCodeStr, docIdNode.asXML(), e1);
+                LOGGER.warn("{} : {}", e1.getMessage(), docIdNode.asXML());
             }
         }
 
@@ -94,7 +94,7 @@ public class DocNode extends ItemReader<DocumentId> {
                 DocumentDate docDate = new DocumentDate(dateN.getText());
                 docId.setDate(docDate);
             } catch (InvalidDataException e) {
-                LOGGER.warn("Unable to parse date: {} from: {}", dateN.getText(), docIdNode.asXML(), e);
+                LOGGER.warn("{} : {}", e.getMessage(), docIdNode.asXML());
             }
         }
 

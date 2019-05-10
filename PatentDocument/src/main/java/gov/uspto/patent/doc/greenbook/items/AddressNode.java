@@ -60,9 +60,7 @@ public class AddressNode extends ItemReader<Address> {
 		String zipcode = zipcodeN != null ? zipcodeN.getText() : null;
 
 		Node countryN = itemNode.selectSingleNode("CNT");
-		String countryCodeStr = countryN != null ? countryN.getText() : null;
-
-		CountryCode countryCode = getCountryCode(countryCodeStr);
+		CountryCode countryCode = getCountryCode(countryN);
 
 		Address address = new Address(street, city, state, zipcode, countryCode);
 
@@ -84,10 +82,12 @@ public class AddressNode extends ItemReader<Address> {
 	 * @param country
 	 * @return
 	 */
-	public static CountryCode getCountryCode(String country) {
-		if (country == null) {
+	public static CountryCode getCountryCode(Node countryNode) {
+		if (countryNode == null) {
 			return CountryCode.UNDEFINED;
 		}
+		
+		String country = countryNode.getText();
 
 		if (country.length() == 3) {
 			country = country.replaceFirst("(?:X|[0-9])$", "");
@@ -97,11 +97,11 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			countryCode = CountryCode.fromString(country);
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Country Code: '{}'", country);
+			LOGGER.warn("{} : {}", country, countryNode.getParent().asXML());
 		}
 
 		if (countryCode == CountryCode.UNKNOWN) {
-			countryCode = AddressNode.getCountryCodeHistoric(country);
+			countryCode = AddressNode.getCountryCodeHistoric(countryNode);
 		}
 
 		return countryCode;
@@ -118,11 +118,13 @@ public class AddressNode extends ItemReader<Address> {
 	 * @param country
 	 * @return
 	 */
-	public static CountryCode getCountryCodeHistoric(String country) {
-		if (country == null) {
+	public static CountryCode getCountryCodeHistoric(Node countryNode) {
+		if (countryNode == null) {
 			return CountryCode.UNDEFINED;
 		}
 
+		String country = countryNode.getText();
+		
 		if (country.length() == 3) {
 			country = country.replaceFirst("(?:X|[0-9])$", "");
 		}

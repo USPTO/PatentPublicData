@@ -50,7 +50,7 @@ public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
 			try {
 				name.validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Org Name Invalid: {}", node.getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), node.getParent().asXML());
 			}
 		}
 
@@ -82,7 +82,7 @@ public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
 			try {
 				name.validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Unable to create NamePerson from {}", node.asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
 			}
 		}
 

@@ -53,7 +53,7 @@ public enum PatentType {
 			}
 			return PatentType.UNDEFINED;
 		} catch (IllegalArgumentException e) {
-			throw new InvalidDataException("Invalid PatentType: " + strValue);
+			throw new InvalidDataException("Invalid PatentType: '" + strValue + "'");
 			// return CountryCode.UNKNOWN;
 		}
 	}

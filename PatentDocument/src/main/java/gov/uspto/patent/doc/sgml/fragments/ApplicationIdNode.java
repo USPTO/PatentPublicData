@@ -51,7 +51,7 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date from: {}", patentNode.asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), patentNode.asXML());
 			}
 		}
 

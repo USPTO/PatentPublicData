@@ -51,7 +51,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 	public DocumentId publicationId(Node pctGroupN) {
 		Node pctPubIdN = pctGroupN.selectSingleNode("PCP");
 		if (pctPubIdN != null) {
-			DocumentId pubDocId = buildDocId(pctPubIdN.getText());
+			DocumentId pubDocId = buildDocId(pctPubIdN);
 
 			if (pubDocId != null) {
 				Node pctPubDateN = pctGroupN.selectSingleNode("PCD");
@@ -61,7 +61,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 						DocumentDate pubDate = new DocumentDate(pubDateStr);
 						pubDocId.setDate(pubDate);
 					} catch (InvalidDataException e) {
-						LOGGER.warn("Invalid PCT Publication Date: {}", pubDateStr);
+						LOGGER.warn("{} : {}", e.getMessage(), pctGroupN.asXML());
 					}
 				}
 
@@ -75,7 +75,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 	public DocumentId filingId(Node pctGroupN) {
 		Node pctFilingIdN = pctGroupN.selectSingleNode("PCN");
 		if (pctFilingIdN != null) {
-			DocumentId filindDocId = buildDocId(pctFilingIdN.getText());
+			DocumentId filindDocId = buildDocId(pctFilingIdN);
 
 			if (filindDocId != null) {
 				Node pctFilingDateN = pctGroupN.selectSingleNode("PD3");
@@ -85,7 +85,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 						DocumentDate filingDate = new DocumentDate(filingDateStr);
 						filindDocId.setDate(filingDate);
 					} catch (InvalidDataException e) {
-						LOGGER.warn("Invalid PCT Filing Date: '{}'", pctFilingDateN.getText());
+						LOGGER.warn("{} : {}", e.getMessage(), pctGroupN.asXML());
 					}
 				}
 
@@ -98,7 +98,13 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 
 	private static final Pattern PCT_ID_PATTERN = Pattern.compile("^(?:PCT/)?([A-Z]{2})([0-9]{2}/[0-9]{4,})$");
 
-	private DocumentId buildDocId(String pctDocIdString) {
+	private DocumentId buildDocId(Node docIdN) {
+		if (docIdN == null) {
+			return null;
+		}
+
+		String pctDocIdString = docIdN.getText();
+		
 		Matcher matcher = PCT_ID_PATTERN.matcher(pctDocIdString);
 
 		if (matcher.matches()) {
@@ -110,13 +116,13 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 			try {
 				countryCode = CountryCode.fromString(countryCodeStr);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to lookup CountryCode: {}", countryCodeStr);
+				LOGGER.warn("{} : {}", e.getMessage(), countryCodeStr);
 			}
 
 			return new DocumentId(countryCode, docId);
 		}
 
-		LOGGER.warn("PCT DocID did not match pattern: {}", pctDocIdString);
+		LOGGER.warn("PCT DocID failed to match pattern: {} : {}", pctDocIdString, docIdN.getParent().asXML());
 
 		return null;
 	}

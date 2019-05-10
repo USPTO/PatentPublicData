@@ -33,49 +33,50 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 
 		String artUnit = getArtUnit();
 
-		Examiner primary = getPrimaryExaminer(artUnit);
-		if (primary != null){
+		Node primaryNode = document.selectSingleNode(PRIMARY);
+
+		Examiner primary = getExaminer(primaryNode, ExaminerType.PRIMARY, artUnit);
+		if (primary != null) {
 			examinerList.add(primary);
 		}
-		
-		Examiner assistant = getAssistantExaminer();
-		if (assistant != null){
+
+		Node assistantNode = document.selectSingleNode(ASSISTANT);
+		Examiner assistant = getExaminer(assistantNode, ExaminerType.ASSISTANT, artUnit);
+		if (assistant != null) {
 			examinerList.add(assistant);
 		}
 
 		return examinerList;
 	}
 
-	public String getArtUnit(){
+	public String getArtUnit() {
 		Node artN = document.selectSingleNode(ARTUNIT);
 		return artN != null ? artN.getText() : null;
 	}
 
-	public Examiner getPrimaryExaminer(String artUnit){
-		Node primaryN = document.selectSingleNode(PRIMARY);
-		if (primaryN != null) {
-			String fullName = primaryN != null ? primaryN.getText() : null;
-			try {
-				Name name = new NameNode(primaryN).createName(fullName);
-				return new Examiner(name, artUnit, ExaminerType.PRIMARY);
-			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Name: {}", fullName, e);
-			}
-		}
-		return null;
-	}
+	public Examiner getExaminer(Node examinerNode, ExaminerType type, String artUnit) {
 
-	public Examiner getAssistantExaminer(){
-		Node assistantN = document.selectSingleNode(ASSISTANT);
-		if (assistantN != null) {
-			String fullName = assistantN != null ? assistantN.getText() : null;
+		if (examinerNode != null) {
+			String fullName = examinerNode != null ? examinerNode.getText() : null;
+
+			Name name = null;
 			try {
-				Name name = new NameNode(assistantN).createName(fullName);
-				return new Examiner(name, null, ExaminerType.ASSISTANT);
+				name = new NameNode(examinerNode).createName(fullName);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Name: {}", fullName, e);
+				LOGGER.warn("{} : {}", e.getMessage(), examinerNode.asXML());
+			}
+
+			if (name != null) {
+				try {
+					name.validate();
+				} catch (InvalidDataException e) {
+					LOGGER.warn("{} : {}", e.getMessage(), examinerNode.asXML());
+				}
+
+				return new Examiner(name, artUnit, type);
 			}
 		}
+
 		return null;
 	}
 }
