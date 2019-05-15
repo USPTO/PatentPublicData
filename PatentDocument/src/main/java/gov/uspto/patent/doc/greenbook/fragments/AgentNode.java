@@ -57,6 +57,12 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		}
 
 		Address address = new AddressNode(legalRep).read();
+		/*try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), legalRep.asXML());
+		}
+		*/
 
 		/*
 		 * Attorney Principle Name

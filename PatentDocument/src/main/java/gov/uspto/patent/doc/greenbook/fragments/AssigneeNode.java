@@ -44,10 +44,23 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	public Assignee readAssignee(Node assigneeN) {
 		Name name = new NameNode(assigneeN).read();
 		if (name == null) {
+			LOGGER.warn("Assignee Name is missing : {}", assigneeN.asXML());
 			return null;
+		}
+		try {
+			name.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), assigneeN.asXML());
 		}
 
 		Address address = new AddressNode(assigneeN).read();
+		/*
+		try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), assigneeN.asXML());
+		}
+		*/
 
 		Node typeCodeN = assigneeN.selectSingleNode("COD");
 		Assignee assignee = new Assignee(name, address);

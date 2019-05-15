@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.InvalidDataException;
+import gov.uspto.patent.doc.greenbook.items.AddressNode;
 import gov.uspto.patent.model.CountryCode;
+import gov.uspto.patent.model.CountryCodeHistory;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 
@@ -35,13 +37,18 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 
 		Node CntryN = pctGroupN.selectSingleNode("CNT");
 		String cntryCodeStr = CntryN != null ? CntryN.getText() : "";
-		cntryCodeStr = cntryCodeStr.replaceFirst("X$", "");
+		
+		if (cntryCodeStr.length() == 3) {
+			cntryCodeStr = cntryCodeStr.replaceFirst("(?:X|[0-9])$", "");
+		}
 
 		CountryCode countryCode = CountryCode.UNKNOWN;
 		try {
 			countryCode = CountryCode.fromString(cntryCodeStr);
 		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", e.getMessage(), pctGroupN.asXML());
+			countryCode = CountryCodeHistory.getCurrentCode(cntryCodeStr);
+			LOGGER.info("Historic Country Code: '{}' maps to '{}'", cntryCodeStr, countryCode);
+			//LOGGER.warn("{} : {}", e.getMessage(), pctGroupN.asXML());
 		}
 
 		Node priorityIdN = pctGroupN.selectSingleNode("APN");

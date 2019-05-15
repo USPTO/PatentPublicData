@@ -64,12 +64,6 @@ public class AddressNode extends ItemReader<Address> {
 
 		Address address = new Address(street, city, state, zipcode, countryCode);
 
-		try {
-			address.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", e.getCause(), itemNode.getParent().asXML());
-		}
-
 		return address;
 	}
 
@@ -77,7 +71,7 @@ public class AddressNode extends ItemReader<Address> {
 	 * Country Code
 	 * 
 	 * Fix 3 digit country codes, in two digit country code field, by removing the
-	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
+	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2, GB3).
 	 * 
 	 * @param country
 	 * @return
@@ -86,7 +80,7 @@ public class AddressNode extends ItemReader<Address> {
 		if (countryNode == null) {
 			return CountryCode.UNDEFINED;
 		}
-		
+
 		String country = countryNode.getText();
 
 		if (country.length() == 3) {
@@ -97,10 +91,7 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			countryCode = CountryCode.fromString(country);
 		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", country, countryNode.getParent().asXML());
-		}
-
-		if (countryCode == CountryCode.UNKNOWN) {
+			// LOGGER.warn("{} : {}", country, countryNode.getParent().asXML());
 			countryCode = AddressNode.getCountryCodeHistoric(countryNode);
 		}
 
@@ -112,7 +103,7 @@ public class AddressNode extends ItemReader<Address> {
 	 * 
 	 * <p>
 	 * Fix 3 digit country codes, in two digit country code field, by removing the
-	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
+	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2, GB3).
 	 * </p>
 	 * 
 	 * @param country
@@ -124,14 +115,14 @@ public class AddressNode extends ItemReader<Address> {
 		}
 
 		String country = countryNode.getText();
-		
+
 		if (country.length() == 3) {
 			country = country.replaceFirst("(?:X|[0-9])$", "");
 		}
 
 		CountryCode countryCode = CountryCodeHistory.getCurrentCode(country);
 
-		LOGGER.warn("Historic Country Code: '{}' maps to '{}'", country, countryCode);
+		LOGGER.info("Historic Country Code: '{}' maps to '{}'", country, countryCode);
 
 		return countryCode;
 	}

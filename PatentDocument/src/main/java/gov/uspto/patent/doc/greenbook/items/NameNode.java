@@ -5,11 +5,7 @@ import java.util.List;
 import javax.naming.directory.InvalidAttributesException;
 
 import org.dom4j.Node;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Splitter;
-
 import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Name;
@@ -17,8 +13,6 @@ import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
 
 public class NameNode extends ItemReader<Name> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(NameNode.class);
 
 	public NameNode(Node itemNode) {
 		super(itemNode);
@@ -37,18 +31,8 @@ public class NameNode extends ItemReader<Name> {
 		Name entityName;
 		if (nameParts.size() == 2) {
 			entityName = new NamePerson(nameParts.get(1), nameParts.get(0));
-			try {
-				((NamePerson) entityName).validate();
-			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), nameN.getParent().asXML());
-			}
 		} else {
 			entityName = new NameOrg(fullName);
-			try {
-				((NameOrg) entityName).validate();
-			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), nameN.getParent().asXML());
-			}
 		}
 
 		return entityName;
@@ -72,7 +56,6 @@ public class NameNode extends ItemReader<Name> {
 		Name entityName;
 		if (nameParts.size() == 2) {
 			entityName = new NamePerson(nameParts.get(1), nameParts.get(0));
-			
 		} else {
 			entityName = new NameOrg(fullName);
 		}
