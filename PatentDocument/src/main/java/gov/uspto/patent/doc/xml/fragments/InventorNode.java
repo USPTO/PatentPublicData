@@ -13,6 +13,7 @@ import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
 import gov.uspto.patent.model.CountryCode;
+import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Inventor;
 import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.RelationshipType;
@@ -110,8 +111,21 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 			LOGGER.warn("{} : {}", e1.getMessage(), residenceN.asXML());
 		}
 
-		Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();
-		Inventor inventor = new Inventor(name, addressBook.getAddress());
+		Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();	
+		try {
+			name.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+		}
+
+		Address address = addressBook.getAddress();
+		try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+		}
+
+		Inventor inventor = new Inventor(name, address);
 		inventor.setResidency(residenceCC);
 		if (addressBook.getOrgName() != null) {
 			inventor.addRelationship(addressBook.getOrgName(), RelationshipType.EMPLOYEE);

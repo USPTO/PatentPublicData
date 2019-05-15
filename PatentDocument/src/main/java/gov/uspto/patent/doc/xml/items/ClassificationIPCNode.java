@@ -115,7 +115,7 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 			classification.parseText(mainClass.getText());
 			classification.setIsMainClassification(true);
 		} catch (ParseException e1) {
-			LOGGER.warn("Failed to parse IPC classification 'main-classification': {}", mainClass.asXML(), e1);
+			LOGGER.warn("Failed to parse IPC classification 'main-classification': {}", mainClass.asXML());
 			return null;
 		}
 
@@ -126,7 +126,7 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 				ipcClass.parseText(subclass.getText());
 				classification.addChild(ipcClass);
 			} catch (ParseException e) {
-				LOGGER.warn("Failed to parse IPC classification 'further-classification': {}", subclass.asXML(), e);
+				LOGGER.warn("Failed to parse IPC classification 'further-classification': {}", subclass.asXML());
 			}
 		}
 

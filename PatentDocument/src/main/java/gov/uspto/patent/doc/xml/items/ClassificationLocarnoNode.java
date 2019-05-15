@@ -40,7 +40,7 @@ public class ClassificationLocarnoNode extends ItemReader<PatentClassification> 
 			classification.parseText(mainClass.getText());
 			classification.setIsMainClassification(true);
 		} catch (ParseException e1) {
-			LOGGER.warn("Failed to parse Locarno classification 'main-classification': {}", mainClass.asXML(), e1);
+			LOGGER.warn("Failed to parse Locarno classification 'main-classification': {}", mainClass.asXML());
 			return null;
 		}
 
@@ -51,7 +51,7 @@ public class ClassificationLocarnoNode extends ItemReader<PatentClassification> 
 				locarnoClass.parseText(subclass.getText());
 				classification.addChild(locarnoClass);
 			} catch (ParseException e) {
-				LOGGER.warn("Failed to parse Locarno classification 'further-classification': {}", subclass.asXML(), e);
+				LOGGER.warn("Failed to parse Locarno classification 'further-classification': {}", subclass.asXML());
 			}
 		}
 

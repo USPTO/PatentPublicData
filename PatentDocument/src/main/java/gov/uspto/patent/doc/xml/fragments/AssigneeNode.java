@@ -1,7 +1,6 @@
 package gov.uspto.patent.doc.xml.fragments;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
+import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
@@ -88,7 +88,16 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 				continue;
 			}
 
+			try {
+				assigneeName.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
+			}
+
 			Address address = addressBook.getAddress();
+			if (address == null) {
+				address = new Address("", "", CountryCode.UNDEFINED);
+			}
 
 			Node roleTypeN = node.selectSingleNode("addressbook/role");
 			String roleType = roleTypeN != null ? roleTypeN.getText() : "";

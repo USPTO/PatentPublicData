@@ -55,7 +55,7 @@ public class ClassificationNationalNode extends ItemReader<PatentClassification>
 			classification.parseText(mainClass.getText());
 			classification.setIsMainClassification(true);
 		} catch (ParseException e1) {
-			LOGGER.warn("Failed to parse USPC classification 'main-classification': {}", mainClass.asXML(), e1);
+			LOGGER.warn("Failed to parse USPC classification 'main-classification': {}", mainClass.asXML());
 			return null;
 		}
 
@@ -67,7 +67,7 @@ public class ClassificationNationalNode extends ItemReader<PatentClassification>
 				usClass.parseText(subclass.getText());
 				classification.addChild(usClass);
 			} catch (ParseException e) {
-				LOGGER.warn("Failed to parse USPC classification 'further-classification': {}", subclass.asXML(), e);
+				LOGGER.warn("Failed to parse USPC classification 'further-classification': {}", subclass.asXML());
 			}
 
 		}

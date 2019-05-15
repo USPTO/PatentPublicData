@@ -115,12 +115,6 @@ public class AddressBookNode extends ItemReader<Name> {
 			name.setPrefix(prefix);
 			name.setSuffix(suffix);
 			name.setSynonyms(synonyms);
-
-			try {
-				name.validate();
-			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), itemNode.getParent().getParent().asXML());
-			}
 		}
 
 		return name;
@@ -142,12 +136,6 @@ public class AddressBookNode extends ItemReader<Name> {
 			String orgName = orgnameN.getText();
 			name = new NameOrg(orgName);
 			name.setSynonyms(synonyms);
-
-			try {
-				name.validate();
-			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), orgnameN.getParent().getParent().asXML());
-			}
 		}
 
 		return name;
@@ -208,7 +196,11 @@ public class AddressBookNode extends ItemReader<Name> {
 			try {
 				countryCode = CountryCode.fromString(countryN.getText());
 			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), addressN.getParent().asXML());
+				if ("UNKNOWN".equalsIgnoreCase(countryN.getText())) {
+					LOGGER.debug("{} : {}", e.getMessage(), addressN.getParent().asXML());
+				} else {
+					LOGGER.warn("{} : {}", e.getMessage(), addressN.getParent().asXML());
+				}
 			}
 		}
 
@@ -217,11 +209,6 @@ public class AddressBookNode extends ItemReader<Name> {
 		address.setFaxNumber(fax);
 		address.setEmail(email);
 
-		try {
-			address.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", e.getMessage(), addressN.getParent().asXML());
-		}
 		return address;
 
 	}

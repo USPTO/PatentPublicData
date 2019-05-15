@@ -5,13 +5,18 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
+import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Applicant;
 import gov.uspto.patent.model.entity.Name;
 
 public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicantNode.class);
 
 	/*
 	 * CURRENT: //us-parties/us-applicants/us-applicant
@@ -46,8 +51,25 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 				applicantName = addressBook.getOrgName();
 			}
 
+			try {
+				applicantName.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
+			}
+
+			Address address = addressBook.getAddress();
+			if (address != null) {
+				try {
+					address.validate();
+				} catch (InvalidDataException e) {
+					LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
+				}
+			} else {
+				LOGGER.warn("Missing address : {}", node.asXML());
+			}
+
 			if (applicantName != null) {
-				Applicant applicant = new Applicant(applicantName, addressBook.getAddress());
+				Applicant applicant = new Applicant(applicantName, address);
 				applicantList.add(applicant);
 			}
 		}

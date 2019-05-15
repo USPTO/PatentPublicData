@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
+import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.AgentRepType;
 import gov.uspto.patent.model.entity.Name;
@@ -50,7 +52,14 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 			Name name = addressBook.getName();
 			if (name != null) {
 
-				Agent agent = new Agent(name, addressBook.getAddress(), agentRepType);
+				Address address = addressBook.getAddress();
+				/*try {
+					address.validate();
+				} catch (InvalidDataException e) {
+					LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
+				}*/
+
+				Agent agent = new Agent(name, address, agentRepType);
 				agent.setSequence(sequence);
 
 				if (addressBook.getOrgName() != null) {
@@ -82,7 +91,15 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 			}
 
 			if (name != null) {
-				Agent agent = new Agent(name, addressBook.getAddress(), AgentRepType.AGENT);
+				
+				Address address = addressBook.getAddress();
+				try {
+					address.validate();
+				} catch (InvalidDataException e) {
+					LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
+				}
+
+				Agent agent = new Agent(name, address, AgentRepType.AGENT);
 
 				if (addressBook.getOrgName() != null) {
 					agent.addRelationship(addressBook.getOrgName(), RelationshipType.REPRESENTATIVE);
