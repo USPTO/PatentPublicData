@@ -70,13 +70,18 @@ public class AddressNode extends ItemReader<Address> {
 		Node zipCodeN = node.selectSingleNode("postalcode");
 		String zipCode = zipCodeN != null ? zipCodeN.getText().trim() : null;
 
-		Node countryN = node.selectSingleNode("country-code");
+		Node countryN = node.selectSingleNode("country-code|country/country-code");
 		CountryCode countryCode = CountryCode.UNDEFINED;
 		if (countryN != null) {
 			try {
 				countryCode = CountryCode.fromString(countryN.getText().trim());
 			} catch (InvalidDataException e) {
 				LOGGER.warn("{} : {}", e.getMessage(), node.getParent().asXML());
+			}
+		} else {
+			if (state != null && zipCode != null) {
+				LOGGER.debug("Missing CountryCode using 'US' : {}", node.getParent().asXML());
+				countryCode = CountryCode.US;
 			}
 		}
 
@@ -85,11 +90,6 @@ public class AddressNode extends ItemReader<Address> {
 		address.setPhoneNumber(phone);
 		address.setFaxNumber(fax);
 
-		try {
-			address.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", e.getMessage(), node.getParent().asXML());
-		}
 		return address;
 	}
 }

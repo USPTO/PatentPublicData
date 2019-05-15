@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.pap.items.AddressNode;
 import gov.uspto.patent.doc.pap.items.NameNode;
 import gov.uspto.patent.doc.pap.items.ResidenceNode;
@@ -50,12 +51,22 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 				LOGGER.warn("Inventor does not have name : {}", inventorNode.asXML());
 				continue;
 			}
+			try {
+				name.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+			}
 
 			Address residenceAddress = new ResidenceNode(inventorNode).read();
 
 			Address address = new AddressNode(inventorNode).read();
 			if (address == null && residenceAddress != null) {
 				address = residenceAddress;
+			}
+			try {
+				address.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
 			}
 
 			Inventor inventor = new Inventor(name, address);

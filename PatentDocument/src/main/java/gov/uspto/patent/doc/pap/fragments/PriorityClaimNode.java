@@ -46,7 +46,7 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 				CountryCode cntryCode = CountryCode.fromString(cntryCodeStr);
 				docId = new DocumentId(cntryCode, docidStr);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid CountryCode: {}", cntryCodeStr, e);
+				LOGGER.warn("Invalid CountryCode: '{}'", cntryCodeStr, e);
 			}
 
 			if (docId != null) {
@@ -54,7 +54,7 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 					DocumentDate docDate = new DocumentDate(filingDateStr);
 					docId.setDate(docDate);
 				} catch (InvalidDataException e) {
-					LOGGER.warn("Invalid Document Date: {}", filingDateStr, e);
+					LOGGER.warn("Invalid Document Date: '{}'", filingDateStr, e);
 				}
 
 				priorityIds.add(docId);

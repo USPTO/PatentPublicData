@@ -43,7 +43,7 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 		Node countryN = itemNode.selectSingleNode("country-code");
 		CountryCode countryCode = CountryCode.UNKNOWN;
 		if (countryN == null || countryN.getText().trim().isEmpty()){
-			LOGGER.warn("Invalid CountryCode missing: using fallback CountryCode '{}' : {}", fallbackCountryCode, itemNode.asXML());
+			LOGGER.debug("Invalid CountryCode missing: using fallback CountryCode '{}' : {}", fallbackCountryCode, itemNode.asXML());
 		    countryCode = fallbackCountryCode;
 		} else {
     		try {

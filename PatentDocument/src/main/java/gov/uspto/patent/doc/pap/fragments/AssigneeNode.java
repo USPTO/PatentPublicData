@@ -47,8 +47,18 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		if (name == null) {
 			return null;
 		}
+		try {
+			name.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), assigneeNode.asXML());
+		}
 
 		Address address = new AddressNode(assigneeNode).read();
+		try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), assigneeNode.asXML());
+		}
 
 		// Node residenceN = assigneeNode.selectSingleNode(ADDRESS_PATH);
 		// Address resident = new ResidenceNode(residenceN).read();
@@ -58,7 +68,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		try {
 			assignee.setRole(roleType);
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Assignee 'assignee-type': {}", assigneeNode.asXML(), e);
+			LOGGER.warn("{} : {}", e.getMessage(), assigneeNode.asXML());
 		}
 
 		return assignee;
