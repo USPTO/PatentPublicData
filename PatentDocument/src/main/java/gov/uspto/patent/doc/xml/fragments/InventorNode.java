@@ -103,32 +103,37 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 	private Inventor readInventor(Node inventorNode) {
 		AddressBookNode addressBook = new AddressBookNode(inventorNode);
 
-		Node residenceN = inventorNode.selectSingleNode("residence/country");
-		CountryCode residenceCC = null;
-		try {
-			residenceCC = residenceN != null ? CountryCode.fromString(residenceN.getText()) : null;
-		} catch (InvalidDataException e1) {
-			LOGGER.warn("{} : {}", e1.getMessage(), residenceN.asXML());
+		Name personName = addressBook.getPersonName();
+		Name orgName = addressBook.getPersonName();
+		Name name = personName != null ? personName : orgName;
+
+		if (name == null) {
+			return null;
 		}
 
-		Name name = addressBook.getPersonName() != null ? addressBook.getPersonName() : addressBook.getOrgName();	
-		try {
-			name.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+		if (personName != null) {
+			try {
+				personName.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+			}
 		}
 
 		Address address = addressBook.getAddress();
-		try {
-			address.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+		if (address == null) {
+			LOGGER.warn("Missing Address : {}", inventorNode.asXML());
+			address = new Address("", "", CountryCode.UNDEFINED);
+		} else {
+			try {
+				address.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+			}
 		}
 
 		Inventor inventor = new Inventor(name, address);
-		inventor.setResidency(residenceCC);
-		if (addressBook.getOrgName() != null) {
-			inventor.addRelationship(addressBook.getOrgName(), RelationshipType.EMPLOYEE);
+		if (orgName != null) {
+			inventor.addRelationship(orgName, RelationshipType.EMPLOYEE);
 		}
 		return inventor;
 	}
