@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -242,6 +243,17 @@ public abstract class PatentClassification implements Classification {
 		Set<PatentClassification> filtered = filter(classes, isType(wantedType));
 		Set<String> facets = new LinkedHashSet<String>();
 		for (PatentClassification clazz : filtered) {
+			facets.addAll(Arrays.asList(clazz.toFacet()));
+		}
+		return facets;
+	}
+
+	public static <T extends PatentClassification> Set<String> getFacet(Collection<T> classes) {
+		if (classes == null) {
+			return Collections.emptySet();
+		}
+		Set<String> facets = new TreeSet<String>();
+		for (PatentClassification clazz : classes) {
 			facets.addAll(Arrays.asList(clazz.toFacet()));
 		}
 		return facets;

@@ -2,9 +2,12 @@ package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -307,7 +310,7 @@ public class IpcClassification extends PatentClassification {
 	 * @param classes
 	 * @return
 	 */
-	public static <T extends PatentClassification> Map<String, List<IpcClassification>> filterCpc(
+	public static <T extends PatentClassification> Map<String, List<IpcClassification>> filterIpc(
 			Collection<T> classes) {
 
 		return classes.stream().filter(IpcClassification.class::isInstance).map(IpcClassification.class::cast)
