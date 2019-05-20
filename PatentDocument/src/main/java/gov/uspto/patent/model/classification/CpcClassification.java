@@ -78,10 +78,7 @@ import java.util.stream.Collectors;
  */
 public class CpcClassification extends PatentClassification {
 
-	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$"); // test
-																												// added
-																												// ?-mark
-																												// to /?
+	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})(-\\d+)?$");
 
 	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])(\\d\\d)$");
 
@@ -92,6 +89,7 @@ public class CpcClassification extends PatentClassification {
 	private String subClass;
 	private String mainGroup;
 	private String subGroup;
+	private boolean hasSubGroupRange = false;
 	private boolean isMainClassification = false;
 	private boolean inventive = false;
 
@@ -311,6 +309,12 @@ public class CpcClassification extends PatentClassification {
 			String subClass = matcher.group(3);
 			String mainGroup = matcher.group(4);
 			String subGroup = matcher.group(5);
+
+			String subGroupRange = matcher.group(6);
+			if (subGroupRange != null) {
+				hasSubGroupRange = true;
+				subGroup = subGroup + subGroupRange;
+			}
 
 			setSection(section);
 			setMainClass(mainClass);

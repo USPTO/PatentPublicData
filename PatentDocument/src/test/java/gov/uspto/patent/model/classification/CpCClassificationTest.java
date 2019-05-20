@@ -46,6 +46,28 @@ public class CpCClassificationTest {
 	}
 
 	@Test
+	public void parseSubGroupRange() throws ParseException {
+		String cpctext = "G04B 19/00-34";
+
+		CpcClassification cpc = new CpcClassification();
+		cpc.parseText(cpctext);
+
+		//System.out.println( cpc.getTextNormalized() );
+		//assertEquals( check.getValue(), cpc.getTextNormalized());
+	}
+
+	@Test
+	public void parseSubGroupRange2() throws ParseException {	
+		String cpctext = "G06F 1/32-3296";
+
+		CpcClassification cpc = new CpcClassification();
+		cpc.parseText(cpctext);
+
+		//System.out.println( cpc.getTextNormalized() );
+		//assertEquals( check.getValue(), cpc.getTextNormalized());
+	}
+
+	@Test
 	public void testEquals() throws ParseException {
 		CpcClassification cpc1 = new CpcClassification();
 		cpc1.parseText("D07B2201");
