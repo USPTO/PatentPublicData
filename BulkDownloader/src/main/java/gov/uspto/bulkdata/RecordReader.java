@@ -140,22 +140,21 @@ public class RecordReader {
 				LOGGER.info("--- Reading File: {}", filename);
 				try {
 					RunStats fileStats = read(filePath.toFile(), processor, writer);
+					LOGGER.info("--- Done Reading File '{}' { success: {}, failure: {} }", filename, fileStats.getSuccess(), fileStats.getFailure());
 					runStats.add(fileStats);
 				} catch (PatentReaderException | IOException e) {
-					 LOGGER.error("Failed on Bulk File: {}", filename, e);
+					 LOGGER.error("!!! Failed Reading File: {}", filename, e);
 				}
-				LOGGER.info("--- Done Reading File: {}", filename);
 			}
 		} catch (IOException e1) {
 			runStats.incrementFailure(inputDirectory.toString());
-			LOGGER.error("Failed to read directory: {}", inputDirectory, e1);
+			LOGGER.error("!!! Failed to read directory: {}", inputDirectory, e1);
 		}
 
 		return runStats;
 	}
 
-	public RunStats read(DumpReader dumpReader, RecordProcessor processor, Writer writer)
-			throws PatentReaderException, IOException {
+	public RunStats read(DumpReader dumpReader, RecordProcessor processor, Writer writer) throws PatentReaderException, IOException {
 
 		dumpReader.open();
 		dumpReader.skip(bulkReaderArgs.getSkipRecordCount());
@@ -166,14 +165,14 @@ public class RecordReader {
 		try {
 			processor.initialize(writer);
 		} catch (Exception e1) {
-			throw new PatentReaderException(e1);
+			throw new PatentReaderException("Failed to Initialize Processor "+ processor.getClass(), e1);
 		}
 
 		for (int checked = 1; dumpReader.hasNext(); checked++) {
 			runStats.incrementRecord();
 
 			if (LOGGER.isDebugEnabled() || dumpReader.getCurrentRecCount() % 100 == 0) {
-				LOGGER.info("Records Processed {} : {}", runStats.getTaskName(), dumpReader.getCurrentRecCount());
+				LOGGER.info("... mark {}:{}", runStats.getTaskName(), dumpReader.getCurrentRecCount());
 			}
 
 			String sourceTxt = currentFileName + ":" + dumpReader.getCurrentRecCount();
@@ -195,7 +194,7 @@ public class RecordReader {
 					runStats.incrementFailure(sourceTxt);
 				}
 			} catch (DocumentException | IOException e) {
-				LOGGER.error("Exception occured on {}", sourceTxt, e);
+				LOGGER.error("Exception occured on '{}'", sourceTxt, e);
 				runStats.incrementFailure(sourceTxt);
 			}
 
@@ -208,9 +207,11 @@ public class RecordReader {
 
 		try {
 			processor.finish(writer);
-		} catch (Exception e1) {
-			throw new PatentReaderException(e1);
+		} catch (IOException e1) {
+			throw new PatentReaderException("Failed when calling processor finish()", e1);
 		}
+
+		dumpReader.close();
 
 		return runStats;
 	}
