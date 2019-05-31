@@ -12,6 +12,8 @@ import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.classification.IpcClassification;
 import gov.uspto.patent.model.classification.LocarnoClassification;
@@ -94,6 +96,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 		if (uspcN != null) {
 			try {
 				String classStr = uspcN.getText().trim();
+				classStr = Strings.padStart(classStr, 6, '0');
 				UspcClassification uspc = new UspcClassification();
 				uspc.parseText(classStr);
 				uspc.setIsMainClassification(true);
