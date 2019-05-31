@@ -10,34 +10,35 @@ import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 
 /**
- *<h3>ADR Individual or organization address</h3>
- *<p> 
- *<li>NAM Name, organization, if part of address
- *<li>OMC PDAT Organization mail code
- *<li>PBOX PDAT Post office box number
- *<li>STR PDAT Street, house number or name, district (of city), apt. number, etc.
- *<li>CITY PDAT City or town
- *<li>CNTY PDAT County, parish, department, etc.
- *<li>STATE PDAT Region of country (state, province, etc.)
- *<li>CTRY PDAT Country
- *<li>PCODE PDAT Postal code
- *<li>EAD PDAT Electronic address (e.g., e-mail)
- *<li>TEL PDAT Telephone number, including area or regional code
- *<li>FAX PDAT Facsimile telephone number 
- *</p>
- *<p>
- *<pre>
+ * <h3>ADR Individual or organization address</h3>
+ * <p>
+ * <li>NAM Name, organization, if part of address
+ * <li>OMC PDAT Organization mail code
+ * <li>PBOX PDAT Post office box number
+ * <li>STR PDAT Street, house number or name, district (of city), apt. number,
+ * etc.
+ * <li>CITY PDAT City or town
+ * <li>CNTY PDAT County, parish, department, etc.
+ * <li>STATE PDAT Region of country (state, province, etc.)
+ * <li>CTRY PDAT Country
+ * <li>PCODE PDAT Postal code
+ * <li>EAD PDAT Electronic address (e.g., e-mail)
+ * <li>TEL PDAT Telephone number, including area or regional code
+ * <li>FAX PDAT Facsimile telephone number
+ * </p>
+ * <p>
+ * 
+ * <pre>
  *{@code
  * <!ELEMENT ADR - - (OMC?,PBOX?,STR*,CITY?,CNTY?,STATE?,CTRY?,PCODE?,EAD*,TEL*,FAX*) > 
  *}
- *</pre>
- *</p>
+ * </pre>
+ * </p>
  *
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
  */
 public class AddressNode extends ItemReader<Address> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AddressNode.class);
 
 	private static final String ITEM_NODE_NAME = "ADR";
 
@@ -79,7 +80,11 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			countryCode = CountryCode.fromString(country);
 		} catch (InvalidDataException e1) {
-			LOGGER.warn("{} : {}", e1.getMessage(), addrNode.getParent().asXML());
+			countryCode = CountryCode.UNDEFINED;
+		}
+
+		if (CountryCode.UNDEFINED.equals(countryCode) && "PARTY-US".equals(addrNode.getParent().getName())) {
+			countryCode = CountryCode.US;
 		}
 
 		Node emailN = addrNode.selectSingleNode("EAD/PDAT");
@@ -95,12 +100,6 @@ public class AddressNode extends ItemReader<Address> {
 		address.setEmail(email);
 		address.setPhoneNumber(tel);
 		address.setFaxNumber(fax);
-
-		try {
-			address.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("{} : {}", e.getMessage(), addrNode.getParent().asXML());
-		}
 
 		return address;
 	}
