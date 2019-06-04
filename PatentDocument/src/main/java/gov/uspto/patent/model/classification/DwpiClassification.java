@@ -4,6 +4,10 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
+import gov.uspto.patent.InvalidDataException;
+
 /**
  * Derwent "DWPI" Classification
  * 
@@ -285,14 +289,6 @@ public class DwpiClassification extends PatentClassification {
 
 		return false;
 	}
-	
-	
-	@Override
-	public String toString() {
-		return "DwpiClassification [section=" + section + ", subsection=" + subsection + ", group=" + group
-				+ ", subgroup=" + subgroup + ", division=" + division + ", subdivision=" + subdivision + ", extra="
-				+ extra + ", toText()=" + toText() + ", getDepth()=" + getDepth() + "]";
-	}
 
 	@Override
 	public void parseText(String classificationStr) throws ParseException {
@@ -376,4 +372,18 @@ public class DwpiClassification extends PatentClassification {
 
 	}
 
+	@Override
+	public boolean validate() throws InvalidDataException {
+		if (StringUtils.isEmpty(subsection)) {
+			throw new InvalidDataException("Invalid SubSection"); 
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "DwpiClassification [section=" + section + ", subsection=" + subsection + ", group=" + group
+				+ ", subgroup=" + subgroup + ", division=" + division + ", subdivision=" + subdivision + ", extra="
+				+ extra + ", toText()=" + toText() + ", getDepth()=" + getDepth() + "]";
+	}
 }

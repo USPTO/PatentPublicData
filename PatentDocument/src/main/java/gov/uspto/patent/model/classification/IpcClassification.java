@@ -12,6 +12,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
+import gov.uspto.patent.InvalidDataException;
+
 /**
  * <h3>International Patent Classification (IPC)</h3>
  *
@@ -293,6 +297,14 @@ public class IpcClassification extends PatentClassification {
 		} else {
 			throw new ParseException("Failed to regex parse IPC Classification: " + classificationStr, 0);
 		}
+	}
+
+	@Override
+	public boolean validate() throws InvalidDataException {
+		if (StringUtils.isEmpty(mainClass)) {
+			throw new InvalidDataException("Invalid MainClass"); 
+		}
+		return true;
 	}
 
 	@Override

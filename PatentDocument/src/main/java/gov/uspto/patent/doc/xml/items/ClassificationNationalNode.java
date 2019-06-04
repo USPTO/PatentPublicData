@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.ItemReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
@@ -55,8 +56,14 @@ public class ClassificationNationalNode extends ItemReader<PatentClassification>
 			classification.parseText(mainClass.getText());
 			classification.setIsMainClassification(true);
 		} catch (ParseException e1) {
-			LOGGER.warn("Failed to parse USPC classification 'main-classification': {}", mainClass.asXML());
+			LOGGER.warn("{} : {}", e1.getMessage(), mainClass.asXML());
 			return null;
+		}
+
+		try {
+			classification.validate();
+		} catch (InvalidDataException e1) {
+			LOGGER.warn("{} : {}", e1.getMessage(), mainClass.asXML());
 		}
 
 		List<Node> furtherClasses = itemNode.selectNodes("further-classification");

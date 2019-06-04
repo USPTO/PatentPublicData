@@ -3,6 +3,8 @@ package gov.uspto.patent.model.classification;
 import java.text.ParseException;
 import java.util.List;
 
+import gov.uspto.patent.InvalidDataException;
+
 public interface Classification extends Comparable<Classification> {
 	public ClassificationType getType();
 
@@ -62,4 +64,6 @@ public interface Classification extends Comparable<Classification> {
 	public <T extends PatentClassification> List<T> fromFacets(final List<String> classificationFacets, Class<T> clazz);
 
 	public String[] getTree();
+
+	public boolean validate() throws InvalidDataException;
 }

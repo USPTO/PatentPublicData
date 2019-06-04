@@ -9,6 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
+import gov.uspto.patent.InvalidDataException;
+
 /**
  * <h3>Cooperative Patent Classification</h3>
  * <p>
@@ -346,6 +350,14 @@ public class CpcClassification extends PatentClassification {
 	}
 
 	@Override
+	public boolean validate() throws InvalidDataException {
+		if (StringUtils.isEmpty(mainClass)) {
+			throw new InvalidDataException("Invalid SubSection"); 
+		}
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
 				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", isMainClassification="
@@ -375,4 +387,5 @@ public class CpcClassification extends PatentClassification {
 	public static List<CpcClassification> fromFacets(List<String> facets) {
 		return ClassificationTokenizer.fromFacets(facets, CpcClassification.class);
 	}
+
 }

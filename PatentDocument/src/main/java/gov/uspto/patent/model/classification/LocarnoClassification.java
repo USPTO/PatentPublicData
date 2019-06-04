@@ -4,6 +4,10 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
+import gov.uspto.patent.InvalidDataException;
+
 /**
  * Locarno Classification
  * 
@@ -101,6 +105,14 @@ public class LocarnoClassification extends PatentClassification {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean validate() throws InvalidDataException {
+		if (StringUtils.isEmpty(mainClass)) {
+			throw new InvalidDataException("Invalid MainClass"); 
+		}
+		return true;
 	}
 
 	@Override
