@@ -72,7 +72,7 @@
 					<links>
 						<link>https://jsoup.org/apidocs/</link>
 						<link>https://google.github.io/guava/releases/19.0/api/docs/</link>
-						<link>http://dom4j.sourceforge.net/dom4j-1.6.1/apidocs/</link>
+						<link>https://dom4j.github.io/javadoc/2.1.1/</link>
 						<link>http://jaxen.org/apidocs/</link>
 						<link>http://www.slf4j.org/api/</link>
 						<link>https://fasterxml.github.io/jackson-core/javadoc/2.6/</link>

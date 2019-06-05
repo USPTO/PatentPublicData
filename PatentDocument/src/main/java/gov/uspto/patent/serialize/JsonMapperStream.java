@@ -11,9 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
 import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.DateTextType;
@@ -54,6 +58,8 @@ import gov.uspto.patent.model.entity.NamePerson;
  */
 public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonMapperStream.class);
+	
 	private JsonGenerator jGenerator;
 	private JsonFactory jfactory = new JsonFactory();
 
@@ -79,12 +85,16 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
 	@Override
 	public void write(Patent patent, Writer writer) throws IOException {
-		jGenerator = jfactory.createGenerator(writer);
-		if (pretty) {
-			jGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+		try(JsonGenerator jGenerator = jfactory.createGenerator(writer)){
+			jGenerator.configure(Feature.ESCAPE_NON_ASCII, false);
+			jGenerator.configure(Feature.AUTO_CLOSE_TARGET, false);
+			if (pretty) {
+				jGenerator.useDefaultPrettyPrinter();
+				//jGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+			}
+			this.jGenerator = jGenerator;
+			output(patent, writer);
 		}
-
-		output(patent, writer);
 	}
 
 	private void output(Patent patent, Writer writer) throws IOException {
@@ -141,14 +151,22 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 	}
 
 	private void writeArray(String fieldName, Collection<String> strings) throws IOException {
-		jGenerator.writeFieldName(fieldName);
-		jGenerator.writeStartArray();
-		if (strings != null) {
-			for (String tok : strings) {
-				jGenerator.writeString(valueOrEmpty(tok));
+		try {
+			if (strings != null && strings.size() > 0) {
+				jGenerator.writeFieldName(fieldName);
+				jGenerator.writeStartArray(strings.size());
+				for (String tok : strings) {
+					if (tok == null || tok.length() == 0) {
+						LOGGER.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! writeArray EMPTY STRING");
+					} else {
+						jGenerator.writeString(valueOrEmpty(tok));
+					}
+				}
+				jGenerator.writeEndArray();
 			}
+		} catch (JsonGenerationException e) {
+			LOGGER.error("Error writing field '{}' : {}", fieldName, strings.toString(), e);
 		}
-		jGenerator.writeEndArray();
 	}
 
 	private void writeArray(String fieldName, String... strings) throws IOException {
@@ -550,7 +568,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		Map<String, List<IpcClassification>> retClasses = IpcClassification.filterIpc(classes);
 
 		jGenerator.writeFieldName("ipc");
-		jGenerator.writeStartObject();
+		jGenerator.writeStartObject(); // ipc start
 
 		writeArray("facets_inventive", PatentClassification.getFacet(retClasses.get("inventive")));
 
@@ -577,10 +595,10 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		}
 		jGenerator.writeEndArray();
 
-		jGenerator.writeFieldName("additional");
-		jGenerator.writeStartArray();
 		writeArray("facets_additional", PatentClassification.getFacet(retClasses.get("additional")));
 
+		jGenerator.writeFieldName("additional");
+		jGenerator.writeStartArray();
 		if (retClasses.containsKey("additional")) {
 			for (IpcClassification ipc : retClasses.get("additional")) {
 				jGenerator.writeStartObject();
@@ -600,7 +618,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		}
 		jGenerator.writeEndArray();
 
-		jGenerator.writeEndObject();
+		jGenerator.writeEndObject(); // ipc end.
 	}
 
 	private <T extends PatentClassification> void writeCpcClassification(Collection<PatentClassification> classes)

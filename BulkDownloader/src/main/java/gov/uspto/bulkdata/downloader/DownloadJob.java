@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jdk7.Jdk7Module;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import okhttp3.HttpUrl;
 
@@ -34,7 +34,7 @@ public class DownloadJob implements Serializable, Iterable<DownloadFile> {
 
 	private static ObjectMapper JSON_MAPPER = new ObjectMapper();
 	static {
-		JSON_MAPPER.registerModule(new Jdk7Module());
+		JSON_MAPPER.registerModule(new Jdk8Module());
 	}
 
 	private Path downloadDir;
@@ -124,7 +124,7 @@ public class DownloadJob implements Serializable, Iterable<DownloadFile> {
 		Writer outFile = new OutputStreamWriter(new FileOutputStream(downloadStatusFile));
 
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new Jdk7Module());
+		mapper.registerModule(new Jdk8Module());
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		mapper.writeValue(outFile, this);
 	}
