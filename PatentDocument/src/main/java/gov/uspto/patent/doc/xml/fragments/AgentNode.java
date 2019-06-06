@@ -15,14 +15,13 @@ import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.AgentRepType;
 import gov.uspto.patent.model.entity.Name;
-import gov.uspto.patent.model.entity.NamePerson;
 import gov.uspto.patent.model.entity.RelationshipType;
 
 public class AgentNode extends DOMFragmentReader<List<Agent>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AgentNode.class);
 
 	private static final String FRAGMENT_PATH = "//us-parties/agents/agent|//parties/agents/agent";
-	
+
 	private static final String FRAGMENT_PATH2 = "//correspondence-address";
 
 	public AgentNode(Document document) {
@@ -47,17 +46,21 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 			Node repTypeN = node.selectSingleNode("@rep-type");
 			String repType = repTypeN != null ? repTypeN.getText() : null;
 
-			AgentRepType agentRepType = AgentRepType.valueOf(repType.trim().toUpperCase());
+			AgentRepType agentRepType;
+			if (repType != null) {
+				agentRepType = AgentRepType.valueOf(repType.trim().toUpperCase());
+			} else {
+				agentRepType = AgentRepType.UNDEFINED;
+			}
 
 			Name name = addressBook.getName();
 			if (name != null) {
 
 				Address address = addressBook.getAddress();
-				/*try {
-					address.validate();
-				} catch (InvalidDataException e) {
-					LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
-				}*/
+				/*
+				 * try { address.validate(); } catch (InvalidDataException e) {
+				 * LOGGER.warn("{} : {}", e.getMessage(), node.asXML()); }
+				 */
 
 				Agent agent = new Agent(name, address, agentRepType);
 				agent.setSequence(sequence);
@@ -76,8 +79,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		}
 
 		/*
-		 * If Agents are not defined then use correspondence-address if
-		 * available.
+		 * If Agents are not defined then use correspondence-address if available.
 		 */
 		List<Node> correspondenceNodes = document.selectNodes(FRAGMENT_PATH2);
 		for (Node node : correspondenceNodes) {
@@ -91,7 +93,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 			}
 
 			if (name != null) {
-				
+
 				Address address = addressBook.getAddress();
 				try {
 					address.validate();

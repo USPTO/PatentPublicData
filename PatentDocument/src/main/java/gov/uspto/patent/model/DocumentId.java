@@ -305,23 +305,11 @@ public class DocumentId implements Comparable<DocumentId> {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == null) {
+		if (o == null || !(o instanceof DocumentId) || this.docNumber == null) {
 			return false;
-		}
-
-		if (!(o instanceof DocumentId)) {
-			return false;
-		}
-
-		DocumentId other = (DocumentId) o;
-		if (this.docNumber != null && this.docNumber != null) {
-			if (this.docNumber.equals(other.docNumber) && this.docNumber.equals(other.docNumber)) {
-				return true;
-			} else {
-				return false;
-			}
 		} else {
-			return false;
+			DocumentId other = (DocumentId) o;
+			return this.countryCode.equals(other.countryCode) && this.docNumber.equals(other.docNumber);
 		}
 	}
 

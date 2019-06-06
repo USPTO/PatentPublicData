@@ -59,7 +59,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 				Node mainClassN = uspcSecoundary.selectSingleNode("uspc/class");
 				Node subClassN = uspcSecoundary.selectSingleNode("uspc/subclass");
 
-				if (mainClassN != null && mainClassN != null){
+				if (mainClassN != null && subClassN != null){
 					String mainClass = uspcPrimaryClassN.getText().trim();
 					String subClass = subClassN.getText().trim();
 					

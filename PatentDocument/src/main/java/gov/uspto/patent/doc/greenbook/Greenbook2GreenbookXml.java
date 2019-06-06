@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -36,33 +38,44 @@ public class Greenbook2GreenbookXml {
 	 * SECTIONS.add("CLMS"); SECTIONS.add("DCLM"); }
 	 */
 
+	private final OutputFormat outFormat;
+
+	public Greenbook2GreenbookXml(boolean prettyPrint, Charset outCharset) {
+		if (prettyPrint) {
+			outFormat = OutputFormat.createPrettyPrint();
+		} else {
+			outFormat = OutputFormat.createCompactFormat();
+		}
+		outFormat.setEncoding(outCharset.name());
+	}
+
 	public Document parse(File file) throws IOException, PatentReaderException {
-		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF-8")) {
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
 			KvReader kvReader = new KvReader();
 			List<KeyValue> keyValues = kvReader.parse(reader);
 			return kvReader.genXml(keyValues);
 		}
 	}
 
-	public static void writeFile(Document document, Path outDir, String outFileName) throws IOException {
-		// OutputFormat format = OutputFormat.createPrettyPrint();
-		XMLWriter writer = new XMLWriter(new FileWriter(outDir.resolve(outFileName).toFile()));
-		writer.write(document);
-		writer.close();
+	public void writeFile(Document document, Path outDir, String outFileName) throws IOException {
+		XMLWriter writer = new XMLWriter(new FileWriter(outDir.resolve(outFileName).toFile()), outFormat);
+		try {
+			writer.write(document);
+		} finally {
+			writer.close();
+		}
 	}
 
-	public static void stdout(Document document) throws IOException {
-		OutputFormat format = OutputFormat.createPrettyPrint();
-		// OutputFormat format = OutputFormat.createCompactFormat();
-		XMLWriter writer = new XMLWriter(System.out, format);
+	public void stdout(Document document) throws IOException {
+		XMLWriter writer = new XMLWriter(System.out, outFormat);
 		writer.write(document);
 	}
 
 	public static void main(String[] args) throws PatentReaderException, IOException {
 		String filename = args[0];
 		File file = new File(filename);
-
-		Greenbook2GreenbookXml g2xml = new Greenbook2GreenbookXml();
+		
+		Greenbook2GreenbookXml g2xml = new Greenbook2GreenbookXml(true, StandardCharsets.UTF_8);
 
 		if (file.isDirectory()) {
 			int count = 1;
@@ -72,7 +85,7 @@ public class Greenbook2GreenbookXml {
 				String outFileName = subfile.getName() + ".xml";
 				Path outDir = Paths.get(".");
 				try {
-					Greenbook2GreenbookXml.writeFile(dom4jDoc, outDir, outFileName);
+					g2xml.writeFile(dom4jDoc, outDir, outFileName);
 				} catch (IOException e) {
 					System.err.println("Failed to write: " + outFileName);
 					e.printStackTrace();
@@ -81,7 +94,7 @@ public class Greenbook2GreenbookXml {
 		} else {
 			Document dom4jDoc = g2xml.parse(file);
 			try {
-				Greenbook2GreenbookXml.stdout(dom4jDoc);
+				g2xml.stdout(dom4jDoc);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

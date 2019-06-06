@@ -1,12 +1,13 @@
 package gov.uspto.parser.dom4j;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
@@ -52,8 +53,8 @@ public abstract class Dom4JParser implements Dom4j {
 	 */
 	public Patent parse(File file) throws PatentReaderException, IOException {
 		Preconditions.checkNotNull(file, "File can not be Null");
-
-		try(FileReader reader = new FileReader(file)){
+		
+		try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)){
 			return parse(reader);
 		}
 	}

@@ -5,9 +5,10 @@ import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -57,12 +58,12 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 
 	public void open() throws IOException {
 		if (file.getName().endsWith(".zip")) {
-			zipFile = new ZipReader(file, fileFilter);
+			zipFile = new ZipReader(file, fileFilter, StandardCharsets.UTF_8);
 			reader = zipFile.open().next();
 		} else if (reader != null) {
 			// use defined reader.
-		} else {
-			reader = new BufferedReader(new FileReader(file));
+		} else {			
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 		}
 
 		patentDocFormat = new PatentDocFormatDetect().fromContent(reader);

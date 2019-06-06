@@ -17,7 +17,7 @@ public class UsKindCode2PatentType {
 	private UsKindCode2PatentType() {
 	}
 
-	public static UsKindCode2PatentType getInstance() {
+	public static synchronized UsKindCode2PatentType getInstance() {
 		if (kindCode2PatentTpe == null) {
 			kindCode2PatentTpe = new UsKindCode2PatentType();
 			kindCode2PatentTpe.init();

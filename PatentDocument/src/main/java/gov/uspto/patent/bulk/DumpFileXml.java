@@ -51,6 +51,7 @@ public class DumpFileXml extends DumpFile {
 		try {
 			String line;
 			while (super.getReader().ready() && (line = super.getReader().readLine()) != null) {
+				
 				if (isStartTag(line)) {
 					content = new StringBuilder();
 					content.append(header);

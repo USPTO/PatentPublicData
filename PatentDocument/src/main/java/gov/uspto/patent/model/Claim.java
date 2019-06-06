@@ -125,23 +125,11 @@ public class Claim extends FreetextField {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == null) {
+		if (o == null || !(o instanceof Claim) || this.id == null) {
 			return false;
-		}
-
-		if (!(o instanceof Claim)) {
-			return false;
-		}
-
-		Claim other = (Claim) o;
-		if (this.id != null && this.id != null) {
-			if (this.id.equals(other.getId())) {
-				return true;
-			} else {
-				return false;
-			}
 		} else {
-			return false;
+			Claim other = (Claim) o;
+			return (this.id.equals(other.getId()));
 		}
 	}
 

@@ -339,7 +339,7 @@ public class UspcClassification extends PatentClassification {
 
 	@Override
 	public String toString() {
-		return "UspcClassification [mainClass=" + mainClass + ", subClass=" + subClass + ", toText()=" + toText()
+		return "UspcClassification [mainClass=" + mainClass + ", subClass=" + Arrays.toString(subClass) + ", toText()=" + toText()
 		// + ", toSet()=" + toSet()
 				+ ", originalText=" + super.getTextOriginal()
 				// + ", range=" + range

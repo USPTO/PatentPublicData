@@ -2,10 +2,12 @@ package gov.uspto.patent;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +90,9 @@ public class PatentDocFormatDetect {
 		if (file.getName().endsWith(".zip")) {
 			return PatentDocFormat.Unknown;
 		} else {
-			return fromContent(new FileReader(file));
+			try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)){
+				return fromContent(reader);
+			}
 		}
 	}
 
