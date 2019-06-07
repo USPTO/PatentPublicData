@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -179,7 +180,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 			jsonObj.add("id", docId.toText());
 			if (wantNoKind) {
 				jsonObj.add("idNoKind", docId.toTextNoKind());
-				jsonObj.add("kind", docId.getKindCode());
+				jsonObj.add("kind", valueOrEmpty(docId.getKindCode()));
 			}
 			jsonObj.add("number", docId.getDocNumber());
 			jsonObj.add("date", mapDate(docId.getDate()));
@@ -215,9 +216,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
     private JsonArray mapDocumentIds(Collection<DocumentId> docIds) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
-        for (DocumentId docid : docIds) {
-        	JsonObject jsonObj = mapDocumentId(docid, true);
-            arBldr.add(jsonObj);
+        if (docIds != null) {
+	        for (DocumentId docid : docIds) {
+	        	JsonObject jsonObj = mapDocumentId(docid, true);
+	            arBldr.add(jsonObj);
+	        }
         }
 
         return arBldr.build();
@@ -340,6 +343,14 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         }
     }
 
+    private Collection<?> valueOrEmpty(Collection<?> value) {
+        if (value == null) {
+            return Collections.EMPTY_LIST;
+        } else {
+            return value;
+        }
+    }
+    
     private JsonObject mapDate(DocumentDate date) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         if (date != null) {
