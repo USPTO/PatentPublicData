@@ -30,7 +30,7 @@ import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
 
 public class RecordReader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecordReader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RecordReader.class);
 
 	private final BulkReaderArguments bulkReaderArgs;
 
@@ -77,7 +77,8 @@ public class RecordReader {
 			writer = new BufferedWriter(
 					new OutputStreamWriter(new FileOutputStream(outputFilePath.toFile()), Charset.forName("UTF-16")));
 		} else {
-			writer = new BufferedWriter(new OutputStreamWriter(System.out, Charset.forName("UTF-16")));
+			// Eclipse Console does not support UTF-16.
+			writer = new BufferedWriter(new OutputStreamWriter(System.out, Charset.forName("UTF-8")));
 		}
 
 		return read(inputFile, processor, writer);
@@ -120,7 +121,7 @@ public class RecordReader {
 		return read(dumpReader, processor, writer);
 	}
 
-	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer){
+	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer) {
 
 		RunStats runStats = new RunStats("directory:" + inputDirectory.getName());
 
@@ -129,7 +130,8 @@ public class RecordReader {
 			public boolean accept(Path file) throws IOException {
 				long twentySecsAgo = System.currentTimeMillis() - 20000;
 				long lastModified = file.toFile().lastModified();
-				return (file.getFileName().toString().endsWith(".zip") && Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) && lastModified < twentySecsAgo);
+				return (file.getFileName().toString().endsWith(".zip")
+						&& Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) && lastModified < twentySecsAgo);
 			}
 		};
 
@@ -140,10 +142,11 @@ public class RecordReader {
 				LOGGER.info("--- Reading File: {}", filename);
 				try {
 					RunStats fileStats = read(filePath.toFile(), processor, writer);
-					LOGGER.info("--- Done Reading File '{}' { success: {}, failure: {} }", filename, fileStats.getSuccess(), fileStats.getFailure());
+					LOGGER.info("--- Done Reading File '{}' { success: {}, failure: {} }", filename,
+							fileStats.getSuccess(), fileStats.getFailure());
 					runStats.add(fileStats);
 				} catch (PatentReaderException | IOException e) {
-					 LOGGER.error("!!! Failed Reading File: {}", filename, e);
+					LOGGER.error("!!! Failed Reading File: {}", filename, e);
 				}
 			}
 		} catch (IOException e1) {
@@ -154,7 +157,8 @@ public class RecordReader {
 		return runStats;
 	}
 
-	public RunStats read(DumpReader dumpReader, RecordProcessor processor, Writer writer) throws PatentReaderException, IOException {
+	public RunStats read(DumpReader dumpReader, RecordProcessor processor, Writer writer)
+			throws PatentReaderException, IOException {
 
 		dumpReader.open();
 		dumpReader.skip(bulkReaderArgs.getSkipRecordCount());
@@ -165,7 +169,7 @@ public class RecordReader {
 		try {
 			processor.initialize(writer);
 		} catch (Exception e1) {
-			throw new PatentReaderException("Failed to Initialize Processor "+ processor.getClass(), e1);
+			throw new PatentReaderException("Failed to Initialize Processor " + processor.getClass(), e1);
 		}
 
 		for (int checked = 1; dumpReader.hasNext(); checked++) {
