@@ -310,7 +310,7 @@ public class FormattedText implements TextProcessor {
 		outSettings.charset(Charsets.UTF_16);
 		outSettings.syntax(Syntax.xml);
 		outSettings.outline(true);
-		outSettings.prettyPrint(false);
+		outSettings.prettyPrint(true);
 		//outSettings.escapeMode(EscapeMode.xhtml);
 		// outSettings.escapeMode(EscapeMode.extended);
 
