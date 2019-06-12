@@ -16,6 +16,7 @@ import gov.uspto.patent.serialize.JsonMapperFlat;
 import gov.uspto.patent.serialize.JsonMapperPATFT;
 import gov.uspto.patent.serialize.JsonMapperStream;
 import gov.uspto.patent.serialize.PlainText;
+import gov.uspto.patent.serialize.solr.JsonMapperSolr;
 
 public class ViewRecordProcessor implements RecordProcessor {
 
@@ -90,6 +91,11 @@ public class ViewRecordProcessor implements RecordProcessor {
 			// writer.write("Patent JSON:\n");
 			JsonMapperPATFT builderPatft = new JsonMapperPATFT(prettyPrint, false);
 			builderPatft.write(patent, writer);
+			break;
+		case "solr":
+			// writer.write("Patent JSON:\n");
+			JsonMapperSolr solrFileBuilder = new JsonMapperSolr(prettyPrint, false);
+			solrFileBuilder.write(patent, writer);
 			break;
 		case "json_flat":
 		case "jsonflat":

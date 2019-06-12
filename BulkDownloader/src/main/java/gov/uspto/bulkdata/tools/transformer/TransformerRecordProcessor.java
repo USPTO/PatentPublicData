@@ -9,7 +9,6 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.xml.transform.TransformerConfigurationException;
 
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import gov.uspto.bulkdata.RecordProcessor;
-import gov.uspto.bulkdata.RecordReader;
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.bulkdata.tools.grep.GrepRecordProcessor;
 import gov.uspto.common.io.DummyWriter;
@@ -31,9 +29,10 @@ import gov.uspto.patent.serialize.JsonMapperFlat;
 import gov.uspto.patent.serialize.JsonMapperPATFT;
 import gov.uspto.patent.serialize.JsonMapperStream;
 import gov.uspto.patent.serialize.PlainText;
+import gov.uspto.patent.serialize.solr.JsonMapperSolr;
 
 public class TransformerRecordProcessor implements RecordProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransformerRecordProcessor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TransformerRecordProcessor.class);
 
 	private final TransformerConfig config;
 	private PatentReader patentReader;
@@ -62,7 +61,8 @@ public class TransformerRecordProcessor implements RecordProcessor {
 	}
 
 	@Override
-	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws PatentReaderException, DocumentException, IOException {
+	public Boolean process(String sourceTxt, String rawRecord, Writer writer)
+			throws PatentReaderException, DocumentException, IOException {
 		MDC.put("DOCID", sourceTxt);
 
 		if (matchProcessor != null && !matchProcessor.process(sourceTxt, rawRecord, new DummyWriter())) {
@@ -79,13 +79,14 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		if (!config.isBulkOutput()) {
 			Path outPath = config.getOutputDir().resolve(sourceFilename);
 			if (!outPath.toFile().isDirectory()) {
-				outPath.toFile().mkdir();
+				outPath.toFile().mkdirs();
 			}
+
 			String currentFileName = patentId + fileExt;
 
-			try( Writer currentWriter = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(outPath.resolve(currentFileName).toFile(), false),
-					StandardCharsets.UTF_16)) ){
+			File outputFile = outPath.resolve(currentFileName).toFile();
+			try (Writer currentWriter = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_16))) {
 				writeOutputType(sourceTxt, patent, currentWriter);
 			}
 
@@ -95,9 +96,9 @@ public class TransformerRecordProcessor implements RecordProcessor {
 				if (currentWriter != null) {
 					currentWriter.close();
 				}
-				currentWriter = new BufferedWriter(new OutputStreamWriter(
-						new FileOutputStream(config.getOutputDir().resolve(filename).toFile(), true),
-						StandardCharsets.UTF_16));
+				File outputFile = config.getOutputDir().resolve(filename).toFile();
+				currentWriter = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(outputFile, true), StandardCharsets.UTF_16));
 				currentFilename = filename;
 			}
 
@@ -107,7 +108,11 @@ public class TransformerRecordProcessor implements RecordProcessor {
 				currentWriter.flush();
 			} catch (IOException e) {
 				LOGGER.error("File Write Failed", e);
-				currentWriter.close();
+				try {
+					currentWriter.close();
+				} catch (IOException e1) {
+					// do nothing.
+				}
 				throw e;
 			}
 
@@ -133,9 +138,14 @@ public class TransformerRecordProcessor implements RecordProcessor {
 		case "json":
 		case "js":
 			// writer.write("Patent JSON:\n");
-			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint, true);
+			JsonMapperStream fileBuilder = new JsonMapperStream(prettyPrint, false);
 			fileBuilder.write(patent, writer);
 			break;
+		case "solr":
+			// writer.write("Patent JSON:\n");
+			JsonMapperSolr solrFileBuilder = new JsonMapperSolr(prettyPrint, true);
+			solrFileBuilder.write(patent, writer);
+			break;	
 		case "patft":
 		case "apft":
 			// writer.write("Patent JSON:\n");
