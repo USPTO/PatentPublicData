@@ -46,7 +46,7 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 			AddressBookNode addressBook = new AddressBookNode(node);
 
 			Name personName = addressBook.getPersonName();
-			Name orgName = addressBook.getPersonName();
+			Name orgName = addressBook.getOrgName();
 			Name applicantName = personName != null ? personName : orgName;
 
 			if (applicantName == null) {
