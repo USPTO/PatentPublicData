@@ -32,8 +32,9 @@ public class SolrField implements Field {
 		stb.append(name);
 		if (useDynamicEnding) {
 			stb.append("_");
-			stb.append(fieldType.getDynamicFieldEnding());
 			if (multivalued) {
+				stb.append(fieldType.getMultiValueDynamicFieldEnding());
+			} else {
 				stb.append(fieldType.getDynamicFieldEnding());
 			}
 		}
