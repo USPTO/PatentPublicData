@@ -48,8 +48,11 @@ import gov.uspto.patent.serialize.DocumentBuilder;
 public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 	private final SolrJson json;
+	private boolean useDynamicFieldEndings;
 
 	public JsonMapperSolr(boolean pretty, boolean useDynamicFieldEndings) {
+		useDynamicFieldEndings = false;
+		this.useDynamicFieldEndings = useDynamicFieldEndings;
 		json = new SolrJson(pretty, useDynamicFieldEndings);
 	}
 
@@ -62,8 +65,9 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		json.close();
 	}
 
+	// TODO create copyField for *_name fields for phonetics.
 	private void output(Patent patent, Writer writer) throws IOException {
-		json.addStringField("id", patent.getDocumentId().toText());
+		json.addField(new SolrField("id", SolrFieldType.STRING, false, false), patent.getDocumentId().toText());
 		json.addStringField("id_variation", getDocIdTokens(patent.getDocumentId()));
 
 		json.addStringField("corpus", patent.getPatentCorpus().toString());
@@ -83,31 +87,31 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		json.addDateField("published_date", patent.getDatePublished().getDate());
 
 		json.addStringField("agent_name", getEntityNames(patent.getAgent()));
-		json.addStringField("agent_name_abrev" , getEntityNamesAbrev(patent.getAgent()).keySet());
-		json.addStringField("agent_name_initials" , getEntityNamesAbrev(patent.getAgent()).values());
+		//json.addStringField("agent_name_abrev" , getEntityNamesAbrev(patent.getAgent()).keySet());
+		//json.addStringField("agent_name_initials" , getEntityNamesAbrev(patent.getAgent()).values());
 
 		json.addStringField("assignee_name", getEntityNames(patent.getAssignee()));
-		json.addStringField("assignee_name_abbrev" , getEntityNamesAbrev(patent.getAssignee()).keySet());
-		json.addStringField("assignee_name_initials" , getEntityNamesAbrev(patent.getAssignee()).values());
+		//json.addStringField("assignee_name_abbrev" , getEntityNamesAbrev(patent.getAssignee()).keySet());
+		//json.addStringField("assignee_name_initials" , getEntityNamesAbrev(patent.getAssignee()).values());
 		json.addStringField("assignee_address", getEntityAddress(patent.getAssignee()));
-	
+
 		json.addStringField("applicant_name", getEntityNames(patent.getApplicants()));
-		json.addStringField("applicant_name_abrev" , getEntityNamesAbrev(patent.getApplicants()).keySet());
-		json.addStringField("applicant_name_initials" , getEntityNamesAbrev(patent.getApplicants()).values());
+		//json.addStringField("applicant_name_abrev" , getEntityNamesAbrev(patent.getApplicants()).keySet());
+		//json.addStringField("applicant_name_initials" , getEntityNamesAbrev(patent.getApplicants()).values());
 		json.addStringField("applicant_address", getEntityAddress(patent.getApplicants()));
 
 		json.addStringField("inventor_name", getEntityNames(patent.getInventors()));
-		json.addStringField("inventor_name_abrev" , getEntityNamesAbrev(patent.getInventors()).keySet());
-		json.addStringField("inventor_name_initials" , getEntityNamesAbrev(patent.getInventors()).values());
+		//json.addStringField("inventor_name_abrev" , getEntityNamesAbrev(patent.getInventors()).keySet());
+		//json.addStringField("inventor_name_initials" , getEntityNamesAbrev(patent.getInventors()).values());
 		json.addStringField("inventors_address", getEntityAddress(patent.getInventors()));
 
 		json.addStringField("examiner_name", getEntityNames(patent.getExaminers()));
-		json.addStringField("examiner_name_abrev" , getEntityNamesAbrev(patent.getExaminers()).keySet());
-		json.addStringField("examiner_name_initials" , getEntityNamesAbrev(patent.getExaminers()).values());
+		//json.addStringField("examiner_name_abrev" , getEntityNamesAbrev(patent.getExaminers()).keySet());
+		//json.addStringField("examiner_name_initials" , getEntityNamesAbrev(patent.getExaminers()).values());
 
 		List<String> examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).distinct()
 				.collect(Collectors.toList());
-		json.addStringField("art_unit", examiner_dep.get(0));
+		json.addNumberField("art_unit", Integer.parseInt(examiner_dep.get(0)));
 
 		/*
 		 * Citations
@@ -119,28 +123,28 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 			examinerPatCite = citationMap.get(CitationType.PATCIT).get(CitedBy.EXAMINER).stream()
 				.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).sorted().collect(Collectors.toList());
 		}
-		json.addStringField("citation_examiner_pat", examinerPatCite == null ? Collections.emptyList() : examinerPatCite);
+		json.addStringField("citation_pat_examiner", examinerPatCite == null ? Collections.emptyList() : examinerPatCite);
 
 		List<String> examinerNplCite = null;
 		if (citationMap.containsKey(CitationType.NPLCIT) && citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.EXAMINER)) {
 			examinerNplCite = citationMap.get(CitationType.NPLCIT).get(CitedBy.EXAMINER).stream()
 				.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
 		}
-		json.addStringField("citation_examiner_npl", examinerNplCite == null ? Collections.emptyList() : examinerNplCite);
+		json.addStringField("citation_npl_examiner", examinerNplCite == null ? Collections.emptyList() : examinerNplCite);
 
 		List<String> applicantPatCite = null;
 		if (citationMap.containsKey(CitationType.PATCIT) && citationMap.get(CitationType.PATCIT).containsKey(CitedBy.APPLICANT)) {
 			applicantPatCite = citationMap.get(CitationType.PATCIT).get(CitedBy.APPLICANT).stream()
 				.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).collect(Collectors.toList());
 		}
-		json.addStringField("citation_applicant_pat", applicantPatCite == null ? Collections.emptyList() : applicantPatCite);
+		json.addStringField("citation_pat_applicant", applicantPatCite == null ? Collections.emptyList() : applicantPatCite);
 
 		List<String> applicantNplCite = null;
 		if (citationMap.containsKey(CitationType.NPLCIT) && citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.APPLICANT)) {
 			applicantNplCite = citationMap.get(CitationType.NPLCIT).get(CitedBy.APPLICANT).stream()
 				.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
 		}
-		json.addStringField("citation_applicant_npl", applicantNplCite == null ? Collections.emptyList() : applicantNplCite);
+		json.addStringField("citation_npl_applicant", applicantNplCite == null ? Collections.emptyList() : applicantNplCite);
 
 		/*
 		 * Classifications
@@ -172,9 +176,11 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		Set<String> locarno = getClassifications(patent.getClassification(), LocarnoClassification.class);
 		json.addStringField("locarno", locarno);
 
-		json.addStringField("cpc_facet", getClassificationFacets(patent.getClassification(), CpcClassification.class));
-		json.addStringField("uspc_facet",
-				getClassificationFacets(patent.getClassification(), UspcClassification.class));
+		Set<String> cpcFacet = getClassificationFacets(patent.getClassification(), CpcClassification.class);
+		json.addField(new SolrField("cpc_facet", SolrFieldType.STRING, useDynamicFieldEndings, true), cpcFacet); // SolrFieldType.DESCENDENT_PATH
+	
+		Set<String> uspcFacet = getClassificationFacets(patent.getClassification(), UspcClassification.class);
+		json.addField(new SolrField("uspc_facet", SolrFieldType.STRING, useDynamicFieldEndings, true), uspcFacet);
 
 		/*
 		 * Specification Fields
