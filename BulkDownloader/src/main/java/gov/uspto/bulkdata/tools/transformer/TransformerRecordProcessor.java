@@ -143,7 +143,7 @@ public class TransformerRecordProcessor implements RecordProcessor {
 			break;
 		case "solr":
 			// writer.write("Patent JSON:\n");
-			JsonMapperSolr solrFileBuilder = new JsonMapperSolr(prettyPrint, true);
+			JsonMapperSolr solrFileBuilder = new JsonMapperSolr(prettyPrint, true, false);
 			solrFileBuilder.write(patent, writer);
 			break;	
 		case "patft":

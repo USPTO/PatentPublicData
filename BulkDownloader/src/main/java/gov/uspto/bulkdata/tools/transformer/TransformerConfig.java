@@ -52,7 +52,7 @@ public class TransformerConfig extends BulkReaderArguments {
 				.defaultsTo(false);
 
 		opParser.accepts("type").withOptionalArg().ofType(String.class)
-				.describedAs("types options: [raw,xml,json,json_flat,patft,object,text]").defaultsTo("json");
+				.describedAs("types options: [raw,xml,json,json_flat,patft,solr,object,text]").defaultsTo("json");
 
 		return opParser;
 	}

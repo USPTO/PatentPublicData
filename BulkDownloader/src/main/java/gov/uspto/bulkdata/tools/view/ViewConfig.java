@@ -31,7 +31,7 @@ public class ViewConfig extends BulkReaderArguments {
 		super.buildArgs(opParser);
 
 		opParser.accepts("type").withOptionalArg().ofType(String.class)
-				.describedAs("types options: [raw,xml,json,json_flat,patft,object,text]").defaultsTo("object");
+				.describedAs("types options: [raw,xml,json,json_flat,patft,solr,object,text]").defaultsTo("object");
 
 		opParser.accepts("fields").withOptionalArg().ofType(String.class)
 				.describedAs("comma seperated list of fields; --fields=? will return all available field names")

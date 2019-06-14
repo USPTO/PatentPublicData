@@ -94,7 +94,7 @@ public class ViewRecordProcessor implements RecordProcessor {
 			break;
 		case "solr":
 			// writer.write("Patent JSON:\n");
-			JsonMapperSolr solrFileBuilder = new JsonMapperSolr(prettyPrint, false);
+			JsonMapperSolr solrFileBuilder = new JsonMapperSolr(prettyPrint, false, true);
 			solrFileBuilder.write(patent, writer);
 			break;
 		case "json_flat":

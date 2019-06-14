@@ -160,7 +160,7 @@ public class FreetextConfig {
 	}
 
 	/**
-	 * Default Configuration
+	 * Reduced Text Configuration, useful for Solr Index.
 	 *
 	 * <ul>
 	 * <li>Pretty Print "true", output has newlines ; "false" has commented newline
@@ -176,7 +176,7 @@ public class FreetextConfig {
 	 * 
 	 * @return FreetextConfig
 	 */
-	public static FreetextConfig getDefault() {
+	public static FreetextConfig getSolrDefault() {
 		FreetextConfig config = new FreetextConfig(true, true);
 		config.remove(HtmlFieldType.ERROR_ANNOTATED);
 		config.remove(HtmlFieldType.CROSSREF);
@@ -188,6 +188,15 @@ public class FreetextConfig {
 		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
 
 		return config;
+	}
+
+	/**
+	 * Default Configuration
+	 * 
+	 * @return
+	 */
+	public static FreetextConfig getDefault() {
+		return new FreetextConfig(true, true);
 	}
 
 }
