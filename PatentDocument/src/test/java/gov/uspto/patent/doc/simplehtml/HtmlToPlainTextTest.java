@@ -44,10 +44,11 @@ public class HtmlToPlainTextTest {
 	@Test
 	public void ParagraphIndent() {
 		FreetextConfig config = new FreetextConfig(true, true);
+		config.setTextIndentSize(3);
 
 		String xml = "<p>This is a paragraph.</p>";
 
-		String expect = "\n\tThis is a paragraph.\n";
+		String expect = "\n   This is a paragraph.\n";
 
 		Document jsoupDoc = Jsoup.parse(xml, "", Parser.xmlParser());
 		HtmlToPlainText converter = new HtmlToPlainText(config);
@@ -111,11 +112,12 @@ public class HtmlToPlainTextTest {
 	@Test
 	public void HTML_BlockQuote() {
 		FreetextConfig config = new FreetextConfig(false, false);
+		config.setTextIndentSize(5);
 		config.remove("del");
 
 		String xml = "<p><blockquote><p>My quote of the day.<br/>My quote second line.</p></blockquote></p>";
 
-		String expect = "\\n\\n\\n\tMy quote of the day.\\n\tMy quote second line.\\n\\n";
+		String expect = "\\n\\n\\n     My quote of the day.\\n     My quote second line.\\n\\n";
 
 		Document jsoupDoc = Jsoup.parse(xml, "", Parser.xmlParser());
 		HtmlToPlainText converter = new HtmlToPlainText(config);

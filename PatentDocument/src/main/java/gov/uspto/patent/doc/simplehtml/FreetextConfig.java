@@ -17,6 +17,8 @@ import org.jsoup.select.QueryParser;
  */
 public class FreetextConfig {
 
+	private static int DEFAULT_TEXT_INDENT_SIZE = 3;
+
 	private Map<Evaluator, String> replacements = new HashMap<Evaluator, String>();
 	private Collection<String> remove = new HashSet<String>();
 	private Collection<HtmlFieldType> removeTypes = new HashSet<HtmlFieldType>();
@@ -24,6 +26,7 @@ public class FreetextConfig {
 	private int wrapWidth = 0;
 	private final boolean prettyPrint;
 	private final boolean indentParagraphs;
+	private int textIndentSize = DEFAULT_TEXT_INDENT_SIZE;
 
 	/**
 	 * 
@@ -32,6 +35,14 @@ public class FreetextConfig {
 	public FreetextConfig(boolean prettyPrint, boolean indentParagraphs) {
 		this.prettyPrint = prettyPrint;
 		this.indentParagraphs = indentParagraphs;
+	}
+
+	public void setTextIndentSize(int size) {
+		this.textIndentSize = size;
+	}
+
+	public int getTextIndentSize() {
+		return textIndentSize;
 	}
 
 	public boolean isPrettyPrint() {
@@ -172,6 +183,7 @@ public class FreetextConfig {
 	 * <li>replace PATCITE field with "Patent-Citation"</li>
 	 * <li>replace NPLCITE field with "Patent-Citation"</li>
 	 * <li>replace NPLCITE field with "Patent-Citation"</li>
+	 * <li>replace new line "BR" tag with five spaces</li>
 	 * </ul>
 	 * 
 	 * @return FreetextConfig
@@ -186,6 +198,7 @@ public class FreetextConfig {
 		config.replace(HtmlFieldType.PATCITE, "Patent-Citation");
 		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
 		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
+		config.replace(HtmlFieldType.NEWLINE, "     "); // five spaces.
 
 		return config;
 	}

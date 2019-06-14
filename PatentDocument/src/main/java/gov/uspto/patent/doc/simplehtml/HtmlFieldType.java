@@ -1,6 +1,7 @@
 package gov.uspto.patent.doc.simplehtml;
 
 public enum HtmlFieldType {
+	NEWLINE("br"),
 	HEADER("h", "h1", "h2", "h3", "h4", "h5", "h6", "heading", "p[id^=h-]"),
 	TABLE("table", "tbody", "th", "tr", "td", "entry", "row", "pre[class=freetext-table]"),
 	LIST("ul", "ol", "li", "dl", "dt", "dd"),

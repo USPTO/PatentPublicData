@@ -1,5 +1,6 @@
 package gov.uspto.patent.doc.simplehtml;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.internal.StringUtil;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -36,10 +37,14 @@ public class HtmlToPlainText implements NodeVisitor {
 	private final FreetextConfig config;
 	private boolean insideIndentBlock = false;
 	private String listDecorator = "*";
+	private String indentValue = "   ";
+	private int indentLen = 3;
 
 	public HtmlToPlainText(FreetextConfig config) {
 		this.maxWidth = config.getWrapWidth() != 0 ? config.getWrapWidth() : MAX_WIDTH_DEFAULT;
 		this.config = config;
+		this.indentLen  = config.getTextIndentSize();
+		this.indentValue = StringUtils.repeat(" ", config.getTextIndentSize());
 	}
 
 	/**
@@ -149,13 +154,13 @@ public class HtmlToPlainText implements NodeVisitor {
 		} else if (name.equals("p")) {
 			if (config.isPrettyPrint()) {
 				if (config.isIndentParagraphs()) {
-					append("\n\t");
+					append("\n"+indentValue);
 				} else {
 					append("\n");
 				}
 			} else {
 				if (config.isIndentParagraphs()) {
-					append("\\n\t");
+					append("\\n"+indentValue);
 				} else {
 					append("\\n");
 				}
@@ -195,16 +200,14 @@ public class HtmlToPlainText implements NodeVisitor {
 		append(text, insideIndentBlock);
 	}
 
-	private void append(String text, boolean tabIndentBlock) {
-		if (StringUtil.in(text, "\n", "\\n", "\n\t", "\\n\t")) {
+	private void append(String text, boolean indentBlock) {
+		if (StringUtil.in(text, "\n", "\\n", "\n"+indentValue, "\\n"+indentValue)) {
 			accum.append(text);
 			return;
 		}
 
 		int maxWidth = this.maxWidth;
-		int indentLen = 0;
-		if (tabIndentBlock) {
-			indentLen = "\t".length();
+		if (indentBlock) {
 			maxWidth -= indentLen;
 		}
 
@@ -231,22 +234,22 @@ public class HtmlToPlainText implements NodeVisitor {
 					} else {
 						accum.append("\\n");
 					}
-					if (tabIndentBlock) {
-						accum.append('\t');
+					if (indentBlock) {
+						accum.append(indentValue);
 					}
 					accum.append(word);
 					width = word.length() + indentLen;
 				} else {
-					if (tabIndentBlock) {
-						accum.append('\t');
+					if (indentBlock) {
+						accum.append(indentValue);
 					}
 					accum.append(word);
 					width += word.length() + indentLen;
 				}
 			}
 		} else {
-			if (tabIndentBlock) {
-				accum.append('\t');
+			if (indentBlock) {
+				accum.append(indentValue);
 			}
 			accum.append(text);
 			width += text.length() + indentLen;
