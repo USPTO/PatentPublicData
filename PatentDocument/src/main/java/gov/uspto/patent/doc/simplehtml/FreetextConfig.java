@@ -198,7 +198,6 @@ public class FreetextConfig {
 		config.replace(HtmlFieldType.PATCITE, "Patent-Citation");
 		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
 		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
-		config.replace(HtmlFieldType.NEWLINE, "     "); // five spaces.
 
 		return config;
 	}

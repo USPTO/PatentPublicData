@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.OrgSynonymGenerator;
+import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.Citation.CitedBy;
 import gov.uspto.patent.model.CitationType;
@@ -49,11 +50,32 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 	private final SolrJson json;
 	private boolean useDynamicFieldEndings;
+	private boolean plainTextOnly = true;
+	private FreetextConfig textConfig = FreetextConfig.getSolrDefault();
 
-	public JsonMapperSolr(boolean pretty, boolean useDynamicFieldEndings) {
-		useDynamicFieldEndings = false;
+	public JsonMapperSolr(boolean pretty, boolean useDynamicFieldEndings, boolean plainTextOnly) {
 		this.useDynamicFieldEndings = useDynamicFieldEndings;
+		this.plainTextOnly = plainTextOnly;
 		json = new SolrJson(pretty, useDynamicFieldEndings);
+	}
+
+	/**
+	 * Custom FreetextConfig after setting "plainTextOnly" to true in the
+	 * constructor.
+	 *
+	 * <p>
+	 * The Default "Solr" FreetextConfig replaces: FIGREF, CLAIMREF, CROSSREF,
+	 * PATCITE, NPLCITE, ERROR_ANNOTATED within text with generic field descriptor.
+	 * For example the text within a FIGREF which is an id, such as "FIG. 1A" is
+	 * replaced with --> PATENT-FIGURE ; since the text is meaningless to search.
+	 * </p>
+	 *
+	 * @param textConfig
+	 * 
+	 * @see FreetextConfig.getSolrDefault()
+	 */
+	public void setFreeTextConfig(FreetextConfig textConfig) {
+		this.textConfig = textConfig;
 	}
 
 	@Override
@@ -87,27 +109,37 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		json.addDateField("published_date", patent.getDatePublished().getDate());
 
 		json.addStringField("agent_name", getEntityNames(patent.getAgent()));
-		//json.addStringField("agent_name_abrev" , getEntityNamesAbrev(patent.getAgent()).keySet());
-		//json.addStringField("agent_name_initials" , getEntityNamesAbrev(patent.getAgent()).values());
+		// json.addStringField("agent_name_abrev" ,
+		// getEntityNamesAbrev(patent.getAgent()).keySet());
+		// json.addStringField("agent_name_initials" ,
+		// getEntityNamesAbrev(patent.getAgent()).values());
 
 		json.addStringField("assignee_name", getEntityNames(patent.getAssignee()));
-		//json.addStringField("assignee_name_abbrev" , getEntityNamesAbrev(patent.getAssignee()).keySet());
-		//json.addStringField("assignee_name_initials" , getEntityNamesAbrev(patent.getAssignee()).values());
+		// json.addStringField("assignee_name_abbrev" ,
+		// getEntityNamesAbrev(patent.getAssignee()).keySet());
+		// json.addStringField("assignee_name_initials" ,
+		// getEntityNamesAbrev(patent.getAssignee()).values());
 		json.addStringField("assignee_address", getEntityAddress(patent.getAssignee()));
 
 		json.addStringField("applicant_name", getEntityNames(patent.getApplicants()));
-		//json.addStringField("applicant_name_abrev" , getEntityNamesAbrev(patent.getApplicants()).keySet());
-		//json.addStringField("applicant_name_initials" , getEntityNamesAbrev(patent.getApplicants()).values());
+		// json.addStringField("applicant_name_abrev" ,
+		// getEntityNamesAbrev(patent.getApplicants()).keySet());
+		// json.addStringField("applicant_name_initials" ,
+		// getEntityNamesAbrev(patent.getApplicants()).values());
 		json.addStringField("applicant_address", getEntityAddress(patent.getApplicants()));
 
 		json.addStringField("inventor_name", getEntityNames(patent.getInventors()));
-		//json.addStringField("inventor_name_abrev" , getEntityNamesAbrev(patent.getInventors()).keySet());
-		//json.addStringField("inventor_name_initials" , getEntityNamesAbrev(patent.getInventors()).values());
+		// json.addStringField("inventor_name_abrev" ,
+		// getEntityNamesAbrev(patent.getInventors()).keySet());
+		// json.addStringField("inventor_name_initials" ,
+		// getEntityNamesAbrev(patent.getInventors()).values());
 		json.addStringField("inventors_address", getEntityAddress(patent.getInventors()));
 
 		json.addStringField("examiner_name", getEntityNames(patent.getExaminers()));
-		//json.addStringField("examiner_name_abrev" , getEntityNamesAbrev(patent.getExaminers()).keySet());
-		//json.addStringField("examiner_name_initials" , getEntityNamesAbrev(patent.getExaminers()).values());
+		// json.addStringField("examiner_name_abrev" ,
+		// getEntityNamesAbrev(patent.getExaminers()).keySet());
+		// json.addStringField("examiner_name_initials" ,
+		// getEntityNamesAbrev(patent.getExaminers()).values());
 
 		List<String> examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).distinct()
 				.collect(Collectors.toList());
@@ -119,32 +151,41 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		Map<CitationType, Map<CitedBy, List<Citation>>> citationMap = getCitationMap(patent.getCitations());
 
 		List<String> examinerPatCite = null;
-		if (citationMap.containsKey(CitationType.PATCIT) && citationMap.get(CitationType.PATCIT).containsKey(CitedBy.EXAMINER)) {
+		if (citationMap.containsKey(CitationType.PATCIT)
+				&& citationMap.get(CitationType.PATCIT).containsKey(CitedBy.EXAMINER)) {
 			examinerPatCite = citationMap.get(CitationType.PATCIT).get(CitedBy.EXAMINER).stream()
-				.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).sorted().collect(Collectors.toList());
+					.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).sorted()
+					.collect(Collectors.toList());
 		}
-		json.addStringField("citation_pat_examiner", examinerPatCite == null ? Collections.emptyList() : examinerPatCite);
+		json.addStringField("citation_pat_examiner",
+				examinerPatCite == null ? Collections.emptyList() : examinerPatCite);
 
 		List<String> examinerNplCite = null;
-		if (citationMap.containsKey(CitationType.NPLCIT) && citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.EXAMINER)) {
+		if (citationMap.containsKey(CitationType.NPLCIT)
+				&& citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.EXAMINER)) {
 			examinerNplCite = citationMap.get(CitationType.NPLCIT).get(CitedBy.EXAMINER).stream()
-				.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
+					.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
 		}
-		json.addStringField("citation_npl_examiner", examinerNplCite == null ? Collections.emptyList() : examinerNplCite);
+		json.addStringField("citation_npl_examiner",
+				examinerNplCite == null ? Collections.emptyList() : examinerNplCite);
 
 		List<String> applicantPatCite = null;
-		if (citationMap.containsKey(CitationType.PATCIT) && citationMap.get(CitationType.PATCIT).containsKey(CitedBy.APPLICANT)) {
+		if (citationMap.containsKey(CitationType.PATCIT)
+				&& citationMap.get(CitationType.PATCIT).containsKey(CitedBy.APPLICANT)) {
 			applicantPatCite = citationMap.get(CitationType.PATCIT).get(CitedBy.APPLICANT).stream()
-				.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).collect(Collectors.toList());
+					.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).collect(Collectors.toList());
 		}
-		json.addStringField("citation_pat_applicant", applicantPatCite == null ? Collections.emptyList() : applicantPatCite);
+		json.addStringField("citation_pat_applicant",
+				applicantPatCite == null ? Collections.emptyList() : applicantPatCite);
 
 		List<String> applicantNplCite = null;
-		if (citationMap.containsKey(CitationType.NPLCIT) && citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.APPLICANT)) {
+		if (citationMap.containsKey(CitationType.NPLCIT)
+				&& citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.APPLICANT)) {
 			applicantNplCite = citationMap.get(CitationType.NPLCIT).get(CitedBy.APPLICANT).stream()
-				.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
+					.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
 		}
-		json.addStringField("citation_npl_applicant", applicantNplCite == null ? Collections.emptyList() : applicantNplCite);
+		json.addStringField("citation_npl_applicant",
+				applicantNplCite == null ? Collections.emptyList() : applicantNplCite);
 
 		/*
 		 * Classifications
@@ -178,7 +219,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 		Set<String> cpcFacet = getClassificationFacets(patent.getClassification(), CpcClassification.class);
 		json.addField(new SolrField("cpc_facet", SolrFieldType.STRING, useDynamicFieldEndings, true), cpcFacet); // SolrFieldType.DESCENDENT_PATH
-	
+
 		Set<String> uspcFacet = getClassificationFacets(patent.getClassification(), UspcClassification.class);
 		json.addField(new SolrField("uspc_facet", SolrFieldType.STRING, useDynamicFieldEndings, true), uspcFacet);
 
@@ -187,23 +228,55 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		 */
 		json.addStringField("title_text", StringCaseUtil.toTitleCase(patent.getTitle()));
 
-		json.addTextField("abstract_text", removeNewline(patent.getAbstract().getSimpleHtml()));
+		if (patent.getAbstract() != null) {
+			json.addTextField("abstract_text",
+					plainTextOnly ? removeNewline(patent.getAbstract().getPlainText(textConfig))
+							: removeNewline(patent.getAbstract().getSimpleHtml()));
+		} else {
+			json.addTextField("abstract_text", "");
+		}
 
 		DescriptionSection relAppDesc = patent.getDescription().getSection(DescSection.REL_APP_DESC);
-		json.addTextField("desc_relapp_text", relAppDesc != null ? removeNewline(relAppDesc.getSimpleHtml()) : null);
+		if (relAppDesc != null) {
+			json.addTextField("desc_relapp_text", plainTextOnly ? removeNewline(relAppDesc.getPlainText(textConfig))
+					: removeNewline(relAppDesc.getSimpleHtml()));
+		} else {
+			json.addTextField("desc_relapp_text", "");
+		}
 
 		DescriptionSection briefSummary = patent.getDescription().getSection(DescSection.BRIEF_SUMMARY);
-		json.addTextField("desc_summary_text", briefSummary != null ? removeNewline(briefSummary.getSimpleHtml()) : null);
+		if (briefSummary != null) {
+			json.addTextField("desc_summary_text", plainTextOnly ? removeNewline(briefSummary.getPlainText(textConfig))
+					: removeNewline(briefSummary.getSimpleHtml()));
+		} else {
+			json.addTextField("desc_summary_text", "");
+		}
 
 		DescriptionSection drawingDesc = patent.getDescription().getSection(DescSection.DRAWING_DESC);
-		json.addTextField("desc_draw_text", drawingDesc != null ? removeNewline(drawingDesc.getSimpleHtml()) : null);
+		if (drawingDesc != null) {
+			json.addTextField("desc_draw_text", plainTextOnly ? removeNewline(drawingDesc.getPlainText(textConfig))
+					: removeNewline(drawingDesc.getSimpleHtml()));
+		} else {
+			json.addTextField("desc_draw_text", "");
+		}
 
 		DescriptionSection detailedDesc = patent.getDescription().getSection(DescSection.DETAILED_DESC);
-		json.addTextField("desc_detail_text", detailedDesc != null ? removeNewline(detailedDesc.getSimpleHtml()) : null);
+		if (detailedDesc != null) {
+			json.addTextField("desc_detail_text", plainTextOnly ? removeNewline(detailedDesc.getPlainText(textConfig))
+					: removeNewline(detailedDesc.getSimpleHtml()));
+		} else {
+			json.addTextField("desc_detail_text", "");
+		}
 
-		List<String> claims = patent.getClaims().stream().map(Claim::getSimpleHtml).map(e -> e.replaceAll("\n", ""))
-				.collect(Collectors.toList());
-		json.addTextField("claim_text", claims);
+		List<String> claims = null;
+		if (plainTextOnly) {
+			claims = patent.getClaims().stream().map(cl -> cl.getPlainText(textConfig)).map(e -> e.replaceAll("\n", ""))
+					.collect(Collectors.toList());
+		} else {
+			claims = patent.getClaims().stream().map(Claim::getSimpleHtml).map(e -> e.replaceAll("\n", ""))
+					.collect(Collectors.toList());
+		}
+		json.addTextField("claim_text", claims != null ? claims : Collections.emptyList());
 	}
 
 	private List<String> getDocIds(Collection<DocumentId> docIds) {
@@ -226,10 +299,10 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 	private <T extends Entity> Map<String, String> getEntityNamesAbrev(Collection<T> entities) {
 		Map<String, String> abbrevs = new LinkedHashMap<String, String>();
-		for(Entity entity: entities) {
+		for (Entity entity : entities) {
 			if (entity.getName() instanceof NamePerson) {
 				NamePerson perName = (NamePerson) entity.getName();
-				abbrevs.put(perName.getAbbreviatedName(), perName.getInitials());				
+				abbrevs.put(perName.getAbbreviatedName(), perName.getInitials());
 			} else {
 				NameOrg orgName = (NameOrg) entity.getName();
 				new OrgSynonymGenerator().computeSynonyms(entity);
@@ -296,7 +369,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		if (line == null) {
 			return "";
 		}
-		return line.replaceAll("\n", "").replaceAll("\t", " ");
+		return line.replaceAll("\n", "          ").trim(); // 10 spaces.
 	}
 
 	@Override
