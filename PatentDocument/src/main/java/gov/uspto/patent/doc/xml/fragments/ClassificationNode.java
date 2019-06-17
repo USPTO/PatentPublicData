@@ -19,11 +19,11 @@ import gov.uspto.patent.model.classification.LocarnoClassification;
 import gov.uspto.patent.model.classification.UspcClassification;
 
 public class ClassificationNode extends DOMFragmentReader<Set<PatentClassification>> {
-    private static final String IPC_PATH2 = "//classifications-ipcr/classification-ipcr";
-    private static final String IPC_PATH = "//classification-ipc";
-    private static final String CPC_PATH = "//classifications-cpc"; // has sub classification-cpc
-    private static final String USPC_PATH = "//classification-national";
-    private static final String LOCARNO_PATH = "//classification-locarno";
+    private static final String IPC_PATH2 = "/*/*/classifications-ipcr/classification-ipcr";
+    private static final String IPC_PATH = "/*/*/classification-ipc";
+    private static final String CPC_PATH = "/*/*/classifications-cpc"; // has sub classification-cpc
+    private static final String USPC_PATH = "/*/*/classification-national";
+    private static final String LOCARNO_PATH = "/*/*/classification-locarno";
 
     public ClassificationNode(Document document) {
         super(document);
