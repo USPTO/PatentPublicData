@@ -143,7 +143,8 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 		List<String> examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).distinct()
 				.collect(Collectors.toList());
-		json.addNumberField("art_unit", Integer.parseInt(examiner_dep.get(0)));
+		json.addNumberField("art_unit",
+				examiner_dep != null && examiner_dep.size() > 0 ? Integer.parseInt(examiner_dep.get(0)) : -1);
 
 		/*
 		 * Citations
@@ -313,8 +314,9 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 	}
 
 	private <T extends Entity> List<String> getEntityAddress(Collection<T> entities) {
-		return entities.stream().map(e -> e.getAddress().getTokenSet()).flatMap(Collection::stream)
-				.collect(Collectors.toList());
+		return entities.stream().map(e -> e.getAddress().toText()).collect(Collectors.toList());
+		//return entities.stream().map(e -> e.getAddress().getTokenSet()).flatMap(Collection::stream)
+		//		.collect(Collectors.toList());
 	}
 
 	private <T extends PatentClassification> Set<String> getClassifications(Collection<PatentClassification> classes,
@@ -332,7 +334,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 	private <T extends PatentClassification> List<String> getClassifications(Collection<PatentClassification> classes,
 			Class<T> wantedClass, Predicate<? super PatentClassification> predicate) {
 		return classes.stream().filter(wantedClass::isInstance).filter(predicate)
-				.map(PatentClassification::getTextNormalized).collect(Collectors.toList());
+				.map(PatentClassification::getTextNormalized).distinct().collect(Collectors.toList());
 	}
 
 	/**
