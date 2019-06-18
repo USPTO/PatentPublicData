@@ -27,7 +27,7 @@ import gov.uspto.patent.model.Figure;
 public class DescriptionNode extends DOMFragmentReader<Description> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionNode.class);
 
-	private static final String FRAGMENT_PATH = "//description";
+	private static final String FRAGMENT_PATH = "/*/description";
 
 	public DescriptionNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);

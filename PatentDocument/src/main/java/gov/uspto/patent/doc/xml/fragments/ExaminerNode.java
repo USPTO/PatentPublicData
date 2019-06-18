@@ -14,8 +14,8 @@ import gov.uspto.patent.model.entity.Name;
 
 public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 
-	private static final String PRIMARY = "//us-bibliographic-data-grant/examiners/primary-examiner";
-	private static final String ASSISTANT = "//us-bibliographic-data-grant/examiners/assistant-examiner";
+	private static final String PRIMARY = "/*/us-bibliographic-data-grant/examiners/primary-examiner";
+	private static final String ASSISTANT = "/*/us-bibliographic-data-grant/examiners/assistant-examiner";
 
 	public ExaminerNode(Document document) {
 		super(document);

@@ -8,7 +8,7 @@ import gov.uspto.patent.TextProcessor;
 import gov.uspto.patent.model.Abstract;
 
 public class AbstractTextNode extends DOMFragmentReader<Abstract> {
-	private static final String FRAGMENT_PATH = "//abstract";
+	private static final String FRAGMENT_PATH = "/*/abstract";
 
 	public AbstractTextNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);

@@ -21,7 +21,7 @@ import gov.uspto.patent.model.ClaimType;
  *
  */
 public class ClaimNode extends DOMFragmentReader<List<Claim>> {
-	private static final String PATENT_PATH = "//claims/claim";
+	private static final String PATENT_PATH = "/*/claims/claim";
 
 	public ClaimNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);

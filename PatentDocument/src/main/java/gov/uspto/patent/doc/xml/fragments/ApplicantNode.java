@@ -23,7 +23,7 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 	 * CURRENT: //us-parties/us-applicants/us-applicant PRE-2012:
 	 * //parties/applicants/applicant
 	 */
-	private static final String FRAGMENT_PATH = "//us-parties/us-applicants/us-applicant|//parties/applicants/applicant";
+	private static final String FRAGMENT_PATH = "/*/*/us-parties/us-applicants/us-applicant|/*/*/parties/applicants/applicant";
 
 	public ApplicantNode(Document document) {
 		super(document);

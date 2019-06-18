@@ -35,7 +35,7 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
 	
 	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-9][/-]\\d+");
 
-    private static final String FRAGMENT_PATH = "//priority-claims/priority-claim";
+    private static final String FRAGMENT_PATH = "/*/*/priority-claims/priority-claim";
 
     private static final String PROVISIONAL_PATH = "/*/*/us-related-documents/us-provisional-application";
 
