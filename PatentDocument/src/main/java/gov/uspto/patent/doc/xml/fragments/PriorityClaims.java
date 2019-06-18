@@ -31,11 +31,13 @@ import gov.uspto.patent.model.DocumentIdType;
  */
 public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentIdNode.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PriorityClaims.class);
 	
 	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-9][/-]\\d+");
-	
+
     private static final String FRAGMENT_PATH = "//priority-claims/priority-claim";
+
+    private static final String PROVISIONAL_PATH = "/*/*/us-related-documents/us-provisional-application";
 
     public PriorityClaims(Document document) {
         super(document);
@@ -44,6 +46,13 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
     @Override
     public List<DocumentId> read() {
         List<DocumentId> priorityDocIds = new ArrayList<DocumentId>();
+
+        Node provisionalNode = document.selectSingleNode(PROVISIONAL_PATH);
+        if (provisionalNode != null) {
+        	DocumentId provisionalDocId = new DocumentIdNode(provisionalNode).read();
+        	provisionalDocId.setType(DocumentIdType.PROVISIONAL);
+        	priorityDocIds.add(provisionalDocId);
+        }
 
         List<Node> fragmentNodes = document.selectNodes(FRAGMENT_PATH);
         for (Node fragNode : fragmentNodes) {       	
