@@ -13,6 +13,11 @@ import java.nio.charset.StandardCharsets;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.io.IOUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.parser.ParseSettings;
+import org.jsoup.parser.Parser;
+
 import gov.uspto.bulkdata.RecordProcessor;
 import gov.uspto.bulkdata.tools.grep.OutputMatchConfig.OUTPUT_MATCHING;
 import gov.uspto.patent.PatentDocFormat;
@@ -28,6 +33,7 @@ public class GrepRecordProcessor implements RecordProcessor {
 	private long recordsMatched = 0;
 	private Writer currentWriter;
 	private String currentFilename;
+	private boolean fixRecord = false;
 
 	public GrepRecordProcessor(GrepConfig config) throws XPathExpressionException {
 		this.config = config;
@@ -40,17 +46,37 @@ public class GrepRecordProcessor implements RecordProcessor {
 
 	@Override
 	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws DocumentException, IOException {
+		if (fixRecord) {
+			// After first record fails within file, fix all records.
+			rawRecord = fixXML(rawRecord);
+		}
+
 		Boolean matched = false;
+		Reader reader = null;
 		try {
-			Reader reader = new InputStreamReader(new ByteArrayInputStream(rawRecord.getBytes()), "UTF-8");
+			reader = new InputStreamReader(new ByteArrayInputStream(rawRecord.getBytes()), "UTF-8");
 			recordsChecked++;
-			if (hasMatch(sourceTxt, reader, writer)) {
-				matched = true;
+
+			try {
+				matched = hasMatch(sourceTxt, reader, writer);
+			} catch (DocumentException e1) {
+				fixRecord = true;
+				reader.close();
+				reader = new InputStreamReader(new ByteArrayInputStream(fixXML(rawRecord).getBytes()), "UTF-8");
+				matched = hasMatch(sourceTxt, reader, writer);
+			}
+			
+			if (matched) {
 				recordsMatched++;
 				writer(sourceTxt, rawRecord, writer);
-			}
+			}			
+			
 		} catch (UnsupportedEncodingException e) {
 			// ignore...
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
 		}
 
 		return matched;
@@ -116,6 +142,16 @@ public class GrepRecordProcessor implements RecordProcessor {
 	@Override
 	public void setPatentDocFormat(PatentDocFormat docFormat) {
 		// not used.
+	}
+	
+	public String fixXML(String xml) throws IOException, DocumentException {
+		org.jsoup.nodes.Document jsoupDoc = Jsoup.parse("<body>" + xml + "</body>", "",
+				Parser.xmlParser().settings(ParseSettings.preserveCase));
+		jsoupDoc.outputSettings().prettyPrint(false);
+		String doc = jsoupDoc.select("body").html();
+		// Add HTML DTD to ensure HTML entities do not cause any problems.
+        doc = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" + doc;
+        return doc;
 	}
 
 }
