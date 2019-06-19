@@ -47,6 +47,7 @@ public class UsKindCode2PatentType {
 
 		// DESIGN
 		mapping.put("S", PatentType.DESIGN);
+		mapping.put("S1", PatentType.DESIGN);
 
 		// PLANT
 		mapping.put("P", PatentType.PLANT);
