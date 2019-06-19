@@ -118,7 +118,6 @@ public class Sgml extends Dom4JParser {
 		List<DocumentId> provisionals = relatedIds.stream().filter(d -> DocumentIdType.PROVISIONAL.equals(d.getType()))
 				.collect(Collectors.toList());
 		if (!provisionals.isEmpty()) {
-			LOGGER.info("Adding Provisional to Priority Claims");
 			patent.addPriorityId(provisionals);
 		}
 
