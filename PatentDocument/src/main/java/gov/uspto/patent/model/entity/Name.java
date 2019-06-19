@@ -26,7 +26,7 @@ public abstract class Name {
 	 * @return length sorted list
 	 */
 	public List<String> getSynonyms() {
-		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? -1 : 1;
+		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? 0 : 1;
 		return synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength).collect(Collectors.toList());
 	}
 
