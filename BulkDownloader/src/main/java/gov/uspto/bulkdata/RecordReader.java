@@ -13,6 +13,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,8 +113,8 @@ public class RecordReader {
 				if (PatentDocFormat.Pap.equals(patentDocFormat) || bulkReaderArgs.addHtmlEntities()) {
 					dumpXml.addHTMLEntities();
 				}
+				filters.addRule(new SuffixFileFilter(new String[] { "xml", "sgm", "sgml"}, IOCase.INSENSITIVE));
 				dumpReader = dumpXml;
-				filters.addRule(new SuffixFileFilter(new String[] { "xml", "sgm", "sgml" }));
 			}
 			dumpReader.setFileFilter(filters);
 		}
