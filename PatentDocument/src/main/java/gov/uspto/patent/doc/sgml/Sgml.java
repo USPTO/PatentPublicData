@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -33,6 +34,7 @@ import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.ClaimTreeBuilder;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DocumentId;
+import gov.uspto.patent.model.DocumentIdType;
 import gov.uspto.patent.model.Patent;
 import gov.uspto.patent.model.PatentGranted;
 import gov.uspto.patent.model.PatentType;
@@ -60,7 +62,7 @@ public class Sgml extends Dom4JParser {
 
 		DocumentId publicationId = new DocumentIdNode(document).read();
 		PatentType patentType = PatentType.UNDEFINED;
-		if (publicationId != null){
+		if (publicationId != null) {
 			MDC.put("DOCID", publicationId.toText());
 			patentType = UsKindCode2PatentType.getInstance().lookupPatentType(publicationId.getKindCode());
 		} else {
@@ -69,9 +71,9 @@ public class Sgml extends Dom4JParser {
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
-	    List<DocumentId> priorityIds = new PriorityClaimsNode(document).read();
-	    List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
-        List<DocumentId> relatedIds = new RelatedIdNode(document).read();
+		List<DocumentId> priorityIds = new PriorityClaimsNode(document).read();
+		List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
+		List<DocumentId> relatedIds = new RelatedIdNode(document).read();
 
 		Node titleN = document.selectSingleNode("/PATDOC/SDOBI/B500/B540/STEXT/PDAT");
 		String title = null;
@@ -92,8 +94,8 @@ public class Sgml extends Dom4JParser {
 		FormattedText textProcessor = new FormattedText();
 		Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
 		Description description = new DescriptionNode(document, textProcessor).read();
-        List<Claim> claims = new ClaimNode(document, textProcessor).read();
-        new ClaimTreeBuilder(claims).build();
+		List<Claim> claims = new ClaimNode(document, textProcessor).read();
+		new ClaimTreeBuilder(claims).build();
 
 		/*
 		 * Start Building Patent Object.
@@ -104,9 +106,8 @@ public class Sgml extends Dom4JParser {
 			patent.setDatePublished(publicationId.getDate());
 		}
 
-
 		if (applicationId != null && applicationId.getDate() != null) {
-				patent.setDateProduced(applicationId.getDate());
+			patent.setDateProduced(applicationId.getDate());
 		}
 
 		patent.setApplicationId(applicationId);
@@ -114,10 +115,17 @@ public class Sgml extends Dom4JParser {
 		patent.addOtherId(pctRegionalIds);
 		patent.addRelationIds(relatedIds);
 
-        patent.addOtherId(patent.getApplicationId());
+		List<DocumentId> provisionals = relatedIds.stream().filter(d -> DocumentIdType.PROVISIONAL.equals(d.getType()))
+				.collect(Collectors.toList());
+		if (!provisionals.isEmpty()) {
+			LOGGER.info("Adding Provisional to Priority Claims");
+			patent.addPriorityId(provisionals);
+		}
+
+		patent.addOtherId(patent.getApplicationId());
 		patent.addOtherId(patent.getPriorityIds());
 		patent.addRelationIds(patent.getOtherIds());
-		
+
 		patent.setTitle(title);
 		if (classifications != null) {
 			patent.setClassification(classifications);
@@ -152,7 +160,7 @@ public class Sgml extends Dom4JParser {
 				if (patent.getDescription().getAllPlainText().length() < 400) {
 					System.err.println("Description to small.");
 				}
-				//System.out.println(patent.toString());
+				// System.out.println(patent.toString());
 			}
 		} else {
 			Sgml sgml = new Sgml();
