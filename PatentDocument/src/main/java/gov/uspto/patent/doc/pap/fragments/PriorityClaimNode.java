@@ -17,7 +17,7 @@ import gov.uspto.patent.model.DocumentId;
 public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PriorityClaimNode.class);
 
-	private static final String FRAGMENT_PATH = "//foreign-priority-data";
+	private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-bibliographic-information/foreign-priority-data";
 
 	public PriorityClaimNode(Document document) {
 		super(document);

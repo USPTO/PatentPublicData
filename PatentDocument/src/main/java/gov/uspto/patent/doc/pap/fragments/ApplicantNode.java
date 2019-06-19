@@ -27,8 +27,8 @@ import gov.uspto.patent.model.entity.Name;
 public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicantNode.class);
 
-	private static final String FRAGMENT_PATH = "//inventors/inventor";
-	private static final String FRAGMENT_PATH1 = "//inventors/first-named-inventor";
+	private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-bibliographic-information/inventors/inventor";
+	private static final String FRAGMENT_PATH1 = "/patent-application-publication/subdoc-bibliographic-information/inventors/first-named-inventor";
 
 	private List<Applicant> applicantList;
 

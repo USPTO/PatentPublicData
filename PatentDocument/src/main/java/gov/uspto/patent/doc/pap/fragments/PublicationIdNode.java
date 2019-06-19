@@ -13,7 +13,7 @@ import gov.uspto.patent.model.DocumentIdType;
 public class PublicationIdNode extends DOMFragmentReader<DocumentId> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PublicationIdNode.class);
 
-	private static final String FRAGMENT_PATH = "//subdoc-bibliographic-information";
+	private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-bibliographic-information/document-id";
 
 	public PublicationIdNode(Document document) {
 	    super(document);
