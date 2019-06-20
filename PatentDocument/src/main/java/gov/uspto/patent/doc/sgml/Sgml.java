@@ -56,7 +56,7 @@ public class Sgml extends Dom4JParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Sgml.class);
 
 	public static final String SGML_ROOT = "/PATDOC";
-
+	
 	@Override
 	public Patent parse(Document document) throws PatentReaderException {
 
@@ -101,6 +101,7 @@ public class Sgml extends Dom4JParser {
 		 * Start Building Patent Object.
 		 */
 		Patent patent = new PatentGranted(publicationId, patentType);
+		patent.setSource(getSource());
 
 		if (publicationId != null && publicationId.getDate() != null) {
 			patent.setDatePublished(publicationId.getDate());
