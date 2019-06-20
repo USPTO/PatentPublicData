@@ -12,6 +12,7 @@ import java.util.List;
 import org.dom4j.Document;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.google.common.base.Preconditions;
 
@@ -63,5 +64,16 @@ public abstract class KvParser implements Dom4j {
 		// LOGGER.info("XML: {}", document.asXML());
 
 		return parse(document);
+	}
+
+	public String getSource() {
+		// %X{SOURCE}:%X{RECNUM}:%X{DOCID}
+		StringBuilder stb = new StringBuilder();
+		stb.append(MDC.get("SOURCE"));
+		stb.append(":");
+		stb.append(MDC.get("RECNUM"));
+		stb.append(":");
+		stb.append(MDC.get("DOCID"));
+		return stb.toString();
 	}
 }

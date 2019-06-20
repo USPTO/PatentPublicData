@@ -78,7 +78,7 @@ public class PatentAppPubParser extends Dom4JParser {
 
 		String dateProduced = Dom4jUtil.getTextOrNull(document,
 				XML_ROOT + "/subdoc-bibliographic-information/domestic-filing-data/filing-date");
-		
+
 		/*
 		 * Patent Type from field or from kindCode.
 		 */
@@ -115,19 +115,21 @@ public class PatentAppPubParser extends Dom4JParser {
 		/*
 		 * Start Building Patent Object.
 		 */
-		//if (patent == null) {
-			patent = new PatentApplication(publicationId, patentType);
-		//} else {
-		//	patent.reset();
-		//	patent.setDocumentId(publicationId);
-		//	patent.setPatentType(patentType);
-		//}
+		// if (patent == null) {
+		patent = new PatentApplication(publicationId, patentType);
+		// } else {
+		// patent.reset();
+		// patent.setDocumentId(publicationId);
+		// patent.setPatentType(patentType);
+		// }
+
+		patent.setSource(getSource());
 
 		patent.setApplicationId(applicationId);
 		patent.addPriorityId(priorityIds);
 		patent.addRelationIds(relatedIds);
 
-        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getApplicationId());
 		patent.addOtherId(patent.getPriorityIds());
 		patent.addRelationIds(patent.getOtherIds());
 

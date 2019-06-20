@@ -122,7 +122,7 @@ public class ApplicationParser extends Dom4JParser {
 		 * Start Building Patent Object.
 		 */
 		Patent patent = new PatentApplication(publicationId, patentType);
-
+		patent.setSource(getSource());
 		patent.setDateProduced(dateProducedDate);
 		patent.setDatePublished(datePublishedDate);
 

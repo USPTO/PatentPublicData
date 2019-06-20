@@ -19,6 +19,7 @@ import org.dom4j.io.SAXReader;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Parser;
+import org.slf4j.MDC;
 import org.xml.sax.SAXException;
 
 import com.google.common.base.Preconditions;
@@ -27,6 +28,17 @@ import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.model.Patent;
 
 public abstract class Dom4JParser implements Dom4j {
+
+	public String getSource() {
+		// %X{SOURCE}:%X{RECNUM}:%X{DOCID}
+		StringBuilder stb = new StringBuilder();
+		stb.append(MDC.get("SOURCE"));
+		stb.append(":");
+		stb.append(MDC.get("RECNUM"));
+		stb.append(":");
+		stb.append(MDC.get("DOCID"));
+		return stb.toString();
+	}
 
 	/**
 	 * Parse CharSequence (String, StringBuffer, StringBuilder, CharBuffer)

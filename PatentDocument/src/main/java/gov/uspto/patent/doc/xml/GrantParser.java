@@ -126,7 +126,7 @@ public class GrantParser extends Dom4JParser {
 		 * Start Building Patent Object.
 		 */
 		PatentGranted patent = new PatentGranted(publicationId, patentType);
-
+		patent.setSource(getSource());
 		patent.setDateProduced(dateProducedDate);
 		patent.setDatePublished(datePublishedDate);
 
