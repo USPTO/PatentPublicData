@@ -7,11 +7,16 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.time.DateParser;
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.InvalidDataException;
+import gov.uspto.patent.doc.xml.items.DocumentIdNode;
 
 public class DocumentDate {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentDate.class);
+
 	/*
 	 * FastDateFormat is Thread-Safe version of SimpleDateFormat
 	 */
@@ -52,6 +57,12 @@ public class DocumentDate {
 			} catch (ParseException e) {
 				throw new InvalidDataException("Invalid Date: '" + date + "'", e);
 			}
+		} else if (date != null && date.trim().isEmpty()) {
+				try {
+					this.date = DATE_YEAR_FORMAT.parse("0000");
+				} catch (ParseException e) {
+					// empty.
+				}
 		} else {
 			throw new InvalidDataException("Invalid Date: '" + date + "'");
 		}

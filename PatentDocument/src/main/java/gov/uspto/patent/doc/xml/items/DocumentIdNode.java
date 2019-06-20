@@ -73,6 +73,9 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 
 		Node dateN = itemNode.selectSingleNode("date");
 		DocumentDate docDate = null;
+		if (dateN != null && dateN.getText().trim().isEmpty()) {
+			LOGGER.warn("Invalid Date, Empty or Missing : {}", itemNode.asXML());
+		}
 		if (dateN != null) {
 			try {
 				docDate = new DocumentDate(dateN.getText());
