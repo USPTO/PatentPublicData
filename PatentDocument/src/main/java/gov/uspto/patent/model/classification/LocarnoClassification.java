@@ -5,6 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.patent.InvalidDataException;
 
@@ -27,10 +29,17 @@ import gov.uspto.patent.InvalidDataException;
  */
 public class LocarnoClassification extends PatentClassification {
 
+	private static Logger LOGGER = LoggerFactory.getLogger(LocarnoClassification.class);
+
 	private static Pattern PATTERN = Pattern.compile("^([0-9]{2})[-/]?([0-9]{2})$");
 
 	private String mainClass;
 	private String subClass;
+	private boolean parseFailed = false;
+
+	public LocarnoClassification(String originalText, boolean inventiveOrMain) {
+		super(originalText, inventiveOrMain);
+	}
 
 	@Override
 	public ClassificationType getType() {
@@ -55,6 +64,9 @@ public class LocarnoClassification extends PatentClassification {
 
 	@Override
 	public String[] getParts() {
+		if (parseFailed) {
+			return new String[] {};
+		}
 		return new String[] { mainClass, subClass };
 	}
 
@@ -73,22 +85,31 @@ public class LocarnoClassification extends PatentClassification {
 
 	@Override
 	public String getTextNormalized() {
+		if (parseFailed) {
+			return super.getTextOriginal() + "__parseFailed";
+		}
 		StringBuilder sb = new StringBuilder().append(mainClass).append("-").append(subClass);
 		return sb.toString();
 	}
 
 	@Override
-	public void parseText(String text) throws ParseException {
-		super.setTextOriginal(text);
+	public void parseText(final String text) throws ParseException {
 
 		Matcher matcher = PATTERN.matcher(text);
-		if (matcher.matches()) {
+		if (text.length() > 0 && text.length() <= 2) {
+			String mainClass = StringUtils.leftPad(text, 2, "0");
+			setMainClass(mainClass);
+			setSubClass("00");
+		}
+		else if (matcher.matches()) {
 			String mainClass = matcher.group(1);
 			String subClass = matcher.group(2);
 
 			setMainClass(mainClass);
 			setSubClass(subClass);
 		} else {
+			parseFailed = true;
+			LOGGER.debug("LOCARNO parse failed '{}'", text);
 			throw new ParseException("Failed to regex parse Locarno Classification: " + text, 0);
 		}
 	}
@@ -110,7 +131,7 @@ public class LocarnoClassification extends PatentClassification {
 	@Override
 	public boolean validate() throws InvalidDataException {
 		if (StringUtils.isEmpty(mainClass)) {
-			throw new InvalidDataException("Invalid MainClass"); 
+			throw new InvalidDataException("Invalid MainClass");
 		}
 		return true;
 	}

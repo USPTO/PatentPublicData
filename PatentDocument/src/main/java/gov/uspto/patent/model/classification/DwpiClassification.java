@@ -70,6 +70,10 @@ public class DwpiClassification extends PatentClassification {
 	private final static Pattern REGEX_LEN_9 = Pattern.compile("^([A-HJ-NPQS-X])(\\d{2})-([A-Z])(\\d{2})([A-Z])(\\d)$"); // Section, Subsection, Group, Subgroup, division, subdivision.
 	private final static Pattern REGEX_LEN_10 = Pattern.compile("^([A-HJ-NPQS-X])(\\d{2})-([A-Z])(\\d{2})([A-Z])(\\d)([A-Z])$"); // Section, Subsection, Group, Subgroup, division, subdivision, extra letter.
 
+	DwpiClassification(String originalText) {
+		super(originalText, false);
+	}
+
 	@Override
 	public ClassificationType getType() {
 		return ClassificationType.DWPI;
@@ -358,7 +362,6 @@ public class DwpiClassification extends PatentClassification {
 		}
 
 		if (classificationStr.length() >= 1){
-			super.setTextOriginal(classificationStr);
 			setSection(section);
 		    setSubsection(subsection);
 		    setGroup(group);

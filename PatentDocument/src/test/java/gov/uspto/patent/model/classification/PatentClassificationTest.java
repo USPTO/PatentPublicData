@@ -15,7 +15,7 @@ public class PatentClassificationTest {
 
 	@Test
 	public void depth() throws ParseException {
-		CpcClassification cpc = new CpcClassification();
+		CpcClassification cpc = new CpcClassification("D07B22012051", false);
 		cpc.parseText("D07B22012051");
 
 		int depth = cpc.getDepth();
@@ -25,36 +25,18 @@ public class PatentClassificationTest {
 	}
 
 	@Test
-	public void flatten() throws ParseException {
-		UspcClassification uspc = new UspcClassification();
-		uspc.parseText("PLT101");
-
-		UspcClassification uspc2 = new UspcClassification();
-		uspc2.parseText("PLT102");
-
-		uspc.addChild(uspc2);
-
-		Set<PatentClassification> classes = uspc.flatten();
-
-		// System.out.println(classes);
-
-		assertTrue(classes.contains(uspc));
-		assertTrue(classes.contains(uspc2));
-	}
-
-	@Test
 	public void filerByType_ClassificationType() throws ParseException {
 		List<PatentClassification> claz = new ArrayList<PatentClassification>();
 
-		CpcClassification cpcClass = new CpcClassification();
+		CpcClassification cpcClass = new CpcClassification("D21", false);
 		cpcClass.parseText("D21");
 		claz.add(cpcClass);
 
-		IpcClassification ipcClass = new IpcClassification();
+		IpcClassification ipcClass = new IpcClassification("D22", false);
 		ipcClass.parseText("D22");
 		claz.add(ipcClass);
 
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification("PLT101", false);
 		uspc.parseText("PLT101");
 		claz.add(uspc);
 
@@ -75,15 +57,15 @@ public class PatentClassificationTest {
 	public void filerByType_Class() throws ParseException {
 		List<PatentClassification> claz = new ArrayList<PatentClassification>();
 
-		CpcClassification cpcClass = new CpcClassification();
+		CpcClassification cpcClass = new CpcClassification("D21", false);
 		cpcClass.parseText("D21");
 		claz.add(cpcClass);
 
-		IpcClassification ipcClass = new IpcClassification();
+		IpcClassification ipcClass = new IpcClassification("D22", false);
 		ipcClass.parseText("D22");
 		claz.add(ipcClass);
 
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification("PLT101", false);
 		uspc.parseText("PLT101");
 		claz.add(uspc);
 
@@ -104,19 +86,19 @@ public class PatentClassificationTest {
 	public void groupByType() throws ParseException {
 		List<PatentClassification> claz = new ArrayList<PatentClassification>();
 
-		CpcClassification cpcClass = new CpcClassification();
+		CpcClassification cpcClass = new CpcClassification("D23", false);
 		cpcClass.parseText("D23");
 		claz.add(cpcClass);
 		
-		CpcClassification cpcClass2 = new CpcClassification();
+		CpcClassification cpcClass2 = new CpcClassification("D21", false);
 		cpcClass2.parseText("D21");
 		claz.add(cpcClass2);
 
-		IpcClassification ipcClass = new IpcClassification();
+		IpcClassification ipcClass = new IpcClassification("D22", false);
 		ipcClass.parseText("D22");
 		claz.add(ipcClass);
 
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification("PLT101", false);
 		uspc.parseText("PLT101");
 		claz.add(uspc);
 

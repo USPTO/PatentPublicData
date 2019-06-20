@@ -2,17 +2,16 @@ package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.patent.InvalidDataException;
 
@@ -42,6 +41,8 @@ import gov.uspto.patent.InvalidDataException;
  */
 public class IpcClassification extends PatentClassification {
 
+	private static Logger LOGGER = LoggerFactory.getLogger(IpcClassification.class);
+	
 	private final static Pattern REGEX_OLD = Pattern
 			.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
 
@@ -54,6 +55,15 @@ public class IpcClassification extends PatentClassification {
 	private String subClass;
 	private String mainGroup;
 	private String subGroup;
+	private boolean parseFailed;
+
+	public IpcClassification(String originalText, boolean mainOrInventive) {
+		super(originalText, mainOrInventive);
+	}
+
+	public boolean isParseFailed() {
+		return parseFailed;
+	}
 
 	@Override
 	public ClassificationType getType() {
@@ -102,11 +112,18 @@ public class IpcClassification extends PatentClassification {
 
 	@Override
 	public String[] getParts() {
+		if (parseFailed) {
+			return new String[] {};
+		}
 		return new String[] { section, mainClass, subClass, mainGroup, subGroup };
 	}
 
 	@Override
 	public String getTextNormalized() {
+		if (parseFailed) {
+			return super.getTextOriginal() + "__parseFailed";
+		}
+
 		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
 
 		if (subClass != null) {
@@ -125,7 +142,6 @@ public class IpcClassification extends PatentClassification {
 	}
 
 	public String standardize() {
-
 		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
 
 		if (subClass != null) {
@@ -173,7 +189,7 @@ public class IpcClassification extends PatentClassification {
 
 	@Override
 	public boolean isContained(PatentClassification check) {
-		if (check == null) {
+		if (parseFailed || check == null) {
 			return false;
 		}
 		if (getClass() != check.getClass()) {
@@ -237,7 +253,6 @@ public class IpcClassification extends PatentClassification {
 	 */
 	@Override
 	public void parseText(final String classificationStr) throws ParseException {
-		super.setTextOriginal(classificationStr);
 
 		Matcher matcher = REGEX_OLD.matcher(classificationStr);
 		if (matcher.matches()) {
@@ -295,14 +310,19 @@ public class IpcClassification extends PatentClassification {
 				return;
 			}
 		} else {
+			parseFailed = true;
+			LOGGER.debug("IPC parse failed '{}'", classificationStr);
 			throw new ParseException("Failed to regex parse IPC Classification: " + classificationStr, 0);
 		}
 	}
 
 	@Override
 	public boolean validate() throws InvalidDataException {
+		if (parseFailed) {
+			return false;
+		}
 		if (StringUtils.isEmpty(mainClass)) {
-			throw new InvalidDataException("Invalid MainClass"); 
+			throw new InvalidDataException("Invalid MainClass");
 		}
 		return true;
 	}
@@ -310,7 +330,7 @@ public class IpcClassification extends PatentClassification {
 	@Override
 	public String toString() {
 		return "IpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", inventive=" + super.isInventive()
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", inventive=" + super.isMainOrInventive()
 				+ ", getTextNormalized()=" + getTextNormalized() + ", standardize()=" + standardize()
 				+ ", getTextOriginal()=" + getTextOriginal() + ", toText()=" + toText() + "]";
 	}
@@ -326,7 +346,7 @@ public class IpcClassification extends PatentClassification {
 			Collection<T> classes) {
 
 		return classes.stream().filter(IpcClassification.class::isInstance).map(IpcClassification.class::cast)
-				.collect(Collectors.groupingBy(s -> (s.isInventive() ? "inventive" : "additional"), TreeMap::new,
+				.collect(Collectors.groupingBy(s -> (s.isMainOrInventive() ? "inventive" : "additional"), TreeMap::new,
 						Collectors.toList()));
 	}
 

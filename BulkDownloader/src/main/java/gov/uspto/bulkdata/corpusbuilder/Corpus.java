@@ -306,14 +306,14 @@ public class Corpus {
 		List<PatentClassification> wantedClasses = new ArrayList<PatentClassification>();
 		List<String> cpcs = Splitter.on(',').omitEmptyStrings().trimResults().splitToList(cpc);
 		for (String cpcStr : cpcs) {
-			CpcClassification cpcClass = new CpcClassification();
+			CpcClassification cpcClass = new CpcClassification(cpcStr, false);
 			cpcClass.parseText(cpcStr);
 			wantedClasses.add(cpcClass);
 		}
 
 		List<String> uspcs = Splitter.on(',').omitEmptyStrings().trimResults().splitToList(uspc);
 		for (String uspcStr : uspcs) {
-			UspcClassification usClass = new UspcClassification();
+			UspcClassification usClass = new UspcClassification(uspcStr, false);
 			usClass.parseText(uspcStr);
 			wantedClasses.add(usClass);
 		}

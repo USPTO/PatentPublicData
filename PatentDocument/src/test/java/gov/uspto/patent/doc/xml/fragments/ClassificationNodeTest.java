@@ -202,22 +202,22 @@ public class ClassificationNodeTest {
 		//cpcClazs.forEach(System.out::println);
 		
 		assertEquals("A01B 71/08", cpc1.getTextNormalized());
-		assertFalse(cpc1.isMainClassification());
+		assertFalse(cpc1.isMainOrInventive());
 
 		assertEquals("A01F 12/222", cpc2.getTextNormalized());
-		assertTrue(cpc2.isMainClassification());
+		assertTrue(cpc2.isMainOrInventive());
 
 		assertEquals("A01F 12/444", cpc3.getTextNormalized());
-		assertTrue(cpc3.isMainClassification());
+		assertTrue(cpc3.isMainOrInventive());
 
 		assertEquals("B07B 1/12", cpc4.getTextNormalized());
-		assertFalse(cpc4.isMainClassification());
+		assertFalse(cpc4.isMainOrInventive());
 
 		assertEquals("B07B 1/526", cpc5.getTextNormalized());
-		assertFalse(cpc5.isMainClassification());
+		assertFalse(cpc5.isMainOrInventive());
 
 		assertEquals("B08B 1/008", cpc6.getTextNormalized());
-		assertFalse(cpc6.isMainClassification());
+		assertFalse(cpc6.isMainOrInventive());
 	}
 
 	@Test

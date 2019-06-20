@@ -35,52 +35,32 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 
         List<Node> uspc = document.selectNodes(USPC_PATH);
         for (Node usclass : uspc) {
-            UspcClassification classification = (UspcClassification) new ClassificationNationalNode(usclass).read();
-            if (classification != null) {
-                classifications.add(classification);
-            }
+        	classifications.addAll(new ClassificationNationalNode(usclass).read());
         }
 
         List<Node> cpc = document.selectNodes(CPC_PATH + "/main-cpc/classification-cpc");
         for (Node cpclass : cpc) {
-            CpcClassification classification = (CpcClassification) new ClassificationCpcNode(cpclass).read();
-            if (classification != null) {
-                classification.setIsMainClassification(true);
-                classifications.add(classification);
-            }
+        	classifications.addAll(new ClassificationCpcNode(cpclass, true).read());
         }
 
         List<Node> cpc2 = document.selectNodes(CPC_PATH + "/further-cpc/classification-cpc");
         for (Node cpclass : cpc2) {
-            CpcClassification classification = (CpcClassification) new ClassificationCpcNode(cpclass).read();
-            if (classification != null) {
-                classification.setIsMainClassification(false);
-                classifications.add(classification);
-            }
+        	classifications.addAll(new ClassificationCpcNode(cpclass, false).read());
         }
 
         List<Node> ipc = document.selectNodes(IPC_PATH);
         for (Node ipclass : ipc) {
-            IpcClassification classification = (IpcClassification) new ClassificationIPCNode(ipclass).read();
-            if (classification != null) {
-                classifications.add(classification);
-            }
+        	classifications.addAll(new ClassificationIPCNode(ipclass).read());
         }
 
         List<Node> ipc2 = document.selectNodes(IPC_PATH2);
         for (Node ipclass : ipc2) {
-            IpcClassification classification = (IpcClassification) new ClassificationIPCNode(ipclass).read();
-            if (classification != null) {
-                classifications.add(classification);
-            }
+        	classifications.addAll(new ClassificationIPCNode(ipclass).read());
         }
 
         List<Node> locarnos = document.selectNodes(LOCARNO_PATH);
         for (Node locarnoClass : locarnos) {
-            LocarnoClassification classification = (LocarnoClassification) new ClassificationLocarnoNode(locarnoClass).read();
-            if (classification != null) {
-                classifications.add(classification);
-            }
+        	classifications.addAll(new ClassificationLocarnoNode(locarnoClass).read());
         }
 
         return classifications;

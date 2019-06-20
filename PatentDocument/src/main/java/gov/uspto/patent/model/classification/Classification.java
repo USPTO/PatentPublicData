@@ -21,12 +21,6 @@ public interface Classification extends Comparable<Classification> {
 	 */
 	public void parseText(final String text) throws ParseException;
 
-	/**
-	 * Original Text
-	 * 
-	 * @param originalText
-	 */
-	public void setTextOriginal(final String originalText);
 
 	public String getTextOriginal();
 

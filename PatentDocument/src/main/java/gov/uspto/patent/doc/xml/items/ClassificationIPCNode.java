@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.xml.items;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Node;
@@ -11,7 +13,7 @@ import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 
-public class ClassificationIPCNode extends ItemReader<PatentClassification> {
+public class ClassificationIPCNode extends ItemReader<List<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationIPCNode.class);
 
 	public ClassificationIPCNode(Node itemNode) {
@@ -19,13 +21,13 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 	}
 
 	@Override
-	public PatentClassification read() {
+	public List<PatentClassification> read() {
 		if ("classification-ipcr".equals(itemNode.getName())) {
 			return readSectionedFormat();
 		} else if ("classification-ipc".equals(itemNode.getName())) {
 			return readFlatFormat();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -55,7 +57,9 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 	 * 
 	 * @return PatentClassification
 	 */
-	public PatentClassification readSectionedFormat() {
+	public List<PatentClassification> readSectionedFormat() {
+		List<PatentClassification> ipcClasses = new ArrayList<PatentClassification>();
+
 		String section = itemNode.selectSingleNode("section").getText();
 		String mainClass = itemNode.selectSingleNode("class").getText();
 		String subclass = itemNode.selectSingleNode("subclass").getText();
@@ -64,22 +68,22 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 		// classification-value: I = inventive, A = additional
 		String type = itemNode.selectSingleNode("classification-value").getText();
 
-		IpcClassification ipcClass = new IpcClassification();
+		boolean inventive = false;
+		if ("I".equals(type)) {
+			inventive = true;
+		}
+
+		IpcClassification ipcClass = new IpcClassification("", inventive);
 		ipcClass.setSection(section);
 		ipcClass.setMainClass(mainClass);
 		ipcClass.setSubClass(subclass);
 		ipcClass.setMainGroup(mainGroup);
 		ipcClass.setSubGroup(subgroup);
 
-		if ("I".equals(type)) {
-			ipcClass.setInventive(true);
-		} else {
-			ipcClass.setInventive(false);
-		}
-
 		LOGGER.trace("{}", ipcClass);
 
-		return ipcClass;
+		ipcClasses.add(ipcClass);
+		return ipcClasses;
 	}
 
 	/**
@@ -97,39 +101,40 @@ public class ClassificationIPCNode extends ItemReader<PatentClassification> {
 	 * 
 	 * @return PatentClassification
 	 */
-	public PatentClassification readFlatFormat() {
+	public List<PatentClassification> readFlatFormat() {
+		List<PatentClassification> ipcClasses = new ArrayList<PatentClassification>();
+
 		Node mainClass = itemNode.selectSingleNode("main-classification");
 		if (mainClass == null) {
-			return null;
+			return ipcClasses;
 		}
 
 		String mainClassTxt = mainClass.getText();
 		if ("None".equalsIgnoreCase(mainClassTxt)) {
 			LOGGER.trace("Invalid IPC classification 'main-classification': 'None'");
-			return null;
+			return ipcClasses;
 		}
 
-		IpcClassification classification;
+		IpcClassification classification = new IpcClassification(mainClass.getText(), true);
 		try {
-			classification = new IpcClassification();
-			classification.parseText(mainClass.getText());
-			classification.setIsMainClassification(true);
+			classification.parseText(mainClass.getText());	
 		} catch (ParseException e1) {
 			LOGGER.warn("Failed to parse IPC classification 'main-classification': {}", mainClass.asXML());
-			return null;
+			return ipcClasses;
 		}
+		ipcClasses.add(classification);
 
 		List<Node> furtherClasses = itemNode.selectNodes("further-classification");
 		for (Node subclass : furtherClasses) {
+			IpcClassification ipcClass = new IpcClassification(subclass.getText(), false);
 			try {
-				IpcClassification ipcClass = new IpcClassification();
 				ipcClass.parseText(subclass.getText());
-				classification.addChild(ipcClass);
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to parse IPC classification 'further-classification': {}", subclass.asXML());
 			}
+			ipcClasses.add(ipcClass);
 		}
 
-		return classification;
+		return ipcClasses;
 	}
 }

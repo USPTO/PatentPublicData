@@ -25,13 +25,12 @@ public abstract class PatentClassification implements Classification {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(PatentClassification.class);
 
-	private String originalText;
-	private Set<PatentClassification> children = new TreeSet<PatentClassification>();
-	private boolean inventive = false; // the main or inventive classification
+	private final String originalText;
+	private final boolean mainOrInventive;
 
-	@Override
-	public void setTextOriginal(String originalText) {
+	PatentClassification(String originalText, boolean mainOrInventive){
 		this.originalText = originalText;
+		this.mainOrInventive = mainOrInventive;
 	}
 
 	@Override
@@ -39,51 +38,8 @@ public abstract class PatentClassification implements Classification {
 		return originalText;
 	}
 
-	public void setInventive(boolean bool) {
-		this.inventive = bool;
-	}
-	
-	public boolean isInventive() {
-		return this.inventive;
-	}
-
-	public void setIsMainClassification(boolean bool) {
-		this.inventive = bool;
-	}
-
-	public boolean isMainClassification() {
-		return this.inventive;
-	}
-
-	public Set<PatentClassification> getChildren() {
-		return children;
-	}
-
-	public void setChildren(Set<PatentClassification> children) {
-		this.children = children;
-	}
-
-	public void addChild(PatentClassification classification) {
-		if (classification != null) {
-			children.add(classification);
-		}
-	}
-
-	public void addChildren(List<PatentClassification> childClassifications) {
-		children.addAll(childClassifications);
-	}
-
-	public boolean hasChildWithCode(String symbol) {
-		return getChildBySymbol(symbol) != null;
-	}
-
-	public PatentClassification getChildBySymbol(String code) {
-		for (PatentClassification classChild : this.children) {
-			if (classChild.getTextOriginal().equals(code)) {
-				return classChild;
-			}
-		}
-		return null;
+	public boolean isMainOrInventive() {
+		return this.mainOrInventive;
 	}
 
 	/**
@@ -94,16 +50,6 @@ public abstract class PatentClassification implements Classification {
 		String[] parts = getParts();
 		List<String> partList = Arrays.asList(parts);
 		return (int) partList.stream().filter(p -> Objects.nonNull(p)).count();
-	}
-
-	/**
-	 * Returns this classification and all it's children as a single collection.
-	 */
-	public SortedSet<PatentClassification> flatten() {
-		SortedSet<PatentClassification> flat = this.children.stream().map(x -> x.flatten()).flatMap(x -> x.stream())
-				.collect(Collectors.toCollection(TreeSet::new));
-		flat.add(this);
-		return flat;
 	}
 
 	/**

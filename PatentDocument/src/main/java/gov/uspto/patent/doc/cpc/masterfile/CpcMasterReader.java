@@ -107,23 +107,14 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
 		List<CpcClassification> cpcClasses = new ArrayList<CpcClassification>();
 		Node mainN = node.selectSingleNode("pat:MainCPC");
 
-		CpcClassification mainCpc = readClass(mainN);
-
-		if (mainCpc == null) {
-			// LOGGER.error("Failed to read 'pat:MainCPC': {}", node.asXML());
-			return cpcClasses;
-		}
-
-		mainCpc.setIsMainClassification(true);
-		cpcClasses.add(mainCpc);
+		CpcClassification mainCpc = readClass(mainN, true);
+		cpcClasses.add(mainCpc);	
 
 		@SuppressWarnings("unchecked")
 		List<Node> furtherCpcN = node.selectNodes("pat:FurtherCPC");
 		for (Node futherN : furtherCpcN) {
-			CpcClassification cpcClass = readClass(futherN);
+			CpcClassification cpcClass = readClass(futherN, false);
 			if (cpcClass != null) {
-				cpcClass.setIsMainClassification(false);
-				mainCpc.addChild(cpcClass);
 				cpcClasses.add(cpcClass);
 				LOGGER.debug("FURTHER CPC: {}", cpcClass.toText());
 			}
@@ -132,7 +123,7 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
 		return cpcClasses;
 	}
 
-	private CpcClassification readClass(Node node) {
+	private CpcClassification readClass(Node node, boolean isInventive) {
 		Node classN = node.selectSingleNode("pat:CPCClassification");
 		if (classN == null) {
 			return null;
@@ -145,7 +136,7 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
 		Node cpcMainGroupN = classN.selectSingleNode("pat:MainGroup");
 		Node cpcSubGroupN = classN.selectSingleNode("pat:Subgroup");
 
-		CpcClassification cpcClass = new CpcClassification();
+		CpcClassification cpcClass = new CpcClassification("", isInventive);
 		cpcClass.setSection(cpcSectionN.getText());
 		cpcClass.setMainClass(cpcClassN.getText());
 		cpcClass.setSubClass(cpcSubClassN.getText());

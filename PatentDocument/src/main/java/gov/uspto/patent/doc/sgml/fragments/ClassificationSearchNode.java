@@ -43,30 +43,29 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 		Set<PatentClassification> classifications = new HashSet<PatentClassification>();
 
 		// IPC classification.
-		@SuppressWarnings("unchecked")
 		Node ipcN = parentPath.selectSingleNode("B581/PDAT");
 		if (ipcN != null) {
+			IpcClassification ipc = new IpcClassification(ipcN.getText(), false);
 			try {
-				IpcClassification ipc = new IpcClassification();
 				ipc.parseText(ipcN.getText());
-				classifications.add(ipc);
 			} catch (ParseException e) {
 				LOGGER.debug("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(),
 						ipcN.asXML());
 			}
+			classifications.add(ipc);
 		}
 
 		// USPC classification.
 		@SuppressWarnings("unchecked")
 		Node uspcN = parentPath.selectSingleNode("B582/PDAT");
 		if (uspcN != null) {
+			UspcClassification uspc = new UspcClassification(uspcN.getText(), false);
 			try {
-				UspcClassification uspc = new UspcClassification();
 				uspc.parseText(uspcN.getText());
-				classifications.add(uspc);
 			} catch (ParseException e) {
 				LOGGER.debug("Failed to Parse USPC Classification: '{}' from : {}", uspcN.getText(), uspcN.asXML());
 			}
+			classifications.add(uspc);
 		}
 
 		return classifications;

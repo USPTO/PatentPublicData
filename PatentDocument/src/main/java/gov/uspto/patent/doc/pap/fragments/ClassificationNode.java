@@ -44,11 +44,9 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 				String mainClass = uspcPrimaryClassN.getText().trim();
 				String subClass = uspcPrimarySubClassN.getText().trim();
 
-				UspcClassification uspc = new UspcClassification();
-				uspc.setTextOriginal(mainClass + subClass);
+				UspcClassification uspc = new UspcClassification("", true);
 				uspc.setMainClass(mainClass);
 				uspc.setSubClass(subClass);
-				uspc.setIsMainClassification(true);
 				classifications.add(uspc);
 			}
 
@@ -63,8 +61,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 					String mainClass = uspcPrimaryClassN.getText().trim();
 					String subClass = subClassN.getText().trim();
 					
-					UspcClassification uspc = new UspcClassification();
-					uspc.setTextOriginal(mainClass + subClass);
+					UspcClassification uspc = new UspcClassification("", false);
 					uspc.setMainClass(mainClass);
 					uspc.setSubClass(subClass);
 					classifications.add(uspc);
@@ -79,27 +76,26 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 			Node ipcPrimaryClassN = ipcN.selectSingleNode("classification-ipc-primary/ipc");
 			if (ipcPrimaryClassN != null){
 				String ipcPrimaryClassStr = ipcPrimaryClassN != null ? ipcPrimaryClassN.getText().trim() : null;
+				IpcClassification ipcPrimaryClass = new IpcClassification(ipcPrimaryClassStr, true);
 				try {
-					IpcClassification ipcPrimaryClass = new IpcClassification();
 					ipcPrimaryClass.parseText(ipcPrimaryClassStr);
-					ipcPrimaryClass.setIsMainClassification(true);
-					classifications.add(ipcPrimaryClass);
 				} catch (ParseException e) {
 					LOGGER.error("Invalid classification-ipc-primary", ipcPrimaryClassN.asXML(), e);
 				}
+				classifications.add(ipcPrimaryClass);
 			}
 
 			@SuppressWarnings("unchecked")
 			List<Node> ipcSecondaries = ipcN.selectNodes("classification-ipc-secondary/ipc");
 			for(Node ipcSecoundary: ipcSecondaries){
 				String ipcSecondaryClassStr = ipcSecoundary != null ? ipcSecoundary.getText().trim() : null;
+				IpcClassification ipcSecondaryClass = new IpcClassification(ipcSecondaryClassStr, true);
 				try {
-					IpcClassification ipcSecondaryClass = new IpcClassification();
 					ipcSecondaryClass.parseText(ipcSecondaryClassStr);
-					classifications.add(ipcSecondaryClass);
 				} catch (ParseException e) {
 					LOGGER.error("Invalid classification-ipc-secondary", ipcSecoundary.asXML(), e);
 				}
+				classifications.add(ipcSecondaryClass);
 			}
 
 			// ipcN.selectSingleNode("classification-ipc-edition");

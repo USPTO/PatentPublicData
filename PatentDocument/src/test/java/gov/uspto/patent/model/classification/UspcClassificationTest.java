@@ -38,7 +38,7 @@ public class UspcClassificationTest {
 
 	public void parseCheck(Map<String, String> checkMap) throws ParseException {
 		for (Entry<String, String> check : checkMap.entrySet()) {
-			UspcClassification uspc = new UspcClassification();
+			UspcClassification uspc = new UspcClassification(check.getKey(), false);
 			uspc.parseText(check.getKey());
 			assertEquals(check.getValue(), uspc.getTextNormalized());
 		}
@@ -46,7 +46,7 @@ public class UspcClassificationTest {
 
 	@Test(expected = ParseException.class)
 	public void failBlank() throws ParseException {
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification("", false);
 		uspc.parseText("");
 	}
 	
@@ -108,7 +108,7 @@ public class UspcClassificationTest {
 	@Test
 	public void DIGSubClass() throws ParseException {
 		// DIG Subclasses
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification(" 29/DIG 42", false);
 		uspc.parseText(" 29/DIG 42");
 		assertEquals("29/DIG 42", uspc.getTextNormalized());
 	}
@@ -124,25 +124,25 @@ public class UspcClassificationTest {
 
 	//@Test(expected = ParseException.class)
 	public void failLongRange() throws ParseException {
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification("2989003-890054", false);
 		uspc.parseText("2989003-890054"); // range too long
 		System.out.println(uspc.getTextNormalized());
 	}
 	
 	@Test
 	public void depth() throws ParseException {
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification(" 29/DIG 42", false);
 		uspc.parseText(" 29/DIG 42");
 		assertEquals(2, uspc.getDepth());
 		
-		UspcClassification uspc2 = new UspcClassification();
+		UspcClassification uspc2 = new UspcClassification("29/34R", false);
 		uspc2.parseText("29/34R");
 		assertEquals(2, uspc2.getDepth());
 	}
 
 	@Test
 	public void facets() throws ParseException {
-		UspcClassification uspc = new UspcClassification();
+		UspcClassification uspc = new UspcClassification("PLT2631", false);
 		uspc.parseText("PLT2631");
 		String[] facets = uspc.toFacet();
 		assertEquals("0/PLT", facets[0]);

@@ -13,7 +13,7 @@ public class ClassificationTokenizerTest {
 
 	@Test
 	public void partsToFacets() throws ParseException {
-		CpcClassification cpc = new CpcClassification();
+		CpcClassification cpc = new CpcClassification("D07B2201/2051", true);
 		cpc.parseText("D07B2201/2051");
 
 		String[] actual = ClassificationTokenizer.partsToFacet(cpc.getParts());
@@ -28,7 +28,7 @@ public class ClassificationTokenizerTest {
 
 	@Test
 	public void fromFacets() throws ParseException {
-		CpcClassification cpc = new CpcClassification();
+		CpcClassification cpc = new CpcClassification("D07B2201/2051", true);
 		cpc.parseText("D07B2201/2051");
 
 		String[] actual = ClassificationTokenizer.partsToFacet(cpc.getParts());
@@ -59,7 +59,7 @@ public class ClassificationTokenizerTest {
 
 	@Test
 	public void partsToTree() throws ParseException {
-		CpcClassification cpc = new CpcClassification();
+		CpcClassification cpc = new CpcClassification("D07B2201/2051", false);
 		cpc.parseText("D07B2201/2051");
 
 		String[] actual = ClassificationTokenizer.partsToTree(cpc.getParts());

@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.patent.InvalidDataException;
 
@@ -82,6 +84,8 @@ import gov.uspto.patent.InvalidDataException;
  */
 public class CpcClassification extends PatentClassification {
 
+	private static Logger LOGGER = LoggerFactory.getLogger(CpcClassification.class);
+	
 	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})(-\\d+)?$");
 
 	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])(\\d\\d)$");
@@ -94,8 +98,15 @@ public class CpcClassification extends PatentClassification {
 	private String mainGroup;
 	private String subGroup;
 	private boolean hasSubGroupRange = false;
-	private boolean isMainClassification = false;
-	private boolean inventive = false;
+	private boolean parseFailed = false;
+
+	public CpcClassification(String originalText, boolean mainOrInventive) {
+		super(originalText, mainOrInventive);
+	}
+
+	public boolean isParseFailed() {
+		return parseFailed;
+	}
 
 	@Override
 	public ClassificationType getType() {
@@ -142,16 +153,11 @@ public class CpcClassification extends PatentClassification {
 		this.subGroup = subGroup;
 	}
 
-	public void setInventive(boolean bool) {
-		this.inventive = bool;
-	}
-
-	public boolean isInventive() {
-		return inventive;
-	}
-
 	@Override
 	public String[] getParts() {
+		if (parseFailed) {
+			return new String[] {};
+		}
 		return new String[] { section, mainClass, subClass, mainGroup, subGroup };
 	}
 
@@ -163,6 +169,10 @@ public class CpcClassification extends PatentClassification {
 	 */
 	@Override
 	public String getTextNormalized() {
+		if (parseFailed) {
+			return super.getTextOriginal() + "__parseFailed";
+		}
+
 		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
 
 		if (subClass != null) {
@@ -187,7 +197,6 @@ public class CpcClassification extends PatentClassification {
 	 * 
 	 */
 	public String standardize() {
-
 		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
 
 		if (subClass != null) {
@@ -235,7 +244,7 @@ public class CpcClassification extends PatentClassification {
 
 	@Override
 	public boolean isContained(PatentClassification check) {
-		if (check == null || !(check instanceof CpcClassification)) {
+		if (parseFailed || check == null || !(check instanceof CpcClassification)) {
 			return false;
 		}
 		CpcClassification cpc = (CpcClassification) check;
@@ -304,8 +313,6 @@ public class CpcClassification extends PatentClassification {
 	@Override
 	public void parseText(final String classificationStr) throws ParseException {
 
-		super.setTextOriginal(classificationStr);
-
 		Matcher matcher = REGEX.matcher(classificationStr);
 		if (matcher.matches()) {
 			String section = matcher.group(1);
@@ -345,14 +352,19 @@ public class CpcClassification extends PatentClassification {
 				setSubClass(subClass);
 			}
 		} else {
-			throw new ParseException("Failed to regex parse USPC Classification: " + classificationStr, 0);
+			parseFailed = true;
+			LOGGER.debug("CPC parse failed '{}'", classificationStr);
+			throw new ParseException("Failed to regex parse CPC Classification: " + classificationStr, 0);
 		}
 	}
 
 	@Override
 	public boolean validate() throws InvalidDataException {
+		if (parseFailed) {
+			return false;
+		}
 		if (StringUtils.isEmpty(mainClass)) {
-			throw new InvalidDataException("Invalid SubSection"); 
+			throw new InvalidDataException("Invalid SubSection");
 		}
 		return true;
 	}
@@ -360,8 +372,7 @@ public class CpcClassification extends PatentClassification {
 	@Override
 	public String toString() {
 		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", isMainClassification="
-				+ isMainClassification + ", inventive=" + inventive + ", getTextNormalized()=" + getTextNormalized()
+				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", getTextNormalized()=" + getTextNormalized()
 				+ ", standardize()=" + standardize() + ", getTextOriginal()=" + getTextOriginal() + ", toText()="
 				+ toText() + "]";
 	}
@@ -377,7 +388,7 @@ public class CpcClassification extends PatentClassification {
 			Collection<T> classes) {
 
 		return classes.stream().filter(CpcClassification.class::isInstance).map(CpcClassification.class::cast)
-				.collect(Collectors.groupingBy(s -> (s.isInventive() ? "inventive" : "additional"), TreeMap::new,
+				.collect(Collectors.groupingBy(s -> (s.isMainOrInventive() ? "inventive" : "additional"), TreeMap::new,
 						Collectors.toList()));
 	}
 

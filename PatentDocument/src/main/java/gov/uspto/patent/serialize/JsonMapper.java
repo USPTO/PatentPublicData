@@ -247,23 +247,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         JsonArrayBuilder ipcAr = Json.createArrayBuilder();
         for (IpcClassification claz : ipcClasses) {
             JsonObjectBuilder ipcObj = Json.createObjectBuilder();
-            ipcObj.add("type", claz.isInventive() ? "inventive" : "additional");
+            ipcObj.add("type", claz.isMainOrInventive() ? "inventive" : "additional");
             ipcObj.add("raw", claz.toText());
             ipcObj.add("normalized", claz.getTextNormalized());
             ipcObj.add("facets", toJsonArray(claz.toFacet()));
             ipcAr.add(ipcObj.build());
-
-            if (!claz.getChildren().isEmpty()) {
-	            JsonObjectBuilder ipcObj2 = Json.createObjectBuilder();
-	            for (PatentClassification furtherClassification : claz.getChildren()) {
-	                IpcClassification furtherIpc = (IpcClassification) furtherClassification;
-	                ipcObj2.add("type", claz.isInventive() ? "inventive" : "additional");
-	                ipcObj2.add("raw", furtherIpc.toText());
-	                ipcObj2.add("normalized", furtherIpc.getTextNormalized());
-	                ipcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
-	            }
-	            ipcAr.add(ipcObj2.build());
-            }
         }
         builder.add("ipc", ipcAr.build());
 
@@ -273,23 +261,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         for (UspcClassification claz : uspcClasses) {
             JsonObjectBuilder uspcObj = Json.createObjectBuilder();
             // note for type: inventive doesn't really fit USPTO's USPC.
-            uspcObj.add("type", claz.isMainClassification() ? "main" : "additional");
+            uspcObj.add("type", claz.isMainOrInventive() ? "main" : "additional");
             uspcObj.add("raw", claz.toText());
             uspcObj.add("normalized", claz.getTextNormalized());
             uspcObj.add("facets", toJsonArray(claz.toFacet()));
             uspcAr.add(uspcObj.build());
-
-            if (!claz.getChildren().isEmpty()) {
-	            JsonObjectBuilder uspcObj2 = Json.createObjectBuilder();
-	            for (PatentClassification furtherClassification : claz.getChildren()) {
-	                UspcClassification furtherIpc = (UspcClassification) furtherClassification;
-	                uspcObj.add("type", claz.isMainClassification() ? "main" : "additional");
-	                uspcObj2.add("raw", furtherIpc.toText());
-	                uspcObj2.add("normalized", furtherIpc.getTextNormalized());
-	                uspcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
-	            }
-	            uspcAr.add(uspcObj2.build());
-            }
         }
         builder.add("uspc", uspcAr.build());
 
@@ -298,23 +274,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         JsonArrayBuilder cpcAr = Json.createArrayBuilder();
         for (CpcClassification claz : cpcClasses) {
             JsonObjectBuilder cpcObj = Json.createObjectBuilder();
-            cpcObj.add("type", claz.isInventive() ? "inventive" : "additional");
+            cpcObj.add("type", claz.isMainOrInventive() ? "inventive" : "additional");
             cpcObj.add("raw", claz.toText());
             cpcObj.add("normalized", claz.getTextNormalized());
             cpcObj.add("facets", toJsonArray(claz.toFacet()));
             cpcAr.add(cpcObj.build());
-
-            if (!claz.getChildren().isEmpty()) {
-	            JsonObjectBuilder cpcObj2 = Json.createObjectBuilder();
-	            for (PatentClassification furtherClassification : claz.getChildren()) {
-	                CpcClassification furtherIpc = (CpcClassification) furtherClassification;
-	                cpcObj2.add("type", furtherIpc.isInventive() ? "inventive" : "additional");
-	                cpcObj2.add("raw", furtherIpc.toText());
-	                cpcObj2.add("normalized", furtherIpc.getTextNormalized());
-	                cpcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
-	            }
-	            cpcAr.add(cpcObj2.build());
-            }
         }
         builder.add("cpc", cpcAr.build());
 

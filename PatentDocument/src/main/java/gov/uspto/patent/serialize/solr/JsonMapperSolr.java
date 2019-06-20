@@ -93,6 +93,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		json.addStringField("id_variation", getDocIdTokens(patent.getDocumentId()));
 
 		json.addStringField("corpus", patent.getPatentCorpus().toString());
+		json.addStringField("source", patent.getSource());
 
 		json.addStringField("type", patent.getPatentType().toString());
 
@@ -144,7 +145,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		List<String> examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).distinct()
 				.collect(Collectors.toList());
 		json.addNumberField("art_unit",
-				examiner_dep != null && examiner_dep.size() > 0 ? Integer.parseInt(examiner_dep.get(0)) : -1);
+				examiner_dep != null && !examiner_dep.isEmpty() && !examiner_dep.get(0).isEmpty() ? Integer.parseInt(examiner_dep.get(0)) : -1);
 
 		/*
 		 * Citations
@@ -192,27 +193,27 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		 * Classifications
 		 */
 		List<String> uspcMain = getClassifications(patent.getClassification(), UspcClassification.class,
-				cl -> cl.isInventive());
+				cl -> cl.isMainOrInventive());
 		json.addStringField("uspc_main", uspcMain);
 
 		List<String> uspcFurther = getClassifications(patent.getClassification(), UspcClassification.class,
-				cl -> !cl.isInventive());
+				cl -> !cl.isMainOrInventive());
 		json.addStringField("uspc_further", uspcFurther);
 
 		List<String> cpcInventive = getClassifications(patent.getClassification(), CpcClassification.class,
-				cl -> cl.isInventive());
+				cl -> cl.isMainOrInventive());
 		json.addStringField("cpc_inventive", cpcInventive);
 
 		List<String> cpcAdditional = getClassifications(patent.getClassification(), CpcClassification.class,
-				cl -> !cl.isInventive());
+				cl -> !cl.isMainOrInventive());
 		json.addStringField("cpc_additional", cpcAdditional);
 
 		List<String> ipcInventive = getClassifications(patent.getClassification(), IpcClassification.class,
-				cl -> cl.isInventive());
+				cl -> cl.isMainOrInventive());
 		json.addStringField("ipc_inventive", ipcInventive);
 
 		List<String> ipcAdditional = getClassifications(patent.getClassification(), IpcClassification.class,
-				cl -> !cl.isInventive());
+				cl -> !cl.isMainOrInventive());
 		json.addStringField("ipc_additional", ipcAdditional);
 
 		Set<String> locarno = getClassifications(patent.getClassification(), LocarnoClassification.class);

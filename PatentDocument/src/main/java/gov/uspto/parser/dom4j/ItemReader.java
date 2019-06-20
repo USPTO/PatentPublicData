@@ -39,7 +39,7 @@ public abstract class ItemReader<T> implements Reader<T> {
 
 		// Avoid NPE by creating empty node.
 		if (this.itemNode == null) {
-			LOGGER.warn("Could Not Find XML Fragment: {} in parent: {}", expectedNodeName, itemNode.getName());
+			LOGGER.trace("Could Not Find XML Fragment: {} in parent: {}", expectedNodeName, itemNode.getName());
 			this.itemNode = (Node) DocumentHelper.createElement(expectedNodeName);
 		}
 	}
@@ -57,7 +57,7 @@ public abstract class ItemReader<T> implements Reader<T> {
 
 		// Avoid NPE by creating empty node.
 		if (this.itemNode == null) {
-			LOGGER.warn("Could Not Find XML Fragment: {} in parent: {}", expectedNodeName, itemNode.getName());
+			LOGGER.trace("Could Not Find XML Fragment: {} in parent: {}", expectedNodeName, itemNode.getName());
 			this.itemNode = (Node) DocumentHelper.createElement("");
 		}
 	}

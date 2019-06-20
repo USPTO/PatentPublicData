@@ -31,14 +31,14 @@ public class CpCClassificationTest {
 
 	@Test(expected = ParseException.class)
 	public void failBlank() throws ParseException {
-		CpcClassification cpc = new CpcClassification();
+		CpcClassification cpc = new CpcClassification("", false);
 		cpc.parseText("");
 	}
 
 	@Test
 	public void validParseCheck() throws ParseException {
 		for (Entry<String,String> check: validFromTo.entrySet()){
-			CpcClassification cpc = new CpcClassification();
+			CpcClassification cpc = new CpcClassification(check.getKey(), false);
 			cpc.parseText(check.getKey());
 
 			assertEquals( check.getValue(), cpc.getTextNormalized());
@@ -49,7 +49,7 @@ public class CpCClassificationTest {
 	public void parseSubGroupRange() throws ParseException {
 		String cpctext = "G04B 19/00-34";
 
-		CpcClassification cpc = new CpcClassification();
+		CpcClassification cpc = new CpcClassification(cpctext, false);
 		cpc.parseText(cpctext);
 
 		//System.out.println( cpc.getTextNormalized() );
@@ -60,7 +60,7 @@ public class CpCClassificationTest {
 	public void parseSubGroupRange2() throws ParseException {	
 		String cpctext = "G06F 1/32-3296";
 
-		CpcClassification cpc = new CpcClassification();
+		CpcClassification cpc = new CpcClassification(cpctext, false);
 		cpc.parseText(cpctext);
 
 		//System.out.println( cpc.getTextNormalized() );
@@ -69,10 +69,10 @@ public class CpCClassificationTest {
 
 	@Test
 	public void testEquals() throws ParseException {
-		CpcClassification cpc1 = new CpcClassification();
+		CpcClassification cpc1 = new CpcClassification("D07B2201", false);
 		cpc1.parseText("D07B2201");
 		
-		CpcClassification cpc2 = new CpcClassification();
+		CpcClassification cpc2 = new CpcClassification("D07B2201", false);
 		cpc2.parseText("D07B2201");
 
 		assertEquals(cpc1, cpc2);
@@ -80,10 +80,10 @@ public class CpCClassificationTest {
 
 	@Test
 	public void testEqualsUnder() throws ParseException {
-		CpcClassification cpc1 = new CpcClassification();
+		CpcClassification cpc1 = new CpcClassification("D07B", false);
 		cpc1.parseText("D07B");
 		
-		CpcClassification cpc2 = new CpcClassification();
+		CpcClassification cpc2 = new CpcClassification("D07B2201", false);
 		cpc2.parseText("D07B2201");
 		
 		assertTrue(cpc1.isContained(cpc2));
@@ -91,7 +91,7 @@ public class CpCClassificationTest {
 
 	@Test
 	public void testToTextNormalized() throws ParseException {
-		CpcClassification cpcClass = new CpcClassification();
+		CpcClassification cpcClass = new CpcClassification("D07B2201/2051", false);
 		cpcClass.parseText("D07B2201/2051");
 		
 		String expect = "D07B 2201/2051";
@@ -100,7 +100,7 @@ public class CpCClassificationTest {
 
 	@Test
 	public void testStandardize() throws ParseException {
-		CpcClassification cpcClass = new CpcClassification();
+		CpcClassification cpcClass = new CpcClassification("D07B2201/2051", false);
 		cpcClass.parseText("D07B2201/2051");
 		String expect = "D07B022012051";
 		assertEquals(expect, cpcClass.standardize());
@@ -110,19 +110,16 @@ public class CpCClassificationTest {
 	public void filterCPC() throws ParseException {
 		Set<PatentClassification> clazs = new TreeSet<PatentClassification>();
 		
-		CpcClassification cpcClass = new CpcClassification();
+		CpcClassification cpcClass = new CpcClassification("D21", true);
 		cpcClass.parseText("D21");
-		cpcClass.setInventive(true);
 		clazs.add(cpcClass);
 		
-		CpcClassification cpcClass2 = new CpcClassification();
+		CpcClassification cpcClass2 = new CpcClassification("D07B2201/2051", false);
 		cpcClass2.parseText("D07B2201/2051");
-		cpcClass2.setInventive(false);
 		clazs.add(cpcClass2);
 		
-		CpcClassification cpcClass3 = new CpcClassification();
+		CpcClassification cpcClass3 = new CpcClassification("D07B2201", false);
 		cpcClass3.parseText("D07B2201");
-		cpcClass3.setInventive(false);
 		clazs.add(cpcClass3);
 
 		Map<String, List<CpcClassification>> cpcClasses = CpcClassification.filterCpc(clazs);

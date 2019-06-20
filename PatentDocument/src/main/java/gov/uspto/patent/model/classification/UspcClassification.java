@@ -3,12 +3,16 @@ package gov.uspto.patent.model.classification;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
@@ -63,6 +67,8 @@ import gov.uspto.patent.InvalidDataException;
  */
 public class UspcClassification extends PatentClassification {
 
+	private static Logger LOGGER = LoggerFactory.getLogger(UspcClassification.class);
+
 	private final static Pattern REGEX = Pattern.compile("^([^/]{3}|[^/]{1,2}(?=/))/?([^/]{3})\\.?([^\\.]{0,4})$");
 	private final static Pattern SUBGROUP_RANGE = Pattern.compile("-([^/]{3})\\.?([^\\.]{0,4})$");
 
@@ -102,6 +108,15 @@ public class UspcClassification extends PatentClassification {
 
 	private String mainClass;
 	private String[] subClass;
+	private boolean parseFailed = false;
+
+	public UspcClassification(String originalText, boolean mainOrInventive) {
+		super(originalText, mainOrInventive);
+	}
+
+	public boolean isParseFailed() {
+		return parseFailed;
+	}
 
 	@Override
 	public ClassificationType getType() {
@@ -135,13 +150,17 @@ public class UspcClassification extends PatentClassification {
 
 	@Override
 	public String[] getParts() {
+		if (parseFailed) {
+			return new String[] {};
+		}
+
 		List<String> parts = new ArrayList<String>();
 		parts.add(Strings.padStart(mainClass, 3, '0'));
-		for(String claz: subClass) {
+		for (String claz : subClass) {
 			parts.add(Strings.padStart(claz, 3, '0'));
 		}
 		return parts.toArray(new String[parts.size()]);
-		//return new String[] { mainClass, subClass.toString() }; // multiple nesting.
+		// return new String[] { mainClass, subClass.toString() }; // multiple nesting.
 		// return null;
 	}
 
@@ -151,8 +170,7 @@ public class UspcClassification extends PatentClassification {
 
 		if (subClass != null && subClass.length > 0) {
 			classDepth = 2;
-		}
-		else if (mainClass != null) {
+		} else if (mainClass != null) {
 			classDepth = 1;
 		}
 
@@ -166,6 +184,10 @@ public class UspcClassification extends PatentClassification {
 	 */
 	@Override
 	public String getTextNormalized() {
+		if (parseFailed) {
+			return super.getTextOriginal() + "__parseFailed";
+		}
+
 		StringBuilder stb = new StringBuilder().append(mainClass).append('/');
 		for (String subRange : subClass) {
 			stb.append(subRange).append(',');
@@ -182,9 +204,14 @@ public class UspcClassification extends PatentClassification {
 	 */
 	@Override
 	public String[] toFacet() {
+		if (parseFailed) {
+			return new String[] {};
+		}
+
 		Set<String> retFacets = new HashSet<String>();
 		for (String subRange : subClass) {
-			String[] facets = ClassificationTokenizer.partsToFacet(Strings.padStart(mainClass, 3, '0'), Strings.padStart(subRange, 3, '0'));
+			String[] facets = ClassificationTokenizer.partsToFacet(Strings.padStart(mainClass, 3, '0'),
+					Strings.padStart(subRange, 3, '0'));
 			retFacets.addAll(Arrays.asList(facets));
 		}
 
@@ -199,6 +226,10 @@ public class UspcClassification extends PatentClassification {
 	 * @return
 	 */
 	public Set<String> toSet() {
+		if (parseFailed) {
+			return Collections.emptySet();
+		}
+
 		Set<String> formats = new LinkedHashSet<String>();
 		formats.add(mainClass);
 
@@ -232,7 +263,6 @@ public class UspcClassification extends PatentClassification {
 	 */
 	@Override
 	public void parseText(final String classificationStr) throws ParseException {
-		super.setTextOriginal(classificationStr);
 
 		String input = classificationStr.toUpperCase().replace(' ', '0');
 
@@ -300,6 +330,8 @@ public class UspcClassification extends PatentClassification {
 			return;
 		}
 
+		parseFailed = true;
+		LOGGER.debug("USPC parse failed '{}' as '{}'", classificationStr, input);
 		throw new ParseException(
 				"Failed to regex parse USPC Classification: '" + classificationStr + "' evaluated as: '" + input + "'",
 				0);
@@ -307,18 +339,22 @@ public class UspcClassification extends PatentClassification {
 
 	@Override
 	public boolean validate() throws InvalidDataException {
-		if (mainClass.length() < 3 && mainClass.startsWith("D")){
+		if (parseFailed) {
+			return false;
+		}
+
+		if (mainClass.length() < 3 && mainClass.startsWith("D")) {
 			mainClass = mainClass.replaceFirst("D", "D0");
 		}
 		if (!MAIN_CLASSES.contains(Strings.padStart(mainClass, 3, '0'))) {
-		 throw new InvalidDataException("Invalid MainClass: " + mainClass);
+			throw new InvalidDataException("Invalid MainClass: " + mainClass);
 		}
 		return true;
 	}
 
 	@Override
 	public boolean isContained(PatentClassification check) {
-		if (check == null || !(check instanceof IpcClassification)) {
+		if (parseFailed || check == null || !(check instanceof IpcClassification)) {
 			return false;
 		}
 
@@ -339,8 +375,9 @@ public class UspcClassification extends PatentClassification {
 
 	@Override
 	public String toString() {
-		return "UspcClassification [mainClass=" + mainClass + ", subClass=" + Arrays.toString(subClass) + ", toText()=" + toText()
-		// + ", toSet()=" + toSet()
+		return "UspcClassification [mainClass=" + mainClass + ", subClass=" + Arrays.toString(subClass) + ", toText()="
+				+ toText()
+				// + ", toSet()=" + toSet()
 				+ ", originalText=" + super.getTextOriginal()
 				// + ", range=" + range
 				+ "]";

@@ -1,6 +1,7 @@
 package gov.uspto.patent.doc.xml.items;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Node;
@@ -27,7 +28,7 @@ import gov.uspto.patent.model.classification.UspcClassification;
  * cited by applicant.
  * </p>
  */
-public class ClassificationNationalNode extends ItemReader<PatentClassification> {
+public class ClassificationNationalNode extends ItemReader<List<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNationalNode.class);
 
 	private final static String ITEM_NODE_NAME = "classification-national";
@@ -37,28 +38,28 @@ public class ClassificationNationalNode extends ItemReader<PatentClassification>
 	}
 
 	@Override
-	public PatentClassification read() {
+	public List<PatentClassification> read() {
+		List<PatentClassification> patClasses = new ArrayList<PatentClassification>();
+
 		// Node countryNode = parentNode.selectSingleNode("country");
 		Node mainClass = itemNode.selectSingleNode("main-classification");
 		if (mainClass == null) {
-			return null;
+			return patClasses;
 		}
 
 		String mainClassTxt = mainClass.getText();
 		if ("None".equalsIgnoreCase(mainClassTxt)) {
 			LOGGER.trace("Invalid USPC classification 'main-classification': 'None'");
-			return null;
+			return patClasses;
 		}
 
-		UspcClassification classification;
+		UspcClassification classification = new UspcClassification(mainClass.getText(), true);
 		try {
-			classification = new UspcClassification();
 			classification.parseText(mainClass.getText());
-			classification.setIsMainClassification(true);
 		} catch (ParseException e1) {
 			LOGGER.warn("{} : {}", e1.getMessage(), mainClass.asXML());
-			return null;
 		}
+		patClasses.add(classification);
 
 		try {
 			classification.validate();
@@ -67,19 +68,17 @@ public class ClassificationNationalNode extends ItemReader<PatentClassification>
 		}
 
 		List<Node> furtherClasses = itemNode.selectNodes("further-classification");
-		for (Node subclass : furtherClasses) {
-
-			try {
-				UspcClassification usClass = new UspcClassification();
-				usClass.parseText(subclass.getText());
-				classification.addChild(usClass);
+		for (Node furtherClass : furtherClasses) {
+			UspcClassification usClass = new UspcClassification(furtherClass.getText(), false);
+			try {		
+				usClass.parseText(furtherClass.getText());
 			} catch (ParseException e) {
-				LOGGER.warn("Failed to parse USPC classification 'further-classification': {}", subclass.asXML());
+				LOGGER.warn("Failed to parse USPC classification 'further-classification': {}", furtherClass.asXML());
 			}
-
+			patClasses.add(usClass);
 		}
 
-		return classification;
+		return patClasses;
 	}
 
 }
