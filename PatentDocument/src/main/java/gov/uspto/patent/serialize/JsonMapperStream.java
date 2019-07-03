@@ -622,7 +622,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 				jGenerator.writeStartObject();
 				jGenerator.writeStringField("raw", cpci.toText());
 				jGenerator.writeStringField("normalized", cpci.getTextNormalized());
-				writeArray("facets", cpci.toFacet());
+				writeArray("facets", cpci.getTree().getLeafFacets());
 				jGenerator.writeEndObject();
 			}
 		}
@@ -637,7 +637,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 				jGenerator.writeStartObject();
 				jGenerator.writeStringField("raw", cpci.toText());
 				jGenerator.writeStringField("normalized", cpci.getTextNormalized());
-				writeArray("facets", cpci.toFacet());
+				writeArray("facets", cpci.getTree().getLeafFacets());
 				jGenerator.writeEndObject();
 			}
 		}
@@ -664,7 +664,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 			jGenerator.writeStartObject();
 			jGenerator.writeStringField("raw", mainClass.toText());
 			jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
-			writeArray("facets", mainClass.toFacet());
+			writeArray("facets", mainClass.getTree().getLeafFacets());
 			jGenerator.writeEndObject();
 		}
 		jGenerator.writeEndArray();
@@ -677,7 +677,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 			jGenerator.writeStartObject();
 			jGenerator.writeStringField("raw", furtherClass.toText());
 			jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
-			writeArray("facets", furtherClass.toFacet());
+			writeArray("facets", furtherClass.getTree().getLeafFacets());
 			jGenerator.writeEndObject();
 		}
 		jGenerator.writeEndArray();
@@ -697,7 +697,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 			jGenerator.writeStartObject();
 			jGenerator.writeStringField("raw", mainClass.toText());
 			jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
-			writeArray("facets", mainClass.toFacet());
+			writeArray("facets", mainClass.getTree().getLeafFacets());
 			jGenerator.writeEndObject();
 		}
 

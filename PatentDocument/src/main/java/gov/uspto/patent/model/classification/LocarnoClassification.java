@@ -1,13 +1,17 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+
+import gov.uspto.common.tree.Tree;
 import gov.uspto.patent.InvalidDataException;
 
 /**
@@ -63,14 +67,12 @@ public class LocarnoClassification extends PatentClassification {
 	}
 
 	@Override
-	public String[] getParts() {
-		if (parseFailed) {
-			return new String[] {};
-		}
-		return new String[] { mainClass, subClass };
+	public Tree getTree() {
+		Tree tree = new Tree();
+		tree.addChild(Strings.padStart(mainClass, 2, '0')).addChild(Strings.padStart(subClass, 2, '0'));
+		return tree;
 	}
 
-	@Override
 	public int getDepth() {
 		int classDepth = 0;
 
@@ -93,11 +95,22 @@ public class LocarnoClassification extends PatentClassification {
 	}
 
 	@Override
+	public List<String> getSearchTokens() {
+		List<String> list = new ArrayList<String>(1);
+		StringBuilder sb = new StringBuilder();
+		sb.append(Strings.padStart(mainClass, 2, '0'));
+		sb.append("-");
+		sb.append(Strings.padStart(subClass, 2, '0'));
+		list.add(getTextNormalized());
+		return list;
+	}
+
+	@Override
 	public void parseText(final String text) throws ParseException {
 
 		Matcher matcher = PATTERN.matcher(text);
 		if (text.length() > 0 && text.length() <= 2) {
-			String mainClass = StringUtils.leftPad(text, 2, "0");
+			String mainClass = Strings.padStart(text, 2, '0');
 			setMainClass(mainClass);
 			setSubClass("00");
 		}
@@ -130,7 +143,7 @@ public class LocarnoClassification extends PatentClassification {
 
 	@Override
 	public boolean validate() throws InvalidDataException {
-		if (StringUtils.isEmpty(mainClass)) {
+		if (mainClass == null || mainClass.isEmpty()) {
 			throw new InvalidDataException("Invalid MainClass");
 		}
 		return true;

@@ -78,8 +78,8 @@ public class ClassificationCpcNode extends ItemReader<List<PatentClassification>
 			cpcClass.setSection(section);
 			cpcClass.setMainClass(mainClass);
 			cpcClass.setSubClass(subclass);
-			cpcClass.setMainGroup(mainGroup);
-			cpcClass.setSubGroup(subgroup);
+			cpcClass.setMainGroup(new String[] {mainGroup});
+			cpcClass.setSubGroup(new String[] {subgroup});
 
 			LOGGER.trace("{}", cpcClass);
 

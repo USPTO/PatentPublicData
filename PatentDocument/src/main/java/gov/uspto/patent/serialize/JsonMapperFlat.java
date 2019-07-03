@@ -292,12 +292,12 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         	if (claz.isMainOrInventive()) {
         		builder.add(prefixFieldName + "IpcInventiveRaw", claz.toText());
         		builder.add(prefixFieldName + "IpcInventiveNormalized", claz.getTextNormalized());
-        		builder.add(prefixFieldName + "IpcInventiveFacets", toJsonArray(claz.toFacet()));
+        		builder.add(prefixFieldName + "IpcInventiveFacets", toJsonArray(claz.getTree().getLeafFacets()));
         	}
         	else {
                 futherRawAr.add(claz.toText());
                 futherNormAr.add(claz.getTextNormalized());
-                futherFacets.addAll(Arrays.asList(claz.toFacet()));
+                futherFacets.addAll(claz.getTree().getLeafFacets());
         	}
 
             builder.add(prefixFieldName + "IpcAdditionalRaw", futherRawAr.build());
@@ -310,7 +310,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         for (UspcClassification claz : uspcClasses) {
             builder.add(prefixFieldName + "UspcMainRaw", claz.toText());
             builder.add(prefixFieldName + "UspcMainNormalized", claz.getTextNormalized());
-            builder.add(prefixFieldName + "UspcMainFacets", toJsonArray(claz.toFacet()));
+            builder.add(prefixFieldName + "UspcMainFacets", toJsonArray(claz.getTree().getLeafFacets()));
 
             JsonArrayBuilder futherRawAr = Json.createArrayBuilder();
             JsonArrayBuilder futherNormAr = Json.createArrayBuilder();
@@ -330,11 +330,11 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         	if (claz.isMainOrInventive()) {
         		builder.add(prefixFieldName + "CpcInventiveRaw", claz.toText());
         		builder.add(prefixFieldName + "CpcInventiveNormalized", claz.getTextNormalized());
-        		builder.add(prefixFieldName + "CpcInventiveFacets", toJsonArray(claz.toFacet()));
+        		builder.add(prefixFieldName + "CpcInventiveFacets", toJsonArray(claz.getTree().getLeafFacets()));
         	} else {
                 futherRawAr.add(claz.toText());
                 futherNormAr.add(claz.getTextNormalized());
-                futherFacets.addAll(Arrays.asList(claz.toFacet()));
+                futherFacets.addAll(claz.getTree().getLeafFacets());
         	}
         }
         builder.add(prefixFieldName + "CpcAdditionalRaw", futherRawAr.build());

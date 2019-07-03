@@ -250,7 +250,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             ipcObj.add("type", claz.isMainOrInventive() ? "inventive" : "additional");
             ipcObj.add("raw", claz.toText());
             ipcObj.add("normalized", claz.getTextNormalized());
-            ipcObj.add("facets", toJsonArray(claz.toFacet()));
+            ipcObj.add("facets", toJsonArray(claz.getTree().getLeafFacets()));
             ipcAr.add(ipcObj.build());
         }
         builder.add("ipc", ipcAr.build());
@@ -264,7 +264,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             uspcObj.add("type", claz.isMainOrInventive() ? "main" : "additional");
             uspcObj.add("raw", claz.toText());
             uspcObj.add("normalized", claz.getTextNormalized());
-            uspcObj.add("facets", toJsonArray(claz.toFacet()));
+            uspcObj.add("facets", toJsonArray(claz.getTree().getLeafFacets()));
             uspcAr.add(uspcObj.build());
         }
         builder.add("uspc", uspcAr.build());
@@ -277,7 +277,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
             cpcObj.add("type", claz.isMainOrInventive() ? "inventive" : "additional");
             cpcObj.add("raw", claz.toText());
             cpcObj.add("normalized", claz.getTextNormalized());
-            cpcObj.add("facets", toJsonArray(claz.toFacet()));
+            cpcObj.add("facets", toJsonArray(claz.getTree().getLeafFacets()));
             cpcAr.add(cpcObj.build());
         }
         builder.add("cpc", cpcAr.build());

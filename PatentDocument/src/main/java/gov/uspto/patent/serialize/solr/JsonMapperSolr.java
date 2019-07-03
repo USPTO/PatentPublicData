@@ -3,7 +3,6 @@ package gov.uspto.patent.serialize.solr;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -11,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
@@ -145,7 +145,9 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		List<String> examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).distinct()
 				.collect(Collectors.toList());
 		json.addNumberField("art_unit",
-				examiner_dep != null && !examiner_dep.isEmpty() && !examiner_dep.get(0).isEmpty() ? Integer.parseInt(examiner_dep.get(0)) : -1);
+				examiner_dep != null && !examiner_dep.isEmpty() && !examiner_dep.get(0).isEmpty()
+						? Integer.parseInt(examiner_dep.get(0))
+						: -1);
 
 		/*
 		 * Citations
@@ -282,11 +284,19 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 	}
 
 	private List<String> getDocIds(Collection<DocumentId> docIds) {
-		return docIds.stream().map(d -> d.toTextNoKind()).collect(Collectors.toList());
+		if (docIds == null) {
+			return Collections.emptyList();
+		}
+		return docIds.stream().filter(Objects::nonNull).filter(o -> o.getDate() != null).map(d -> d.toTextNoKind())
+				.collect(Collectors.toList());
 	}
 
 	private List<Date> getDocDates(Collection<DocumentId> docIds) {
-		return docIds.stream().map(d -> d.getDate().getDate()).sorted().collect(Collectors.toList());
+		if (docIds == null) {
+			return Collections.emptyList();
+		}
+		return docIds.stream().filter(Objects::nonNull).filter(o -> o.getDate() != null).map(d -> d.getDate().getDate())
+				.sorted().collect(Collectors.toList());
 	}
 
 	/**
@@ -316,8 +326,9 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 	private <T extends Entity> List<String> getEntityAddress(Collection<T> entities) {
 		return entities.stream().map(e -> e.getAddress().toText()).collect(Collectors.toList());
-		//return entities.stream().map(e -> e.getAddress().getTokenSet()).flatMap(Collection::stream)
-		//		.collect(Collectors.toList());
+		// return entities.stream().map(e ->
+		// e.getAddress().getTokenSet()).flatMap(Collection::stream)
+		// .collect(Collectors.toList());
 	}
 
 	private <T extends PatentClassification> Set<String> getClassifications(Collection<PatentClassification> classes,
@@ -328,7 +339,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 	private <T extends PatentClassification> Set<String> getClassificationFacets(
 			Collection<PatentClassification> classes, Class<T> wantedClass) {
-		return classes.stream().filter(wantedClass::isInstance).map(p -> Arrays.asList(p.toFacet()))
+		return classes.stream().filter(wantedClass::isInstance).map(p -> p.getTree().getLeafFacets())
 				.flatMap(Collection::stream).collect(Collectors.toSet());
 	}
 

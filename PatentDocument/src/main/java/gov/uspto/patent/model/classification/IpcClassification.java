@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.uspto.common.tree.Tree;
 import gov.uspto.patent.InvalidDataException;
 
 /**
@@ -42,7 +43,7 @@ import gov.uspto.patent.InvalidDataException;
 public class IpcClassification extends PatentClassification {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(IpcClassification.class);
-	
+
 	private final static Pattern REGEX_OLD = Pattern
 			.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
 
@@ -110,12 +111,18 @@ public class IpcClassification extends PatentClassification {
 		this.subGroup = subGroup;
 	}
 
-	@Override
 	public String[] getParts() {
 		if (parseFailed) {
 			return new String[] {};
 		}
 		return new String[] { section, mainClass, subClass, mainGroup, subGroup };
+	}
+
+	@Override
+	public Tree getTree() {
+		Tree tree = new Tree();
+		tree.addChild(section).addChild(mainClass).addChild(subClass).addChild(mainGroup).addChild(subGroup);
+		return tree;
 	}
 
 	@Override
@@ -164,13 +171,18 @@ public class IpcClassification extends PatentClassification {
 		return changed;
 	}
 
+	@Override
+	public List<String> getSearchTokens() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
+	
 	/**
 	 * Classification depth
 	 * 
 	 * (1=section, 2=mainClass, 3=subClass, 4=mainGroup, 5=subGroup)
 	 * 
 	 */
-	@Override
 	public int getDepth() {
 		int classDepth = 0;
 		if (subGroup != null && !subGroup.isEmpty()) {
@@ -348,13 +360,6 @@ public class IpcClassification extends PatentClassification {
 		return classes.stream().filter(IpcClassification.class::isInstance).map(IpcClassification.class::cast)
 				.collect(Collectors.groupingBy(s -> (s.isMainOrInventive() ? "inventive" : "additional"), TreeMap::new,
 						Collectors.toList()));
-	}
-
-	/**
-	 * Parse Facet back into Classifications
-	 */
-	public static List<IpcClassification> fromFacets(List<String> facets) {
-		return ClassificationTokenizer.fromFacets(facets, IpcClassification.class);
 	}
 
 }

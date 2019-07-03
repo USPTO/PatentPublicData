@@ -1,6 +1,7 @@
 package gov.uspto.patent.model.classification;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+
+import gov.uspto.common.tree.Node;
+import gov.uspto.common.tree.Tree;
 import gov.uspto.patent.InvalidDataException;
 
 /**
@@ -85,8 +90,9 @@ import gov.uspto.patent.InvalidDataException;
 public class CpcClassification extends PatentClassification {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(CpcClassification.class);
-	
-	private final static Pattern REGEX = Pattern.compile("^([A-HY])(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})(-\\d+)?$");
+
+	private final static Pattern REGEX = Pattern.compile(
+			"^(?<section>[A-HY])(?<mainClass>\\d\\d)(?<subClass>[A-Z])\\s?(?<mainGroup1>\\d{1,4})/?(?<subGroup1>\\d{2,6})(-(?<mainGroup2>\\d{1,4})/(?<subGroup2>\\d{2,6})|-(?<subGroup2SameMain>\\d{2,6}))?$");
 
 	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])(\\d\\d)$");
 
@@ -95,9 +101,8 @@ public class CpcClassification extends PatentClassification {
 	private String section;
 	private String mainClass;
 	private String subClass;
-	private String mainGroup;
-	private String subGroup;
-	private boolean hasSubGroupRange = false;
+	private String[] mainGroup;
+	private String[] subGroup;
 	private boolean parseFailed = false;
 
 	public CpcClassification(String originalText, boolean mainOrInventive) {
@@ -137,28 +142,20 @@ public class CpcClassification extends PatentClassification {
 		this.subClass = subClass;
 	}
 
-	public String getMainGroup() {
+	public String[] getMainGroup() {
 		return mainGroup;
 	}
 
-	public void setMainGroup(String mainGroup) {
+	public void setMainGroup(String[] mainGroup) {
 		this.mainGroup = mainGroup;
 	}
 
-	public String getSubGroup() {
+	public String[] getSubGroup() {
 		return subGroup;
 	}
 
-	public void setSubGroup(String subGroup) {
+	public void setSubGroup(String[] subGroup) {
 		this.subGroup = subGroup;
-	}
-
-	@Override
-	public String[] getParts() {
-		if (parseFailed) {
-			return new String[] {};
-		}
-		return new String[] { section, mainClass, subClass, mainGroup, subGroup };
 	}
 
 	/**
@@ -179,15 +176,40 @@ public class CpcClassification extends PatentClassification {
 			sb.append(subClass);
 
 			if (mainGroup != null) {
-				sb.append(" ").append(mainGroup);
+				sb.append(" ").append(mainGroup[0]);
 
 				if (subGroup != null) {
-					sb.append("/").append(subGroup);
+					sb.append("/").append(subGroup[0]);
+				}
+			}
+
+			// Handle Ranges
+			if (mainGroup != null && subGroup != null) {
+				if (mainGroup.length == 1 && subGroup.length == 2 && subGroup[1] != null) {
+					sb.append("-");
+					// sb.append(mainGroup[0]);
+					// sb.append("/");
+					sb.append(subGroup[1]);
+				} else if (mainGroup.length == 2 && subGroup.length == 2 && mainGroup[1] != null) {
+					sb.append("-");
+					if (mainGroup[0] == mainGroup[1]) {
+						sb.append(subGroup[1]);
+					} else {
+						sb.append(mainGroup[1]);
+						sb.append("/");
+						sb.append(subGroup[1]);
+					}
 				}
 			}
 		}
 
 		return sb.toString();
+	}
+
+	@Override
+	public List<String> getSearchTokens() {
+		return getTree().getLeafPaths("").stream().map(c -> String.format("%1$-16s", c).replace(' ', '0'))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -198,25 +220,70 @@ public class CpcClassification extends PatentClassification {
 	 */
 	public String standardize() {
 		StringBuilder sb = new StringBuilder().append(section).append(mainClass);
-
 		if (subClass != null) {
 			sb.append(subClass).append("0");
 
-			if (mainGroup != null && mainGroup.matches("^[0-9]+$")) {
-				if (Integer.valueOf(mainGroup) < 10) {
-					sb.append("0");
-				}
-				sb.append(mainGroup);
+			if (mainGroup != null) {
+				sb.append(mainGroup[0]);
 
 				if (subGroup != null) {
-					sb.append(subGroup);
+					sb.append(subGroup[0]);
+				}
+			}
+
+			if (mainGroup != null && subGroup != null) {
+				if (mainGroup.length == 1 && subGroup.length == 2 && subGroup[1] != null) {
+					sb.append("-").append(subGroup[1]);
+				} else if (mainGroup.length == 2 && subGroup.length == 2 && mainGroup[1] != null) {
+					sb.append("-").append(mainGroup[1]).append(subGroup[1]);
 				}
 			}
 		}
+
+		/*
+		 * if (subClass != null) { sb.append(subClass).append("0");
+		 * 
+		 * if (mainGroup != null) { for(String mGroup: mainGroup) { if (mGroup != null
+		 * && mGroup.matches("^[0-9]+$")) { if (Integer.valueOf(mGroup) < 10) {
+		 * sb.append("0"); } sb.append(mGroup);
+		 * 
+		 * if (subGroup != null) { for(String sGroup: subGroup) { if (subGroup != null)
+		 * { sb.append(sGroup); } } } } } } }
+		 */
+
 		String changed = sb.toString();
 		changed = String.format("%1$-9s", changed);
 
 		return changed;
+	}
+
+	@Override
+	public Tree getTree() {
+		Tree tree = new Tree();
+
+		Node pnode = tree.addChild(section);
+		pnode = pnode.addChild(Strings.padStart(mainClass, 2, '0'));
+		if (subClass != null) {
+			pnode = pnode.addChild(Strings.padEnd(subClass, 3, '0'));
+
+			if (mainGroup != null && subGroup != null) {
+				if (mainGroup.length == 1 && subGroup.length == 1) {
+					pnode.addChild(Strings.padStart(mainGroup[0], 3, '0'))
+							.addChild(Strings.padEnd(subGroup[0], 4, '0'));
+				} else if (mainGroup.length == 2 && subGroup.length == 2) {
+					pnode.addChild(Strings.padStart(mainGroup[0], 3, '0'))
+							.addChild(Strings.padEnd(subGroup[0], 4, '0'));
+					pnode.addChild(Strings.padStart(mainGroup[1], 3, '0'))
+							.addChild(Strings.padEnd(subGroup[1], 4, '0'));
+				} else if (mainGroup.length == 1 && subGroup.length > 1) {
+					List<String> children = Arrays.asList(subGroup).stream().map(s -> Strings.padEnd(s, 4, '0'))
+							.collect(Collectors.toList());
+					pnode.addChild(Strings.padStart(mainGroup[0], 3, '0')).addChildren(children);
+				}
+			}
+		}
+
+		return tree;
 	}
 
 	/**
@@ -228,9 +295,9 @@ public class CpcClassification extends PatentClassification {
 	@Override
 	public int getDepth() {
 		int classDepth = 0;
-		if (subGroup != null && !subGroup.isEmpty()) {
+		if (subGroup != null && subGroup[0] != null) {
 			classDepth = 5;
-		} else if (mainGroup != null && !mainGroup.isEmpty()) {
+		} else if (mainGroup != null && mainGroup[0] != null) {
 			classDepth = 4;
 		} else if (subClass != null && !subClass.isEmpty()) {
 			classDepth = 3;
@@ -249,9 +316,9 @@ public class CpcClassification extends PatentClassification {
 		}
 		CpcClassification cpc = (CpcClassification) check;
 
-		int depth = getDepth();
+		int depth = getTree().getDepth();
 
-		if (depth == cpc.getDepth()) {
+		if (depth == cpc.getTree().getDepth()) {
 			if (this.getTextNormalized().equals(cpc.getTextNormalized())) {
 				return true;
 			} else {
@@ -314,18 +381,37 @@ public class CpcClassification extends PatentClassification {
 	public void parseText(final String classificationStr) throws ParseException {
 
 		Matcher matcher = REGEX.matcher(classificationStr);
-		if (matcher.matches()) {
-			String section = matcher.group(1);
-			String mainClass = matcher.group(2);
-			String subClass = matcher.group(3);
-			String mainGroup = matcher.group(4);
-			String subGroup = matcher.group(5);
+		if (classificationStr.length() > 4 && matcher.matches()) {
+			String section = matcher.group("section");
+			String mainClass = matcher.group("mainClass");
+			String subClass = matcher.group("subClass");
+			String mainGroup1 = matcher.group("mainGroup1");
+			String subGroup1 = matcher.group("subGroup1");
 
-			String subGroupRange = matcher.group(6);
-			if (subGroupRange != null) {
-				hasSubGroupRange = true;
-				subGroup = subGroup + subGroupRange;
+			String[] mainGroup = null;
+			String[] subGroup = null;
+
+			String mainGroup2 = matcher.group("mainGroup2");
+			String subGroup2 = matcher.group("subGroup2");
+			String subGroup2SameMain = matcher.group("subGroup2SameMain");
+
+			if (mainGroup2 != null && !mainGroup2.equals(mainGroup1)) {
+				mainGroup = new String[] { mainGroup1, mainGroup2 };
+			} else if (mainGroup2 == null && subGroup2 != null) {
+				mainGroup = new String[] { mainGroup1, mainGroup1 };
+			} else {
+				mainGroup = new String[] { mainGroup1 };
 			}
+
+			if (subGroup2 != null) {
+				subGroup = new String[] { subGroup1, subGroup2 };
+			} else if (subGroup2SameMain != null) {
+				subGroup = new String[] { subGroup1, subGroup2SameMain };
+			} else {
+				subGroup = new String[] { subGroup1 };
+			}
+
+			LOGGER.trace(classificationStr + " " + Arrays.toString(mainGroup) + " " + Arrays.toString(subGroup));
 
 			setSection(section);
 			setMainClass(mainClass);
@@ -372,9 +458,9 @@ public class CpcClassification extends PatentClassification {
 	@Override
 	public String toString() {
 		return "CpcClassification [section=" + section + ", mainClass=" + mainClass + ", subClass=" + subClass
-				+ ", mainGroup=" + mainGroup + ", subGroup=" + subGroup + ", getTextNormalized()=" + getTextNormalized()
-				+ ", standardize()=" + standardize() + ", getTextOriginal()=" + getTextOriginal() + ", toText()="
-				+ toText() + "]";
+				+ ", mainGroup=" + Arrays.toString(mainGroup) + ", subGroup=" + Arrays.toString(subGroup)
+				+ ", parseFailed=" + parseFailed + ", getTextOriginal()=" + getTextOriginal() + ", isMainOrInventive()="
+				+ isMainOrInventive() + ", toText()=" + toText() + ", toFacet()=" + getTree().getLeafFacets() + "]";
 	}
 
 	/**
@@ -390,13 +476,6 @@ public class CpcClassification extends PatentClassification {
 		return classes.stream().filter(CpcClassification.class::isInstance).map(CpcClassification.class::cast)
 				.collect(Collectors.groupingBy(s -> (s.isMainOrInventive() ? "inventive" : "additional"), TreeMap::new,
 						Collectors.toList()));
-	}
-
-	/**
-	 * Parse Facet back into Classifications
-	 */
-	public static List<CpcClassification> fromFacets(List<String> facets) {
-		return ClassificationTokenizer.fromFacets(facets, CpcClassification.class);
 	}
 
 }

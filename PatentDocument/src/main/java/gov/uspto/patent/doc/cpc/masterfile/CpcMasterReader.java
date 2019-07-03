@@ -140,8 +140,8 @@ public class CpcMasterReader implements PatentDocReader<MasterClassificationReco
 		cpcClass.setSection(cpcSectionN.getText());
 		cpcClass.setMainClass(cpcClassN.getText());
 		cpcClass.setSubClass(cpcSubClassN.getText());
-		cpcClass.setMainGroup(cpcMainGroupN.getText());
-		cpcClass.setSubGroup(cpcSubGroupN.getText());
+		cpcClass.setMainGroup(new String[] { cpcMainGroupN.getText() });
+		cpcClass.setSubGroup(new String[] { cpcSubGroupN.getText() });
 		return cpcClass;
 	}
 
