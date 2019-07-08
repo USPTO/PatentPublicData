@@ -110,10 +110,10 @@ public class Greenbook extends KvParser {
 				case REISSUE:
 					publicationId.setKindCode("E");
 					break;
-				case STATUTORY_INVENTION_REGISTRATION:
+				case SIR:
 					publicationId.setKindCode("H");
 					break;
-				case DEFENSIVE_PUBLICATION:
+				case DEF:
 					break;
 				case UNDEFINED:
 					break;

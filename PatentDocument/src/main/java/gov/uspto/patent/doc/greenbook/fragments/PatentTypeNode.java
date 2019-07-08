@@ -34,11 +34,11 @@ public class PatentTypeNode extends DOMFragmentReader<PatentType> {
 			case "4":
 				return PatentType.DESIGN;
 			case "5":
-				return PatentType.DEFENSIVE_PUBLICATION;
+				return PatentType.DEF;
 			case "6":
 				return PatentType.PLANT;
 			case "7":
-				return PatentType.STATUTORY_INVENTION_REGISTRATION;
+				return PatentType.SIR;
 			}
 		}
 		return PatentType.UNDEFINED;
