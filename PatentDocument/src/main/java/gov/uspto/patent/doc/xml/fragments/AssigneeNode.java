@@ -24,7 +24,7 @@ import gov.uspto.patent.model.entity.Name;
 public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
 
-	private static final String FRAGMENT_PATH = "/*/*/assignees/assignee";
+	private static final String FRAGMENT_PATH = "/*/assignees/assignee";
 	private static final String APPLICANT_ASSIGNEE_PATH = "/*/*/us-parties/us-applicants/us-applicant[@applicant-authority-category='assignee']";
 
 	public AssigneeNode(Document document) {

@@ -14,6 +14,7 @@ import gov.uspto.patent.doc.xml.items.AddressBookNode;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Applicant;
+import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
 
 public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
@@ -23,7 +24,7 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 	 * CURRENT: //us-parties/us-applicants/us-applicant PRE-2012:
 	 * //parties/applicants/applicant
 	 */
-	private static final String FRAGMENT_PATH = "/*/*/us-parties/us-applicants/us-applicant|/*/*/parties/applicants/applicant";
+	private static final String FRAGMENT_PATH = "/*/us-parties/us-applicants/us-applicant|/*/parties/applicants/applicant";
 
 	public ApplicantNode(Document document) {
 		super(document);
@@ -62,9 +63,22 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 			}
 
 			Address address = addressBook.getAddress();
+
 			if (address == null) {
-				address = new Address("", "", CountryCode.UNDEFINED);
-				LOGGER.warn("Missing address : {}", node.asXML());
+				if (node.matches(".[@applicant-authority-category='assignee']")) {
+					List<Assignee> assignees = new AssigneeNode(this.document).read();
+					System.out.println(assignees);
+					for(Assignee assignee: assignees) {
+						if (applicantName.getName().equalsIgnoreCase(assignee.getName().getName())){
+							address = assignee.getAddress();
+							LOGGER.debug("Applicant address : {} read from matching Assignee", applicantName.getName());
+							continue;
+						}
+					}
+				} else {
+					address = new Address("", "", CountryCode.UNDEFINED);
+					LOGGER.warn("Missing address : {}", node.asXML());
+				}
 			} else {
 				try {
 					address.validate();
