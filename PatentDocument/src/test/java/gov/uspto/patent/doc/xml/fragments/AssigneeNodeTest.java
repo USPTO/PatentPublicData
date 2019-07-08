@@ -18,7 +18,7 @@ public class AssigneeNodeTest {
 
 	@Test
 	public void AssigneeOrg() throws DocumentException {
-		String xml ="<us-patent-grant><assignees>\r\n" + 
+		String xml ="<us-patent-grant><us-bibliographic-data-grant><assignees>\r\n" + 
 				"<assignee>\r\n" + 
 				"<addressbook>\r\n" + 
 				"<orgname>Company, Incorporated</orgname>\r\n" + 
@@ -30,7 +30,7 @@ public class AssigneeNodeTest {
 				"</address>\r\n" + 
 				"</addressbook>\r\n" + 
 				"</assignee>\r\n" + 
-				"</assignees></us-patent-grant>";
+				"</assignees></us-bibliographic-data-grant></us-patent-grant>";
 
 		Document doc = DocumentHelper.parseText(xml);
 
@@ -49,7 +49,7 @@ public class AssigneeNodeTest {
 
 	@Test
 	public void AssigneePerson() throws DocumentException {
-		String xml ="<us-patent-grant><assignees>\r\n" + 
+		String xml ="<us-patent-grant><us-bibliographic-data-grant><assignees>\r\n" + 
 				"<assignee>\r\n" + 
 				"<addressbook>\r\n" + 
 				"<last-name>Doe</last-name>\r\n" + 
@@ -62,7 +62,7 @@ public class AssigneeNodeTest {
 				"</address>\r\n" + 
 				"</addressbook>\r\n" + 
 				"</assignee>\r\n" + 
-				"</assignees></us-patent-grant>";
+				"</assignees></us-bibliographic-data-grant></us-patent-grant>";
 
 		Document doc = DocumentHelper.parseText(xml);
 
