@@ -58,7 +58,7 @@ public class UsKindCode2PatentType {
 		mapping.put("P9", PatentType.PLANT);
 
 		// STATUTORY_INVENTION_REGISTRATION
-		mapping.put("H", PatentType.STATUTORY_INVENTION_REGISTRATION);
+		mapping.put("H", PatentType.SIR);
 	}
 
 	public PatentType lookupPatentType(String kindCode) {
