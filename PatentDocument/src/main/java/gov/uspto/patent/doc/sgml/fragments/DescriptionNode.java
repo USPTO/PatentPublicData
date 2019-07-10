@@ -3,7 +3,9 @@ package gov.uspto.patent.doc.sgml.fragments;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,10 @@ import gov.uspto.patent.model.Figure;
 public class DescriptionNode extends DOMFragmentReader<Description> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionNode.class);
 
-	private static final String FRAGMENT_PATH = "/PATDOC/SDODE";
+	private static final XPath DESCXP = DocumentHelper.createXPath("/PATDOC/SDODE");
+	private static final XPath BRFSUMXP = DocumentHelper.createXPath("BRFSUM");
+	private static final XPath DRWDESCXP = DocumentHelper.createXPath("DRWDESC");
+	private static final XPath DETDESCXP = DocumentHelper.createXPath("DETDESC");
 
 	public DescriptionNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);
@@ -28,26 +33,26 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 	public Description read() {
 		Description desc = new Description();
 
-		Node descriptionN = document.selectSingleNode(FRAGMENT_PATH);
+		Node descriptionN = DESCXP.selectSingleNode(document);
 		if (descriptionN == null) {
 			LOGGER.warn("Patent does not have a Description.");
 			return desc;
 		}
 
-		Node briefSummary = descriptionN.selectSingleNode("BRFSUM");
+		Node briefSummary = BRFSUMXP.selectSingleNode(descriptionN);
 		if (briefSummary != null) {
 			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, briefSummary.asXML(), textProcessor));
 		}
 
-		Node drawingDesc = descriptionN.selectSingleNode("DRWDESC");
+		Node drawingDesc = DRWDESCXP.selectSingleNode(descriptionN);
 		if (drawingDesc != null) {
 			desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, drawingDesc.asXML(), textProcessor));
-			
+
 			List<Figure> figures = new DescriptionFigures(drawingDesc).read();
 			desc.addFigures(figures);
 		}
 
-		Node detailedDesc = descriptionN.selectSingleNode("DETDESC");
+		Node detailedDesc = DETDESCXP.selectSingleNode(descriptionN);
 		if (detailedDesc != null) {
 			desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc.asXML(), textProcessor));
 		}

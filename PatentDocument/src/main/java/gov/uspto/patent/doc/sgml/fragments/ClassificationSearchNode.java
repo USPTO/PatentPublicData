@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,15 +25,18 @@ import gov.uspto.patent.model.classification.UspcClassification;
 public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationSearchNode.class);
 
-	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B500/B580";
+	private static final XPath SEARCHXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B500/B580");
+
+	private static final XPath IPCXP = DocumentHelper.createXPath("B581/PDAT");
+	private static final XPath USPCXP = DocumentHelper.createXPath("B582/PDAT");
 
 	private Node parentPath;
 
 	public ClassificationSearchNode(Document document) {
 		super(document);
 
-		Node parentPath = document.selectSingleNode(FRAGMENT_PATH);
-		if (parentPath != null){
+		Node parentPath = SEARCHXP.selectSingleNode(document);
+		if (parentPath != null) {
 			this.parentPath = parentPath;
 		} else {
 			this.parentPath = document.getRootElement();
@@ -43,21 +48,19 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 		Set<PatentClassification> classifications = new HashSet<PatentClassification>();
 
 		// IPC classification.
-		Node ipcN = parentPath.selectSingleNode("B581/PDAT");
+		Node ipcN = IPCXP.selectSingleNode(parentPath);
 		if (ipcN != null) {
 			IpcClassification ipc = new IpcClassification(ipcN.getText(), false);
 			try {
 				ipc.parseText(ipcN.getText());
 			} catch (ParseException e) {
-				LOGGER.debug("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(),
-						ipcN.asXML());
+				LOGGER.debug("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), ipcN.asXML());
 			}
 			classifications.add(ipc);
 		}
 
 		// USPC classification.
-		@SuppressWarnings("unchecked")
-		Node uspcN = parentPath.selectSingleNode("B582/PDAT");
+		Node uspcN = USPCXP.selectSingleNode(parentPath);
 		if (uspcN != null) {
 			UspcClassification uspc = new UspcClassification(uspcN.getText(), false);
 			try {

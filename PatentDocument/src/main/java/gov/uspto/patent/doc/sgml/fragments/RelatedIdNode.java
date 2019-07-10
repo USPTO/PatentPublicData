@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.doc.sgml.items.DocNode;
@@ -18,8 +20,18 @@ import gov.uspto.patent.model.DocumentIdType;
  *
  */
 public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
-    private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B600";
+	
+	private static final XPath RELIDSXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B600");
+	private static final XPath ADDITIONALXP = DocumentHelper.createXPath("B610");
+	private static final XPath DIVISIONALXP = DocumentHelper.createXPath("B620");
+	private static final XPath CONTINUATIONXP = DocumentHelper.createXPath("B630");
+	private static final XPath REISSUEXP = DocumentHelper.createXPath("B640");
+	private static final XPath PROVISIONALXP = DocumentHelper.createXPath("B680US/DOC");
 
+	private static final XPath CHILDDOCXP = DocumentHelper.createXPath("PARENT-US/CDOC/DOC");
+	private static final XPath PARENTDOCXP = DocumentHelper.createXPath("PARENT-US/PDOC/DOC");
+
+	
     List<DocumentId> docIds = new ArrayList<DocumentId>();
 
     public RelatedIdNode(Document document) {
@@ -28,7 +40,7 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
 
     @Override
     public List<DocumentId> read() {
-        Node relatedN = document.selectSingleNode(FRAGMENT_PATH);
+        Node relatedN = RELIDSXP.selectSingleNode(document);
         if (relatedN == null) {
             return docIds;
         }
@@ -36,7 +48,7 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
         /*
          * Additional
          */
-        List<Node> additionN = relatedN.selectNodes("B610");
+        List<Node> additionN = ADDITIONALXP.selectNodes(relatedN);
         readChildParent(additionN, DocumentIdType.ADDITION);
 
         /*
@@ -49,7 +61,7 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
          * 
          */
         // 
-        List<Node> divitionalNodes = relatedN.selectNodes("B620");
+        List<Node> divitionalNodes = DIVISIONALXP.selectNodes(relatedN);
         readChildParent(divitionalNodes, DocumentIdType.DIVISION);
 
         /*
@@ -61,7 +73,7 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
          * </PARENT-US></B631></B630>
          * 
          */
-        Node continuationN = relatedN.selectSingleNode("B630");
+        Node continuationN = CONTINUATIONXP.selectSingleNode(relatedN);
 
         if (continuationN != null) {
             Node continueN = continuationN.selectSingleNode("B631");
@@ -77,7 +89,7 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
         /*
          * ReIssue
          */
-        Node reIssueN = relatedN.selectSingleNode("B640"); // /PARENT-US ?? Whats the nesting..
+        Node reIssueN = REISSUEXP.selectSingleNode(relatedN); // /PARENT-US ?? Whats the nesting..
         if (reIssueN != null){
             Node reIssueDivitionalN = relatedN.selectSingleNode("B641US/PARENT-US");
             Node reIssueReExamN = relatedN.selectSingleNode("B645/PARENT-US");
@@ -95,7 +107,7 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
          * 		<DOC><DNUM><PDAT>60/049070</PDAT></DNUM><DATE><PDAT>19970711</PDAT></DATE><KIND><PDAT>00</PDAT></KIND></DOC>
          * </B680US>
          */
-        List<Node> provisionalNodes = relatedN.selectNodes("B680US/DOC");
+        List<Node> provisionalNodes = PROVISIONALXP.selectNodes(relatedN);
         for(Node provisionalN: provisionalNodes){
             DocumentId docId = new DocNode(provisionalN).read();
             docId.setType(DocumentIdType.PROVISIONAL);
@@ -107,13 +119,13 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
 
     private void readChildParent(List<Node> nodes, DocumentIdType docIdType) {
         for (Node node : nodes) {
-            Node childDocN = node.selectSingleNode("PARENT-US/CDOC/DOC");
+            Node childDocN = CHILDDOCXP.selectSingleNode(node);
             DocumentId childDocId = new DocNode(childDocN).read();
             childDocId.setType(docIdType);
             docIds.add(childDocId);
 
-            Node parentDocN = node.selectSingleNode("PARENT-US/PDOC/DOC");
-            DocumentId parentDocId = new DocNode(childDocN).read();
+            Node parentDocN = PARENTDOCXP.selectSingleNode(node);
+            DocumentId parentDocId = new DocNode(parentDocN).read();
             parentDocId.setType(docIdType);
             docIds.add(parentDocId);
         }

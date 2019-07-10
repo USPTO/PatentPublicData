@@ -1,8 +1,8 @@
 package gov.uspto.patent.doc.sgml.items;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.dom4j.XPath;
 
 import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.InvalidDataException;
@@ -40,6 +40,10 @@ import gov.uspto.patent.model.entity.Address;
  */
 public class AddressNode extends ItemReader<Address> {
 
+	private static final XPath CITYXP = DocumentHelper.createXPath("CITY/PDAT");
+	private static final XPath STATEXP = DocumentHelper.createXPath("STATE/PDAT");
+	private static final XPath CNTRYXP = DocumentHelper.createXPath("CTRY/PDAT");
+
 	private static final String ITEM_NODE_NAME = "ADR";
 
 	public AddressNode(Node itemNode) {
@@ -56,25 +60,13 @@ public class AddressNode extends ItemReader<Address> {
 			return null;
 		}
 
-		Node streetN = addrNode.selectSingleNode("STR/PDAT");
-		String street = streetN != null ? streetN.getText() : null;
-
-		Node pBoxN = addrNode.selectSingleNode("PBOX/PDAT");
-		String pbox = pBoxN != null ? pBoxN.getText() : null;
-		if (pbox != null && street == null) {
-			street = pbox;
-		}
-
-		Node cityN = addrNode.selectSingleNode("CITY/PDAT");
+		Node cityN = CITYXP.selectSingleNode(addrNode);
 		String city = cityN != null ? cityN.getText() : null;
 
-		Node stateN = addrNode.selectSingleNode("STATE/PDAT");
+		Node stateN = STATEXP.selectSingleNode(addrNode);
 		String state = stateN != null ? stateN.getText() : null;
 
-		Node zipcodeN = addrNode.selectSingleNode("PCODE/PDAT");
-		String zipcode = zipcodeN != null ? zipcodeN.getText() : null;
-
-		Node countryN = addrNode.selectSingleNode("CTRY/PDAT");
+		Node countryN = CNTRYXP.selectSingleNode(addrNode);
 		String country = countryN != null ? countryN.getText() : null;
 		CountryCode countryCode = CountryCode.UNDEFINED;
 		try {
@@ -87,19 +79,7 @@ public class AddressNode extends ItemReader<Address> {
 			countryCode = CountryCode.US;
 		}
 
-		Node emailN = addrNode.selectSingleNode("EAD/PDAT");
-		String email = emailN != null ? emailN.getText() : null;
-
-		Node telN = addrNode.selectSingleNode("TEL/PDAT");
-		String tel = telN != null ? telN.getText() : null;
-
-		Node faxN = addrNode.selectSingleNode("FAX/PDAT");
-		String fax = faxN != null ? faxN.getText() : null;
-
-		Address address = new Address(street, city, state, zipcode, countryCode);
-		address.setEmail(email);
-		address.setPhoneNumber(tel);
-		address.setFaxNumber(fax);
+		Address address = new Address(city, state, countryCode);
 
 		return address;
 	}

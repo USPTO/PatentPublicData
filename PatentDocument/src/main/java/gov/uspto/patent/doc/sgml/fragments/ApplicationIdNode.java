@@ -1,7 +1,9 @@
 package gov.uspto.patent.doc.sgml.fragments;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,10 @@ import gov.uspto.patent.model.DocumentId;
 public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationIdNode.class);
+
+	private static final XPath APPXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B200");
+	private static final XPath DOCNUMXP = DocumentHelper.createXPath("B210/DNUM/PDAT");
+	private static final XPath DOCDATEXP = DocumentHelper.createXPath("B220/DATE/PDAT");
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 	private CountryCode defaultCountryCode;
@@ -30,12 +36,12 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 	@Override
 	public DocumentId read() {
 
-		Node patentNode = document.selectSingleNode("/PATDOC/SDOBI/B200");
-		if (patentNode == null) {
+		Node parentNode = APPXP.selectSingleNode(document);
+		if (parentNode == null) {
 			return null;
 		}
 
-		Node docNumN = patentNode.selectSingleNode("B210/DNUM/PDAT");
+		Node docNumN = DOCNUMXP.selectSingleNode(parentNode);
 		if (docNumN == null) {
 			LOGGER.warn("Patent dos not have an Application document-id");
 			return null;
@@ -46,12 +52,12 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 		DocumentId documentId = new DocumentId(defaultCountryCode, docNumN.getText(), null);
 
-		Node dateN = patentNode.selectSingleNode("B220/DATE/PDAT");
+		Node dateN = DOCDATEXP.selectSingleNode(parentNode);
 		if (dateN != null) {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), patentNode.asXML());
+				LOGGER.warn("{} : {}", e.getMessage(), parentNode.asXML());
 			}
 		}
 

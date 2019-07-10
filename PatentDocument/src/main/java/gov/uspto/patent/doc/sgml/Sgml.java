@@ -7,7 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -55,8 +57,9 @@ import gov.uspto.patent.model.entity.Inventor;
 public class Sgml extends Dom4JParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Sgml.class);
 
-	public static final String SGML_ROOT = "/PATDOC";
-	
+	//private static final XPath ROOTXP = DocumentHelper.createXPath("/PATDOC");
+	private static final XPath TITLEXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B500/B540/STEXT/PDAT");
+
 	@Override
 	public Patent parse(Document document) throws PatentReaderException {
 
@@ -75,11 +78,8 @@ public class Sgml extends Dom4JParser {
 		List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
 		List<DocumentId> relatedIds = new RelatedIdNode(document).read();
 
-		Node titleN = document.selectSingleNode("/PATDOC/SDOBI/B500/B540/STEXT/PDAT");
-		String title = null;
-		if (titleN != null) {
-			title = titleN.getText();
-		}
+		Node titleN = TITLEXP.selectSingleNode(document);
+		String title = titleN != null ? titleN.getText() : null;
 
 		Set<PatentClassification> classifications = new ClassificationNode(document).read();
 		List<Inventor> inventors = new InventorNode(document).read();
