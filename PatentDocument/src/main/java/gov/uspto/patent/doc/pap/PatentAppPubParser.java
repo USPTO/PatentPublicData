@@ -18,7 +18,6 @@ import gov.uspto.patent.doc.pap.fragments.AbstractTextNode;
 import gov.uspto.patent.doc.pap.fragments.AgentNode;
 import gov.uspto.patent.doc.pap.fragments.ApplicantNode;
 import gov.uspto.patent.doc.pap.fragments.ApplicationIdNode;
-import gov.uspto.patent.doc.pap.fragments.AssigneeNode;
 import gov.uspto.patent.doc.pap.fragments.ClaimNode;
 import gov.uspto.patent.doc.pap.fragments.ClassificationNode;
 import gov.uspto.patent.doc.pap.fragments.DescriptionNode;
@@ -39,7 +38,6 @@ import gov.uspto.patent.model.UsKindCode2PatentType;
 import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
-import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Inventor;
 
 /**
@@ -99,8 +97,6 @@ public class PatentAppPubParser extends Dom4JParser {
 		List<Applicant> applicants = new ApplicantNode(document).read();
 		List<Agent> agents = new AgentNode(document).read();
 
-		List<Assignee> assignees = new AssigneeNode(document).read();
-
 		Set<PatentClassification> classifications = new ClassificationNode(document).read();
 
 		/*
@@ -137,7 +133,6 @@ public class PatentAppPubParser extends Dom4JParser {
 		patent.setAbstract(abstractText);
 		patent.setDescription(description);
 		patent.setInventor(inventors);
-		patent.setAssignee(assignees);
 		patent.setApplicant(applicants);
 		patent.setAgent(agents);
 		// patent.setCitation(citations); // Applications made public don't
