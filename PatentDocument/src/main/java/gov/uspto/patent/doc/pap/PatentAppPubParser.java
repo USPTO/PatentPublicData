@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -54,6 +56,13 @@ public class PatentAppPubParser extends Dom4JParser {
 
 	private PatentApplication patent;
 
+	private static final XPath TITLE_XP = DocumentHelper.createXPath(
+			"/patent-application-publication/subdoc-bibliographic-information/technical-information/title-of-invention");
+	private static final XPath FILING_DATE_XP = DocumentHelper.createXPath(
+			"/patent-application-publication/subdoc-bibliographic-information/domestic-filing-data/filing-date");
+	private static final XPath PAT_TYPE_XP = DocumentHelper
+			.createXPath("/patent-application-publication/subdoc-bibliographic-information/publication-filing-type");
+
 	public static final String XML_ROOT = "/patent-application-publication";
 
 	@Override
@@ -71,18 +80,14 @@ public class PatentAppPubParser extends Dom4JParser {
 			MDC.put("DOCID", publicationId.toText());
 		}
 
-		String title = Dom4jUtil.getTextOrNull(document,
-				XML_ROOT + "/subdoc-bibliographic-information/technical-information/title-of-invention");
+		String title = Dom4jUtil.getTextOrNull(document, TITLE_XP);
 
-		String dateProduced = Dom4jUtil.getTextOrNull(document,
-				XML_ROOT + "/subdoc-bibliographic-information/domestic-filing-data/filing-date");
+		String dateProduced = Dom4jUtil.getTextOrNull(document, FILING_DATE_XP);
 
 		/*
 		 * Patent Type from field or from kindCode.
 		 */
-		String patentTypeStr = Dom4jUtil
-				.getTextOrEmpty(document, XML_ROOT + "/subdoc-bibliographic-information/publication-filing-type")
-				.replaceFirst("^new-", "");
+		String patentTypeStr = Dom4jUtil.getTextOrEmpty(document, PAT_TYPE_XP).replaceFirst("^new-", "");
 		PatentType patentType = null;
 		try {
 			patentType = PatentType.fromString(patentTypeStr);

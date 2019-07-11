@@ -3,6 +3,7 @@ package gov.uspto.parser.dom4j;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,24 @@ public abstract class ItemReader<T> implements Reader<T> {
 
 	public boolean hasChildren(){
 		return ((Element) itemNode).nodeCount() > 0;
+	}
+
+	public ItemReader(Node itemNode, XPath expectedNodeName) {
+		if (itemNode.getName().equals(expectedNodeName.getText())) {
+			// Check if current node matches what is exepected.
+			this.itemNode = itemNode;
+		} else if (expectedNodeName.selectSingleNode(itemNode) != null) {
+			// Check if Child Node Matches.
+			this.itemNode = expectedNodeName.selectSingleNode(itemNode);
+		} else {
+			this.itemNode = itemNode.selectSingleNode("//" + expectedNodeName.getText());
+		}
+
+		// Avoid NPE by creating empty node.
+		if (this.itemNode == null) {
+			LOGGER.trace("Could Not Find XML Fragment: {} in parent: {}", expectedNodeName, itemNode.getName());
+			this.itemNode = (Node) DocumentHelper.createElement(expectedNodeName.getText());
+		}
 	}
 
 	public ItemReader(Node itemNode, String expectedNodeName) {

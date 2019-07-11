@@ -3,7 +3,9 @@ package gov.uspto.patent.doc.pap.fragments;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,13 @@ import gov.uspto.patent.model.Figure;
 public class DescriptionNode extends DOMFragmentReader<Description> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionNode.class);
 
-	private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-description";
+	private static final XPath DESCXP = DocumentHelper.createXPath("/patent-application-publication/subdoc-description");
+	private static final XPath CROSSDESCXP = DocumentHelper.createXPath("cross-reference-to-related-applications");
+	private static final XPath BACKDESCXP = DocumentHelper.createXPath("background-of-invention");
+	private static final XPath SUMDESCXP = DocumentHelper.createXPath("summary-of-invention");
+	private static final XPath DRAWDESCXP = DocumentHelper.createXPath("brief-description-of-drawings");
+	private static final XPath SEQDESCXP = DocumentHelper.createXPath("brief-description-of-sequences");
+	private static final XPath DETAILDESCXP = DocumentHelper.createXPath("detailed-description");
 
 	public DescriptionNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);
@@ -28,28 +36,28 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 	public Description read() {
 		Description desc = new Description();
 
-		Node descN = document.selectSingleNode(FRAGMENT_PATH);
+		Node descN = DESCXP.selectSingleNode(document);
 		if (descN == null) {
-			LOGGER.warn("Patent does not have a Description.");
+			LOGGER.warn("Patent missing Description.");
 			return desc;
 		}
 
-		Node relAppDesc = descN.selectSingleNode("cross-reference-to-related-applications");
+		Node relAppDesc = CROSSDESCXP.selectSingleNode(descN);
 		if (relAppDesc != null) {
 			desc.addSection(new DescriptionSection(DescSection.REL_APP_DESC, relAppDesc.asXML(), textProcessor));
 		}
 
-		Node backgroundOfInvention = descN.selectSingleNode("background-of-invention");
+		Node backgroundOfInvention = BACKDESCXP.selectSingleNode(descN);
 		if (backgroundOfInvention != null) {
 			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, backgroundOfInvention.asXML(), textProcessor));
 		}
 
-		Node briefSummary = descN.selectSingleNode("summary-of-invention");
+		Node briefSummary = SUMDESCXP.selectSingleNode(descN);
 		if (briefSummary != null) {
 			desc.addSection(new DescriptionSection(DescSection.BRIEF_SUMMARY, briefSummary.asXML(), textProcessor));
 		}
 
-		Node drawingDesc = descN.selectSingleNode("brief-description-of-drawings");
+		Node drawingDesc = DRAWDESCXP.selectSingleNode(descN);
 		if (drawingDesc != null) {
 			desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, drawingDesc.asXML(), textProcessor));
 			
@@ -57,13 +65,13 @@ public class DescriptionNode extends DOMFragmentReader<Description> {
 			desc.addFigures(figures);			
 		}
 
-		Node sequenceDesc = descN.selectSingleNode("brief-description-of-sequences");
+		Node sequenceDesc = SEQDESCXP.selectSingleNode(descN);
 		if (sequenceDesc != null) {
-			LOGGER.warn("brief-description-of-sequences");
+			//LOGGER.warn("brief-description-of-sequences");
 			desc.addSection(new DescriptionSection(DescSection.DRAWING_DESC, sequenceDesc.asXML(), textProcessor));
 		}
 
-		Node detailedDesc = descN.selectSingleNode("detailed-description");
+		Node detailedDesc = DETAILDESCXP.selectSingleNode(descN);
 		if (detailedDesc != null) {
 			desc.addSection(new DescriptionSection(DescSection.DETAILED_DESC, detailedDesc.asXML(), textProcessor));
 		}

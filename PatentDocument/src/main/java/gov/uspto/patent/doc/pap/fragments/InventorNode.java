@@ -1,10 +1,13 @@
 package gov.uspto.patent.doc.pap.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,31 +23,30 @@ import gov.uspto.patent.model.entity.Name;
 public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InventorNode.class);
 
-	private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-bibliographic-information/inventors/inventor";
-	private static final String FRAGMENT_PATH1 = "/patent-application-publication/subdoc-bibliographic-information/inventors/first-named-inventor";
-
-	private List<Inventor> inventorList;
+	private static final XPath INVENTORSXP = DocumentHelper
+			.createXPath("/patent-application-publication/subdoc-bibliographic-information/inventors");
+	private static final XPath INVENTORXP = DocumentHelper.createXPath("inventor|first-named-inventor");
+	private static final XPath ADDRESS_W_CHILDXP = DocumentHelper.createXPath("address/*[1]");
 
 	public InventorNode(Document document) {
 		super(document);
 	}
 
-	@Override
-	public List<Inventor> read() {
-		inventorList = new ArrayList<Inventor>();
-
-		@SuppressWarnings("unchecked")
-		List<Node> inventors = document.selectNodes(FRAGMENT_PATH1);
-		readInventors(inventors);
-
-		@SuppressWarnings("unchecked")
-		List<Node> inventors2 = document.selectNodes(FRAGMENT_PATH);
-		readInventors(inventors2);
-
-		return inventorList;
+	public List<Node> getInventorNodes(){
+		Node parentNode = INVENTORSXP.selectSingleNode(document);
+		if (parentNode == null) {
+			return Collections.emptyList();
+		}
+		return INVENTORXP.selectNodes(parentNode);
 	}
 
-	private void readInventors(List<Node> inventors) {
+	@Override
+	public List<Inventor> read() {
+		return readInventors(getInventorNodes());
+	}
+
+	private List<Inventor> readInventors(List<Node> inventors) {
+		List<Inventor> inventorList = new ArrayList<Inventor>();
 		for (Node inventorNode : inventors) {
 			Name name = new NameNode(inventorNode).read();
 			if (name == null) {
@@ -57,12 +59,17 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 				LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
 			}
 
-			Address residenceAddress = new ResidenceNode(inventorNode).read();
-
-			Address address = new AddressNode(inventorNode).read();
-			if (address == null && residenceAddress != null) {
-				address = residenceAddress;
+			/*
+			 * When Address node is missing, read from ResidenceNode
+			 */
+			Node addressN = ADDRESS_W_CHILDXP.selectSingleNode(inventorNode);
+			Address address;
+			if (addressN == null) {
+				address = new ResidenceNode(inventorNode).read();
+			} else {
+				address = new AddressNode(inventorNode).read();
 			}
+
 			try {
 				address.validate();
 			} catch (InvalidDataException e) {
@@ -70,9 +77,9 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 			}
 
 			Inventor inventor = new Inventor(name, address);
-			inventor.setResidency(residenceAddress.getCountry());
 			inventorList.add(inventor);
 		}
+		return inventorList;
 	}
 
 }

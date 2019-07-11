@@ -1,7 +1,9 @@
 package gov.uspto.patent.doc.pap.fragments;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +17,9 @@ import gov.uspto.patent.model.DocumentIdType;
 public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationIdNode.class);
 
-	private static final String FRAGMENT_DOCNUM = "/patent-application-publication/subdoc-bibliographic-information/domestic-filing-data/application-number/doc-number";
-	private static final String FRAGMENT_DATE = "/patent-application-publication/subdoc-bibliographic-information/domestic-filing-data/filing-date";
+	private static final XPath FILING_XP = DocumentHelper.createXPath("/patent-application-publication/subdoc-bibliographic-information/domestic-filing-data");
+	private static final XPath DOCID_XP = DocumentHelper.createXPath("application-number/doc-number");
+	private static final XPath DATE_XP = DocumentHelper.createXPath("filing-date");
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 
@@ -33,13 +36,15 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 	@Override
 	public DocumentId read() {
-		Node docNumN = document.selectSingleNode(FRAGMENT_DOCNUM);
+		Node parentNode = FILING_XP.selectSingleNode(document);
+		
+		Node docNumN = DOCID_XP.selectSingleNode(parentNode);
 		if (docNumN == null) {
 			LOGGER.warn("Patent does not have an Application document-id.");
 			return null;
 		}
 
-		Node appDateN = document.selectSingleNode(FRAGMENT_DATE);
+		Node appDateN = DATE_XP.selectSingleNode(parentNode);
 		DocumentDate appDate = null;
 		if (appDateN != null) {
 			try {

@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +20,9 @@ import gov.uspto.patent.model.classification.UspcClassification;
 public class ClassificationNode extends DOMFragmentReader<Set<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNode.class);
 
-	private static final String IPC_PATH = "/patent-application-publication/subdoc-bibliographic-information/technical-information/classification-ipc";
-	private static final String USPC_PATH = "/patent-application-publication/subdoc-bibliographic-information/technical-information/classification-us";
+	private static final XPath CLASSIFICATION_XP = DocumentHelper.createXPath("/patent-application-publication/subdoc-bibliographic-information/technical-information");
+	private static final XPath IPC_XP = DocumentHelper.createXPath("classification-ipc");
+	private static final XPath USPC_XP = DocumentHelper.createXPath("classification-us");
 
 	private Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
@@ -29,13 +32,14 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 
 	@Override
 	public Set<PatentClassification> read() {
-		readUSPC();
-		readIPC();
+		Node parentNode = CLASSIFICATION_XP.selectSingleNode(document);
+		readUSPC(parentNode);
+		readIPC(parentNode);
 		return classifications;
 	}
 
-	public void readUSPC(){
-		Node uspcN = document.selectSingleNode(USPC_PATH);
+	public void readUSPC(Node parentNode){
+		Node uspcN = USPC_XP.selectSingleNode(parentNode);
 		if (uspcN != null){
 			Node uspcPrimaryClassN = uspcN.selectSingleNode("classification-us-primary/uspc/class");
 			Node uspcPrimarySubClassN = uspcN.selectSingleNode("classification-us-primary/uspc/subclass");
@@ -50,7 +54,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 				classifications.add(uspc);
 			}
 
-			@SuppressWarnings("unchecked")
 			List<Node> uspcSecondaries = uspcN.selectNodes("classification-us-secondary");
 			for(Node uspcSecoundary: uspcSecondaries){
 
@@ -70,8 +73,8 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 		}
 	}
 
-	public void readIPC(){
-		Node ipcN = document.selectSingleNode(IPC_PATH);
+	public void readIPC(Node parentNode){
+		Node ipcN = IPC_XP.selectSingleNode(parentNode);
 		if (ipcN != null){
 			Node ipcPrimaryClassN = ipcN.selectSingleNode("classification-ipc-primary/ipc");
 			if (ipcPrimaryClassN != null){
@@ -85,7 +88,6 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 				classifications.add(ipcPrimaryClass);
 			}
 
-			@SuppressWarnings("unchecked")
 			List<Node> ipcSecondaries = ipcN.selectNodes("classification-ipc-secondary/ipc");
 			for(Node ipcSecoundary: ipcSecondaries){
 				String ipcSecondaryClassStr = ipcSecoundary != null ? ipcSecoundary.getText().trim() : null;

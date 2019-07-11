@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.pap.items;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,7 @@ import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
 
 /**
- * Parse Name (Inventor)
+ * Parse Name
  *
  *<p><pre>
  * {@code
@@ -23,7 +25,15 @@ import gov.uspto.patent.model.entity.NamePerson;
  *
  */
 public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(NameNode.class);
+
+	private static final XPath ORGNAME_XP = DocumentHelper.createXPath("organization-name");
+	private static final XPath NAMEPREFIX_XP = DocumentHelper.createXPath("name-prefix");
+	private static final XPath FIRSTNAME_XP = DocumentHelper.createXPath("given-name");
+	private static final XPath MIDDLENAME_XP = DocumentHelper.createXPath("middle-name");
+	private static final XPath LASTNAME_XP = DocumentHelper.createXPath("family-name");
+	private static final XPath NAMESUFFIX_XP = DocumentHelper.createXPath("name-suffix");
 
 	private static final String ITEM_NODE_NAME = "name";
 
@@ -43,8 +53,8 @@ public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
 	}
 
 	public NameOrg getOrgName(Node node) {
-		Node orgNameN = node.selectSingleNode("organization-name");
-		NameOrg name = orgNameN != null ? new NameOrg(orgNameN.getText()) : null;
+		Node orgNameN = ORGNAME_XP.selectSingleNode(node);
+		NameOrg name = orgNameN != null ? new NameOrg(orgNameN.getText().trim()) : null;
 
 		if (name != null) {
 			try {
@@ -58,19 +68,19 @@ public class NameNode extends ItemReader<gov.uspto.patent.model.entity.Name> {
 	}
 
 	public NamePerson getPersonName(Node node) {
-		Node prefixN = node.selectSingleNode("name-prefix");
+		Node prefixN = NAMEPREFIX_XP.selectSingleNode(node);
 		String prefix = prefixN != null ? prefixN.getText().trim() : null;
 
-		Node firstN = node.selectSingleNode("given-name");
+		Node firstN = FIRSTNAME_XP.selectSingleNode(node);
 		String firstName = firstN != null ? firstN.getText().trim() : null;
 
-		Node middleN = node.selectSingleNode("middle-name");
+		Node middleN = MIDDLENAME_XP.selectSingleNode(node);
 		String middleName = middleN != null ? middleN.getText().trim() : null;
 
-		Node lastN = node.selectSingleNode("family-name");
+		Node lastN = LASTNAME_XP.selectSingleNode(node);
 		String lastName = lastN != null ? lastN.getText().trim() : null;
 
-		Node suffixN = node.selectSingleNode("name-suffix");
+		Node suffixN = NAMESUFFIX_XP.selectSingleNode(node);
 		String suffix = suffixN != null ? suffixN.getText().trim() : null;
 
 		NamePerson name = null;

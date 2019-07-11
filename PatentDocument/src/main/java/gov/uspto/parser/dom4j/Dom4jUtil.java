@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -21,9 +22,26 @@ public class Dom4jUtil {
 		return sax.read(new InputSource(new StringReader(xmlString)));
 	}
 
+	public static String getTextOrNull(Node document, XPath xPath) {
+		Node node = xPath.selectSingleNode(document);
+		return node != null ? node.getStringValue() : null;
+	}
+
 	public static String getTextOrNull(Node document, String xPath) {
 		Node node = document.selectSingleNode(xPath);
 		return node != null ? node.getStringValue() : null;
+	}
+
+	/**
+	 * Get Text or Empty if Null
+	 * 
+	 * @param document
+	 * @param xPath
+	 * @return value or empty instead of null
+	 */
+	public static String getTextOrEmpty(Node document, XPath xPath) {
+		String value = getTextOrNull(document, xPath);
+		return value != null ? value : "";
 	}
 
 	/**

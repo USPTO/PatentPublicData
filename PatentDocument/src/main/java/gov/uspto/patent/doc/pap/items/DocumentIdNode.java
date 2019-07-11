@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.pap.items;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,11 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 	private static final String ITEM_NODE_NAME = "document-id";
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
+	
+	private static final XPath DOCIDXP = DocumentHelper.createXPath("doc-number");
+	private static final XPath KINDXP = DocumentHelper.createXPath("kind-code");
+	private static final XPath DATEXP = DocumentHelper.createXPath("document-date");
+	private static final XPath COUNTRYXP = DocumentHelper.createXPath("country-code");
 
 	private CountryCode fallbackCountryCode;
 
@@ -34,15 +41,19 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
 			return null;
 		}
 
-		Node docNumN = itemNode.selectSingleNode("doc-number");
+		Node docNumN = DOCIDXP.selectSingleNode(itemNode);
 		if (docNumN == null) {
 			LOGGER.warn("Invalid doc-number missing : {}", itemNode.asXML());
 			return null;
 		}
+		String docNumber = docNumN.getText().trim();
 
-		Node countryN = itemNode.selectSingleNode("country-code");
+		Node countryN = COUNTRYXP.selectSingleNode(itemNode);
 		CountryCode countryCode = CountryCode.UNKNOWN;
-		if (countryN == null || countryN.getText().trim().isEmpty()){
+		if (docNumber.startsWith("PCT/")) {
+			countryCode = CountryCode.WO;
+		}
+		else if (countryN == null || countryN.getText().trim().isEmpty()){
 			LOGGER.debug("Invalid CountryCode missing: using fallback CountryCode '{}' : {}", fallbackCountryCode, itemNode.asXML());
 		    countryCode = fallbackCountryCode;
 		} else {
@@ -56,12 +67,26 @@ public class DocumentIdNode extends ItemReader<DocumentId> {
     		}
 		}
 
-		Node kindN = itemNode.selectSingleNode("kind-code");
+		/*
+		 * Fix for duplication of CountryCode, country reappears in the doc number field
+		 */
+		if (docNumber.length() > 2 && docNumber.substring(0, 2).equalsIgnoreCase(countryCode.toString())) {
+			// WO 2005/023894 => 2005/023894
+			docNumber = docNumber.substring(2).trim();
+			if (docNumber.startsWith("/")) {
+				// WO/03/001333 => 03/001333
+				docNumber = docNumber.substring(1);
+			}
+			LOGGER.debug("Removed duplicate CountryCode '{}' -- from: '{}' doc-number: {} => {}",
+					countryCode.toString(), itemNode.getParent().getName(), docNumN.getText(), docNumber);
+		}
+
+		Node kindN = KINDXP.selectSingleNode(itemNode);
 		String kindCode = kindN != null ? kindN.getText().trim() : null;
 
-		DocumentId documentId = new DocumentId(countryCode, docNumN.getText().trim(), kindCode);
+		DocumentId documentId = new DocumentId(countryCode, docNumber, kindCode);
 
-		Node dateN = itemNode.selectSingleNode("document-date");
+		Node dateN = DATEXP.selectSingleNode(itemNode);
 		if (dateN != null) {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText().trim()));

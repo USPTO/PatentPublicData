@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.pap.items;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +39,14 @@ public class ResidenceNode extends ItemReader<Address> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ResidenceNode.class);
 
 	private static final String ITEM_NAME_NODE = "residence";
-	private static final String US_RESIDENT = "residence-us";
-	private static final String NONUS_RESIDENT = "residence-non-us";
+	
+	private static final XPath US_RESIDENT_XP = DocumentHelper.createXPath("residence-us");
+	private static final XPath NONUS_RESIDENT_XP = DocumentHelper.createXPath("residence-non-us");
 
+	private static final XPath CITYXP = DocumentHelper.createXPath("city");
+	private static final XPath STATEXP = DocumentHelper.createXPath("state");
+	private static final XPath COUNTRYXP = DocumentHelper.createXPath("country-code|country/country-code");
+	
 	public ResidenceNode(Node itemNode) {
 		super(itemNode, ITEM_NAME_NODE);
 	}
@@ -47,13 +54,15 @@ public class ResidenceNode extends ItemReader<Address> {
 	@Override
 	public Address read() {
 
-		Node usResident = itemNode.selectSingleNode(US_RESIDENT);
-		Node nonUS = itemNode.selectSingleNode(NONUS_RESIDENT);
-
+		Node usResident = US_RESIDENT_XP.selectSingleNode(itemNode);
+		
 		if (usResident != null) {
 			return readResidence(usResident);
-		} else if (nonUS != null) {
-			return readResidence(nonUS);
+		} else {
+			Node nonUS = NONUS_RESIDENT_XP.selectSingleNode(itemNode);
+			if (nonUS != null) {
+				return readResidence(nonUS);
+			}
 		}
 
 		return null;
@@ -61,17 +70,16 @@ public class ResidenceNode extends ItemReader<Address> {
 
 	private Address readResidence(Node residence) {
 
-		Node cityN = residence.selectSingleNode("city");
-		String city = cityN != null ? cityN.getText() : null;
+		Node cityN = CITYXP.selectSingleNode(residence);
+		String city = cityN != null ? cityN.getText().trim() : null;
 
-		Node stateN = residence.selectSingleNode("state");
-		String state = stateN != null ? stateN.getText() : null;
+		Node stateN = STATEXP.selectSingleNode(residence);
+		String state = stateN != null ? stateN.getText().trim() : null;
 
 		CountryCode countryCode = null;
 		if (residence.getParent().matches("//residence-non-us")) {
-			Node countryN = residence.selectSingleNode("country-code");
-			String country = countryN != null ? countryN.getText() : null;
-
+			Node countryN = COUNTRYXP.selectSingleNode(residence);
+			String country = countryN != null ? countryN.getText().trim() : null;
 			try {
 				countryCode = CountryCode.fromString(country);
 			} catch (InvalidDataException e) {
