@@ -68,6 +68,7 @@ public class Assignee extends Entity {
 	public void setRole(final String roleType) throws InvalidDataException {
 
 		if (roleType == null || roleType.trim().length() == 0) {
+			this.roleType = RoleType.XX;
 			return;
 		}
 
@@ -97,6 +98,6 @@ public class Assignee extends Entity {
 
 	@Override
 	public String toString() {
-		return "Assignee[name=" + getName() + ", partInterest=" + hasPartInterest() + ", roleType=" + roleType + ", roleDesc=" + getRoleDesc() + ", address=" + getAddress() + "]";
+		return "Assignee[name=" + getName() + ", partInterest=" + hasPartInterest() + ", roleType=" + getRole() + ", roleDesc=" + getRoleDesc() + ", address=" + getAddress() + "]";
 	}
 }
