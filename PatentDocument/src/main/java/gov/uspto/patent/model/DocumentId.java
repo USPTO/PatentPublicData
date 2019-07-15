@@ -296,6 +296,9 @@ public class DocumentId implements Comparable<DocumentId> {
 	}
 
 	public DocumentDate getDate() {
+		if (date == null) {
+			return DocumentDate.getEmpty();
+		}
 		return date;
 	}
 

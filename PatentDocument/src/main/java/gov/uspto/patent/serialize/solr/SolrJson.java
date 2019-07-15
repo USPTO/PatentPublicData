@@ -2,10 +2,13 @@ package gov.uspto.patent.serialize.solr;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
-
-import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -20,19 +23,25 @@ import com.fasterxml.jackson.core.JsonGenerator.Feature;
  */
 public class SolrJson {
 
-	/*
-	 * FastDateFormat is Thread-Safe version of SimpleDateFormat
-	 */
-	private static final FastDateFormat DATE_ISO_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private DateTimeFormatter dFormat = DateTimeFormatter.ISO_DATE;
+	private DateTimeFormatter dtFormat = DateTimeFormatter.ISO_INSTANT;
 
-	private JsonGenerator jGenerator;
 	private JsonFactory jfactory = new JsonFactory();
+	private JsonGenerator jGenerator;
 	private final boolean useDynamicFieldEndings;
 	private final boolean pretty;
 
 	public SolrJson(boolean pretty, boolean useDynamicFieldEndings) {
 		this.pretty = pretty;
 		this.useDynamicFieldEndings = useDynamicFieldEndings;
+	}
+
+	public void setDateFormat(DateTimeFormatter dFormat) {
+		this.dFormat = dFormat;
+	}
+
+	public void setDateTimeFormat(DateTimeFormatter dtFormat) {
+		this.dtFormat = dtFormat;
 	}
 
 	public void open(Writer writer) throws IOException {
@@ -148,32 +157,112 @@ public class SolrJson {
 	 * Date
 	 */
 	public void addDateField(String fieldName, Date value) throws IOException {
-		addField(new SolrField(fieldName, SolrFieldType.DATE, useDynamicFieldEndings, false), valueOrEmpty(value));
+		addField(new SolrField(fieldName, SolrFieldType.DATE, useDynamicFieldEndings, false), dateValueOrEmpty(value));
 	}
 
-	public void addField(SolrField field, Date value) throws IOException {
+	public void addDateField(String fieldName, LocalDate value) throws IOException {
+		addField(new SolrField(fieldName, SolrFieldType.DATE, useDynamicFieldEndings, false), dateValueOrEmpty(value));
+	}
+
+	public void addField(SolrField field, LocalDate value) throws IOException {
 		try {
-			jGenerator.writeStringField(field.build(), valueOrEmpty(value));
+			jGenerator.writeStringField(field.build(), dateValueOrEmpty(value));
 		} catch (JsonGenerationException e) {
 			System.err.println("!! SolrJson Failed to write field: '" + field.getName() + "'\n");
 		}
 	}
 
-	public void addDateField(SolrField field, Collection<Date> values) throws IOException {
+	public void addField(SolrField field, Date value) throws IOException {
+		LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		addField(field, date);
+	}
+
+	/**
+	 * Collection of Date values
+	 * 
+	 * @param field
+	 * @param values - Collection of Date or LocalDate
+	 * @throws IOException
+	 */
+	public void addDateField(SolrField field, Collection<?> values) throws IOException {
 		writeDateArray(field.build(), values);
 	}
 
-	private void writeDateArray(String fieldName, Collection<Date> values) throws IOException {
+	private void writeDateArray(String fieldName, Collection<?> values) throws IOException {
 		jGenerator.writeFieldName(fieldName);
 		jGenerator.writeStartArray(values.size());
-		for (Date tok : values) {
-			jGenerator.writeString(valueOrEmpty(tok));
+		if (Collection.class.isAssignableFrom(LocalDate.class)) {
+			for (Object tok : values) {
+				jGenerator.writeString(dateValueOrEmpty((LocalDate) tok));
+			}
+		} else if (Collection.class.isAssignableFrom(Date.class)) {
+			for (Object tok : values) {
+				jGenerator.writeString(dateValueOrEmpty((Date) tok));
+			}
+		} else {
+			System.err.println("!! SolrJson Failed to write field: '" + fieldName + "'\n");
 		}
 		jGenerator.writeEndArray();
 	}
 
-	private String valueOrEmpty(Date value) {
-		return value == null ? "" : DATE_ISO_FORMAT.format(value);
+	private String dateValueOrEmpty(LocalDate value) {
+		return value == null ? "" : value.format(dFormat);
+	}
+
+	private String dateValueOrEmpty(Date value) {
+		LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		return dateValueOrEmpty(date);
+	}
+
+	/*
+	 * DateTime
+	 */
+	public void addDateTimeField(String fieldName, Date value) throws IOException {
+		addField(new SolrField(fieldName, SolrFieldType.DATE, useDynamicFieldEndings, false), dateTimeValueOrEmpty(value));
+	}
+
+	public void addDateTimeField(String fieldName, LocalDate value) throws IOException {
+		addField(new SolrField(fieldName, SolrFieldType.DATE, useDynamicFieldEndings, false), dateTimeValueOrEmpty(value));
+	}
+
+	private String dateTimeValueOrEmpty(LocalDateTime value) {
+		return value == null ? "" : dtFormat.format(value.toInstant(ZoneOffset.UTC));
+	}
+
+	private String dateTimeValueOrEmpty(LocalDate value) {
+		return value == null ? "" : dateTimeValueOrEmpty(value.atStartOfDay());
+	}
+
+	private String dateTimeValueOrEmpty(Date value) {
+		LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		return dateValueOrEmpty(date);
+	}	
+
+	/**
+	 * Collection of Date Time values
+	 * @param field
+	 * @param values - Collection of Date or LocalDate
+	 * @throws IOException
+	 */
+	public void addDateTimeField(SolrField field, Collection<?> values) throws IOException {
+		writeDateTimeArray(field.build(), values);
+	}	
+
+	private void writeDateTimeArray(String fieldName, Collection<?> values) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartArray(values.size());
+		if (Collection.class.isAssignableFrom(LocalDate.class)) {
+			for (Object tok : values) {
+				jGenerator.writeString(dateTimeValueOrEmpty((LocalDate) tok));
+			}
+		} else if (Collection.class.isAssignableFrom(Date.class)) {
+			for (Object tok : values) {
+				jGenerator.writeString(dateTimeValueOrEmpty((Date) tok));
+			}
+		} else {
+			System.err.println("!! SolrJson Failed to write field: '" + fieldName + "'\n");
+		}
+		jGenerator.writeEndArray();
 	}
 
 	/*

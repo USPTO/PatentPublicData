@@ -3,9 +3,9 @@ package gov.uspto.patent.serialize.solr;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -102,7 +102,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		json.addStringField("related_id", getDocIds(patent.getRelationIds()));
 		json.addStringField("priority_id", getDocIds(patent.getPriorityIds()));
 
-		List<Date> priorityDates = getDocDates(patent.getPriorityIds());
+		List<LocalDate> priorityDates = getDocDates(patent.getPriorityIds());
 		json.addDateField("priority_date", priorityDates.isEmpty() ? null : priorityDates.get(0));
 
 		json.addDateField("filing_date", patent.getApplicationId().getDate().getDate());
@@ -287,7 +287,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 				.collect(Collectors.toList());
 	}
 
-	private List<Date> getDocDates(Collection<DocumentId> docIds) {
+	private List<LocalDate> getDocDates(Collection<DocumentId> docIds) {
 		if (docIds == null) {
 			return Collections.emptyList();
 		}

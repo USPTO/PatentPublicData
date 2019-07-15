@@ -179,7 +179,7 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		jGenerator.writeStartObject();
 		if (date != null) {
 			jGenerator.writeStringField("raw", date.getDateText(DateTextType.RAW));
-			jGenerator.writeStringField("iso", date.getDateText(DateTextType.ISO));
+			jGenerator.writeStringField("iso", date.getDateText(DateTextType.ISO_DATE_TIME));
 		} else {
 			jGenerator.writeStringField("raw", "");
 			jGenerator.writeStringField("iso", "");

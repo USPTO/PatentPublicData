@@ -319,7 +319,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         if (date != null) {
             builder.add("raw", date.getDateText(DateTextType.RAW));
-            builder.add("iso", date.getDateText(DateTextType.ISO));
+            builder.add("iso", date.getDateText(DateTextType.ISO_DATE_TIME));
         } else {
             builder.add("raw", "");
             builder.add("iso", "");

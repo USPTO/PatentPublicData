@@ -90,25 +90,25 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
 
         if (patent.getDateProduced() != null) {
             builder.add("productionDateRaw", patent.getDateProduced().getDateText(DateTextType.RAW));
-            builder.add("productionDateIso", patent.getDateProduced().getDateText(DateTextType.ISO));
+            builder.add("productionDateIso", patent.getDateProduced().getDateText(DateTextType.ISO_DATE_TIME));
         }
 
         if (patent.getDatePublished() != null) {
             builder.add("publishedDateRaw", patent.getDatePublished().getDateText(DateTextType.RAW));
-            builder.add("publishedDateIso", patent.getDatePublished().getDateText(DateTextType.ISO));
+            builder.add("publishedDateIso", patent.getDatePublished().getDateText(DateTextType.ISO_DATE_TIME));
         }
 
         builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
         if (patent.getDocumentDate() != null) {
             builder.add("documentDateRaw", patent.getDocumentDate().getDateText(DateTextType.RAW));
-            builder.add("documentDateIso", patent.getDocumentDate().getDateText(DateTextType.ISO));
+            builder.add("documentDateIso", patent.getDocumentDate().getDateText(DateTextType.ISO_DATE_TIME));
         }
         builder.add("documentId_tokens", mapDocIdVariations(patent.getDocumentId()));
 
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
         if (patent.getApplicationDate() != null) {
             builder.add("applicationDateRaw", patent.getApplicationDate().getDateText(DateTextType.RAW));
-            builder.add("applicationDateIso", patent.getApplicationDate().getDateText(DateTextType.ISO));
+            builder.add("applicationDateIso", patent.getApplicationDate().getDateText(DateTextType.ISO_DATE_TIME));
         }
         builder.add("applicationId_tokens", mapDocIdVariations(patent.getApplicationId()));
 

@@ -74,13 +74,13 @@ public abstract class Patent {
 		this.documentId = documentId;
 		this.patentType = patentType;
 	}
-	
+
 	/**
 	 * Data Source data originated from including record number.
 	 * 
-	 *<p>
+	 * <p>
 	 * FileName:RecordNumber:DocId
-	 *<p>
+	 * <p>
 	 * 
 	 * @param source
 	 */
@@ -91,9 +91,9 @@ public abstract class Patent {
 	/**
 	 * Data Source data originated from including record number.
 	 * 
-	 *<p>
+	 * <p>
 	 * FileName:RecordNumber:DocId
-	 *<p>
+	 * <p>
 	 * 
 	 * @param source
 	 */
@@ -155,7 +155,7 @@ public abstract class Patent {
 		if (documentId != null) {
 			return documentId.getDate();
 		} else {
-			return null;
+			return DocumentDate.getEmpty();
 		}
 	}
 
@@ -260,10 +260,16 @@ public abstract class Patent {
 	}
 
 	public DocumentDate getDatePublished() {
+		if (datePublished == null) {
+			return DocumentDate.getEmpty();
+		}
 		return datePublished;
 	}
 
 	public DocumentDate getDateProduced() {
+		if (dateProduced == null) {
+			return DocumentDate.getEmpty();
+		}
 		return dateProduced;
 	}
 
@@ -486,7 +492,7 @@ public abstract class Patent {
 	 * @return
 	 */
 	public boolean match(DateRange dateRange) {
-		if (datePublished.getDate() == null) {
+		if (datePublished.getDate() == null || DocumentDate.getEmpty().equals(datePublished)) {
 			return false;
 		}
 		return dateRange.between(datePublished.getDate());
@@ -497,11 +503,12 @@ public abstract class Patent {
 		return "Patent [patentCorpus=" + patentCorpus + "\n\t, source=" + source + "\n\t, documentId=" + documentId
 				+ "\n\t, priorityIds=" + priorityIds + "\n\t, otherIds=" + otherIds + "\n\t, relationIds=" + relationIds
 				+ "\n\t, referenceIds=" + referenceIds + "\n\t, datePublished=" + datePublished + "\n\t, dateProduced="
-				+ dateProduced + "\n\t, title=" + title + "\n\t, abstractText=" + abstractText + "\n\t, description=" + description
-				+ "\n\t, citations=" + citations + "\n\t, classifications=" + classifications + "\n\t, searchClassifications="
-				+ searchClassifications + "\n\t, claims=" + claims + "\n\t, inventors=" + inventors + "\n\t, assignees=" + assignees
-				+ "\n\t, applicants=" + applicants + "\n\t, agents=" + agents + "\n\t, examiners=" + examiners + "\n\t, applicationId="
-				+ applicationId + "\n\t, chemFomulas=" + chemFomulas + "\n\t, mathFormulas=" + mathFormulas + "\n\t, patentType="
+				+ dateProduced + "\n\t, title=" + title + "\n\t, abstractText=" + abstractText + "\n\t, description="
+				+ description + "\n\t, citations=" + citations + "\n\t, classifications=" + classifications
+				+ "\n\t, searchClassifications=" + searchClassifications + "\n\t, claims=" + claims + "\n\t, inventors="
+				+ inventors + "\n\t, assignees=" + assignees + "\n\t, applicants=" + applicants + "\n\t, agents="
+				+ agents + "\n\t, examiners=" + examiners + "\n\t, applicationId=" + applicationId
+				+ "\n\t, chemFomulas=" + chemFomulas + "\n\t, mathFormulas=" + mathFormulas + "\n\t, patentType="
 				+ patentType + "]";
 	}
 }
