@@ -148,7 +148,7 @@ public class SolrJson {
 	 * Date
 	 */
 	public void addDateField(String fieldName, Date value) throws IOException {
-		addField(new SolrField(fieldName, SolrFieldType.DATE, useDynamicFieldEndings, false), value);
+		addField(new SolrField(fieldName, SolrFieldType.DATE, useDynamicFieldEndings, false), valueOrEmpty(value));
 	}
 
 	public void addField(SolrField field, Date value) throws IOException {
