@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +22,8 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
 
-	private static final String FRAGMENT_PATH = "/DOCUMENT/ASSG";
+	private static final XPath ASSIGNEEXP = DocumentHelper.createXPath("/DOCUMENT/ASSG");
+	private static final XPath ATYPEXP = DocumentHelper.createXPath("COD");
 
 	public AssigneeNode(Document document) {
 		super(document);
@@ -30,7 +33,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	public List<Assignee> read() {
 		List<Assignee> assigneeList = new ArrayList<Assignee>();
 
-		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
+		List<Node> assignees = ASSIGNEEXP.selectNodes(document);
 		for (Node assigneeN : assignees) {
 			Assignee assignee = readAssignee(assigneeN);
 			if (assignee != null) {
@@ -55,21 +58,18 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 		Address address = new AddressNode(assigneeN).read();
 		/*
+		 * try { address.validate(); } catch (InvalidDataException e) {
+		 * LOGGER.warn("{} : {}", e.getMessage(), assigneeN.asXML()); }
+		 */
+
+		Node typeCodeN = ATYPEXP.selectSingleNode(assigneeN);
+		Assignee assignee = new Assignee(name, address);
+
+		String assigneeType = typeCodeN != null ? typeCodeN.getText() : null;
 		try {
-			address.validate();
+			assignee.setRole(assigneeType);
 		} catch (InvalidDataException e) {
 			LOGGER.warn("{} : {}", e.getMessage(), assigneeN.asXML());
-		}
-		*/
-
-		Node typeCodeN = assigneeN.selectSingleNode("COD");
-		Assignee assignee = new Assignee(name, address);
-		if (typeCodeN != null) {
-			try {
-				assignee.setRole(typeCodeN.getText());
-			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), assigneeN.asXML());
-			}
 		}
 
 		return assignee;

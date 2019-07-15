@@ -8,7 +8,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,9 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNode.class);
 
-	private static final String FRAGMENT_PATH = "/DOCUMENT/CLAS";
+	private static final XPath CLASSXP = DocumentHelper.createXPath("/DOCUMENT/CLAS");
+	private static final XPath USPCXP = DocumentHelper.createXPath("OCL");
+	private static final XPath IPCXP = DocumentHelper.createXPath("ICL");
 
 	/*
 	 * IPC Classification for Design Patents: Jan 5, 1971 through March 6, 1984 with
@@ -77,7 +81,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 	public Set<PatentClassification> read() {
 		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
-		List<Node> classNodes = document.selectNodes(FRAGMENT_PATH);
+		List<Node> classNodes = CLASSXP.selectNodes(document);
 		for (Node classN : classNodes) {
 			UspcClassification uspc = getUSPC(classN);
 			if (uspc != null) {
@@ -92,7 +96,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 	}
 
 	public UspcClassification getUSPC(Node classN) {
-		Node uspcN = classN.selectSingleNode("OCL");
+		Node uspcN = USPCXP.selectSingleNode(classN);
 		if (uspcN != null) {
 			String classStr = uspcN.getText().trim();
 			UspcClassification uspc = new UspcClassification(classStr, true);
@@ -109,7 +113,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 
 	public Set<PatentClassification> getIPC(Node classN) {
 		Set<PatentClassification> ipcClasses = new HashSet<PatentClassification>();
-		List<Node> ipcNs = classN.selectNodes("ICL");
+		List<Node> ipcNs = IPCXP.selectNodes(classN);
 
 		for (Node ipcN : ipcNs) {
 			if (ipcN != null) {

@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +23,12 @@ import gov.uspto.patent.model.Figure;
 public class DescriptionFigures extends ItemReader<List<Figure>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DescriptionFigures.class);
 
+	private static final XPath PARXP = DocumentHelper.createXPath("PAR");
+	
 	private static final Pattern PATENT_FIG = Pattern.compile("^(FIG\\.? \\(?\\d{1,3}[A-Za-z]?\\)?)\\b");
 	private static final Pattern PATENT_FIGS = Pattern.compile(
 			"^(FIGS\\.? \\d{1,3}\\s?\\(?[A-Za-z]?\\)?(?:(?:\\s?\\-\\s?|, | and | to | through )\\d{0,3}\\(?[A-Za-z]?\\)?)+)\\b");
-	private static final Pattern REF_FIGS = Pattern.compile("\\b(FIG\\.? \\(?\\d{1,3}[A-Za-z]?\\)?)\\b");
+	//private static final Pattern REF_FIGS = Pattern.compile("\\b(FIG\\.? \\(?\\d{1,3}[A-Za-z]?\\)?)\\b");
 
 	public DescriptionFigures(Node itemNode) {
 		super(itemNode);
@@ -34,8 +38,7 @@ public class DescriptionFigures extends ItemReader<List<Figure>> {
 	public List<Figure> read() {
 		List<Figure> figures = new ArrayList<Figure>();
 
-		@SuppressWarnings("unchecked")
-		List<Node> paragraphNodes = itemNode.selectNodes("PAR");
+		List<Node> paragraphNodes = PARXP.selectNodes(itemNode);
 
 		for (Node paragraphN : paragraphNodes) {
 			String pargraphText = paragraphN.getText();

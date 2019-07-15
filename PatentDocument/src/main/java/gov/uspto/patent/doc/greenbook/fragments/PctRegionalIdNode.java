@@ -2,11 +2,11 @@ package gov.uspto.patent.doc.greenbook.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,12 +15,17 @@ import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
+import gov.uspto.patent.model.DocumentIdType;
 
 public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PctRegionalIdNode.class);
 
-	private static final String FRAGMENT_PATH = "/DOCUMENT/PCTA";
+	private static final XPath PCTXP = DocumentHelper.createXPath("/DOCUMENT/PCTA");
+	private static final XPath PCPXP = DocumentHelper.createXPath("PCP");
+	private static final XPath PCDXP = DocumentHelper.createXPath("PCD");
+	private static final XPath PCNXP = DocumentHelper.createXPath("PCN");
+	private static final XPath PD3XP = DocumentHelper.createXPath("PD3");
 
 	public PctRegionalIdNode(Document document) {
 		super(document);
@@ -30,7 +35,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 	public List<DocumentId> read() {
 		List<DocumentId> docIds = new ArrayList<DocumentId>();
 
-		Node pctGroupN = document.selectSingleNode(FRAGMENT_PATH);
+		Node pctGroupN = PCTXP.selectSingleNode(document);
 		if (pctGroupN == null) {
 			return docIds;
 		}
@@ -49,12 +54,13 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 	}
 
 	public DocumentId publicationId(Node pctGroupN) {
-		Node pctPubIdN = pctGroupN.selectSingleNode("PCP");
+		Node pctPubIdN = PCPXP.selectSingleNode(pctGroupN);
 		if (pctPubIdN != null) {
-			DocumentId pubDocId = buildDocId(pctPubIdN);
+			DocumentId pubDocId = new DocumentId(CountryCode.WO, pctPubIdN.getText());
+			pubDocId.setType(DocumentIdType.INTERNATIONAL_FILING);
 
 			if (pubDocId != null) {
-				Node pctPubDateN = pctGroupN.selectSingleNode("PCD");
+				Node pctPubDateN = PCDXP.selectSingleNode(pctGroupN);
 				if (pctPubDateN != null) {
 					String pubDateStr = pctPubDateN.getText().replaceAll("[^0-9]", "");
 					try {
@@ -73,12 +79,13 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 	}
 
 	public DocumentId filingId(Node pctGroupN) {
-		Node pctFilingIdN = pctGroupN.selectSingleNode("PCN");
+		Node pctFilingIdN = PCNXP.selectSingleNode(pctGroupN);
 		if (pctFilingIdN != null) {
-			DocumentId filindDocId = buildDocId(pctFilingIdN);
+			DocumentId filindDocId = new DocumentId(CountryCode.WO, pctFilingIdN.getText());
+			filindDocId.setType(DocumentIdType.INTERNATIONAL_FILING);
 
 			if (filindDocId != null) {
-				Node pctFilingDateN = pctGroupN.selectSingleNode("PD3");
+				Node pctFilingDateN = PD3XP.selectSingleNode(pctGroupN);
 				if (pctFilingDateN != null) {
 					String filingDateStr = pctFilingDateN.getText().replaceAll("[^0-9]", "");
 					try {
@@ -92,37 +99,6 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 				return filindDocId;
 			}
 		}
-
-		return null;
-	}
-
-	private static final Pattern PCT_ID_PATTERN = Pattern.compile("^(?:PCT/)?([A-Z]{2})([0-9]{2}/[0-9]{4,})$");
-
-	private DocumentId buildDocId(Node docIdN) {
-		if (docIdN == null) {
-			return null;
-		}
-
-		String pctDocIdString = docIdN.getText();
-		
-		Matcher matcher = PCT_ID_PATTERN.matcher(pctDocIdString);
-
-		if (matcher.matches()) {
-			String countryCodeStr = matcher.group(1);
-			String docId = matcher.group(2).replaceAll("/", "");
-
-			CountryCode countryCode = CountryCode.UNKNOWN;
-
-			try {
-				countryCode = CountryCode.fromString(countryCodeStr);
-			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), countryCodeStr);
-			}
-
-			return new DocumentId(countryCode, docId);
-		}
-
-		LOGGER.warn("PCT DocID failed to match pattern: {} : {}", pctDocIdString, docIdN.getParent().asXML());
 
 		return null;
 	}

@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.greenbook.items;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,10 @@ import gov.uspto.patent.model.entity.Address;
 public class AddressNode extends ItemReader<Address> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AddressNode.class);
 
+	private static final XPath CITYXP = DocumentHelper.createXPath("CTY");
+	private static final XPath STATEXP = DocumentHelper.createXPath("STA");
+	private static final XPath CNTRYXP = DocumentHelper.createXPath("CNT");
+	
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 	private CountryCode defaultCountryCode;
 
@@ -47,22 +53,28 @@ public class AddressNode extends ItemReader<Address> {
 
 	@Override
 	public Address read() {
+		/*
 		Node streetN = itemNode.selectSingleNode("STR");
 		String street = streetN != null ? streetN.getText() : null;
 
-		Node cityN = itemNode.selectSingleNode("CTY");
-		String city = cityN != null ? cityN.getText() : null;
-
-		Node stateN = itemNode.selectSingleNode("STA");
-		String state = stateN != null ? stateN.getText() : null;
-
 		Node zipcodeN = itemNode.selectSingleNode("ZIP");
 		String zipcode = zipcodeN != null ? zipcodeN.getText() : null;
+		*/
 
-		Node countryN = itemNode.selectSingleNode("CNT");
+		Node cityN = CITYXP.selectSingleNode(itemNode);
+		String city = cityN != null ? cityN.getText() : null;
+
+		Node stateN = STATEXP.selectSingleNode(itemNode);
+		String state = stateN != null ? stateN.getText() : null;
+
+		Node countryN = CNTRYXP.selectSingleNode(itemNode);
 		CountryCode countryCode = getCountryCode(countryN);
+		if (CountryCode.UNDEFINED.equals(countryCode)) {
+			countryCode = defaultCountryCode;
+		}
 
-		Address address = new Address(street, city, state, zipcode, countryCode);
+		//Address address = new Address(street, city, state, zipcode, countryCode);
+		Address address = new Address(city, state, countryCode);
 
 		return address;
 	}
@@ -122,7 +134,7 @@ public class AddressNode extends ItemReader<Address> {
 
 		CountryCode countryCode = CountryCodeHistory.getCurrentCode(country);
 
-		LOGGER.info("Historic Country Code: '{}' maps to '{}'", country, countryCode);
+		LOGGER.debug("Historic Country Code: '{}' maps to '{}'", country, countryCode);
 
 		return countryCode;
 	}

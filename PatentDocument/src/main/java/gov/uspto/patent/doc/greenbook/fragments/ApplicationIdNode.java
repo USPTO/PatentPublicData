@@ -1,7 +1,9 @@
 package gov.uspto.patent.doc.greenbook.fragments;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,10 @@ import gov.uspto.patent.model.DocumentId;
 public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationIdNode.class);
+	
+	private static final XPath PATXP = DocumentHelper.createXPath("/DOCUMENT/PATN");
+	private static final XPath APNUMXP = DocumentHelper.createXPath("APN");
+	private static final XPath APDATEXP = DocumentHelper.createXPath("APD");
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 	private CountryCode defaultCountryCode;
@@ -29,7 +35,9 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 	@Override
 	public DocumentId read() {
-		Node docNumN = document.selectSingleNode("/DOCUMENT/PATN/APN");
+		Node parentNode = PATXP.selectSingleNode(document);
+		
+		Node docNumN = APNUMXP.selectSingleNode(parentNode);
 		if (docNumN == null) {
 			LOGGER.warn("Invalid application-id 'APN' field not found");
 			return null;
@@ -37,7 +45,7 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 		DocumentId documentId = new DocumentId(defaultCountryCode, docNumN.getText());
 
-		Node dateN = document.selectSingleNode("/DOCUMENT/PATN/APD");
+		Node dateN = APDATEXP.selectSingleNode(parentNode);
 		if (dateN != null) {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText()));

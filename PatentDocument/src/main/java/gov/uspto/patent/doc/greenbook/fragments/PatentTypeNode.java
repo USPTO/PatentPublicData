@@ -1,7 +1,9 @@
 package gov.uspto.patent.doc.greenbook.fragments;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.PatentType;
@@ -14,7 +16,7 @@ import gov.uspto.patent.model.PatentType;
  */
 public class PatentTypeNode extends DOMFragmentReader<PatentType> {
 
-	private static final String FRAGMENT_PATH = "/DOCUMENT/PATN/APT";
+	private static final XPath APTXP = DocumentHelper.createXPath("/DOCUMENT/PATN/APT");
 
 	public PatentTypeNode(Document document) {
 		super(document);
@@ -22,7 +24,7 @@ public class PatentTypeNode extends DOMFragmentReader<PatentType> {
 
 	@Override
 	public PatentType read() {
-		Node aptN = document.selectSingleNode(FRAGMENT_PATH);
+		Node aptN = APTXP.selectSingleNode(document);
 		if (aptN != null) {
 			switch (aptN.getText()) {
 			case "1":

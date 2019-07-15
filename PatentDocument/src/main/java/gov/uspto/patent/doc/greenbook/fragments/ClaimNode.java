@@ -8,7 +8,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.TextProcessor;
@@ -17,7 +19,7 @@ import gov.uspto.patent.model.ClaimType;
 
 public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 
-	private static final String CLAIM_CHILDREN_PATH = "/DOCUMENT/CLMS/*|/DOCUMENT/DCLM/*";
+	private static final XPath CLAIMSXP = DocumentHelper.createXPath("/DOCUMENT/CLMS/*|/DOCUMENT/DCLM/*");
 
 	// REGEX to Remove number in front of sentence.
 	private static final Pattern LEADING_NUM = Pattern.compile("^[1-9][0-9]?\\.?\\s+(?=[A-Z])");
@@ -31,7 +33,7 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 	public List<Claim> read() {
 		List<Claim> claims = new ArrayList<Claim>();
 
-		List<Node> childNodes = document.selectNodes(CLAIM_CHILDREN_PATH);
+		List<Node> childNodes = CLAIMSXP.selectNodes(document);
 
 		String currentClaimNum = "";
 		StringBuilder stb = new StringBuilder();

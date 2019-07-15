@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +21,7 @@ import gov.uspto.patent.model.entity.Name;
 public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InventorNode.class);
 
-	private static final String FRAGMENT_PATH = "/DOCUMENT/INVT";
+	private static final XPath INVENTORXP = DocumentHelper.createXPath("/DOCUMENT/INVT");
 
 	public InventorNode(Document document) {
 		super(document);
@@ -29,8 +31,7 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 	public List<Inventor> read() {
 		List<Inventor> inventorList = new ArrayList<Inventor>();
 
-		@SuppressWarnings("unchecked")
-		List<Node> inventors = document.selectNodes(FRAGMENT_PATH);
+		List<Node> inventors = INVENTORXP.selectNodes(document);
 		for (Node inventorN : inventors) {
 			Inventor inventor = readInventor(inventorN);
 			if (inventor != null) {

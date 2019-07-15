@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -66,6 +68,8 @@ public class Greenbook extends KvParser {
 	private static List<String> HEADER_FIELDS = Arrays.asList(new String[] { "PAC" });
 	private static List<String> TABLE_FIELDS = Arrays.asList(new String[] { "TBL" });
 
+	private static final XPath TITLEXP = DocumentHelper.createXPath("/DOCUMENT/PATN/TTL");
+	
 	public Greenbook() {
 		super(MAINTAIN_SPACE_FIELDS, PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
 	}
@@ -125,7 +129,7 @@ public class Greenbook extends KvParser {
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
-		Node titleN = document.selectSingleNode("/DOCUMENT/PATN/TTL");
+		Node titleN = TITLEXP.selectSingleNode(document);
 		String title = titleN != null ? titleN.getText() : null;
 
 		List<Examiner> examiners = new ExaminerNode(document).read();
