@@ -121,6 +121,9 @@ public class IpcClassification extends PatentClassification {
 	@Override
 	public Tree getTree() {
 		Tree tree = new Tree();
+		if (parseFailed) {
+			return tree;
+		}
 		tree.addChild(section).addChild(mainClass).addChild(subClass).addChild(mainGroup).addChild(subGroup);
 		return tree;
 	}

@@ -260,6 +260,9 @@ public class CpcClassification extends PatentClassification {
 	@Override
 	public Tree getTree() {
 		Tree tree = new Tree();
+		if (parseFailed) {
+			return tree;
+		}
 
 		Node pnode = tree.addChild(section);
 		pnode = pnode.addChild(Strings.padStart(mainClass, 2, '0'));
@@ -418,6 +421,8 @@ public class CpcClassification extends PatentClassification {
 			setSubClass(subClass);
 			setMainGroup(mainGroup);
 			setSubGroup(subGroup);
+			
+			LOGGER.debug("'{}','{}'", classificationStr, this.toText());
 		} else if (classificationStr.length() == 3) {
 			Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
 			if (matchL3.matches()) {

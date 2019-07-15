@@ -169,6 +169,10 @@ public class UspcClassification extends PatentClassification {
 
 	public Tree getTree() {
 		Tree tree = new Tree();
+		if (parseFailed) {
+			return tree;
+		}
+
 		String mainClassPad = Strings.padStart(mainClass, 3, '0');
 		Node parent = tree.addChild(mainClassPad);
 		for (int i = 0; i < subClass.length; i++) {

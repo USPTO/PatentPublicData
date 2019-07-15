@@ -142,12 +142,8 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		// json.addStringField("examiner_name_initials" ,
 		// getEntityNamesAbrev(patent.getExaminers()).values());
 
-		List<String> examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).distinct()
-				.collect(Collectors.toList());
-		json.addNumberField("art_unit",
-				examiner_dep != null && !examiner_dep.isEmpty() && !examiner_dep.get(0).isEmpty()
-						? Integer.parseInt(examiner_dep.get(0))
-						: -1);
+		String examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).filter(Objects::nonNull).findFirst().orElse("-1");
+		json.addNumberField("art_unit", Integer.parseInt(examiner_dep));
 
 		/*
 		 * Citations
@@ -339,7 +335,7 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 	private <T extends PatentClassification> Set<String> getClassificationFacets(
 			Collection<PatentClassification> classes, Class<T> wantedClass) {
-		return classes.stream().filter(wantedClass::isInstance).map(p -> p.getTree().getLeafFacets())
+		return classes.stream().filter(wantedClass::isInstance).filter(Objects::nonNull).map(p -> p.getTree().getLeafFacets())
 				.flatMap(Collection::stream).collect(Collectors.toSet());
 	}
 
