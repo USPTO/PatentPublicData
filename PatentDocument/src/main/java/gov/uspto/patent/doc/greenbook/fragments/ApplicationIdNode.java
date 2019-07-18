@@ -43,7 +43,13 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 			return null;
 		}
 
-		DocumentId documentId = new DocumentId(defaultCountryCode, docNumN.getText());
+		String docId = docNumN.getText();
+		if (docId.endsWith("&")) {
+			docId = docId.substring(0, docId.length()-1);
+			// LOGGER.warn("!!!!!!!!!!!!!! Application ID ends with & '{}' -> '{}'", docNumN.getText(), docId);
+		}
+
+		DocumentId documentId = new DocumentId(defaultCountryCode, docId);
 
 		Node dateN = APDATEXP.selectSingleNode(parentNode);
 		if (dateN != null) {
