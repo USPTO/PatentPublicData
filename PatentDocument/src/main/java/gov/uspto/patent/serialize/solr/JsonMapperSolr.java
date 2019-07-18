@@ -142,13 +142,31 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 		// json.addStringField("examiner_name_initials" ,
 		// getEntityNamesAbrev(patent.getExaminers()).values());
 
-		String examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).filter(Objects::nonNull).findFirst().orElse("-1");
+		String examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).filter(Objects::nonNull)
+				.findFirst().orElse("-1");
 		json.addNumberField("art_unit", Integer.parseInt(examiner_dep));
 
 		/*
-		 * Citations
+		 * Citations 
+		 * 
+		 * Note: Greenbooks have CiteBy.UNDEFINED ; who added the citation is not defined within Greenbooks Format.
 		 */
 		Map<CitationType, Map<CitedBy, List<Citation>>> citationMap = getCitationMap(patent.getCitations());
+
+		
+		List<String> undefinedPatCite = null;
+		if (citationMap.containsKey(CitationType.PATCIT)
+				&& citationMap.get(CitationType.PATCIT).containsKey(CitedBy.UNDEFINED)) {
+			undefinedPatCite = citationMap.get(CitationType.PATCIT).get(CitedBy.UNDEFINED).stream()
+					.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).collect(Collectors.toList());
+		}
+
+		List<String> undefinedNplCite = null;
+		if (citationMap.containsKey(CitationType.NPLCIT)
+				&& citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.UNDEFINED)) {
+			undefinedNplCite = citationMap.get(CitationType.NPLCIT).get(CitedBy.UNDEFINED).stream()
+					.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
+		}
 
 		List<String> examinerPatCite = null;
 		if (citationMap.containsKey(CitationType.PATCIT)
@@ -156,6 +174,9 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 			examinerPatCite = citationMap.get(CitationType.PATCIT).get(CitedBy.EXAMINER).stream()
 					.map(o -> (PatCitation) o).map(p -> p.getDocumentId().toTextNoKind()).sorted()
 					.collect(Collectors.toList());
+		}
+		if (examinerPatCite == null && undefinedPatCite != null) { // Undefined CiteBy ; Greenbooks.
+			examinerPatCite = undefinedPatCite;
 		}
 		json.addStringField("citation_pat_examiner",
 				examinerPatCite == null ? Collections.emptyList() : examinerPatCite);
@@ -165,6 +186,9 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 				&& citationMap.get(CitationType.NPLCIT).containsKey(CitedBy.EXAMINER)) {
 			examinerNplCite = citationMap.get(CitationType.NPLCIT).get(CitedBy.EXAMINER).stream()
 					.map(o -> (NplCitation) o).map(p -> p.getCiteText()).collect(Collectors.toList());
+		}
+		if (examinerNplCite == null && undefinedNplCite != null) { // Undefined CiteBy ; Greenbooks.
+			examinerNplCite = undefinedNplCite;
 		}
 		json.addStringField("citation_npl_examiner",
 				examinerNplCite == null ? Collections.emptyList() : examinerNplCite);
@@ -335,8 +359,8 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 	private <T extends PatentClassification> Set<String> getClassificationFacets(
 			Collection<PatentClassification> classes, Class<T> wantedClass) {
-		return classes.stream().filter(wantedClass::isInstance).filter(Objects::nonNull).map(p -> p.getTree().getLeafFacets())
-				.flatMap(Collection::stream).collect(Collectors.toSet());
+		return classes.stream().filter(wantedClass::isInstance).filter(Objects::nonNull)
+				.map(p -> p.getTree().getLeafFacets()).flatMap(Collection::stream).collect(Collectors.toSet());
 	}
 
 	private <T extends PatentClassification> List<String> getClassifications(Collection<PatentClassification> classes,
