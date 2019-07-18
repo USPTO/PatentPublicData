@@ -91,7 +91,6 @@ public class Greenbook extends KvParser {
 		DocumentId publicationId = new DocumentIdNode(document).read();
 		PatentType patentType = PatentType.UNDEFINED;
 		if (publicationId != null) {
-			MDC.put("DOCID", publicationId.toText());
 			patentType = new PatentTypeNode(document).read();
 			publicationId.setPatentType(patentType);
 
@@ -118,13 +117,18 @@ public class Greenbook extends KvParser {
 					publicationId.setKindCode("H");
 					break;
 				case DEF:
+					// Defensive Publication - Documents issued from November 5, 1968 through May 5, 1987.
+					publicationId.setKindCode("I4");
 					break;
 				case UNDEFINED:
+					LOGGER.warn("!!! Patent Type UNDEFINED : {}", publicationId.toText());
 					break;
 				default:
 					break;
 				}
 			}
+
+			MDC.put("DOCID", publicationId.toText());
 		}
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
