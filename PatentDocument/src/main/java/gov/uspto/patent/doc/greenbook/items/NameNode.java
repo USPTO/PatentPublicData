@@ -25,9 +25,13 @@ public class NameNode extends ItemReader<Name> {
 
 	private static final XPath NAMEXP = DocumentHelper.createXPath("NAM");
 
-	public static final Set<String> PERSON_SUFFIXES = new HashSet<String>(Arrays.asList("JR", "SR", "II", "III", "IV", "V", "deceased"));
-	public static final Set<String> PERSON_LONG_SUFFIXES = new HashSet<String>(Arrays.asList("DECEASED", "HEIR", "EXECUTOR"));
-	
+	public static final Set<String> PERSON_SUFFIXES = new HashSet<String>(
+			Arrays.asList("JR", "SR", "II", "III", "IV", "V", "2ND", "3RD", "4TH", "5TH"));
+	public static final Set<String> PERSON_LONG_SUFFIXES = new HashSet<String>(
+			Arrays.asList("DECEASED", "HEIR", "HEIRS", "HEIRESS", "CO-EXECUTOR", "CO-EXECUTRIX", "EXECTRIX", "EXECUTOR",
+					"EXECUTORS", "EXECUTRIX", "ADMINISTRATOR", "ADMINISTRATRIX", "LEGAL REPRESENTATIVE", "LEGAL HEIR",
+					"SPECIAL ADMINISTRATOR", "TRUSTEE"));
+
 	public NameNode(Node itemNode) {
 		super(itemNode);
 	}
@@ -51,8 +55,10 @@ public class NameNode extends ItemReader<Name> {
 				String[] parts = lastName.split(",");
 				if (parts.length == 2) {
 					String suffixCheck = parts[1].trim().replaceFirst("\\.$", "").toUpperCase();
-					if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck)) || PERSON_LONG_SUFFIXES.contains(suffixCheck)) {
-						LOGGER.debug("Suffix Fixed, parsed common suffix '{}' from lastname: '{}'", suffixCheck, lastName);
+					if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck))
+							|| PERSON_LONG_SUFFIXES.contains(suffixCheck)) {
+						LOGGER.debug("Suffix Fixed, parsed common suffix '{}' from lastname: '{}'", suffixCheck,
+								lastName);
 						lastName = parts[0];
 						suffix = suffixCheck;
 					} else {
@@ -94,10 +100,10 @@ public class NameNode extends ItemReader<Name> {
 
 		return entityName;
 	}
-	
-	public boolean isOrgName(String name){
+
+	public boolean isOrgName(String name) {
 		return false;
 		// special characters in orgName "&"
-		// 
+		//
 	}
 }
