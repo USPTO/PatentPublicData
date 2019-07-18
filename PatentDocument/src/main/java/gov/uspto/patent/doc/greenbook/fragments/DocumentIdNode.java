@@ -19,7 +19,7 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 
 	private static final XPath PATXP = DocumentHelper.createXPath("/DOCUMENT/PATN");
 	private static final XPath NUMXP = DocumentHelper.createXPath("WKU");
-	private static final XPath ISSUEDATEXP = DocumentHelper.createXPath("APD");
+	private static final XPath ISSUEDATEXP = DocumentHelper.createXPath("ISD");
 
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 
