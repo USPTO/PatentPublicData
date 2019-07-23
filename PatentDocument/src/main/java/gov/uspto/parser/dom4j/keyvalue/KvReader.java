@@ -36,7 +36,7 @@ import gov.uspto.patent.PatentReaderException;
  * APT  1
  * ART  316
  * TTL Method for performing chip level electromagnetic interference reduction,
- *     and associated apparatus
+ *       and associated apparatus
  * URPN 2003/0169838
  * </pre>
  * </p>
@@ -320,6 +320,12 @@ public class KvReader {
                     // } else if (sections != null && parts.length == 1 &&
                     // sections.contains(parts[0])) {
                     // keyValues.add(new KeyValue(parts[0], ""));
+                    currentFieldName = parts[0].toLowerCase();
+                } else if (parts.length == 1 && currentLine.startsWith("      ")) {
+                    int lastLoc = keyValues.size() - 1;
+                    KeyValue lastKv = keyValues.get(lastLoc);
+                    lastKv.appendValue(parts[0]);
+                    currentFieldName = lastKv.getKey().toUpperCase();
                 } else if (parts.length == 1 && isValidKey(parts[0])) { // auto detect section.
                     keyValues.add(new KeyValue(parts[0], ""));
                 } else {
@@ -360,7 +366,7 @@ public class KvReader {
      */
 
     private String[] processLineLeadingWhiteSpace(final String line) {
-        if (line.startsWith("     ")) {
+        if (line.startsWith("     ")) { // text wrap, next line has 6 spaces.
         	String value = line;
         	if (maintainSpaceFields.contains(currentFieldName)){
         		value = value + "\n";
@@ -484,4 +490,5 @@ public class KvReader {
 
         System.out.println(xmlDoc.asXML());
     }
+
 }
