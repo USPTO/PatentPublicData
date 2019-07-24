@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<properties>
+		<project.java.version>1.8</project.java.version>
+		<!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+		<build.timestamp>${maven.build.timestamp}</build.timestamp>
+		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+		<!-- default is: yyyyMMdd-HHmm -->
+	</properties>
 
 	<groupId>gov.uspto</groupId>
 	<artifactId>PatentPublicData</artifactId>
@@ -10,7 +20,7 @@
 	<modules>
 		<module>BulkDownloader</module>
 		<module>PatentDocument</module>
-        <module>Common</module>
+		<module>Common</module>
 	</modules>
 
 	<packaging>pom</packaging>
@@ -28,27 +38,44 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M2</version>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.0.5</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>1.8.0</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-eclipse-plugin</artifactId> 
+				<version>2.10</version> <configuration> <downloadSources>true</downloadSources> 
+				<downloadJavadocs>true</downloadJavadocs> </configuration> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.8.1</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${project.java.version}</source>
+					<target>${project.java.version}</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
+				<version>3.1.2</version>
 				<configuration>
 					<excludes>
 						<exclude>**/log4j.properties</exclude>
@@ -62,7 +89,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
+				<version>3.1.1</version>
 				<configuration>
 					<skip>true</skip>
 					<show>public</show>
@@ -71,14 +98,14 @@
 					<docfilessubdirs>true</docfilessubdirs>
 					<links>
 						<link>https://jsoup.org/apidocs/</link>
-						<link>https://google.github.io/guava/releases/19.0/api/docs/</link>
+						<link>https://google.github.io/guava/releases/28.0/api/docs/</link>
 						<link>https://dom4j.github.io/javadoc/2.1.1/</link>
 						<link>http://jaxen.org/apidocs/</link>
 						<link>http://www.slf4j.org/api/</link>
-						<link>https://fasterxml.github.io/jackson-core/javadoc/2.6/</link>
-						<link>https://commons.apache.org/proper/commons-lang/javadocs/api-3.4/</link>
-						<link>https://fasterxml.github.io/jackson-databind/javadoc/2.6/</link>
-						<link>https://fasterxml.github.io/jackson-annotations/javadoc/2.6/</link>
+						<link>https://commons.apache.org/proper/commons-lang/javadocs/api-3.9/</link>
+						<link>https://fasterxml.github.io/jackson-core/javadoc/2.9/</link>
+						<link>https://fasterxml.github.io/jackson-databind/javadoc/2.9/</link>
+						<link>https://fasterxml.github.io/jackson-annotations/javadoc/2.9/</link>
 						<link>https://square.github.io/okhttp/3.x/okhttp/</link>
 					</links>
 					<quiet>true</quiet>
@@ -104,7 +131,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.10</version>
+				<version>3.1.1</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
@@ -138,10 +165,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.1</version>
 				<configuration>
 					<appendAssemblyId>false</appendAssemblyId>
-					<descriptor>resources/assembly/bin.xml</descriptor>
-					<finalName>${project.artifactId}-${project.version}</finalName>
+					<descriptors>
+						<descriptor>resources/assembly/bin.xml</descriptor>
+					</descriptors>
+					<finalName>${project.artifactId}-${project.version}-${build.timestamp}</finalName>
 				</configuration>
 				<executions>
 					<execution>
