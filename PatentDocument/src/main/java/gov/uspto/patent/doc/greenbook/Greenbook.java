@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import gov.uspto.parser.dom4j.keyvalue.KvParser;
+import gov.uspto.parser.keyvalue.KvParser;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.doc.greenbook.fragments.AbstractTextNode;
 import gov.uspto.patent.doc.greenbook.fragments.AgentNode;

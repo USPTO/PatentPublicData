@@ -1,4 +1,4 @@
-package gov.uspto.parser.dom4j.keyvalue;
+package gov.uspto.parser.keyvalue;
 
 import java.io.BufferedReader;
 import java.io.File;

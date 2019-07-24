@@ -15,8 +15,8 @@ import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import gov.uspto.parser.dom4j.keyvalue.KeyValue;
-import gov.uspto.parser.dom4j.keyvalue.KvReader;
+import gov.uspto.parser.keyvalue.KeyValue;
+import gov.uspto.parser.keyvalue.KvReader;
 import gov.uspto.patent.PatentReaderException;
 
 /**
