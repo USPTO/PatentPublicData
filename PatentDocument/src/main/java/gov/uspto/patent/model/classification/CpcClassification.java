@@ -319,7 +319,7 @@ public class CpcClassification extends PatentClassification {
 		}
 		CpcClassification cpc = (CpcClassification) check;
 
-		int depth = getTree().getDepth();
+		int depth = getTree().getMaxDepth();
 
 		if (depth == cpc.getTree().getDepth()) {
 			if (this.getTextNormalized().equals(cpc.getTextNormalized())) {
@@ -366,7 +366,7 @@ public class CpcClassification extends PatentClassification {
 		}
 		final CpcClassification other = (CpcClassification) obj;
 
-		if (this == other || other.getDepth() == getDepth() && isContained(other)) {
+		if (this == other || other.toText().equals(toText()) ) {
 			return true;
 		}
 

@@ -99,7 +99,7 @@ public class HtmlToPlainTextTest {
 
 		String xml = "<p><q>My quote of the day.</q></p>";
 
-		String expect = "\\n“My quote of the day.”\\n";
+		String expect = "\\n\u201CMy quote of the day.\u201d\\n"; // unicode open quote and close quote.
 
 		Document jsoupDoc = Jsoup.parse(xml, "", Parser.xmlParser());
 		HtmlToPlainText converter = new HtmlToPlainText(config);

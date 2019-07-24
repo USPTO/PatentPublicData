@@ -1,6 +1,10 @@
 package gov.uspto.patent.model.entity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gov.uspto.patent.InvalidDataException;
+import gov.uspto.patent.doc.greenbook.items.DescriptionFigures;
 
 /**
  * Assignee (Patent Owner)
@@ -19,6 +23,8 @@ import gov.uspto.patent.InvalidDataException;
  */
 public class Assignee extends Entity {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Assignee.class);
+	
 	public enum RoleType {
 		T1("Unassigned"),
 		T2("U.S. company or corporation"),
@@ -57,6 +63,10 @@ public class Assignee extends Entity {
 		if (partInterest) {
 			return roleType.getDesc() + "; part interest";
 		} else {
+			if (roleType == null) {
+				LOGGER.warn("RoleType is null: {}", getName());
+				return roleType.XX.toString();
+			}
 			return roleType.getDesc() ;
 		}
 	}

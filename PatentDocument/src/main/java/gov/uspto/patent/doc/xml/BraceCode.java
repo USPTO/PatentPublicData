@@ -11,8 +11,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.ibm.icu.text.Normalizer2;
 
 /**
  * Brace Codes
@@ -649,9 +652,10 @@ public class BraceCode {
 		}
 		matcher.appendTail(stb);
 
-	    String norm = Normalizer.normalize(stb.toString(), Normalizer.Form.NFD);
-	    norm = norm.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+	    return StringUtils.stripAccents(stb.toString());
 
-		return norm;
+	    //String norm = Normalizer.normalize(stb.toString(), Normalizer.Form.NFD);
+	    //norm = norm.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		//return norm;
 	}
 }

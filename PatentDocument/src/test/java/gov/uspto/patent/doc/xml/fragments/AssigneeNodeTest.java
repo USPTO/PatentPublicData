@@ -37,7 +37,9 @@ public class AssigneeNodeTest {
 		List<Assignee> assignees = new AssigneeNode(doc).read();
 		//assignees.forEach(System.out::println);
 
-		assertEquals("02", assignees.get(0).getRole());
+		assertEquals(1, assignees.size());
+
+		assertEquals(Assignee.RoleType.T2, assignees.get(0).getRole());
 		assertEquals("U.S. company or corporation", assignees.get(0).getRoleDesc());
 
 		assertEquals("Company, Incorporated", ((NameOrg) assignees.get(0).getName()).getName());
@@ -69,7 +71,9 @@ public class AssigneeNodeTest {
 		List<Assignee> assignees = new AssigneeNode(doc).read();
 		//assignees.forEach(System.out::println);
 
-		assertEquals("04", assignees.get(0).getRole());
+		assertEquals(1, assignees.size());
+		
+		assertEquals(Assignee.RoleType.T4, assignees.get(0).getRole());
 		assertEquals("U.S individual", assignees.get(0).getRoleDesc());
 
 		assertEquals("John", ((NamePerson) assignees.get(0).getName()).getFirstName());

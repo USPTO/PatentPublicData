@@ -3,6 +3,7 @@ package gov.uspto.common.tree;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,6 +24,15 @@ public class Tree extends Node {
 
 	public Tree() {
 		super(null, "");
+	}
+
+	/**
+	 * Get Depth of deepest child node
+	 * 
+	 * @return
+	 */
+	public int getMaxDepth() {
+		return getLeafNodes().stream().map(n -> n.getDepth()).max(Comparator.comparing(Integer::valueOf)).get();
 	}
 
 	/**

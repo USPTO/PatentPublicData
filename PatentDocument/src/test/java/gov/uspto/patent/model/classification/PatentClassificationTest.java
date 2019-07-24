@@ -18,7 +18,9 @@ public class PatentClassificationTest {
 		CpcClassification cpc = new CpcClassification("D07B22012051", false);
 		cpc.parseText("D07B22012051");
 
-		int depth = cpc.getTree().getDepth();
+		//System.out.println(cpc.getTree());
+
+		int depth = cpc.getTree().getMaxDepth();
 		int expect = 5;
 	
 		assertEquals(expect, depth);

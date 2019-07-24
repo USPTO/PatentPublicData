@@ -12,8 +12,21 @@ import org.junit.Test;
 public class ClassificationPredicateTest {
 
 	@Test
-	public void testFalse() throws ParseException {
-		
+	public void equal() throws ParseException {
+
+		CpcClassification wantCpc = new CpcClassification("A01B300", true);
+		wantCpc.parseText("A01B300");
+		Predicate<PatentClassification> predicate = ClassificationPredicate.isContained(wantCpc);
+
+		CpcClassification checkCpc = new CpcClassification("A01B300", true);
+		checkCpc.parseText("A01B300");
+
+		assertTrue(wantCpc.equals(checkCpc));
+	}
+
+	@Test
+	public void contained_false() throws ParseException {
+
 		CpcClassification wantCpc = new CpcClassification("A01B300", false);
 		wantCpc.parseText("A01B300");
 		Predicate<PatentClassification> predicate = ClassificationPredicate.isContained(wantCpc);
@@ -22,27 +35,12 @@ public class ClassificationPredicateTest {
 		checkCpc.parseText("A01B33/00");
 
 		assertFalse(wantCpc.isContained(checkCpc));
-		
+
 		assertFalse(predicate.test(checkCpc));
 	}
 
 	@Test
-	public void testEqual() throws ParseException {
-		
-		CpcClassification wantCpc = new CpcClassification("A01B300", true);
-		wantCpc.parseText("A01B300");
-		Predicate<PatentClassification> predicate = ClassificationPredicate.isContained(wantCpc);
-
-		CpcClassification checkCpc = new CpcClassification("A01B300", true);
-		checkCpc.parseText("A01B300");
-
-		assertTrue(wantCpc.isContained(checkCpc));
-		
-		assertTrue(predicate.test(checkCpc));
-	}
-
-	@Test
-	public void testChild() throws ParseException {
+	public void contained_true() throws ParseException {
 		// 4/D/D07/D07B/D07B2201/D07B22012051
 		CpcClassification wantCpc = new CpcClassification("D07B", false);
 		wantCpc.parseText("D07B");
@@ -52,7 +50,7 @@ public class ClassificationPredicateTest {
 		checkCpc.parseText("D07B22012051");
 
 		assertTrue(wantCpc.isContained(checkCpc));
-		
+
 		assertTrue(predicate.test(checkCpc));
 	}
 
@@ -71,7 +69,7 @@ public class ClassificationPredicateTest {
 		cpcClasses.add(cpc1);
 		cpcClasses.add(cpc2);
 
-		//assertTrue(wantCpc.isContained(cpcClasses));
+		// assertTrue(wantCpc.isContained(cpcClasses));
 		assertTrue(cpcClasses.stream().anyMatch(predicate));
 	}
 }

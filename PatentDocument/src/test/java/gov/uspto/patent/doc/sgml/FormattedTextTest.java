@@ -19,7 +19,7 @@ public class FormattedTextTest {
 		String input = stb.toString();
 
 		StringBuilder expectStb = new StringBuilder();
-		expectStb.append("<h2 level=\"1\">HEADING TEXT</h2>\n");
+		expectStb.append("<h2 level=\"1\">HEADING TEXT</h2> \n");
 		expectStb.append("<p id=\"P-00003\" level=\"0\">pargraph text.</p>");
 		String expect = expectStb.toString();
 
@@ -65,29 +65,41 @@ public class FormattedTextTest {
 
 	@Test
 	public void table() {
-		StringBuilder stb = new StringBuilder();
-		stb.append("<table frame=\"none\" colsep=\"0\" rowsep=\"0\">");
-		stb.append("<tgroup align=\"left\" colsep=\"0\" rowsep=\"0\" cols=\"2\">");
-		stb.append("<colspec colname=\"offset\" colwidth=\"21pt\" align=\"left\"/>");
-		stb.append("<colspec colname=\"1\" colwidth=\"196pt\" align=\"left\"/>");
-		stb.append("<thead><row><entry>head1</entry><entry namest=\"offset\" nameend=\"1\" align=\"center\" rowsep=\"1\">head2</entry></row></thead>");
-		stb.append("<tbody valign=\"top\"><row><entry/><entry morerows=\"1\">cell data</entry></row></tbody>");
-		stb.append("</tgroup></table>");
-		String input = stb.toString();
+		String input = "<table frame=\"none\" colsep=\"0\" rowsep=\"0\">\n" +
+				"<tgroup align=\"left\" colsep=\"0\" rowsep=\"0\" cols=\"2\">\n" +
+				"<colspec colname=\"offset\" colwidth=\"21pt\" align=\"left\"/>\n" +
+				"<colspec colname=\"1\" colwidth=\"196pt\" align=\"left\"/>\n" +
+				"<thead><row><entry>head1</entry><entry namest=\"offset\" nameend=\"1\" align=\"center\" rowsep=\"1\">head2</entry></row></thead>\n" +
+				"<tbody valign=\"top\">"+ 
+				"<row><entry/><entry morerows=\"1\">cell data</entry></row>" + 
+				"</tbody>\n" +
+				"</tgroup></table>";
 
-		StringBuilder expectStb = new StringBuilder();
-		expectStb.append("<table id=\"TBL-0001\">");
-		expectStb.append("<colgroup><col width=\"21pt\" align=\"left\" /><col width=\"196pt\" align=\"left\" /></colgroup>");
-		expectStb.append("<thead><tr><th>head1</th><th align=\"center\">head2</th></tr></thead>");
-		expectStb.append("<tbody valign=\"top\"><tr><td></td><td rowspan=\"2\">cell data</td></tr></tbody>");
-		expectStb.append("</table>");
-		String expect = expectStb.toString();
+		String expect = "<table id=\"TBL-0001\">\n" + 
+				" <colgroup>\n" + 
+				"  <col width=\"21pt\" align=\"left\" />\n" + 
+				"  <col width=\"196pt\" align=\"left\" />\n" + 
+				" </colgroup> \n" + 
+				" <thead>\n" + 
+				"  <tr>\n" + 
+				"   <th>head1</th>\n" + 
+				"   <th align=\"center\">head2</th>\n" + 
+				"  </tr>\n" + 
+				" </thead> \n" + 
+				" <tbody valign=\"top\">\n" + 
+				"  <tr>\n" + 
+				"   <td></td>\n" + 
+				"   <td rowspan=\"2\">cell data</td>\n" + 
+				"  </tr>\n" + 
+				" </tbody> \n" + 
+				"</table>";
+
 		
 		String actual = format.getSimpleHtml(input);
 
 		assertEquals(expect, actual);
 	}
-
+	
 
 	@Test
 	public void subSupUnicode() {
@@ -104,7 +116,8 @@ public class FormattedTextTest {
 	public void subSupNonUnicode() {
 		String input = "<SB>Z+1</SB> <SP>Z - 1</SP>";
 
-		String expect = "<sub>Z+1</sub> <sup>Z - 1</sup>";
+		String expect = "<sub>Z+1</sub> \n" + 
+				"<sup>Z - 1</sup>";
 
 		String actual = format.getSimpleHtml(input);
 

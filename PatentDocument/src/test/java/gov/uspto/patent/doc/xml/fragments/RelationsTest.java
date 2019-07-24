@@ -18,7 +18,7 @@ public class RelationsTest {
 
 	@Test
 	public void continuation() throws DocumentException {
-		String xml = "<xml><continuation><relation>\r\n" + 
+		String xml = "<xml><biblio><us-related-documents><continuation><relation>\r\n" + 
 				"	<parent-doc>\r\n" + 
 				"		<document-id>\r\n" + 
 				"		<country>US</country>\r\n" + 
@@ -39,7 +39,7 @@ public class RelationsTest {
 				"		<doc-number>29606059</doc-number>\r\n" + 
 				"		</document-id>\r\n" + 
 				"	</child-doc>\r\n" + 
-				"</relation></continuation></xml>";
+				"</relation></continuation></us-related-documents></biblio></xml>";
 
 		Document doc = DocumentHelper.parseText(xml);
 
@@ -51,7 +51,9 @@ public class RelationsTest {
 		DocumentId expectId1 = new DocumentId(CountryCode.US, "15311805");
 		DocumentId expectId2 = new DocumentId(CountryCode.WO, "PCT/EP2015/060757");
 		DocumentId expectId3 = new DocumentId(CountryCode.US, "29606059");
-		
+
+		assertEquals("Expect 3 docids", 3, docIds.size());
+
 		assertEquals(docIdType, docIds.get(0).getType());
 		assertEquals(expectId1, docIds.get(0));
 		

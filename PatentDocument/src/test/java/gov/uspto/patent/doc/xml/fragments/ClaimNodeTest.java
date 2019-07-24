@@ -17,11 +17,11 @@ public class ClaimNodeTest {
 
 	@Test
 	public void ClaimSingle() throws DocumentException {
-		String xml = "<claims id=\"claims\">\r\n" + 
+		String xml = "<xml><claims id=\"claims\">\r\n" + 
 				"<claim id=\"CLM-00001\" num=\"00001\">\r\n" + 
 				"<claim-text>The ornamental design for a pastry, as shown and described.</claim-text>\r\n" + 
 				"</claim>\r\n" + 
-				"</claims>";
+				"</claims></xml>";
 		
 		Document doc = DocumentHelper.parseText(xml);
 		
@@ -35,7 +35,7 @@ public class ClaimNodeTest {
 
 	@Test
 	public void ClaimDependency() throws DocumentException {
-		String xml = "<claims id=\"claims\">\r\n" + 
+		String xml = "<xml><claims id=\"claims\">\r\n" + 
 				"<claim id=\"CLM-00016\" num=\"00016\">\r\n" + 
 				"<claim-text>16. The assembly of <claim-ref idref=\"CLM-00015\">claim 15</claim-ref>, further including a receiver coupled to and positioned in said fourth housing, said receiver being operationally coupled to said fourth microprocessor, said receiver being radio frequency enabled</claim-text>\r\n" + 
 				"</claim>\r\n" + 
@@ -57,13 +57,15 @@ public class ClaimNodeTest {
 				"<claim id=\"CLM-00019\" num=\"00019\">\r\n" + 
 				"<claim-text>19. The assembly of <claim-ref idref=\"CLM-00018\">claim 18</claim-ref>, further including said receiver being radio frequency and infrared light enabled.</claim-text>\r\n" + 
 				"</claim>" +
-				"</claims>";
+				"</claims></xml>";
 
 		Document doc = DocumentHelper.parseText(xml);
 
 		List<Claim> claims = new ClaimNode(doc, new FormattedText()).read();
 		//claims.forEach(System.out::println);
 
+		assertEquals(4, claims.size());
+		
 		assertEquals("CLM-00016", claims.get(0).getId());
 		assertEquals(ClaimType.DEPENDENT, claims.get(0).getClaimType());
 		assertEquals("CLM-00015", claims.get(0).getDependentIds().iterator().next());
