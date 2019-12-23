@@ -51,7 +51,7 @@
 	--skip [Integer: records to skip]       (default: 0) 
 	--limit [Integer: record limit]         (default: -1)   
 	--format [String: Manually provide Patent Document Format]
-	--type [String: types options: [raw,xml,json,json_flat,patft,object,text]]
+	--type [String: types options: [raw,json,json_flat,patft,solr,object,text]]
 	--outDir <String: Output Directory> 
 	--outBulk, --outputBulkFile [Boolean: Output bulk file, single file record per line] (default: true)
 	--bulkKV, --bulkkv, --kv [Boolean: Prepend each record with docid ; DOC_ID<TAB>RECORD] (default: false) 

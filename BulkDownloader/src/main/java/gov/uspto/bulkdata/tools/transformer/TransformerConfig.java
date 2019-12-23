@@ -3,6 +3,7 @@ package gov.uspto.bulkdata.tools.transformer;
 import static java.util.Arrays.asList;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -52,7 +53,7 @@ public class TransformerConfig extends BulkReaderArguments {
 				.defaultsTo(false);
 
 		opParser.accepts("type").withOptionalArg().ofType(String.class)
-				.describedAs("types options: [raw,xml,json,json_flat,patft,solr,object,text]").defaultsTo("json");
+				.describedAs("types options: [raw,json,json_flat,patft,solr,object,text]").defaultsTo("json");
 
 		return opParser;
 	}
@@ -66,9 +67,12 @@ public class TransformerConfig extends BulkReaderArguments {
 
 		if (options.has("type")) {
 			String type = (String) options.valueOf("type");
+			if ("?".equals(type) || type.length() < 2) {
+				super.printHelp();
+			}
 			setOutputType(type.toLowerCase());
 		}
-		
+
 		/*
 		 * OutputBulk should never prettyPrint (single line-per-record)
 		 */
