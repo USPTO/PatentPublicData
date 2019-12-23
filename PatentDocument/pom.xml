@@ -21,23 +21,11 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.26</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>28.0-jre</version>
-		</dependency>
-
 		<!-- ICU helps java's builtin unicode normalizer "Normalizer.normalize" work better -->
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
-			<version>64.2</version>
+			<version>65.1</version>
 		</dependency>
 
 		<dependency>
@@ -57,10 +45,11 @@
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
 		</dependency>
+
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
-			<version>1.1.6</version>
+			<version>1.2.0</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>org.jmathml</groupId> <artifactId>jmathml</artifactId> 
@@ -74,13 +63,13 @@
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.json</artifactId>
-			<version>1.1.2</version>
+			<version>1.1.4</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.9.9</version>
+			<version>2.10.1</version>
 		</dependency>
 
 		<dependency>
@@ -88,6 +77,12 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jopt-simple</groupId>
+			<artifactId>jopt-simple</artifactId>
+			<version>5.0.4</version>
 		</dependency>
 	</dependencies>
 

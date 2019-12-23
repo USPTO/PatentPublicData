@@ -28,24 +28,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.26</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.26</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>28.0-jre</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.12.1</version>
@@ -54,7 +36,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.9</version>
+			<version>4.5.10</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>commons-logging</artifactId>
@@ -66,55 +48,38 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
-			<version>4.4.11</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-			<version>1.18</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>4.4.12</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>3.14.2</version>
+			<!-- <version>3.14.4</version> -->
+			<version>4.2.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.9.9</version>
+			<version>2.10.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.9</version>
+			<version>2.10.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jdk8</artifactId>
-			<version>2.9.9</version>
+			<version>2.10.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.9.9</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.jopt-simple</groupId>
-			<artifactId>jopt-simple</artifactId>
-			<version>5.0.4</version>
+			<version>2.10.1</version>
 		</dependency>
 
 		<!-- Required for JMV11 -->
@@ -122,6 +87,12 @@
 		    <groupId>javax.xml.bind</groupId>
 		    <artifactId>jaxb-api</artifactId>
 		    <version>2.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jopt-simple</groupId>
+			<artifactId>jopt-simple</artifactId>
+			<version>5.0.4</version>
 		</dependency>
 
 	</dependencies>
