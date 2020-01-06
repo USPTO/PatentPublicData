@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -104,14 +105,18 @@ public class PatentClassificationTest {
 		uspc.parseText("PLT101");
 		claz.add(uspc);
 
+
 		Map<ClassificationType, Set<PatentClassification>> classes = PatentClassification.groupByType(claz);
 		//classes.get(ClassificationType.CPC).forEach(System.out::println);
 		//classes.get(ClassificationType.IPC).forEach(System.out::println);
 		//classes.get(ClassificationType.USPC).forEach(System.out::println);
 
+		
+		Set<PatentClassification> expectCPC = new HashSet<PatentClassification>();
+		expectCPC.add(cpcClass);
+		expectCPC.add(cpcClass2);
 		assertEquals(classes.get(ClassificationType.CPC).size(), 2);
-		CpcClassification ret1 = (CpcClassification) classes.get(ClassificationType.CPC).iterator().next();
-		assertEquals(cpcClass2, ret1);
+		assertEquals(expectCPC, classes.get(ClassificationType.CPC));
 		
 		assertEquals(classes.get(ClassificationType.IPC).size(), 1);
 		assertEquals(classes.get(ClassificationType.USPC).size(), 1);

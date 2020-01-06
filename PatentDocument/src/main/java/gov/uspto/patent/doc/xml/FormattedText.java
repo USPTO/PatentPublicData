@@ -1,7 +1,6 @@
 package gov.uspto.patent.doc.xml;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -14,11 +13,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.nodes.Document.OutputSettings.Syntax;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
+import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
@@ -74,8 +73,8 @@ public class FormattedText implements TextProcessor {
 		rawText = rawText.replaceAll("<\\?in-line-formulae description=\"In-line Formulae\" end=\"end\"\\?>",
 				"</in-line-formula>");
 
-		rawText = rawText.replaceAll("“", "<q>");
-		rawText = rawText.replaceAll("”", "</q>");
+		rawText = rawText.replace("\u201C", "<q>");
+		rawText = rawText.replace("\u201d", "</q>");
 
 		// Change xml processing instruction "delete" to normal xml tag "del"
 		rawText = rawText.replaceAll("<\\?delete-start [^?>]+\\?>", "<del>");
@@ -86,8 +85,6 @@ public class FormattedText implements TextProcessor {
 		rawText = rawText.replaceAll("<\\?insert-end [^?>]+\\?>", "</ins>");
 
 		Document document = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
-		document.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_16);
-				//.escapeMode(EscapeMode.xhtml);
 
 		document.select("bold").tagName("b");
 
@@ -196,10 +193,11 @@ public class FormattedText implements TextProcessor {
 		 */
 		boolean mathFound = false;
 		Elements mathEls = document.select("math");
+		if (mathEls.size() > 0) {
+			mathFound = true;
+		}
 		for (int i = 1; i <= mathEls.size(); i++) {
 			Element element = mathEls.get(i - 1);
-			mathFound = true;
-
 			// String mathml = MathmlEscaper.escape(element.outerHtml());
 			String mathml = "";
 			try {
@@ -299,8 +297,6 @@ public class FormattedText implements TextProcessor {
 		// document.select("p:matchesOwn((?is) +?)").remove(); // remove
 		// paragraphs which contain only spaces.
 
-		String docStr = document.html().replaceAll("\\s{2,}", " ");
-		docStr = docStr.replaceAll("\\\\n", "\n");
 
 		Whitelist whitelist = Whitelist.none();
 		whitelist.addTags(HTML_WHITELIST_TAGS);
@@ -309,27 +305,27 @@ public class FormattedText implements TextProcessor {
 		OutputSettings outSettings = new Document.OutputSettings();
 		outSettings.charset(Charsets.UTF_16);
 		outSettings.syntax(Syntax.xml);
-		outSettings.outline(true);
+		outSettings.outline(false);
 		outSettings.prettyPrint(true);
-		//outSettings.escapeMode(EscapeMode.xhtml);
-		// outSettings.escapeMode(EscapeMode.extended);
 
-		docStr = Jsoup.clean(docStr, "", whitelist, outSettings);
+        Cleaner cleaner = new Cleaner(whitelist);
+        document = cleaner.clean(document);
+        document.outputSettings(outSettings);
+
+		String docStr = document.select("body").html(); //.replaceAll("\\s{2,}", " ");
+		//docStr = docStr.replaceAll("\\\\n", "\n");
+        
+		//docStr = Jsoup.clean(docStr, "", whitelist, outSettings);
 
 		if (mathFound) {
 			// Reload document and un-base64 the mathml sections.
 			document = Jsoup.parse("<body>" + docStr + "</body>", "", Parser.xmlParser());
-			document.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml)
-					.charset(StandardCharsets.UTF_16);
+			document.outputSettings(outSettings);
 
-			for (Element el : document.select("span[class=math]")) {
-				try {
-					String html = new String(Base64.getDecoder().decode(el.html()), "utf-16");
-					el.text("");
-					el.append(html);
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
+			for (Element el : document.select("span.math[format=mathml]")) {
+				String html = new String(Base64.getDecoder().decode(el.html()));
+				el.text("");
+				el.append(html);
 			}
 			docStr = document.select("body").html();
 		}

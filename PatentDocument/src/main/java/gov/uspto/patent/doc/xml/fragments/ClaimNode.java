@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.TextProcessor;
@@ -21,7 +23,9 @@ import gov.uspto.patent.model.ClaimType;
  *
  */
 public class ClaimNode extends DOMFragmentReader<List<Claim>> {
-	private static final String PATENT_PATH = "/*/claims/claim";
+	private static final XPath CLAIMSXP = DocumentHelper.createXPath("/*/claims/claim");
+	private static final XPath CLAIMIDXP = DocumentHelper.createXPath("@id");
+	private static final XPath CLAIMREFSXP = DocumentHelper.createXPath("*/claim-ref/@idref");
 
 	public ClaimNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);
@@ -31,7 +35,7 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 	public List<Claim> read() {
 		List<Claim> claims = new ArrayList<Claim>();
 
-		List<Node> claimNodes = document.selectNodes(PATENT_PATH);
+		List<Node> claimNodes = CLAIMSXP.selectNodes(document);
 		for (Node claimN : claimNodes) {
 			Claim claim = readClaim(claimN);
 			claims.add(claim);
@@ -41,13 +45,14 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 	}
 
 	public Claim readClaim(Node claimNode) {
-		String id = claimNode.selectSingleNode("@id").getText();
 
+		String id = CLAIMIDXP.selectSingleNode(claimNode).getText();
+		
 		// Node claimTypeN = claimNode.selectSingleNode("@claim-type");
 		// String claimType = claimTypeN != null ? claimTypeN.getText() : null;
 
 		Claim claim;
-		List<Node> dependentN = claimNode.selectNodes("*/claim-ref/@idref");
+		List<Node> dependentN = CLAIMREFSXP.selectNodes(claimNode);
 		if (dependentN != null && !dependentN.isEmpty()) {
 			claim = new Claim(id, claimNode.asXML(), ClaimType.DEPENDENT, textProcessor);
 			Set<String> dependentIds = new HashSet<String>();

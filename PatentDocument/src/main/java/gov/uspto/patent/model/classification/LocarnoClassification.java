@@ -69,7 +69,9 @@ public class LocarnoClassification extends PatentClassification {
 	@Override
 	public Tree getTree() {
 		Tree tree = new Tree();
-		tree.addChild(Strings.padStart(mainClass, 2, '0')).addChild(Strings.padStart(subClass, 2, '0'));
+		if (mainClass != null && subClass != null) {
+			tree.addChild(Strings.padStart(mainClass, 2, '0')).addChild(Strings.padStart(subClass, 2, '0'));
+		}
 		return tree;
 	}
 
@@ -113,8 +115,7 @@ public class LocarnoClassification extends PatentClassification {
 			String mainClass = Strings.padStart(text, 2, '0');
 			setMainClass(mainClass);
 			setSubClass("00");
-		}
-		else if (matcher.matches()) {
+		} else if (matcher.matches()) {
 			String mainClass = matcher.group(1);
 			String subClass = matcher.group(2);
 

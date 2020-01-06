@@ -129,7 +129,7 @@ public class Claim extends FreetextField {
 			return false;
 		} else {
 			Claim other = (Claim) o;
-			return (this.id.equals(other.getId()));
+			return this.id.equals(other.getId());
 		}
 	}
 

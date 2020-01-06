@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -21,7 +22,8 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- ICU helps java's builtin unicode normalizer "Normalizer.normalize" work better -->
+		<!-- ICU helps java's builtin unicode normalizer "Normalizer.normalize" 
+			work better -->
 		<dependency>
 			<groupId>com.ibm.icu</groupId>
 			<artifactId>icu4j</artifactId>
@@ -40,11 +42,9 @@
 			<version>2.1.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>xml-apis</groupId>
-			<artifactId>xml-apis</artifactId>
-			<version>1.4.01</version>
-		</dependency>
+		<!-- <dependency> <groupId>xml-apis</groupId> <artifactId>xml-apis</artifactId> 
+			<version>1.4.01</version> </dependency> <dependency> <groupId>com.fasterxml.woodstox</groupId> 
+			<artifactId>woodstox-core</artifactId> <version>5.1.0</version> </dependency> -->
 
 		<dependency>
 			<groupId>jaxen</groupId>
@@ -85,5 +85,25 @@
 			<version>5.0.4</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<finalName>${project.artifactId}-${project.version}-${build.timestamp}-all</finalName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

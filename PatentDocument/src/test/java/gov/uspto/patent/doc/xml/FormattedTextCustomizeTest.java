@@ -21,11 +21,48 @@ public class FormattedTextCustomizeTest {
                 "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>");
         stb.append("</maths></p>");
 
-        StringBuilder expectStb = new StringBuilder();
-        expectStb.append("<h4 id=\"h-1\">SECTION TITLE</h4>");
-        expectStb.append("<p><span id=\"MTH-0001\" class=\"math\" format=\"mathml\">");
-        expectStb.append("<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math></span></p>");
-        String expect = expectStb.toString();
+        String expect = "<h4 id=\"h-1\">SECTION TITLE</h4> \n" + 
+        		"<p><span id=\"MTH-0001\" class=\"math\" format=\"mathml\">\n" + 
+        		"  <math> \n" + 
+        		"   <mrow> \n" + 
+        		"    <mrow> \n" + 
+        		"     <msup> \n" + 
+        		"      <mi>\n" + 
+        		"        x \n" + 
+        		"      </mi> \n" + 
+        		"      <mn>\n" + 
+        		"        2 \n" + 
+        		"      </mn> \n" + 
+        		"     </msup> \n" + 
+        		"     <mo>\n" + 
+        		"       + \n" + 
+        		"     </mo> \n" + 
+        		"     <mrow> \n" + 
+        		"      <mn>\n" + 
+        		"        4 \n" + 
+        		"      </mn> \n" + 
+        		"      <mo>\n" + 
+        		"        + \n" + 
+        		"      </mo> \n" + 
+        		"      <mi>\n" + 
+        		"        x \n" + 
+        		"      </mi> \n" + 
+        		"     </mrow> \n" + 
+        		"     <mo>\n" + 
+        		"       + \n" + 
+        		"     </mo> \n" + 
+        		"     <mn>\n" + 
+        		"       4 \n" + 
+        		"     </mn> \n" + 
+        		"    </mrow> \n" + 
+        		"    <mo>\n" + 
+        		"      = \n" + 
+        		"    </mo> \n" + 
+        		"    <mn>\n" + 
+        		"      0 \n" + 
+        		"    </mn> \n" + 
+        		"   </mrow> \n" + 
+        		"  </math></span></p>";
 
         String actual = format.getSimpleHtml(stb.toString());
         assertEquals(expect, actual);
@@ -117,7 +154,7 @@ public class FormattedTextCustomizeTest {
         stb.append("<p id=\"h-1\">SECTION TITLE</p>");
         stb.append("<p><table><row><entry>text</entry></row></table></p>");
 
-        String expect = "\\nSECTION TITLE\\n\\n\\ntext\\n\\n\\n\\n";
+        String expect = "\\nSECTION TITLE\\n \\n \\n text \\n\\n";
 
         FreetextConfig textConfig = new FreetextConfig(prettyPrint, false);
 
@@ -136,7 +173,7 @@ public class FormattedTextCustomizeTest {
         stb.append("<a class=\"figref\">1232<a>");
         stb.append("</p>");
 
-        String expect = "\nFIG-REF\n";
+        String expect = "\nFIG-REF";
 
         FreetextConfig textConfig = new FreetextConfig(prettyPrint, false);
         textConfig.replace(HtmlFieldType.FIGREF, "FIG-REF");

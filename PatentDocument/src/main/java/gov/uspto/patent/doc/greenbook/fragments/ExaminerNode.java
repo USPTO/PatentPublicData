@@ -38,7 +38,10 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 		
 		Node artN = ARTXP.selectSingleNode(parentNode);
 		String artUnit = artN != null ? artN.getText() : null;
-		
+		if (artN == null) {
+			LOGGER.warn("Art Unit is missing");
+		}
+
 		Node primaryNode = PEXAMINERXP.selectSingleNode(parentNode);
 
 		Examiner primary = getExaminer(primaryNode, ExaminerType.PRIMARY, artUnit);

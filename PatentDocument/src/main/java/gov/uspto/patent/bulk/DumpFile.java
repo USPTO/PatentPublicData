@@ -13,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.google.common.base.Preconditions;
@@ -22,6 +24,7 @@ import gov.uspto.patent.PatentDocFormat;
 import gov.uspto.patent.PatentDocFormatDetect;
 
 public abstract class DumpFile implements Iterator<String>, Closeable, DumpReader {
+	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFile.class);
 
 	private final File file;
 	private PatentDocFormat patentDocFormat;
@@ -59,10 +62,15 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	public void open() throws IOException {
 		if (file.getName().endsWith(".zip")) {
 			zipFile = new ZipReader(file, fileFilter, StandardCharsets.UTF_8);
-			reader = zipFile.open().next();
+			try {
+				reader = zipFile.open().next();
+			} catch (NoSuchElementException e) {
+				LOGGER.error("Failed to Read Zip File '{}' ; no matching '{}'", file.getName(), fileFilter, e);
+				throw e;
+			}
 		} else if (reader != null) {
 			// use defined reader.
-		} else {			
+		} else {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 		}
 

@@ -2,10 +2,11 @@ package gov.uspto.patent.doc.xml.items;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,18 @@ import gov.uspto.patent.model.entity.NamePerson;
 public class AddressBookNode extends ItemReader<Name> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AddressBookNode.class);
 
+	private static final XPath ADDRESSXP = DocumentHelper.createXPath("address");
+	private static final XPath CITYXP = DocumentHelper.createXPath("city");
+	private static final XPath STATEXP = DocumentHelper.createXPath("state");
+	private static final XPath CNTRYXP = DocumentHelper.createXPath("country");
+
+	private static final XPath ORGNAMEXP = DocumentHelper.createXPath("orgname|name");
+	private static final XPath PREFIXXP = DocumentHelper.createXPath("prefix");
+	private static final XPath FNAMEXP = DocumentHelper.createXPath("first-name");
+	private static final XPath MNAMEXP = DocumentHelper.createXPath("middleName");
+	private static final XPath LNAMEXP = DocumentHelper.createXPath("last-name");
+	private static final XPath SUFFIXXP = DocumentHelper.createXPath("prefix");
+
 	private static final String ITEM_NODE_NAME = "addressbook";
 	private static final String ITEM_ELSE_PREFIX = "-examiner";
 
@@ -53,7 +66,7 @@ public class AddressBookNode extends ItemReader<Name> {
 	}
 
 	public Name getName() {
-		if (itemNode.selectSingleNode("last-name") != null) {
+		if (LNAMEXP.selectSingleNode(itemNode) != null) {
 			return getPersonName();
 		} else {
 			return getOrgName();
@@ -69,19 +82,24 @@ public class AddressBookNode extends ItemReader<Name> {
 	 * @throws InvalidDataException
 	 */
 	public Name getPersonName() {
-		Node prefixN = itemNode.selectSingleNode("prefix");
+
+		Node prefixN = PREFIXXP.selectSingleNode(itemNode);
 		String prefix = prefixN != null ? prefixN.getText() : null;
 
-		Node firstN = itemNode.selectSingleNode("first-name");
+		Node firstN = FNAMEXP.selectSingleNode(itemNode);
 		String firstName = firstN != null ? firstN.getText() : null;
 
-		Node lastN = itemNode.selectSingleNode("last-name");
-		String lastName = lastN != null ? lastN.getText() : null;
-
-		Node middleN = itemNode.selectSingleNode("middleName");
+		/*
+		 *  Middle Name is occasionally within middle-name field,
+		 *  it may also occur within the first-name field
+		 */
+		Node middleN = MNAMEXP.selectSingleNode(itemNode);
 		String middleName = middleN != null ? middleN.getText() : null;
 
-		Node suffixN = itemNode.selectSingleNode("suffix");
+		Node lastN = LNAMEXP.selectSingleNode(itemNode);
+		String lastName = lastN != null ? lastN.getText() : null;
+
+		Node suffixN = SUFFIXXP.selectSingleNode(itemNode);
 		String suffix = suffixN != null ? suffixN.getText() : null;
 
 		/*
@@ -103,53 +121,55 @@ public class AddressBookNode extends ItemReader<Name> {
 			}
 		}
 
+		/* Synonyms; not included in Public Data.
 		List<Node> synonymNodes = itemNode.selectNodes("synonym");
 		Set<String> synonyms = new HashSet<String>(synonymNodes.size());
 		for (Node synonymN : synonymNodes) {
 			synonyms.add(synonymN.getText());
 		}
+		*/
 
 		NamePerson name = null;
 		if (lastName != null || firstName != null) {
 			name = new NamePerson(firstName, middleName, lastName);
 			name.setPrefix(prefix);
 			name.setSuffix(suffix);
-			name.setSynonyms(synonyms);
+			//name.setSynonyms(synonyms);
 		}
 
 		return name;
 	}
 
 	public NameOrg getOrgName() {
-		// @FIXME Note: for now, treat name as a org name.
-		Node orgnameN = itemNode.selectSingleNode("orgname") != null ? itemNode.selectSingleNode("orgname")
-				: itemNode.selectSingleNode("name");
+		Node orgnameN = ORGNAMEXP.selectSingleNode(itemNode);
 
+		/* Synonyms; not included in Public Data.
 		List<Node> synonymNodes = itemNode.selectNodes("synonym");
 		Set<String> synonyms = new HashSet<String>(synonymNodes.size());
 		for (Node synonymN : synonymNodes) {
 			synonyms.add(synonymN.getText());
 		}
+		*/
 
 		NameOrg name = null;
 		if (orgnameN != null) {
 			String orgName = orgnameN.getText();
 			name = new NameOrg(orgName);
-			name.setSynonyms(synonyms);
+			//name.setSynonyms(synonyms);
 		}
 
 		return name;
 	}
 
 	public Address getAddress() {
-		Node addressN = itemNode.selectSingleNode("address");
+		Node addressN = ADDRESSXP.selectSingleNode(itemNode);
 		if (addressN == null) {
 			return null;
 		}
 
 		/*
-		 * Contact Info
-		 */
+		 * Contact Info; Not within Public Data.
+		 *
 		Node phoneN = itemNode.selectSingleNode("phone");
 		String phone = phoneN != null ? phoneN.getText() : null;
 
@@ -158,10 +178,11 @@ public class AddressBookNode extends ItemReader<Name> {
 
 		Node emailN = itemNode.selectSingleNode("email");
 		String email = emailN != null ? emailN.getText() : null;
+		*/
 
 		/*
-		 * Address
-		 */
+		 * Address; only City, State, Country within Public Data.
+		 *
 		Node streetN1 = addressN.selectSingleNode("address-1");
 		Node streetN2 = addressN.selectSingleNode("street");
 		String street = null;
@@ -180,17 +201,18 @@ public class AddressBookNode extends ItemReader<Name> {
 		if (pbox != null && street == null) {
 			street = pbox;
 		}
-
-		Node cityN = addressN.selectSingleNode("city");
-		String city = cityN != null ? cityN.getText() : null;
-
-		Node stateN = addressN.selectSingleNode("state");
-		String state = stateN != null ? stateN.getText() : null;
-
+		
 		Node zipCodeN = addressN.selectSingleNode("postcode");
 		String zipCode = zipCodeN != null ? zipCodeN.getText() : null;
+		*/
 
-		Node countryN = addressN.selectSingleNode("country");
+		Node cityN = CITYXP.selectSingleNode(addressN);
+		String city = cityN != null ? cityN.getText() : null;
+
+		Node stateN = STATEXP.selectSingleNode(addressN);
+		String state = stateN != null ? stateN.getText() : null;
+
+		Node countryN = CNTRYXP.selectSingleNode(addressN);
 		CountryCode countryCode = CountryCode.UNDEFINED;
 		if (countryN != null) {
 			try {
@@ -204,11 +226,12 @@ public class AddressBookNode extends ItemReader<Name> {
 			}
 		}
 
-		Address address = new Address(street, city, state, zipCode, countryCode);
+		Address address = new Address(city, state, countryCode);
+		/*
 		address.setPhoneNumber(phone);
 		address.setFaxNumber(fax);
 		address.setEmail(email);
-
+		 */
 		return address;
 
 	}

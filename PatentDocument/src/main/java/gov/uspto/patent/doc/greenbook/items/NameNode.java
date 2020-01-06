@@ -25,12 +25,14 @@ public class NameNode extends ItemReader<Name> {
 
 	private static final XPath NAMEXP = DocumentHelper.createXPath("NAM");
 
-	public static final Set<String> PERSON_SUFFIXES = new HashSet<String>(
-			Arrays.asList("JR", "SR", "II", "III", "IV", "V", "2ND", "3RD", "4TH", "5TH"));
-	public static final Set<String> PERSON_LONG_SUFFIXES = new HashSet<String>(
-			Arrays.asList("DECEASED", "HEIR", "HEIRS", "HEIRESS", "CO-EXECUTOR", "CO-EXECUTRIX", "EXECTRIX", "EXECUTOR",
-					"EXECUTORS", "EXECUTRIX", "ADMINISTRATOR", "ADMINISTRATRIX", "LEGAL REPRESENTATIVE", "LEGAL HEIR",
-					"SPECIAL ADMINISTRATOR", "TRUSTEE"));
+	public static final Set<String> PERSON_SUFFIXES = new HashSet<String>(Arrays.asList("JR", "SR", "I", "II", "III",
+			"IV", "V", "1ST", "2ND", "3RD", "4TH", "5TH", "1", "2", "3", "4", "5"));
+	public static final Set<String> PERSON_LONG_SUFFIXES = new HashSet<String>(Arrays.asList("DECEASED", "HEIR",
+			"HEIRS", "HEIRS-AT-LAW", "HEIRESS", "COEXECUTOR", "CO-EXECUTOR", "CO-EXECUTRIX", "COEXECUTRIX", "EXECTRIX",
+			"EXECUTOR", "EXECUTORS", "EXECUTRIX", "ADMINISTRATOR", "ADMINISTRATRIX", "LEGAL REPRESENTATIVE",
+			"LEGAL HEIR", "SPECIAL ADMINISTRATOR", "TRUSTEE", "REPRESENTATIVE", "PERSONAL REPRESENTATIVE",
+			"SURVIVING SPOUSE", "INHERITOR", "LEGAL REPRESENTATIVE AND HEIR", "HEIR AND LEGAL SUCCESSOR",
+			"LEGAL AUTHORIZED HEIR", "SOLE HEIR", "ADMINISTRATRIX/EXECUTRIX"));
 
 	public NameNode(Node itemNode) {
 		super(itemNode);

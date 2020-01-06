@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -54,6 +56,13 @@ public class GrantParser extends Dom4JParser {
 
 	public static final String XML_ROOT = "/us-patent-grant";
 
+	private static final XPath TITLEXP = DocumentHelper
+			.createXPath("/us-patent-grant/us-bibliographic-data-grant/invention-title");
+	private static final XPath APPTYPEXP = DocumentHelper
+			.createXPath("/us-patent-grant/us-bibliographic-data-grant/application-reference/@appl-type");
+	private static final XPath PRODDATEXP = DocumentHelper.createXPath("/us-patent-grant/@date-produced");
+	private static final XPath PUBDATEXP = DocumentHelper.createXPath("/us-patent-grant/@date-publ");
+
 	@Override
 	public Patent parse(Document document) {
 
@@ -64,10 +73,10 @@ public class GrantParser extends Dom4JParser {
 			LOGGER.warn("Publication ID not read!");
 		}
 
-		String title = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-grant/invention-title");
+		String title = Dom4jUtil.getTextOrNull(document, TITLEXP);
 
-		String dateProduced = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-produced");
-		String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");
+		String dateProduced = Dom4jUtil.getTextOrNull(document, PRODDATEXP);
+		String datePublished = Dom4jUtil.getTextOrNull(document, PUBDATEXP);
 
 		DocumentDate dateProducedDate = null;
 		if (dateProduced != null) {
@@ -87,8 +96,7 @@ public class GrantParser extends Dom4JParser {
 			}
 		}
 
-		String patentTypeStr = Dom4jUtil.getTextOrNull(document,
-				XML_ROOT + "/us-bibliographic-data-grant/application-reference/@appl-type");
+		String patentTypeStr = Dom4jUtil.getTextOrNull(document, APPTYPEXP);
 		PatentType patentType = PatentType.UNDEFINED;
 		try {
 			patentType = PatentType.fromString(patentTypeStr);

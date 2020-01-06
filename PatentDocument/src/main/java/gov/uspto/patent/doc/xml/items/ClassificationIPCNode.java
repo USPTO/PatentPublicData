@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,20 @@ import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.classification.IpcClassification;
 
 public class ClassificationIPCNode extends ItemReader<List<PatentClassification>> {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationIPCNode.class);
+
+	private static final XPath IPCXP = DocumentHelper.createXPath("classifications-ipcr|self::classifications-ipcr");
+	private static final XPath SECTIONXP = DocumentHelper.createXPath("section");
+	private static final XPath MCLASSXP = DocumentHelper.createXPath("class");
+	private static final XPath SCLASSXP = DocumentHelper.createXPath("subclass");
+	private static final XPath MGROUPXP = DocumentHelper.createXPath("main-group");
+	private static final XPath SGROUPXP = DocumentHelper.createXPath("subgroup");
+	private static final XPath TYPEXP = DocumentHelper.createXPath("classification-value");
+
+	private static final XPath IPCTXTXP = DocumentHelper.createXPath("classification-ipc|self::classification-ipc");
+	private static final XPath MAINCLASSXP = DocumentHelper.createXPath("main-classification");
+	private static final XPath FURTHERCLASSXP = DocumentHelper.createXPath("further-classification");
 
 	public ClassificationIPCNode(Node itemNode) {
 		super(itemNode);
@@ -22,11 +37,18 @@ public class ClassificationIPCNode extends ItemReader<List<PatentClassification>
 
 	@Override
 	public List<PatentClassification> read() {
-		if ("classification-ipcr".equals(itemNode.getName())) {
-			return readSectionedFormat();
-		} else if ("classification-ipc".equals(itemNode.getName())) {
-			return readFlatFormat();
+
+		Node ipcN = IPCXP.selectSingleNode(itemNode);
+		if (ipcN != null) {
+			return readSectionedFormat(ipcN);
+		} else {
+			Node ipcTxtN = IPCTXTXP.selectSingleNode(itemNode);
+			if (ipcTxtN != null) {
+				LOGGER.info(ipcTxtN.getName());
+				return readFlatFormat(ipcTxtN);
+			}
 		}
+		
 		return Collections.emptyList();
 	}
 
@@ -57,17 +79,20 @@ public class ClassificationIPCNode extends ItemReader<List<PatentClassification>
 	 * 
 	 * @return PatentClassification
 	 */
-	public List<PatentClassification> readSectionedFormat() {
+	public List<PatentClassification> readSectionedFormat(Node ipcN) {
 		List<PatentClassification> ipcClasses = new ArrayList<PatentClassification>();
+		if (ipcN == null) {
+			return ipcClasses;
+		}
 
-		String section = itemNode.selectSingleNode("section").getText();
-		String mainClass = itemNode.selectSingleNode("class").getText();
-		String subclass = itemNode.selectSingleNode("subclass").getText();
-		String mainGroup = itemNode.selectSingleNode("main-group").getText();
-		String subgroup = itemNode.selectSingleNode("subgroup").getText();
+		String section = SECTIONXP.selectSingleNode(ipcN).getText();
+		String mainClass = MCLASSXP.selectSingleNode(ipcN).getText();
+		String subclass = SCLASSXP.selectSingleNode(ipcN).getText();
+		String mainGroup = MGROUPXP.selectSingleNode(ipcN).getText();
+		String subgroup = SGROUPXP.selectSingleNode(ipcN).getText();
+
 		// classification-value: I = inventive, A = additional
-		String type = itemNode.selectSingleNode("classification-value").getText();
-
+		String type = TYPEXP.selectSingleNode(ipcN).getText();
 		boolean inventive = false;
 		if ("I".equals(type)) {
 			inventive = true;
@@ -80,7 +105,7 @@ public class ClassificationIPCNode extends ItemReader<List<PatentClassification>
 		ipcClass.setMainGroup(mainGroup);
 		ipcClass.setSubGroup(subgroup);
 
-		LOGGER.trace("{}", ipcClass);
+		LOGGER.info(ipcClasses.toString());
 
 		ipcClasses.add(ipcClass);
 		return ipcClasses;
@@ -101,14 +126,13 @@ public class ClassificationIPCNode extends ItemReader<List<PatentClassification>
 	 * 
 	 * @return PatentClassification
 	 */
-	public List<PatentClassification> readFlatFormat() {
+	public List<PatentClassification> readFlatFormat(Node ipcTxtN) {
 		List<PatentClassification> ipcClasses = new ArrayList<PatentClassification>();
-
-		Node mainClass = itemNode.selectSingleNode("main-classification");
-		if (mainClass == null) {
+		if (ipcTxtN == null) {
 			return ipcClasses;
 		}
 
+		Node mainClass = MAINCLASSXP.selectSingleNode(ipcTxtN);
 		String mainClassTxt = mainClass.getText();
 		if ("None".equalsIgnoreCase(mainClassTxt)) {
 			LOGGER.trace("Invalid IPC classification 'main-classification': 'None'");
@@ -117,14 +141,14 @@ public class ClassificationIPCNode extends ItemReader<List<PatentClassification>
 
 		IpcClassification classification = new IpcClassification(mainClass.getText(), true);
 		try {
-			classification.parseText(mainClass.getText());	
+			classification.parseText(mainClass.getText());
 		} catch (ParseException e1) {
 			LOGGER.warn("Failed to parse IPC classification 'main-classification': {}", mainClass.asXML());
 			return ipcClasses;
 		}
 		ipcClasses.add(classification);
 
-		List<Node> furtherClasses = itemNode.selectNodes("further-classification");
+		List<Node> furtherClasses = FURTHERCLASSXP.selectNodes(ipcTxtN);
 		for (Node subclass : furtherClasses) {
 			IpcClassification ipcClass = new IpcClassification(subclass.getText(), false);
 			try {
@@ -135,6 +159,8 @@ public class ClassificationIPCNode extends ItemReader<List<PatentClassification>
 			ipcClasses.add(ipcClass);
 		}
 
+		LOGGER.info(ipcClasses.toString());
+		
 		return ipcClasses;
 	}
 }

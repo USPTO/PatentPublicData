@@ -22,7 +22,7 @@ public class FormattedTextTest {
 		String input = stb.toString();
 
 		StringBuilder expectStb = new StringBuilder();
-		expectStb.append("<h2 level=\"2\">HEADING TEXT</h2>\n");
+		expectStb.append("<h2 level=\"2\">HEADING TEXT</h2> \n");
 		expectStb.append("<p level=\"1\">pargraph text.</p>");
 		String expect = expectStb.toString();
 
@@ -60,7 +60,7 @@ public class FormattedTextTest {
 		variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref><i>a</i>",
 				"<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>");
 		variations.put("(<figref idref=\"DRAWINGS\">FIG. 1</figref>a)",
-				"(<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>)");
+				"(\n<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>)");
 		variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref>a;",
 				"<a idref=\"FIG-1\" id=\"FR-0001\" class=\"figref\">FIG. 1a</a>;");
 		variations.put("<figref idref=\"DRAWINGS\">FIG. 1</figref><i>a;</i>",
@@ -78,7 +78,7 @@ public class FormattedTextTest {
 		}
 	}
 
-	//@Test
+	// @Test
 	public void tailingFigrefs() {
 		Map<String, String> variations = new HashMap<String, String>();
 
@@ -122,14 +122,11 @@ public class FormattedTextTest {
 		stb.append("</tgroup></table>");
 		String input = stb.toString();
 
-		StringBuilder expectStb = new StringBuilder();
-		expectStb.append("\n\n\n<table id=\"TBL-0001\">");
-		expectStb.append(
-				"<colgroup><col width=\"21pt\" align=\"left\" /><col width=\"196pt\" align=\"left\" /></colgroup>\n");
-		expectStb.append("<thead><tr><th>head1</th><th align=\"center\">head2</th></tr></thead>\n");
-		expectStb.append("<tbody valign=\"top\"><tr><td></td><td rowspan=\"2\">cell data</td></tr></tbody>\n");
-		expectStb.append("</table>");
-		String expect = expectStb.toString();
+		String expect = "<table id=\"TBL-0001\">\n" + " <colgroup>\n" + "  <col width=\"21pt\" align=\"left\" />\n"
+				+ "  <col width=\"196pt\" align=\"left\" />\n" + " </colgroup>    \n" + " <thead>\n" + "  <tr>\n"
+				+ "   <th>head1</th>\n" + "   <th align=\"center\">head2</th>\n" + "  </tr>\n" + " </thead> \n"
+				+ " <tbody valign=\"top\">\n" + "  <tr>\n" + "   <td></td>\n" + "   <td rowspan=\"2\">cell data</td>\n"
+				+ "  </tr>\n" + " </tbody> \n" + "</table>";
 
 		String actual = format.getSimpleHtml(input);
 
@@ -140,7 +137,14 @@ public class FormattedTextTest {
 	public void MathML_html() {
 		String input = "<math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math>";
 
-		String expect = "<span id=\"MTH-0001\" class=\"math\" format=\"mathml\"><math><mrow><mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mrow><mn>4</mn><mo>+</mo><mi>x</mi></mrow><mo>+</mo><mn>4</mn></mrow><mo>=</mo><mn>0</mn></mrow></math></span>";
+		String expect = "<span id=\"MTH-0001\" class=\"math\" format=\"mathml\">\n" + " <math> \n" + "  <mrow> \n"
+				+ "   <mrow> \n" + "    <msup> \n" + "     <mi>\n" + "       x \n" + "     </mi> \n" + "     <mn>\n"
+				+ "       2 \n" + "     </mn> \n" + "    </msup> \n" + "    <mo>\n" + "      + \n" + "    </mo> \n"
+				+ "    <mrow> \n" + "     <mn>\n" + "       4 \n" + "     </mn> \n" + "     <mo>\n" + "       + \n"
+				+ "     </mo> \n" + "     <mi>\n" + "       x \n" + "     </mi> \n" + "    </mrow> \n" + "    <mo>\n"
+				+ "      + \n" + "    </mo> \n" + "    <mn>\n" + "      4 \n" + "    </mn> \n" + "   </mrow> \n"
+				+ "   <mo>\n" + "     = \n" + "   </mo> \n" + "   <mn>\n" + "     0 \n" + "   </mn> \n" + "  </mrow> \n"
+				+ " </math></span>";
 
 		String actual = format.getSimpleHtml(input);
 
@@ -162,7 +166,7 @@ public class FormattedTextTest {
 	public void subSupSpaceUnicode() {
 		String input = "R<sub>1 </sub>";
 
-		String expect = "R\u2081 ";
+		String expect = "R\u2081";
 
 		String actual = format.getSimpleHtml(input);
 
@@ -194,10 +198,10 @@ public class FormattedTextTest {
 				+ "to a loss of a cohesive texture and the degradation of other sensory perceptions such as mouth feel, taste, elasticity, and/or the food product not being tender or appealing to an individual. Another common problem encountered during delayed consumption, extended refrigeration and/or freezing of a formulated fried egg is that the food product exhibits syneresis, or the loss of water when frozen and reheated, or when stored for an extended period of time."
 				+ "</p>";
 
-		String expect = "<p id=\"p-0006\" num=\"0005\">In the past" + "<ins>, " + "</ins>"
-				+ "the freezing and/or extended refrigeration of a formulated fried egg has " + "<del>lead</del> "
-				+ "<ins>led </ins>"
-				+ "to a loss of a cohesive texture and the degradation of other sensory perceptions such as mouth feel, taste, elasticity, and/or the food product not being tender or appealing to an individual. Another common problem encountered during delayed consumption, extended refrigeration and/or freezing of a formulated fried egg is that the food product exhibits syneresis, or the loss of water when frozen and reheated, or when stored for an extended period of time."
+		String expect = "<p id=\"p-0006\" num=\"0005\">In the past"
+				+ "<ins>, </ins>the freezing and/or extended refrigeration of a formulated fried egg has "
+				+ "<del>lead</del> "
+				+ "<ins>led </ins>to a loss of a cohesive texture and the degradation of other sensory perceptions such as mouth feel, taste, elasticity, and/or the food product not being tender or appealing to an individual. Another common problem encountered during delayed consumption, extended refrigeration and/or freezing of a formulated fried egg is that the food product exhibits syneresis, or the loss of water when frozen and reheated, or when stored for an extended period of time."
 				+ "</p>";
 
 		String actual = format.getSimpleHtml(input);
@@ -209,7 +213,7 @@ public class FormattedTextTest {
 	public void subSupNonUnicode() {
 		String input = "<sub>Z+1</sub> <sup>Z - 1</sup>";
 
-		String expect = "<sub>Z+1</sub> <sup>Z - 1</sup>";
+		String expect = "<sub>Z+1</sub> \n<sup>Z - 1</sup>";
 
 		String actual = format.getSimpleHtml(input);
 

@@ -16,6 +16,9 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.doc.simplehtml.FreetextConfig;
@@ -47,6 +50,8 @@ import gov.uspto.patent.serialize.DocumentBuilder;
  *
  */
 public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonMapperSolr.class);
 
 	private final SolrJson json;
 	private boolean useDynamicFieldEndings;
@@ -144,16 +149,21 @@ public class JsonMapperSolr implements DocumentBuilder<Patent>, Closeable {
 
 		String examiner_dep = patent.getExaminers().stream().map(e -> e.getDepartment()).filter(Objects::nonNull)
 				.findFirst().orElse("-1");
-		json.addNumberField("art_unit", Integer.parseInt(examiner_dep));
+		try {
+			json.addNumberField("art_unit", Integer.parseInt(examiner_dep));
+		} catch (NumberFormatException e) {
+			LOGGER.info("Art Unit not number: '{}'", examiner_dep);
+			json.addNumberField("art_unit", 0);
+		}
 
 		/*
-		 * Citations 
+		 * Citations
 		 * 
-		 * Note: Greenbooks have CiteBy.UNDEFINED ; who added the citation is not defined within Greenbooks Format.
+		 * Note: Greenbooks have CiteBy.UNDEFINED ; who added the citation is not
+		 * defined within Greenbooks Format.
 		 */
 		Map<CitationType, Map<CitedBy, List<Citation>>> citationMap = getCitationMap(patent.getCitations());
 
-		
 		List<String> undefinedPatCite = null;
 		if (citationMap.containsKey(CitationType.PATCIT)
 				&& citationMap.get(CitationType.PATCIT).containsKey(CitedBy.UNDEFINED)) {

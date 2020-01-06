@@ -28,7 +28,7 @@ public class GrantParserTest {
         }
     }
  
-    @Test
+    //@Test
     public void readSamples2006() throws PatentReaderException, IOException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         GrantParser xmlGrant = new GrantParser();
         Path dirPath = Paths.get("resources/samples/xml2006");
