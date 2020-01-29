@@ -22,6 +22,8 @@ public class WordUtil {
 
 	private static String CONSONANTS = "bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ";
 
+	private static String PUNC = ",!;:";
+
 	private static Map<Character, Character> surroundPairs = new HashMap<Character, Character>();
 	static {
 		surroundPairs.put('(', ')');
@@ -75,8 +77,7 @@ public class WordUtil {
 				if (lower > 0) {
 					return true;
 				}
-			}
-			else if (Character.isLowerCase(ch)) {
+			} else if (Character.isLowerCase(ch)) {
 				lower++;
 				if (upper > 0) {
 					return true;
@@ -168,22 +169,53 @@ public class WordUtil {
 	}
 
 	/**
+	 * Check for defined Characters at end of Word
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasTrailingCharacter(String str, String matchChars) {
+		for (int i = str.length() - 1; i > 0; i--) {
+			final char ch = str.charAt(i);
+			final int index = matchChars.indexOf(ch);
+			if (index != -1) {
+				return true;
+			} else {
+				break;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Ends with Punctuation ,!;:
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean hasTrailingPuncuation(String str) {
+		return WordUtil.hasTrailingCharacter(str, PUNC);
+	}
+
+	/**
 	 * Count defined Character at the start of the Word
 	 * 
 	 * @param str
 	 * @param matchChar
-	 * @return number of times character occurs in front of the word without another character
+	 * @return number of times character occurs in front of the word without another
+	 *         character
 	 */
 	public static int countLeadChar(String str, char matchChar) {
 		int indentLength = 0;
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == matchChar) {
-            	indentLength++;
-            } else {
-            	break;
-            }
-        }
-        return indentLength;
+		for (int i = 0; i < str.length(); i++) {
+			if (str.charAt(i) == matchChar) {
+				indentLength++;
+			} else {
+				break;
+			}
+		}
+		return indentLength;
 	}
 
 	/**
@@ -246,6 +278,23 @@ public class WordUtil {
 		for (int i = 0; i < str.length(); i++) {
 			if (Character.isUpperCase(str.charAt(i))) {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Word starts with a capital letter
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean startsWithCapital(String str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (Character.isUpperCase(str.charAt(i))) {
+				return true;
+			} else {
+				return false;
 			}
 		}
 		return false;

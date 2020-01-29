@@ -106,10 +106,19 @@ public class WordUtilTest {
 	@Test
 	public void hasCaracter() {
 		boolean found = WordUtil.hasCharacter("one-two", "-");
-		assertEquals(true, found);
+		assertTrue(found);
 
 		boolean found2 = WordUtil.hasCharacter("one two", "-");
-		assertEquals(false, found2);
+		assertFalse(found2);
+	}
+
+	@Test
+	public void hasTrailingCharacter() {
+		assertTrue(WordUtil.hasTrailingCharacter("ending.", ".;,:"));
+
+		assertFalse(WordUtil.hasTrailingCharacter("ending.abc", ".;,:"));
+
+		assertFalse(WordUtil.hasTrailingCharacter(".leading", ".;,:"));
 	}
 
 	@Test
@@ -152,6 +161,13 @@ public class WordUtilTest {
 
 		String check3 = "AEIOU AEIOU";
 		assertTrue(check3, WordUtil.hasAllCapitals(check3));
+	}
+
+	@Test
+	public void startsWithCapital() {
+		assertTrue(WordUtil.startsWithCapital("Capital"));
+		assertFalse(WordUtil.startsWithCapital("lower"));
+		assertFalse(WordUtil.startsWithCapital("1Lower"));
 	}
 
 	@Test
