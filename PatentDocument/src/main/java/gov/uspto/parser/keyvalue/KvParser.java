@@ -24,16 +24,20 @@ public abstract class KvParser implements Dom4j {
 	// private static final Logger LOGGER = LoggerFactory.getLogger(KvParser.class);
 
 	private final KvReader kvReader;
+	private final KeyValue2Dom4j kvWriter;
 
 	public KvParser() {
-		kvReader = new KvReader();
+		kvReader = new SimpleKvReader();
+		kvWriter = new KeyValue2Dom4j();
 	}
 
 	public KvParser(Collection<String> maintainSpaceFields, Collection<String> paragraphFields,
 			Collection<String> headerFields, Collection<String> tableFields) {
-		kvReader = new KvReader();
+		kvReader = new SimpleKvReader();
 		kvReader.setMaintainSpaceFields(maintainSpaceFields);
-		kvReader.setFieldsForId(paragraphFields, headerFields, tableFields);
+
+		kvWriter = new KeyValue2Dom4j();
+		kvWriter.setFieldsForId(paragraphFields, headerFields, tableFields);
 	}
 
 	public Patent parse(Path docPath) throws PatentReaderException, IOException {
@@ -60,7 +64,7 @@ public abstract class KvParser implements Dom4j {
 		List<KeyValue> keyValues = kvReader.parse(reader);
 		// LOGGER.info("KeyValues: {}", keyValues);
 
-		Document document = kvReader.genXml(keyValues);
+		Document document = kvWriter.genXml(keyValues);
 		// LOGGER.info("XML: {}", document.asXML());
 
 		return parse(document);

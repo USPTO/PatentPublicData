@@ -17,8 +17,10 @@ import org.slf4j.MDC;
 
 import gov.uspto.parser.dom4j.keyvalue.config.FieldGroup;
 import gov.uspto.parser.keyvalue.KeyValue;
+import gov.uspto.parser.keyvalue.KeyValue2Dom4j;
 import gov.uspto.parser.keyvalue.KvParser;
 import gov.uspto.parser.keyvalue.KvReader;
+import gov.uspto.parser.keyvalue.SimpleKvReader;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.doc.greenbook.fragments.AgentNode;
 import gov.uspto.patent.doc.greenbook.fragments.ApplicationIdNode;
@@ -166,16 +168,18 @@ public class CssBrs extends KvParser {
 		fieldGroups.add(new FieldGroup("CLAIM").addField("CLTX", true));
 		Reader reader = new InputStreamReader(new FileInputStream(inputFile), "UTF-8");
 
-		KvReader kvf = new KvReader();
+		KvReader kvReader = new SimpleKvReader();
+		KeyValue2Dom4j kvWriter = new KeyValue2Dom4j();
+		
 		// kvf.setSectionSequence(sections);
 
-		List<KeyValue> keyValues = kvf.parse(reader);
+		List<KeyValue> keyValues = kvReader.parse(reader);
 
 		for (KeyValue kv : keyValues) {
 			System.out.println(kv.toString());
 		}
 
-		Document xmlDoc = kvf.genXml(keyValues, fieldGroups);
+		Document xmlDoc = kvWriter.genXml(keyValues, fieldGroups);
 
 		System.out.println(xmlDoc.asXML());
 	}

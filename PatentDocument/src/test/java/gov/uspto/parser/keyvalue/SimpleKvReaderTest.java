@@ -13,11 +13,10 @@ import org.junit.Test;
 
 import gov.uspto.patent.PatentReaderException;
 
-public class KvReaderTest {
+public class SimpleKvReaderTest {
 
 	@Test
-	public void keyValue2XML() throws PatentReaderException, IOException {
-
+	public void test() throws PatentReaderException, IOException {
 		String text = "PATN\n" + 
 				"WKU  040248011\n" + 
 				"SRC  5\n" + 
@@ -73,11 +72,13 @@ public class KvReaderTest {
 				"  </ABST>\n" + 
 				"</DOCUMENT>\n";
 
-		 KvReader kvReader = new KvReader();
+		 KvReader kvReader = new SimpleKvReader();
+		 KeyValue2Dom4j kvWriter = new KeyValue2Dom4j();
+
 		 List<KeyValue> keyValues = kvReader.parse(new StringReader(text));
 		 //System.out.println(keyValues);
 
-		 Document document = kvReader.genXml(keyValues);
+		 Document document = kvWriter.genXml(keyValues);
 		 //System.out.println(document.asXML());
 
 		 // Pretty Print
@@ -89,7 +90,6 @@ public class KvReaderTest {
 		 actualPrettyXml = actualPrettyXml.replaceAll("\r", ""); // handle windows style line-endings.
 		 //System.out.println(sw.toString());
 
-		 assertEquals(expectXml, actualPrettyXml);
-	}
+		 assertEquals(expectXml, actualPrettyXml);	}
 
 }

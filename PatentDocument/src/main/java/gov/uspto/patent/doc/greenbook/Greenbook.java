@@ -69,7 +69,7 @@ public class Greenbook extends KvParser {
 	private static List<String> TABLE_FIELDS = Arrays.asList(new String[] { "TBL" });
 
 	private static final XPath TITLEXP = DocumentHelper.createXPath("/DOCUMENT/PATN/TTL");
-	
+
 	public Greenbook() {
 		super(MAINTAIN_SPACE_FIELDS, PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
 	}

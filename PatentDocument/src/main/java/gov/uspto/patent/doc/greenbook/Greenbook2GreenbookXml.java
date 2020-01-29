@@ -16,7 +16,9 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import gov.uspto.parser.keyvalue.KeyValue;
+import gov.uspto.parser.keyvalue.KeyValue2Dom4j;
 import gov.uspto.parser.keyvalue.KvReader;
+import gov.uspto.parser.keyvalue.SimpleKvReader;
 import gov.uspto.patent.PatentReaderException;
 
 /**
@@ -51,9 +53,10 @@ public class Greenbook2GreenbookXml {
 
 	public Document parse(File file) throws IOException, PatentReaderException {
 		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
-			KvReader kvReader = new KvReader();
+			KvReader kvReader = new SimpleKvReader();
+			KeyValue2Dom4j kvWriter = new KeyValue2Dom4j();
 			List<KeyValue> keyValues = kvReader.parse(reader);
-			return kvReader.genXml(keyValues);
+			return kvWriter.genXml(keyValues);
 		}
 	}
 

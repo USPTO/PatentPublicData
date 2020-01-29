@@ -37,4 +37,10 @@ public class FieldIndex {
 		}
 		return index;
 	}
+
+	@Override
+	public String toString() {
+		return "FieldIndex [index=" + index + "]";
+	}
+
 }
