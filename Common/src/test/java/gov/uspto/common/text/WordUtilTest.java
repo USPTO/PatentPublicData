@@ -42,7 +42,7 @@ public class WordUtilTest {
 		assertTrue("Uppercase Letters with Number", WordUtil.isUpperAlphaNumberic("TEST1"));
 		assertFalse("Lowercase Letters with Number", WordUtil.isUpperAlphaNumberic("test1"));
 	}
-	
+
 	@Test
 	public void isMixedCase() {
 		assertTrue(WordUtil.isMixedCase("GmbH"));
@@ -158,6 +158,18 @@ public class WordUtilTest {
 	public void wordCount() {
 		int wordCount = WordUtil.countWords("Wireless LAN", new char[] { ' ' });
 		assertEquals(2, wordCount);
+	}
+
+	@Test
+	public void countLeadChar() {
+		int charCount = WordUtil.countLeadChar("     wireless", ' ');
+		assertEquals(5, charCount);
+	}
+
+	@Test
+	public void startsWithCharacter() {
+		boolean bool = WordUtil.startsWithCharacter("Wireless-LAN", "W");
+		assertTrue(bool);
 	}
 
 	@Test

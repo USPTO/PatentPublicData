@@ -168,6 +168,25 @@ public class WordUtil {
 	}
 
 	/**
+	 * Count defined Character at the start of the Word
+	 * 
+	 * @param str
+	 * @param matchChar
+	 * @return number of times character occurs in front of the word without another character
+	 */
+	public static int countLeadChar(String str, char matchChar) {
+		int indentLength = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == matchChar) {
+            	indentLength++;
+            } else {
+            	break;
+            }
+        }
+        return indentLength;
+	}
+
+	/**
 	 * Check for defined Characters at start of Word or Sequence of words
 	 * 
 	 * @param str
