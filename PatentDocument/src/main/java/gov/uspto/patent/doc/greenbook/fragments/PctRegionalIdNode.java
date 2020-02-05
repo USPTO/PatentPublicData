@@ -56,7 +56,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 	public DocumentId publicationId(Node pctGroupN) {
 		Node pctPubIdN = PCPXP.selectSingleNode(pctGroupN);
 		if (pctPubIdN != null) {
-			DocumentId pubDocId = new DocumentId(CountryCode.WO, pctPubIdN.getText());
+			DocumentId pubDocId = new DocumentId(CountryCode.WO, pctPubIdN.getText().trim());
 			pubDocId.setType(DocumentIdType.INTERNATIONAL_FILING);
 
 			if (pubDocId != null) {
@@ -81,7 +81,7 @@ public class PctRegionalIdNode extends DOMFragmentReader<List<DocumentId>> {
 	public DocumentId filingId(Node pctGroupN) {
 		Node pctFilingIdN = PCNXP.selectSingleNode(pctGroupN);
 		if (pctFilingIdN != null) {
-			DocumentId filindDocId = new DocumentId(CountryCode.WO, pctFilingIdN.getText());
+			DocumentId filindDocId = new DocumentId(CountryCode.WO, pctFilingIdN.getText().trim());
 			filindDocId.setType(DocumentIdType.INTERNATIONAL_FILING);
 
 			if (filindDocId != null) {

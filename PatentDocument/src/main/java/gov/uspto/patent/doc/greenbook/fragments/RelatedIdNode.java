@@ -41,11 +41,11 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
 			DocumentId docId;
 			if (patNumN != null) {
 				// Node issueDateN = relN.selectSingleNode("ISD");
-				docId = new DocumentId(CountryCode.US, patNumN.getText());
+				docId = new DocumentId(CountryCode.US, patNumN.getText().trim());
 			} else {
 				Node appNumN = APNXP.selectSingleNode(relN);
 				// Node appFilingDate = relN.selectSingleNode("APD");
-				String docNumber = appNumN != null ? appNumN.getText() : "";
+				String docNumber = appNumN != null ? appNumN.getText().trim() : "";
 				docId = new DocumentId(CountryCode.US, docNumber);
 			}
 

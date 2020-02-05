@@ -41,7 +41,7 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 		}
 
 		Node CntryN = CNTRYXP.selectSingleNode(pctGroupN);
-		String cntryCodeStr = CntryN != null ? CntryN.getText() : "";
+		String cntryCodeStr = CntryN != null ? CntryN.getText().trim() : "";
 
 		if (cntryCodeStr.length() == 3) {
 			cntryCodeStr = cntryCodeStr.replaceFirst("(?:X|[0-9])$", "");
@@ -58,7 +58,7 @@ public class PriorityClaimNode extends DOMFragmentReader<List<DocumentId>> {
 
 		Node priorityIdN = APPIDXP.selectSingleNode(pctGroupN);
 		if (priorityIdN != null) {
-			DocumentId priorityDocId = new DocumentId(countryCode, priorityIdN.getText());
+			DocumentId priorityDocId = new DocumentId(countryCode, priorityIdN.getText().trim());
 			priorityDocId.setType(DocumentIdType.NATIONAL_FILING);
 
 			Node dateN = APPDATEXP.selectSingleNode(pctGroupN); // filing date.
