@@ -54,7 +54,7 @@ public class OrgSynonymGenerator {
 			.compile("(.+) ((?:Operating|Holding|Public Limited) Company|(?<!(:?&|[Aa]nd) )Co(?:\\.|mpany)|Corp(?:oration|orate|\\.)|CORPORATION|Coop(\\\\.?|erative)?(?: Association)?|Association|Incorporation|PTE|P\\.?[AC]\\.?),?$");
 
 	// "Toshiba K.K." == ["Kabushiki Kaisha Toshiba", "Toshiba Kabushiki Kaisha", "Toshiba KK"]
-	private static final Pattern ORG_PREFIX_PATTERN = Pattern.compile("^(The|Kabushiki Kaisha|Koninklijke|Kommandiittiyhtiö|Firma|Compagnie) (.+)$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern ORG_PREFIX_PATTERN = Pattern.compile("^(The|Kabushiki Kaisha|Koninklijke|Kommandiittiyhtiï¿½|Firma|Compagnie) (.+)$", Pattern.CASE_INSENSITIVE);
 
 	private Matcher leadCompanyMatcher = ORG_PREFIX_PATTERN.matcher("");
 	private Matcher suffixMatcher = ORG_SUFFIX_PATTERN.matcher("");
@@ -267,11 +267,12 @@ public class OrgSynonymGenerator {
 		SUFFIX_WORD.add("cyfyngedig");
 		SUFFIX_WORD.add("anghyfyngedig");
 	}
+
 	protected String suffixWord(NameOrg name, String currentTxt) {
 		int lastWrdIdx = currentTxt.lastIndexOf(" ")+1;
 		String lastWord = currentTxt.substring(lastWrdIdx).replace(".", ".").toLowerCase();
 		String leftSide = null;
-		if (SUFFIX_WORD.contains(lastWord)) {
+		if (SUFFIX_WORD.contains(lastWord) && !currentTxt.equalsIgnoreCase(lastWord)) {
 			leftSide = currentTxt.substring(0, lastWrdIdx-1);
 			if (leftSide.endsWith(",")) {
 				leftSide = currentTxt.substring(0, lastWrdIdx-2);
@@ -391,7 +392,7 @@ public class OrgSynonymGenerator {
 		ABBREVS.put("ip", new String[]{"Intellectual Property"});
 		ABBREVS.put("ltd", new String[]{"Limited", ""});
 		ABBREVS.put("ltda", new String[]{"Sociedad de Responsabilidad Limitada", ""});
-		ABBREVS.put("gmbh", new String[]{"Gesellschaft mit beschränkter Haftung", ""});
+		ABBREVS.put("gmbh", new String[]{"Gesellschaft mit beschrï¿½nkter Haftung", ""});
 		ABBREVS.put("kgaa", new String[]{"Kommanditgesellschaft Auf Aktien", ""});
 		ABBREVS.put("mbh", new String[]{"Mit Beschrnkter Haftung", ""});
 		ABBREVS.put("mbb", new String[]{"Partnerschaftsgesellschaft", ""}); // Germany "mbB" professional partnership 
@@ -415,14 +416,14 @@ public class OrgSynonymGenerator {
 		ABBREVS.put("s.l.u", new String[]{"Sociedad Limitada Unipersonal", ""}); // Spanish
 		ABBREVS.put("n.v", new String[] {"naamloze vennootschap", "NV", ""}); // dutch
 		ABBREVS.put("b.v", new String[] {"Besloten vennootschap", "BV", ""}); // dutch
-		ABBREVS.put("oy", new String[]{"Osakeyhtio", "Osakeyhtiö", ""}); // Finish Osakeyhtiö
-		ABBREVS.put("oyj", new String[]{"Julkinen Osakeyhtio", "Julkinen Osakeyhtiö", ""});  // Finish
+		ABBREVS.put("oy", new String[]{"Osakeyhtio", "Osakeyhtiï¿½", ""}); // Finish Osakeyhtiï¿½
+		ABBREVS.put("oyj", new String[]{"Julkinen Osakeyhtio", "Julkinen Osakeyhtiï¿½", ""});  // Finish
 		ABBREVS.put("ulc", new String[]{"unlimited liability corporation", ""});  // Canada
-		ABBREVS.put("s.a.s", new String[]{"société par actions simplifiée", "SAS", ""}); // French
-		ABBREVS.put("s.a.r.l", new String[]{"Société Anonyme à Responsabilité Limitée", "SARL", ""}); // French
-		ABBREVS.put("sarl", new String[]{"Société Anonyme à Responsabilité Limitée", ""});
-		ABBREVS.put("s.p.a", new String[]{"Societa per Azioni", "Società per Azioni", "Sociedad por Acciones", "SpA", ""}); // S.p.A. valid in USA (Connecticut), mostly many other countries. Società Per Azioni (italian), Sociedad por Acciones
-		ABBREVS.put("s.a", new String[]{""}); // France, Canada,... S.A => Société anonyme (French) Sociedad Anónima (Spanish) Sociedade Anônima (Brazil) ... 
+		ABBREVS.put("s.a.s", new String[]{"sociï¿½tï¿½ par actions simplifiï¿½e", "SAS", ""}); // French
+		ABBREVS.put("s.a.r.l", new String[]{"Sociï¿½tï¿½ Anonyme ï¿½ Responsabilitï¿½ Limitï¿½e", "SARL", ""}); // French
+		ABBREVS.put("sarl", new String[]{"Sociï¿½tï¿½ Anonyme ï¿½ Responsabilitï¿½ Limitï¿½e", ""});
+		ABBREVS.put("s.p.a", new String[]{"Societa per Azioni", "Societï¿½ per Azioni", "Sociedad por Acciones", "SpA", ""}); // S.p.A. valid in USA (Connecticut), mostly many other countries. Societï¿½ Per Azioni (italian), Sociedad por Acciones
+		ABBREVS.put("s.a", new String[]{""}); // France, Canada,... S.A => Sociï¿½tï¿½ anonyme (French) Sociedad Anï¿½nima (Spanish) Sociedade Anï¿½nima (Brazil) ... 
 		ABBREVS.put("sa", new String[]{""}); // France, Canada,...
 		ABBREVS.put("s.a/n.v", new String[]{"", "naamloze vennootschap", "NV"});
 		ABBREVS.put("a/s", new String[]{"aktieselskab", ""}); // Danish
@@ -458,9 +459,9 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("aktsiaselts", new String[]{"AS", "A.S.", ""}); // Estonian
 		WORD_TO_ABBREVS.put("aksjeselskap", new String[]{"AS", "A/S", ""}); // Norwegian (NO)
 		WORD_TO_ABBREVS.put("allmennaksjeselskap", new String[]{"ASA", ""}); // Norwegian (NO)
-		WORD_TO_ABBREVS.put("hlutafélag", new String[]{"Hf", "hlutafelag", ""}); // Icelandic
-		WORD_TO_ABBREVS.put("kommandiittiyhtiö", new String[]{"Ky", "Kommandiittiyhtio", ""});
-		WORD_TO_ABBREVS.put("kommandiittiyhtio", new String[]{"Ky", "Kommandiittiyhtiö", ""});
+		WORD_TO_ABBREVS.put("hlutafï¿½lag", new String[]{"Hf", "hlutafelag", ""}); // Icelandic
+		WORD_TO_ABBREVS.put("kommandiittiyhtiï¿½", new String[]{"Ky", "Kommandiittiyhtio", ""});
+		WORD_TO_ABBREVS.put("kommandiittiyhtio", new String[]{"Ky", "Kommandiittiyhtiï¿½", ""});
 		WORD_TO_ABBREVS.put("kommandittselskap", new String[]{"KS", ""});
 		WORD_TO_ABBREVS.put("kommanditbolag", new String[]{"Kb", ""});
 		WORD_TO_ABBREVS.put("kommanditselskab", new String[]{"K/S", ""}); // Danish
@@ -470,8 +471,8 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("kollektivgesellschaft", new String[]{"KolG", ""});
 		WORD_TO_ABBREVS.put("interessentskab", new String[]{"I/S", ""}); // Danish
 		WORD_TO_ABBREVS.put("osuuskunta", new String[]{"osk", ""});
-		WORD_TO_ABBREVS.put("osakeyhtio", new String[]{"Oy", "Osakeyhtiö", ""}); // Finnish
-		WORD_TO_ABBREVS.put("osakeyhtiö", new String[]{"Oy", "Osakeyhtio", ""}); // Finnish
+		WORD_TO_ABBREVS.put("osakeyhtio", new String[]{"Oy", "Osakeyhtiï¿½", ""}); // Finnish
+		WORD_TO_ABBREVS.put("osakeyhtiï¿½", new String[]{"Oy", "Osakeyhtio", ""}); // Finnish
 		WORD_TO_ABBREVS.put("partnerschaftsgesellschaft", new String[]{"mbB", ""}); // Germany
 		WORD_TO_ABBREVS.put("fabrication", new String[]{"Fab.", "Fabn."});
 		WORD_TO_ABBREVS.put("manufacturing", new String[]{"Mfg."});
@@ -501,7 +502,7 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("internacional", new String[]{"Intl.", "International"}); // spanish spelling with "c"
 		WORD_TO_ABBREVS.put("organization", new String[]{"Org."});
 		WORD_TO_ABBREVS.put("association", new String[]{"Assoc."});
-		WORD_TO_ABBREVS.put("asociación", new String[]{"Assoc."});
+		WORD_TO_ABBREVS.put("asociaciï¿½n", new String[]{"Assoc."});
 		WORD_TO_ABBREVS.put("associates", new String[]{"Assocs."});
 		WORD_TO_ABBREVS.put("advanced", new String[]{"Adv."});
 		WORD_TO_ABBREVS.put("engineering", new String[]{"Eng."});

@@ -116,20 +116,20 @@ public class OrgSynonymGeneratorTest {
 
 		// Spanish (ES)
 		COMPANIES.put(entity("Coprecitec, S.L.", CountryCode.ES), Arrays.asList("COPRECITEC"));
-		COMPANIES.put(entity("TELEFONICA DIGITAL ESPAÑA, S.L.U.", CountryCode.ES), Arrays.asList("TELEFONICA DIGITAL ESPAÑA"));
+		COMPANIES.put(entity("TELEFONICA DIGITAL ESPAï¿½A, S.L.U.", CountryCode.ES), Arrays.asList("TELEFONICA DIGITAL ESPAï¿½A"));
 		COMPANIES.put(entity("Indo Internacional, S.A.", CountryCode.ES), Arrays.asList("INDO INTL.", "INDO INTERNACIONAL"));
 
 		// French Speaking Countries (FR, BE, LU)
 		COMPANIES.put(entity("L'Oreal", CountryCode.FR), Arrays.asList("LOREAL", "L'OREAL"));
 		COMPANIES.put(entity("Compagnie Plastic Omnium", CountryCode.FR), Arrays.asList("PLASTIC OMNIUM"));
 		COMPANIES.put(entity("Zimmer Spine, S.A.S.", CountryCode.FR), Arrays.asList("ZIMMER SPINE"));
-		COMPANIES.put(entity("Conversant Wireless Lecensing S.a.r.l", CountryCode.LU), Arrays.asList("CONVERSANT WIRELESS LECENSING", "CONVERSANT WIRELESS LECENSING SOCIÉTÉ ANONYME À RESPONSABILITÉ LIMITÉE"));
+		COMPANIES.put(entity("Conversant Wireless Lecensing S.a.r.l", CountryCode.LU), Arrays.asList("CONVERSANT WIRELESS LECENSING", "CONVERSANT WIRELESS LECENSING SOCIï¿½Tï¿½ ANONYME ï¿½ RESPONSABILITï¿½ LIMITï¿½E"));
 		COMPANIES.put(entity("GlaxoSmithKline Biologicals S.A.", CountryCode.BE), Arrays.asList("GLAXOSMITHKLINE BIO", "GLAXOSMITHKLINE BIOLOGICALS"));
 		COMPANIES.put(entity("Minvasys, SA", CountryCode.UNDEFINED), Arrays.asList("MINVASYS"));
 		COMPANIES.put(entity("Airbus Operations (SAS)", CountryCode.FR), Arrays.asList("AIRBUS OPS SAS", "AIRBUS OPERATIONS SAS"));
 
 		// Italian (IT)
-		COMPANIES.put(entity("F.LLI MARIS S.p.A.", CountryCode.IT), Arrays.asList("F.LLI MARIS", "F LLI MARIS", "F.LLI MARIS SOCIETÀ PER AZIONI"));
+		COMPANIES.put(entity("F.LLI MARIS S.p.A.", CountryCode.IT), Arrays.asList("F.LLI MARIS", "F LLI MARIS", "F.LLI MARIS SOCIETï¿½ PER AZIONI"));
 		COMPANIES.put(entity("Nerviano Medical Sciences S.r.l.", CountryCode.IT), Arrays.asList("NERVIANO MEDICAL SCIENCES")); // SRL can also be spanish..
 
 		// Dutch (NL)
@@ -144,8 +144,8 @@ public class OrgSynonymGeneratorTest {
 		COMPANIES.put(entity("Wonderland Switzerland AG", CountryCode.UNDEFINED), Arrays.asList("WONDERLAND SWITZERLAND", "WONDERLAND SWITZERLAND AKTIENGESELLSCHAFT"));
 
 		// Finish (FI)
-		COMPANIES.put(entity("Siemens Osakeyhtiö", CountryCode.FI), Arrays.asList("SIEMENS", "SIEMENS OY", "SIEMENS OSAKEYHTIÖ"));
-		COMPANIES.put(entity("Siemens OY", CountryCode.FI), Arrays.asList("SIEMENS", "SIEMENS OY", "SIEMENS OSAKEYHTIÖ"));
+		COMPANIES.put(entity("Siemens Osakeyhtiï¿½", CountryCode.FI), Arrays.asList("SIEMENS", "SIEMENS OY", "SIEMENS OSAKEYHTIï¿½"));
+		COMPANIES.put(entity("Siemens OY", CountryCode.FI), Arrays.asList("SIEMENS", "SIEMENS OY", "SIEMENS OSAKEYHTIï¿½"));
 
 		// Danish (DK)
 		COMPANIES.put(entity("Tresu Anlaeg A/S", CountryCode.DK), Arrays.asList("TRESU ANLAEG")); // "Tresu Anlaeg Aktieselskab"
@@ -170,6 +170,8 @@ public class OrgSynonymGeneratorTest {
 		// China (CN)
 		COMPANIES.put(entity("Lenovo (Beijing) Co., Ltd.", CountryCode.CN), Arrays.asList("LENOVO"));
 		COMPANIES.put(entity("Shanghai Jianguo Electronics Co., Ltd.", CountryCode.CN), Arrays.asList("JIANGUO ELECTRONICS"));
+
+		COMPANIES.put(entity("Anpartsselskab", CountryCode.DK), Arrays.asList("ANPARTSSELSKAB"));
 
 		// Found in Patents:
 		// Artificial Lift Company Limited Lion Works
