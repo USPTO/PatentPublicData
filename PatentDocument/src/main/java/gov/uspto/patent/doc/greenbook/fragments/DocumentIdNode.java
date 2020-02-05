@@ -44,12 +44,19 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 			return null;
 		}
 
-		String patNum = docNumN.getText().substring(1, 8);
+		String patNum = docNumN.getText().trim();
+
+		if (patNum.startsWith("RE")) {
+			// Remove 'RE' - REISSUE prefix.
+			patNum = patNum.substring(2);
+		}
+
 		DocumentId documentId = new DocumentId(fallbackCountryCode, patNum);
+		documentId.setRawText(docNumN.getText().trim());
 
 		Node dateN = ISSUEDATEXP.selectSingleNode(parentNode);
 		if (dateN != null) {
-			String dateTxt = dateN.getText();
+			String dateTxt = dateN.getText().trim();
 			try {
 				documentId.setDate(new DocumentDate(dateTxt));
 			} catch (InvalidDataException e) {

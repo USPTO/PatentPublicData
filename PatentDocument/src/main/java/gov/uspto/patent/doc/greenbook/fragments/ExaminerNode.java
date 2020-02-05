@@ -35,9 +35,9 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 		List<Examiner> examinerList = new ArrayList<Examiner>();
 
 		Node parentNode = PATXP.selectSingleNode(document);
-		
+
 		Node artN = ARTXP.selectSingleNode(parentNode);
-		String artUnit = artN != null ? artN.getText() : null;
+		String artUnit = artN != null ? artN.getText().trim() : null;
 		if (artN == null) {
 			LOGGER.warn("Art Unit is missing");
 		}
@@ -61,7 +61,7 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 	public Examiner getExaminer(Node examinerNode, ExaminerType type, String artUnit) {
 
 		if (examinerNode != null) {
-			String fullName = examinerNode != null ? examinerNode.getText() : null;
+			String fullName = examinerNode != null ? examinerNode.getText().trim() : null;
 
 			Name name = null;
 			try {

@@ -111,6 +111,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		}
 
 		DocumentId documentId = new DocumentId(countryCode, docNumN.getText().trim());
+		documentId.setRawText(docNumN.getText().trim());
 
 		Node dateN = ISSUEDATEXP.selectSingleNode(itemNode);
 		if (dateN != null) {

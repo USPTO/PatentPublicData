@@ -65,7 +65,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		Node typeCodeN = ATYPEXP.selectSingleNode(assigneeN);
 		Assignee assignee = new Assignee(name, address);
 
-		String assigneeType = typeCodeN != null ? typeCodeN.getText() : null;
+		String assigneeType = typeCodeN != null ? typeCodeN.getText().trim() : null;
 		try {
 			assignee.setRole(assigneeType);
 		} catch (InvalidDataException e) {

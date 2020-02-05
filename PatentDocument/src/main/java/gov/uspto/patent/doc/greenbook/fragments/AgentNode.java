@@ -152,7 +152,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		Name name = null;
 
 		try {
-			name = nameParser.createName(fullNameNode.getText());
+			name = nameParser.createName(fullNameNode.getText().trim());
 		} catch (InvalidDataException e) {
 			LOGGER.warn("{} : {}", e.getMessage(), fullNameNode.asXML());
 		}

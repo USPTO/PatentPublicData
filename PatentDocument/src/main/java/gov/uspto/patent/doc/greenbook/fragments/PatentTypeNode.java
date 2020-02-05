@@ -5,6 +5,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 import org.dom4j.XPath;
 
+import gov.uspto.common.text.WordUtil;
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.PatentType;
 
@@ -17,6 +18,7 @@ import gov.uspto.patent.model.PatentType;
 public class PatentTypeNode extends DOMFragmentReader<PatentType> {
 
 	private static final XPath APTXP = DocumentHelper.createXPath("/DOCUMENT/PATN/APT");
+	private static final XPath PATXP = DocumentHelper.createXPath("/DOCUMENT/PATN/WKU");
 
 	public PatentTypeNode(Document document) {
 		super(document);
@@ -26,7 +28,7 @@ public class PatentTypeNode extends DOMFragmentReader<PatentType> {
 	public PatentType read() {
 		Node aptN = APTXP.selectSingleNode(document);
 		if (aptN != null) {
-			switch (aptN.getText()) {
+			switch (aptN.getText().trim()) {
 			case "1":
 				return PatentType.UTILITY;
 			case "2":
@@ -42,7 +44,27 @@ public class PatentTypeNode extends DOMFragmentReader<PatentType> {
 			case "7":
 				return PatentType.SIR;
 			}
+		} else {
+			Node patIdN = PATXP.selectSingleNode(document);
+			if (patIdN != null) {
+				String patNumStr = patIdN.getText().trim();
+				if (WordUtil.startsWithCapital(patNumStr)) {
+					String type = WordUtil.getCapital(patNumStr);
+					switch (type) {
+					case "RE":
+						return PatentType.REISSUE;
+					case "D":
+						return PatentType.DESIGN;
+					case "PP":
+						return PatentType.PLANT;
+					}
+				} else {
+					return PatentType.UTILITY;
+				}
+			}
+
 		}
+
 		return PatentType.UNDEFINED;
 	}
 }

@@ -43,18 +43,19 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 			return null;
 		}
 
-		String docId = docNumN.getText();
+		String docId = docNumN.getText().trim();
 		if (docId.endsWith("&")) {
 			docId = docId.substring(0, docId.length()-1);
 			// LOGGER.warn("!!!!!!!!!!!!!! Application ID ends with & '{}' -> '{}'", docNumN.getText(), docId);
 		}
 
 		DocumentId documentId = new DocumentId(defaultCountryCode, docId);
+		documentId.setRawText(docNumN.getText().trim());
 
 		Node dateN = APDATEXP.selectSingleNode(parentNode);
 		if (dateN != null) {
 			try {
-				documentId.setDate(new DocumentDate(dateN.getText()));
+				documentId.setDate(new DocumentDate(dateN.getText().trim()));
 			} catch (InvalidDataException e) {
 				LOGGER.warn("{} : {}", e.getMessage(), dateN.getParent().asXML());
 			}

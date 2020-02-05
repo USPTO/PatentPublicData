@@ -62,10 +62,10 @@ public class AddressNode extends ItemReader<Address> {
 		*/
 
 		Node cityN = CITYXP.selectSingleNode(itemNode);
-		String city = cityN != null ? cityN.getText() : null;
+		String city = cityN != null ? cityN.getText().trim() : null;
 
 		Node stateN = STATEXP.selectSingleNode(itemNode);
-		String state = stateN != null ? stateN.getText() : null;
+		String state = stateN != null ? stateN.getText().trim() : null;
 
 		Node countryN = CNTRYXP.selectSingleNode(itemNode);
 		CountryCode countryCode = getCountryCode(countryN);
@@ -93,7 +93,7 @@ public class AddressNode extends ItemReader<Address> {
 			return CountryCode.UNDEFINED;
 		}
 
-		String country = countryNode.getText();
+		String country = countryNode.getText().trim();
 
 		if (country.length() == 3) {
 			country = country.replaceFirst("(?:X|[0-9])$", "");
@@ -126,7 +126,7 @@ public class AddressNode extends ItemReader<Address> {
 			return CountryCode.UNDEFINED;
 		}
 
-		String country = countryNode.getText();
+		String country = countryNode.getText().trim();
 
 		if (country.length() == 3) {
 			country = country.replaceFirst("(?:X|[0-9])$", "");

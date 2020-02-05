@@ -27,6 +27,7 @@ public class NameNode extends ItemReader<Name> {
 
 	public static final Set<String> PERSON_SUFFIXES = new HashSet<String>(Arrays.asList("JR", "SR", "I", "II", "III",
 			"IV", "V", "1ST", "2ND", "3RD", "4TH", "5TH", "1", "2", "3", "4", "5"));
+
 	public static final Set<String> PERSON_LONG_SUFFIXES = new HashSet<String>(Arrays.asList("DECEASED", "HEIR",
 			"HEIRS", "HEIRS-AT-LAW", "HEIRESS", "COEXECUTOR", "CO-EXECUTOR", "CO-EXECUTRIX", "COEXECUTRIX", "EXECTRIX",
 			"EXECUTOR", "EXECUTORS", "EXECUTRIX", "ADMINISTRATOR", "ADMINISTRATRIX", "LEGAL REPRESENTATIVE",
@@ -41,41 +42,32 @@ public class NameNode extends ItemReader<Name> {
 	@Override
 	public Name read() {
 		Node nameN = NAMEXP.selectSingleNode(itemNode);
-		String fullName = nameN != null ? nameN.getText() : null;
+		String fullName = nameN != null ? nameN.getText().trim() : null;
 		if (fullName == null) {
 			return null;
 		}
 
-		List<String> nameParts = Splitter.onPattern(";").limit(2).trimResults().splitToList(fullName);
+		try {
+			return createName(fullName);
+		} catch (InvalidDataException e) {
+			return null;
+		}
+	}
 
-		Name entityName;
-		if (nameParts.size() == 2) {
-			String lastName = nameParts.get(0);
-			String firstName = nameParts.get(1);
-			String suffix = null;
-			if (lastName.contains(",")) {
-				String[] parts = lastName.split(",");
-				if (parts.length == 2) {
-					String suffixCheck = parts[1].trim().replaceFirst("\\.$", "").toUpperCase();
-					if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck))
-							|| PERSON_LONG_SUFFIXES.contains(suffixCheck)) {
-						LOGGER.debug("Suffix Fixed, parsed common suffix '{}' from lastname: '{}'", suffixCheck,
-								lastName);
-						lastName = parts[0];
-						suffix = suffixCheck;
-					} else {
-						LOGGER.info("Unmatched Suffix: {} :: {} -> {}", fullName, lastName, suffixCheck);
-					}
-				}
+	protected String[] suffixFix(String lastName) {
+		String[] parts = lastName.split(",");
+		if (parts.length == 2) {
+			String suffixCheck = parts[1].trim().replaceFirst("\\.$", "").toUpperCase();
+			if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck))
+					|| PERSON_LONG_SUFFIXES.contains(suffixCheck)) {
+				LOGGER.debug("Suffix Fixed, parsed common suffix '{}' from lastname: '{}'", suffixCheck, lastName);
+				return new String[] { parts[0], suffixCheck };
+			} else {
+				LOGGER.info("Unmatched Suffix: {} :: {} -> {}", lastName, suffixCheck);
 			}
-
-			entityName = new NamePerson(firstName, lastName);
-			entityName.setSuffix(suffix);
-		} else {
-			entityName = new NameOrg(fullName);
 		}
 
-		return entityName;
+		return null;
 	}
 
 	/**
@@ -95,7 +87,19 @@ public class NameNode extends ItemReader<Name> {
 
 		Name entityName;
 		if (nameParts.size() == 2) {
-			entityName = new NamePerson(nameParts.get(1), nameParts.get(0));
+			String lastName = nameParts.get(0);
+			String firstName = nameParts.get(1);
+			String suffix = null;
+			if (lastName.contains(",")) {
+				String[] parts = suffixFix(lastName);
+				if (parts != null) {
+					lastName = parts[0];
+					suffix = parts[1];
+				}
+			}
+
+			entityName = new NamePerson(firstName, lastName);
+			entityName.setSuffix(suffix);
 		} else {
 			entityName = new NameOrg(fullName);
 		}
