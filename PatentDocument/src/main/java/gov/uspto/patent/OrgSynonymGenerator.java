@@ -48,7 +48,7 @@ public class OrgSynonymGenerator {
 
 	// https://en.wikipedia.org/wiki/List_of_legal_entity_types_by_country
 	private static final Pattern ORG_SUFFIX_PATTERN = Pattern.compile(
-			"^(.+?),? (Co\\.?, [Ll]td|Co(?:\\.|mpany)?, LLC|(?:P\\.?)?(?:L\\.?)?L\\.?[CP]|[Pp][Ll][Cc]|(?:P(?:ty|TY|vt|VT|te|TE)[,\\.]? )?(?:L(?:td|TD)|Limited)|LLP|LTD|Inc(?:orporated)?|(?:G|Ges)?mbH|Cooperative Association Ltd|Limited Partnership|Ltda|(?:GmbH|Ltd\\.?|Limited|AG) & Co\\.? (?:[KO]G(?:aA)?|[Oo]HG)|A[BGS]|(?:[Nn]aamloze|[Bb]esloten) [Vv]ennootschap|Kabu(?:sh|hs)iki Kaisha|[BN]\\.?\\s?V\\.?|S\\.?A\\.?(:?S\\.?)?|S\\.?p\\.?A\\.?|[SGL]\\.?P\\.?|A/S|S\\.?L\\.?|S\\.([Aa]\\.?)?[Rr]\\.[Ll]\\.?|K\\.?K\\.?|S\\.A\\./N\\.V\\.)\\.?$");
+			"^(.+?),? (Co\\.?, [Ll]td|Co(?:\\.|mpany)?, LLC|(?:P\\.?)?(?:L\\.?)?L\\.?[CP]|[Pp][Ll][Cc]|(?:P(?:ty|TY|vt|VT|te|TE)[,\\.]? )?(?:L(?:td|TD)|Limited)|LLP|LTD|Inc(?:orporated)?|(?:G|Ges)?\\.?m\\.?b\\.?H|Cooperative Association Ltd|Limited Partnership|Ltda|(?:GmbH|Ltd\\.?|Limited|AG) & Co\\.? (?:[KO]G(?:aA)?|[Oo]HG)|A[BGS]|(?:[Nn]aamloze|[Bb]esloten) [Vv]ennootschap|Kabu(?:sh|hs)iki Kaisha|[BN]\\.?\\s?V\\.?|S\\.?A\\.?(:?S\\.?)?|S\\.?p\\.?A\\.?|[SGL]\\.?P\\.?|A/S|S\\.?L\\.?|S\\.([Aa]\\.?)?[Rr]\\.[Ll]\\.?|K\\.?K\\.?|S\\.A\\./N\\.V\\.)\\.?$");
 
 	private static final Pattern COMPANY_PATTERN = Pattern
 			.compile("(.+) ((?:Operating|Holding|Public Limited) Company|(?<!(:?&|[Aa]nd) )Co(?:\\.|mpany)|Corp(?:oration|orate|\\.)|CORPORATION|Coop(\\\\.?|erative)?(?: Association)?|Association|Incorporation|PTE|P\\.?[AC]\\.?),?$");
