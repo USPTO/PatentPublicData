@@ -48,13 +48,13 @@ public class OrgSynonymGenerator {
 
 	// https://en.wikipedia.org/wiki/List_of_legal_entity_types_by_country
 	private static final Pattern ORG_SUFFIX_PATTERN = Pattern.compile(
-			"^(.+?),? (Co\\.?, [Ll]td|Co(?:\\.|mpany)?, LLC|(?:P\\.?)?(?:L\\.?)?L\\.?[CP]|[Pp][Ll][Cc]|(?:P(?:ty|TY|vt|VT|te|TE)[,\\.]? )?(?:L(?:td|TD)|Limited)|LLP|LTD|Inc(?:orporated)?|(?:G|Ges)?\\.?m\\.?b\\.?H|Cooperative Association Ltd|Limited Partnership|Ltda|(?:GmbH|Ltd\\.?|Limited|AG) & Co\\.? (?:[KO]G(?:aA)?|[Oo]HG)|A[BGS]|(?:[Nn]aamloze|[Bb]esloten) [Vv]ennootschap|Kabu(?:sh|hs)iki Kaisha|[BN]\\.?\\s?V\\.?|S\\.?A\\.?(:?S\\.?)?|S\\.?p\\.?A\\.?|[SGL]\\.?P\\.?|A/S|S\\.?L\\.?|S\\.([Aa]\\.?)?[Rr]\\.[Ll]\\.?|K\\.?K\\.?|S\\.A\\./N\\.V\\.)\\.?$");
+			"^(.+?),? (Co\\.?, [Ll]td|Co(?:\\.|mpany)?, LLC|(?:P\\.?)?(?:L\\.?)?L\\.?[CP]|[Pp][Ll][Cc]|(?:P(?:ty|TY|vt|VT|te|TE)[,\\.]? )?(?:L(?:td|TD)|Limited)|LLP|LTD|Inc(?:orporated)?|(?:G|Ges)?\\.?m\\.?b\\.?H|Cooperative Association Ltd|Limited Partnership|Ltda|Societe Anonyme|(?:GmbH|Ltd\\.?|Limited|AG) & Co\\.? (?:[KO]G(?:aA)?|[Oo]HG)|A[BGS]|(?:[Nn]aamloze|[Bb]esloten) [Vv]ennootschap|Kabu(?:sh|hs)iki Kaisha|[BN]\\.?\\s?V\\.?|S\\.?A\\.?(:?S\\.?)?|S\\.?p\\.?A\\.?|[SGL]\\.?P\\.?|A/S|S\\.?L\\.?|S\\.([Aa]\\.?)?[Rr]\\.[Ll]\\.?|K\\.?K\\.?|S\\.A\\./N\\.V\\.)\\.?$");
 
 	private static final Pattern COMPANY_PATTERN = Pattern
 			.compile("(.+) ((?:Operating|Holding|Public Limited) Company|(?<!(:?&|[Aa]nd) )Co(?:\\.|mpany)|Corp(?:oration|orate|\\.)|CORPORATION|Coop(\\\\.?|erative)?(?: Association)?|Association|Incorporation|PTE|P\\.?[AC]\\.?),?$");
 
 	// "Toshiba K.K." == ["Kabushiki Kaisha Toshiba", "Toshiba Kabushiki Kaisha", "Toshiba KK"]
-	private static final Pattern ORG_PREFIX_PATTERN = Pattern.compile("^(The|Kabushiki Kaisha|Koninklijke|Kommandiittiyhti�|Firma|Compagnie) (.+)$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern ORG_PREFIX_PATTERN = Pattern.compile("^(The|Kabushiki Kaisha|Koninklijke|Kommandiittiyhti�|Firma|Compagnie|Aktiebolaget) (.+)$", Pattern.CASE_INSENSITIVE);
 
 	private Matcher leadCompanyMatcher = ORG_PREFIX_PATTERN.matcher("");
 	private Matcher suffixMatcher = ORG_SUFFIX_PATTERN.matcher("");
@@ -318,8 +318,10 @@ public class OrgSynonymGenerator {
 		MULTI_WORD_ABBREVS.put(" med tech", new String[]{" medtech"});
 		MULTI_WORD_ABBREVS.put(" agricultural science", new String[]{" AgriScience", " AgriSci.", " Ag Sciences"});
 		MULTI_WORD_ABBREVS.put(" physical therapy", new String[]{" PT."});
-		MULTI_WORD_ABBREVS.put(" health care", new String[]{"HHC."});
-		MULTI_WORD_ABBREVS.put(" dental care", new String[]{"DC."});
+		MULTI_WORD_ABBREVS.put(" health care", new String[]{" HHC."});
+		MULTI_WORD_ABBREVS.put(" dental care", new String[]{" DC."});
+		MULTI_WORD_ABBREVS.put(" societe anonyme", new String[]{" S.A."});
+		
 	}
 
 	protected void multiWordAbbrev(NameOrg name) {
@@ -541,6 +543,7 @@ public class OrgSynonymGenerator {
 		WORD_TO_ABBREVS.put("cardiology", new String[]{"Cardio."});
 		WORD_TO_ABBREVS.put("cardiovascular", new String[]{"Cardio.", "CV."});
 		WORD_TO_ABBREVS.put("chemical", new String[]{"Chem."});
+		WORD_TO_ABBREVS.put("chemicals", new String[]{"Chem."});
 		WORD_TO_ABBREVS.put("biosciences", new String[]{"Biosci."});
 		WORD_TO_ABBREVS.put("bioscience", new String[]{"Biosci."});
 		WORD_TO_ABBREVS.put("biochemical", new String[]{"BioChem."});

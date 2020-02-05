@@ -173,8 +173,11 @@ public class OrgSynonymGeneratorTest {
 
 		COMPANIES.put(entity("Anpartsselskab", CountryCode.DK), Arrays.asList("ANPARTSSELSKAB"));
 
-		COMPANIES.put(entity("Gebruder Boehringer G.m.b.H.", CountryCode.UK), Arrays.asList("GEBRUDER BOEHRINGER"));
+		COMPANIES.put(entity("Gebruder Boehringer G.m.b.H.", CountryCode.DE), Arrays.asList("GEBRUDER BOEHRINGER"));
+		COMPANIES.put(entity("Allibert Exploitation Societe Anonyme", CountryCode.FR), Arrays.asList("ALLIBERT EXPLOITATION", "ALLIBERT EXPLOITATION S.A."));
+		COMPANIES.put(entity("Aktiebolaget Electrolux", CountryCode.SE), Arrays.asList("ELECTROLUX"));
 
+		
 		// Found in Patents:
 		// Artificial Lift Company Limited Lion Works
 	}
