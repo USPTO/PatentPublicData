@@ -6,6 +6,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 import gov.uspto.common.text.NameUtil;
+import gov.uspto.common.text.WordUtil;
 import gov.uspto.patent.InvalidDataException;
 
 public class NamePerson extends Name {
@@ -41,10 +42,13 @@ public class NamePerson extends Name {
 
 		return sb.toString().trim();
 	}
-
+		
 	@Override
 	public String getNameNormalizeCase() {
-		return NameUtil.normalizeCase(getName());
+		if (!WordUtil.isMixedCase(getName())){
+			return NameUtil.normalizeCase(getName());
+		}
+		return getName();
 	}
 
 	public String getFirstName() {

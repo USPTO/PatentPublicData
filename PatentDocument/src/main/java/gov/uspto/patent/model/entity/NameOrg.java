@@ -4,6 +4,7 @@ import java.text.Normalizer;
 
 import gov.uspto.common.text.NameUtil;
 import gov.uspto.common.text.StringCaseUtil;
+import gov.uspto.common.text.WordUtil;
 import gov.uspto.patent.InvalidDataException;
 
 public class NameOrg extends Name {
@@ -24,7 +25,10 @@ public class NameOrg extends Name {
 	 */
 	@Override
 	public String getNameNormalizeCase() {
-		return NameUtil.normalizeOrgNameCase(getName());
+		if (!WordUtil.isMixedCase(getName())){
+			return NameUtil.normalizeOrgNameCase(getName());
+		}
+		return getName();
 	}
 
 	/**
