@@ -51,7 +51,7 @@ public class SimpleKvReader extends KvReader {
 
 	@Override
 	public String valueTransform(String key, String value) {
-		return value;
+		return value.trim();
 	}
 
 }
