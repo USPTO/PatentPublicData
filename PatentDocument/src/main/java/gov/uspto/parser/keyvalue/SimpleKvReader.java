@@ -1,4 +1,7 @@
 package gov.uspto.parser.keyvalue;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * BRS Key Value format
  *
@@ -51,7 +54,7 @@ public class SimpleKvReader extends KvReader {
 
 	@Override
 	public String valueTransform(String key, String value) {
-		return value.trim();
+		return value.replaceFirst("^\\s+", " ");
 	}
 
 }
