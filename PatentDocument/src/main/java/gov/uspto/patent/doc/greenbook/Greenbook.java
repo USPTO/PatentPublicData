@@ -134,7 +134,7 @@ public class Greenbook extends KvParser {
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
 		Node titleN = TITLEXP.selectSingleNode(document);
-		String title = titleN != null ? titleN.getText() : null;
+		String title = titleN != null ? titleN.getText().trim() : null;
 
 		List<Examiner> examiners = new ExaminerNode(document).read();
 		List<Inventor> inventors = new InventorNode(document).read();
