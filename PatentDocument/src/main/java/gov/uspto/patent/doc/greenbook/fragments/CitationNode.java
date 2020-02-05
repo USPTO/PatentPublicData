@@ -89,7 +89,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 		List<Node> nplCites = NPLXP.selectNodes(document);
 		for (int i = 0; i < nplCites.size(); i++) {
 			Node nplCiteN = nplCites.get(i);
-			Citation nplCite = new NplCitation(String.valueOf(i), nplCiteN.getText(),  CitedBy.UNDEFINED);
+			Citation nplCite = new NplCitation(String.valueOf(i), nplCiteN.getText().trim(),  CitedBy.UNDEFINED);
 			citations.add(nplCite);
 		}
 
