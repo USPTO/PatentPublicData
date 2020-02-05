@@ -16,7 +16,7 @@ import com.google.common.base.Joiner;
  */
 public class NameUtil {
 
-	private static final Set<String> COMMON_SUFFIXES = new HashSet<String>(
+	private static final Set<String> COMMON_PERSON_SUFFIXES = new HashSet<String>(
 			Arrays.asList("JR", "SR", "II", "III", "IV", "V", "VI", "ESQ"));
 
 	private static final Set<String> lowerCaseLeadSurname = new HashSet<String>(Arrays.asList("van", "de", "da", "do",
@@ -58,6 +58,9 @@ public class NameUtil {
 				} else {
 					words[i] = words[i].toLowerCase();
 				}
+			} else if (isPersonSuffix(words[i])) {
+				// If suffix maintain case.
+				continue;
 			} else if (matcher.reset(words[i]).matches()) {
 				words[i] = capitalizeFirstLetter(matcher.group(1)) + capitalizeFirstLetter(matcher.group(2));
 			} else {
@@ -106,14 +109,17 @@ public class NameUtil {
 	 */
 	public static String[] lastnameSuffix(String surname) {
 		String[] parts = surname.split(",");
-		if (parts.length == 2) {
+		if (parts.length == 2 && isPersonSuffix(parts[1])) {
 			String suffixCheck = parts[1].trim().replaceFirst("\\.$", "").toUpperCase();
-			if (suffixCheck.length() < 4 && COMMON_SUFFIXES.contains(suffixCheck)) {
-				return new String[] { parts[0], suffixCheck };
-			}
+			return new String[] { parts[0], suffixCheck };
 		}
 
 		return new String[] { surname };
+	}
+
+	public static boolean isPersonSuffix(String word) {
+		String suffixCheck = word.trim().replaceFirst("[\\.,]$", "").toUpperCase();
+		return (suffixCheck.length() < 4 && COMMON_PERSON_SUFFIXES.contains(suffixCheck));
 	}
 
 	/**

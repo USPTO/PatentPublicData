@@ -78,6 +78,20 @@ public class NameUtilTest {
 	}
 
 	@Test
+	public void normalizeCase_suffix() {
+		String name = "SWAN, III, Ronald";
+		String actual = NameUtil.normalizeCase(name);
+		assertEquals("Swan, III, Ronald", actual);
+	}
+
+	@Test
+	public void isPersonSuffix() {
+		assertTrue(NameUtil.isPersonSuffix("III"));
+		assertTrue(NameUtil.isPersonSuffix("VI,"));
+		assertTrue(NameUtil.isPersonSuffix("Esq."));
+	}
+
+	@Test
 	public void lastnameSuffix() {
 		String name = "John Doe, Esq.";
 		String[] actual = NameUtil.lastnameSuffix(name);
