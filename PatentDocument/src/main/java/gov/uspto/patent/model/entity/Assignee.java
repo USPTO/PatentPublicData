@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.patent.InvalidDataException;
-import gov.uspto.patent.doc.greenbook.items.DescriptionFigures;
 
 /**
  * Assignee (Patent Owner)
@@ -14,9 +13,9 @@ import gov.uspto.patent.doc.greenbook.items.DescriptionFigures;
  * of ownership exists until the patent has been granted.
  * </p>
  *
- *<p>
+ * <p>
  * Note: Assignee Type Codes starting with a "1" signifies part interest
- *</p>
+ * </p>
  *
  * @author Brian G. Feldman<brian.feldman@uspto.gov>
  *
@@ -24,7 +23,7 @@ import gov.uspto.patent.doc.greenbook.items.DescriptionFigures;
 public class Assignee extends Entity {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Assignee.class);
-	
+
 	public enum RoleType {
 		T1("Unassigned"),
 		T2("U.S. company or corporation"),
@@ -65,9 +64,9 @@ public class Assignee extends Entity {
 		} else {
 			if (roleType == null) {
 				LOGGER.warn("RoleType is null: {}", getName());
-				return roleType.XX.toString();
+				return Assignee.RoleType.XX.toString();
 			}
-			return roleType.getDesc() ;
+			return roleType.getDesc();
 		}
 	}
 
@@ -87,11 +86,9 @@ public class Assignee extends Entity {
 			if (roleType.startsWith("1")) {
 				this.partInterest = true;
 				roleType2 = "T" + roleType.substring(1, 2);
-			}
-			else if (roleType.startsWith("0")) {
+			} else if (roleType.startsWith("0")) {
 				roleType2 = "T" + roleType.substring(1, 2);
-			}
-			else {
+			} else {
 				roleType2 = "XX";
 			}
 		} else {
@@ -108,6 +105,7 @@ public class Assignee extends Entity {
 
 	@Override
 	public String toString() {
-		return "Assignee[name=" + getName() + ", partInterest=" + hasPartInterest() + ", roleType=" + getRole() + ", roleDesc=" + getRoleDesc() + ", address=" + getAddress() + "]";
+		return "Assignee[name=" + getName() + ", partInterest=" + hasPartInterest() + ", roleType=" + getRole()
+				+ ", roleDesc=" + getRoleDesc() + ", address=" + getAddress() + "]";
 	}
 }
