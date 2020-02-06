@@ -3,6 +3,8 @@ package gov.uspto.parser.dom4j;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -74,5 +76,19 @@ public class Dom4jUtil {
 		}
 
 		return sw.toString();
+	}
+
+	public static void serializeDom(Writer writer, Document document, Charset outCharset, boolean prettyPrint) throws IOException {
+		//Charset outCharset = StandardCharsets.UTF_8;
+		//new FileWriter(outDir.resolve(outFileName).toFile()
+		OutputFormat outFormat;
+		if (prettyPrint) {
+			outFormat = OutputFormat.createPrettyPrint();
+		} else {
+			outFormat = OutputFormat.createCompactFormat();
+		}
+		outFormat.setEncoding(outCharset.name());
+		XMLWriter xmlWriter = new XMLWriter(writer, outFormat);
+		xmlWriter.write(document);
 	}
 }
