@@ -39,6 +39,7 @@ import gov.uspto.patent.model.entity.MathFormula;
 public abstract class Patent {
 
 	private PatentCorpus patentCorpus;
+	private String source;
 	private DocumentId documentId;
 	private Set<DocumentId> priorityIds = new TreeSet<DocumentId>();
 	private Set<DocumentId> otherIds = new TreeSet<DocumentId>();
@@ -74,9 +75,36 @@ public abstract class Patent {
 		this.patentType = patentType;
 	}
 
+	/**
+	 * Data Source data originated from including record number.
+	 * 
+	 * <p>
+	 * FileName:RecordNumber:DocId
+	 * <p>
+	 * 
+	 * @param source
+	 */
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	/**
+	 * Data Source data originated from including record number.
+	 * 
+	 * <p>
+	 * FileName:RecordNumber:DocId
+	 * <p>
+	 * 
+	 * @param source
+	 */
+	public String getSource() {
+		return source;
+	}
+
 	public void reset() {
 		// patentCorpus = null;
 		// patentType = null;
+		source = null;
 		priorityIds = new TreeSet<DocumentId>();
 		otherIds = new TreeSet<DocumentId>();
 		relationIds = new TreeSet<DocumentId>();
@@ -127,7 +155,7 @@ public abstract class Patent {
 		if (documentId != null) {
 			return documentId.getDate();
 		} else {
-			return null;
+			return DocumentDate.getEmpty();
 		}
 	}
 
@@ -232,10 +260,16 @@ public abstract class Patent {
 	}
 
 	public DocumentDate getDatePublished() {
+		if (datePublished == null) {
+			return DocumentDate.getEmpty();
+		}
 		return datePublished;
 	}
 
 	public DocumentDate getDateProduced() {
+		if (dateProduced == null) {
+			return DocumentDate.getEmpty();
+		}
 		return dateProduced;
 	}
 
@@ -458,7 +492,7 @@ public abstract class Patent {
 	 * @return
 	 */
 	public boolean match(DateRange dateRange) {
-		if (datePublished.getDate() == null) {
+		if (datePublished.getDate() == null || DocumentDate.getEmpty().equals(datePublished)) {
 			return false;
 		}
 		return dateRange.between(datePublished.getDate());
@@ -466,15 +500,15 @@ public abstract class Patent {
 
 	@Override
 	public String toString() {
-		return "Patent [patentCorpus=" + patentCorpus + ",\n\t documentId=" + documentId + ",\n\t priorityIds="
-				+ priorityIds + ",\n\t otherIds=" + otherIds + ",\n\t relationIds=" + relationIds
-				+ ",\n\t datePublished=" + datePublished + ",\n\t dateProduced=" + dateProduced
-				+ ",\n\t applicationDate=" + getApplicationDate() + ",\n\t documentDate=" + getDocumentDate()
-				+ ",\n\t title=" + title + ",\n\t abstractText=" + abstractText + ",\n\t description=" + description
-				+ ",\n\t citations=" + citations + ",\n\t classifications=" + classifications + ",\n\t claims=" + claims
-				+ ",\n\t inventors=" + inventors + ",\n\t assignees=" + assignees + ",\n\t applicants=" + applicants
-				+ ",\n\t agents=" + agents + ",\n\t examiners=" + examiners + ",\n\t applicationId=" + applicationId
-				+ ",\n\t referenceIds=" + referenceIds + ",\n\t chemFomulas=" + chemFomulas + ",\n\t mathFormulas="
-				+ mathFormulas + ",\n\t patentType=" + patentType + "]";
+		return "Patent [patentCorpus=" + patentCorpus + "\n\t, source=" + source + "\n\t, documentId=" + documentId
+				+ "\n\t, priorityIds=" + priorityIds + "\n\t, otherIds=" + otherIds + "\n\t, relationIds=" + relationIds
+				+ "\n\t, referenceIds=" + referenceIds + "\n\t, datePublished=" + datePublished + "\n\t, dateProduced="
+				+ dateProduced + "\n\t, title=" + title + "\n\t, abstractText=" + abstractText + "\n\t, description="
+				+ description + "\n\t, citations=" + citations + "\n\t, classifications=" + classifications
+				+ "\n\t, searchClassifications=" + searchClassifications + "\n\t, claims=" + claims + "\n\t, inventors="
+				+ inventors + "\n\t, assignees=" + assignees + "\n\t, applicants=" + applicants + "\n\t, agents="
+				+ agents + "\n\t, examiners=" + examiners + "\n\t, applicationId=" + applicationId
+				+ "\n\t, chemFomulas=" + chemFomulas + "\n\t, mathFormulas=" + mathFormulas + "\n\t, patentType="
+				+ patentType + "]";
 	}
 }

@@ -17,7 +17,7 @@ public class UsKindCode2PatentType {
 	private UsKindCode2PatentType() {
 	}
 
-	public static UsKindCode2PatentType getInstance() {
+	public static synchronized UsKindCode2PatentType getInstance() {
 		if (kindCode2PatentTpe == null) {
 			kindCode2PatentTpe = new UsKindCode2PatentType();
 			kindCode2PatentTpe.init();
@@ -47,6 +47,7 @@ public class UsKindCode2PatentType {
 
 		// DESIGN
 		mapping.put("S", PatentType.DESIGN);
+		mapping.put("S1", PatentType.DESIGN);
 
 		// PLANT
 		mapping.put("P", PatentType.PLANT);
@@ -57,7 +58,8 @@ public class UsKindCode2PatentType {
 		mapping.put("P9", PatentType.PLANT);
 
 		// STATUTORY_INVENTION_REGISTRATION
-		mapping.put("H", PatentType.STATUTORY_INVENTION_REGISTRATION);
+		mapping.put("H", PatentType.SIR);
+		mapping.put("H1", PatentType.SIR);
 	}
 
 	public PatentType lookupPatentType(String kindCode) {

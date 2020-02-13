@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import gov.uspto.parser.dom4j.keyvalue.KvParser;
+import gov.uspto.parser.keyvalue.KvParser;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.doc.greenbook.fragments.AbstractTextNode;
 import gov.uspto.patent.doc.greenbook.fragments.AgentNode;
@@ -66,6 +68,8 @@ public class Greenbook extends KvParser {
 	private static List<String> HEADER_FIELDS = Arrays.asList(new String[] { "PAC" });
 	private static List<String> TABLE_FIELDS = Arrays.asList(new String[] { "TBL" });
 
+	private static final XPath TITLEXP = DocumentHelper.createXPath("/DOCUMENT/PATN/TTL");
+
 	public Greenbook() {
 		super(MAINTAIN_SPACE_FIELDS, PARAGRAPH_FIELDS, HEADER_FIELDS, TABLE_FIELDS);
 	}
@@ -87,7 +91,6 @@ public class Greenbook extends KvParser {
 		DocumentId publicationId = new DocumentIdNode(document).read();
 		PatentType patentType = PatentType.UNDEFINED;
 		if (publicationId != null) {
-			MDC.put("DOCID", publicationId.toText());
 			patentType = new PatentTypeNode(document).read();
 			publicationId.setPatentType(patentType);
 
@@ -110,23 +113,28 @@ public class Greenbook extends KvParser {
 				case REISSUE:
 					publicationId.setKindCode("E");
 					break;
-				case STATUTORY_INVENTION_REGISTRATION:
+				case SIR:
 					publicationId.setKindCode("H");
 					break;
-				case DEFENSIVE_PUBLICATION:
+				case DEF:
+					// Defensive Publication - Documents issued from November 5, 1968 through May 5, 1987.
+					publicationId.setKindCode("I4");
 					break;
 				case UNDEFINED:
+					LOGGER.warn("!!! Patent Type UNDEFINED : {}", publicationId.toText());
 					break;
 				default:
 					break;
 				}
 			}
+
+			MDC.put("DOCID", publicationId.toText());
 		}
 
 		DocumentId applicationId = new ApplicationIdNode(document).read();
 
-		Node titleN = document.selectSingleNode("/DOCUMENT/PATN/TTL");
-		String title = titleN != null ? titleN.getText() : null;
+		Node titleN = TITLEXP.selectSingleNode(document);
+		String title = titleN != null ? titleN.getText().trim() : null;
 
 		List<Examiner> examiners = new ExaminerNode(document).read();
 		List<Inventor> inventors = new InventorNode(document).read();
@@ -155,6 +163,7 @@ public class Greenbook extends KvParser {
 		 * Building Patent Object.
 		 */
 		Patent patent = new PatentGranted(publicationId, patentType);
+		patent.setSource(getSource());
 
 		if (publicationId != null && publicationId.getDate() != null) {
 			patent.setDatePublished(publicationId.getDate());

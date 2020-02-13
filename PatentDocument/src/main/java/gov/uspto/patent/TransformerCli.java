@@ -233,6 +233,8 @@ public class TransformerCli {
 
 	public static void main(String... args) throws PatentReaderException, IOException {
 
+		LOGGER.warn("\n\n************************************\n!!! TransformerCli is deprecated, instead use gov.uspto.bulkdata.cli.Transformer !!!\n************************************\n");
+
 		LOGGER.info("--- Start ---");
 
 		OptionParser parser = new OptionParser() {

@@ -1,14 +1,18 @@
 package gov.uspto.patent.doc.pap.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.pap.items.AddressNode;
 import gov.uspto.patent.doc.pap.items.NameNode;
 import gov.uspto.patent.doc.pap.items.ResidenceNode;
@@ -26,10 +30,10 @@ import gov.uspto.patent.model.entity.Name;
 public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicantNode.class);
 
-	private static final String FRAGMENT_PATH = "//inventors/inventor";
-	private static final String FRAGMENT_PATH1 = "//inventors/first-named-inventor";
-
-	private List<Applicant> applicantList;
+	private static final XPath INVENTORSXP = DocumentHelper
+			.createXPath("/patent-application-publication/subdoc-bibliographic-information/inventors");
+	private static final XPath APPLICANTXP = DocumentHelper.createXPath("inventor/authority-applicant/..|first-named-inventor/authority-applicant/..");
+	private static final XPath ADDRESS_W_CHILDXP = DocumentHelper.createXPath("address/*[1]");
 
 	public ApplicantNode(Document document) {
 		super(document);
@@ -37,41 +41,51 @@ public class ApplicantNode extends DOMFragmentReader<List<Applicant>> {
 
 	@Override
 	public List<Applicant> read() {
-	    applicantList = new ArrayList<Applicant>();
+		Node parentNode = INVENTORSXP.selectSingleNode(document);
+		if (parentNode == null) {
+			return Collections.emptyList();
+		}
 
-		@SuppressWarnings("unchecked")
-		List<Node> inventors = document.selectNodes(FRAGMENT_PATH1);
-		readInventors(inventors);
-
-		@SuppressWarnings("unchecked")
-		List<Node> inventors2 = document.selectNodes(FRAGMENT_PATH);
-		readInventors(inventors2);
-
-		return applicantList;
+		List<Node> inventors = APPLICANTXP.selectNodes(parentNode);
+		return readInventors(inventors);
 	}
 
-	private void readInventors(List<Node> inventors) {
+	private List<Applicant> readInventors(List<Node> inventors) {
+		List<Applicant> applicantList = new ArrayList<Applicant>();
 		for (Node inventorNode : inventors) {
-		    if (inventorNode.selectSingleNode("authority-applicant") == null){
-		        continue;
-		    }
-		    
 			Name name = new NameNode(inventorNode).read();
 			if (name == null) {
 				LOGGER.warn("Inventor-Applicant does not have name : {}", inventorNode.asXML());
 				continue;
 			}
-
-			Address residenceAddress = new ResidenceNode(inventorNode).read();
-
-			Address address = new AddressNode(inventorNode).read();
-			if (address == null && residenceAddress != null) {
-				address = residenceAddress;
+			try {
+				name.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
 			}
 
-			Applicant inventor = new Applicant(name, address);
-			applicantList.add(inventor);
+			/*
+			 * When Address node is missing, read from ResidenceNode
+			 */
+			Node addressN = ADDRESS_W_CHILDXP.selectSingleNode(inventorNode);
+			Address address;
+			if (addressN == null) {
+				address = new ResidenceNode(inventorNode).read();
+			} else {
+				address = new AddressNode(inventorNode).read();
+			}
+
+			try {
+				address.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), inventorNode.asXML());
+			}
+
+			Applicant applicantInventor = new Applicant(name, address);
+			applicantList.add(applicantInventor);			
 		}
+
+		return applicantList;
 	}
 
 }

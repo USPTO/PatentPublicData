@@ -21,7 +21,7 @@ public class NamePersonTest {
 	}
 
 	@Test
-	public void testAbbreviatedName() throws InvalidDataException {
+	public void abbreviatedName() throws InvalidDataException {
 		NamePerson name = new NamePerson("John", "DOE");
 		String abbrev = name.getAbbreviatedName();
 		String expect = "Doe, J.";
@@ -29,7 +29,7 @@ public class NamePersonTest {
 	}
 
 	@Test
-	public void testAbbreviatedName2() throws InvalidDataException {
+	public void abbreviatedName2() throws InvalidDataException {
 		NamePerson name = new NamePerson("John", "McMillian");
 		String abbrev = name.getAbbreviatedName();
 		String expect = "McMillian, J.";
@@ -37,15 +37,15 @@ public class NamePersonTest {
 	}
 
 	@Test
-	public void testFullNameTitleCase() throws InvalidDataException {
-		NamePerson name = new NamePerson("JOHN", "DOE");
-		String titleCase = name.getNameTitleCase();
-		String expect = "Doe, John";
-		assertEquals(expect, titleCase);
+	public void fullNameNormCase() throws InvalidDataException {
+		NamePerson name = new NamePerson("JOHN", "VAN DER DOE");
+		String normCase = name.getNameNormalizeCase();
+		String expect = "Van der Doe, John";
+		assertEquals(expect, normCase);
 	}
 
 	@Test
-	public void testInitializeName() throws InvalidDataException {
+	public void initializeName() throws InvalidDataException {
 		NamePerson name = new NamePerson("John", "Smith", "DOE");
 		String abbrev = name.getInitials();
 		String expect = "JSD";
@@ -53,11 +53,26 @@ public class NamePersonTest {
 	}
 
 	@Test
-	public void testInitializeName2() throws InvalidDataException {
+	public void initializeName2() throws InvalidDataException {
 		NamePerson name = new NamePerson("John Smith", "DOE");
 		String abbrev = name.getInitials();
 		String expect = "JSD";
 		assertEquals(expect, abbrev);
 	}
 
+	@Test
+	public void initializeMultiwordSurname() throws InvalidDataException {
+		NamePerson name = new NamePerson("Bernardus", "van den Bosch");
+		String abbrev = name.getInitials();
+		String expect = "BvdB";
+		assertEquals(expect, abbrev);
+	}
+
+	@Test
+	public void initializeHyphenSurname() throws InvalidDataException {
+		NamePerson name = new NamePerson("Karla", "BRAVO-ALTAMIRANO");
+		String abbrev = name.getInitials();
+		String expect = "KB";
+		assertEquals(expect, abbrev);
+	}
 }

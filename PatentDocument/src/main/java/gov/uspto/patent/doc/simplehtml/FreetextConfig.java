@@ -17,6 +17,8 @@ import org.jsoup.select.QueryParser;
  */
 public class FreetextConfig {
 
+	private static int DEFAULT_TEXT_INDENT_SIZE = 3;
+
 	private Map<Evaluator, String> replacements = new HashMap<Evaluator, String>();
 	private Collection<String> remove = new HashSet<String>();
 	private Collection<HtmlFieldType> removeTypes = new HashSet<HtmlFieldType>();
@@ -24,6 +26,7 @@ public class FreetextConfig {
 	private int wrapWidth = 0;
 	private final boolean prettyPrint;
 	private final boolean indentParagraphs;
+	private int textIndentSize = DEFAULT_TEXT_INDENT_SIZE;
 
 	/**
 	 * 
@@ -32,6 +35,14 @@ public class FreetextConfig {
 	public FreetextConfig(boolean prettyPrint, boolean indentParagraphs) {
 		this.prettyPrint = prettyPrint;
 		this.indentParagraphs = indentParagraphs;
+	}
+
+	public void setTextIndentSize(int size) {
+		this.textIndentSize = size;
+	}
+
+	public int getTextIndentSize() {
+		return textIndentSize;
 	}
 
 	public boolean isPrettyPrint() {
@@ -160,7 +171,7 @@ public class FreetextConfig {
 	}
 
 	/**
-	 * Default Configuration
+	 * Reduced Text Configuration, useful for Solr Index.
 	 *
 	 * <ul>
 	 * <li>Pretty Print "true", output has newlines ; "false" has commented newline
@@ -172,11 +183,12 @@ public class FreetextConfig {
 	 * <li>replace PATCITE field with "Patent-Citation"</li>
 	 * <li>replace NPLCITE field with "Patent-Citation"</li>
 	 * <li>replace NPLCITE field with "Patent-Citation"</li>
+	 * <li>replace new line "BR" tag with five spaces</li>
 	 * </ul>
 	 * 
 	 * @return FreetextConfig
 	 */
-	public static FreetextConfig getDefault() {
+	public static FreetextConfig getSolrDefault() {
 		FreetextConfig config = new FreetextConfig(true, true);
 		config.remove(HtmlFieldType.ERROR_ANNOTATED);
 		config.remove(HtmlFieldType.CROSSREF);
@@ -188,6 +200,15 @@ public class FreetextConfig {
 		config.replace(HtmlFieldType.NPLCITE, "Patent-Citation");
 
 		return config;
+	}
+
+	/**
+	 * Default Configuration
+	 * 
+	 * @return
+	 */
+	public static FreetextConfig getDefault() {
+		return new FreetextConfig(true, true);
 	}
 
 }

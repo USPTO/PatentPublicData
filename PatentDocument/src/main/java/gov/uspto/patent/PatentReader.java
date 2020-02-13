@@ -79,7 +79,17 @@ public class PatentReader implements PatentDocReader<Patent> {
 		}
 
 		try {
-			return FORMAT_PARSER.get(patentDocFormat).newInstance().parse(reader);
+			Patent patent = FORMAT_PARSER.get(patentDocFormat).newInstance().parse(reader);
+
+			/*
+			try {
+				PatentValidator.allRules().verify(patent);
+			} catch (PatentValidationError e) {
+				LOGGER.warn("Patent Validator Failed: ", e);
+			}
+			*/
+
+			return patent;
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new PatentReaderException(e);
 		}

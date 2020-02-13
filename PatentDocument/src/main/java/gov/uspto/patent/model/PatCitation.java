@@ -38,23 +38,11 @@ public class PatCitation extends Citation {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == null) {
+		if (o == null || !(o instanceof DocumentId) || this.documentId == null) {
 			return false;
-		}
-
-		if (!(o instanceof DocumentId)) {
-			return false;
-		}
-
-		DocumentId other = (DocumentId) o;
-		if (this.documentId != null && this.documentId != null) {
-			if (this.documentId.equals(other.getIdNoKind()) && this.documentId.equals(other.getIdNoKind())) {
-				return true;
-			} else {
-				return false;
-			}
 		} else {
-			return false;
+			DocumentId other = (DocumentId) o;
+			return this.documentId.equals(other);
 		}
 	}
 

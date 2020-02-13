@@ -1,6 +1,8 @@
 package gov.uspto.bulkdata.tools.grep;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +42,7 @@ public class RegexArguments {
 	}
 
 	/**
-	 * Parse String optionally containing list of regexs
+	 * Parse String optionally containing list of Regex strings separated with comma.
 	 * 
 	 * Regex modifiers: i = ignore case f = full match
 	 * 
@@ -48,9 +50,20 @@ public class RegexArguments {
 	 */
 	public static List<RegexArguments> parseString(String regexesStr) {
 		String[] regexes = regexesStr.split("'\\s*,\\s*'");
+		return RegexArguments.parseString(Arrays.asList(regexes));
+	}
+
+	/**
+	 * Parse collection of Regex strings
+	 * 
+	 * Regex modifiers: i = ignore case f = full match
+	 * 
+	 * --regex="'regex' --regex="regex2"
+	 */
+	public static List<RegexArguments> parseString(Collection<String> regexesIn) {
 		Matcher flagMatcher = Pattern.compile("^\'?(.+)~([if]+)\'?$").matcher("");
-		List<RegexArguments> regexs = new ArrayList<RegexArguments>(regexes.length + 1);
-		for (String regex : regexes) {
+		List<RegexArguments> regexs = new ArrayList<RegexArguments>(regexesIn.size() + 1);
+		for (String regex : regexesIn) {
 			String flags = null;
 			if (flagMatcher.reset(regex).matches()) {
 				regex = flagMatcher.group(1);

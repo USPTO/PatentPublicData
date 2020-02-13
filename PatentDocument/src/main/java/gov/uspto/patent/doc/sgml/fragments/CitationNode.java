@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.doc.sgml.items.DocNode;
@@ -39,8 +41,13 @@ import gov.uspto.patent.model.Citation.CitedBy;
  */
 public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
-	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B500/B560";
-
+	private static final XPath PARENTXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B500/B560");
+	private static final XPath PATCITEXP = DocumentHelper.createXPath("B561");
+	private static final XPath NPLCITEXP = DocumentHelper.createXPath("B562");
+	private static final XPath CITEBYXP = DocumentHelper.createXPath("CITED-BY-EXAMINER");
+	private static final XPath PATNUMXP = DocumentHelper.createXPath("PCIT/DOC");
+	private static final XPath NPLTXTXP = DocumentHelper.createXPath("NCIT/STEXT/PDAT");
+	
 	public CitationNode(Document document) {
 		super(document);
 	}
@@ -49,35 +56,33 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	public List<Citation> read() {
 		List<Citation> citations = new ArrayList<Citation>();
 
-		Node citationNode = document.selectSingleNode(FRAGMENT_PATH);
+		Node citationNode = PARENTXP.selectSingleNode(document);
 		if (citationNode == null) {
 			return citations;
 		}
 
-		@SuppressWarnings("unchecked")
-		List<Node> patCiteNodes = citationNode.selectNodes("B561");
+		List<Node> patCiteNodes = PATCITEXP.selectNodes(citationNode);
 		for (int i = 0; i < patCiteNodes.size(); i++) {
 
 			Node citeNode = patCiteNodes.get(i);
 
-			CitedBy citedBy = getCitedBy(citeNode.selectSingleNode("CITED-BY-EXAMINER"));
+			CitedBy citedBy = getCitedBy(CITEBYXP.selectSingleNode(citeNode));
 
-			Node citeDoc = citeNode.selectSingleNode("PCIT/DOC");
+			Node citeDoc = PATNUMXP.selectSingleNode(citeNode);
 
 			DocumentId docId = new DocNode(citeDoc).read();
 
 			citations.add(new PatCitation(String.valueOf(i), docId, citedBy));
 		}
 
-		@SuppressWarnings("unchecked")
-		List<Node> nplCiteNodes = citationNode.selectNodes("B562");
+		List<Node> nplCiteNodes = NPLCITEXP.selectNodes(citationNode);
 		for (int i = 0; i < nplCiteNodes.size(); i++) {
 
 			Node citeNode = nplCiteNodes.get(i);
 
-			CitedBy citedBy = getCitedBy(citeNode.selectSingleNode("CITED-BY-EXAMINER"));
+			CitedBy citedBy = getCitedBy(CITEBYXP.selectSingleNode(citeNode));
 
-			Node textN = citeNode.selectSingleNode("NCIT/STEXT/PDAT");
+			Node textN = NPLTXTXP.selectSingleNode(citeNode);
 			String citeText = textN != null ? textN.getText() : "";
 
 			Citation citation = new NplCitation(String.valueOf(i), citeText, citedBy);

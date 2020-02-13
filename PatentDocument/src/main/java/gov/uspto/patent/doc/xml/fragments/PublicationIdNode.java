@@ -9,7 +9,7 @@ import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.DocumentIdType;
 
 public class PublicationIdNode extends DOMFragmentReader<DocumentId> {
-	private static final String FRAGMENT_PATH = "//publication-reference/document-id";
+	private static final String FRAGMENT_PATH = "/*/*/publication-reference/document-id";
 
 	public PublicationIdNode(Document document) {
 		super(document);

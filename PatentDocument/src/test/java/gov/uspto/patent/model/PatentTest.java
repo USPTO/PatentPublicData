@@ -3,6 +3,7 @@ package gov.uspto.patent.model;
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -16,6 +17,7 @@ public class PatentTest extends Patent {
 
 	@Test
 	public void DocumentIdDateOrdered() throws InvalidDataException {
+		
 		DocumentId docId1 = new DocumentId(CountryCode.US, "1234567", "A1");
 		docId1.setDate(new DocumentDate("20010101"));
 		addOtherId(docId1);
@@ -32,11 +34,12 @@ public class PatentTest extends Patent {
 		addOtherId(docId4);
 
 		//System.out.println(getOtherIds());
+		//System.out.println(getOtherIds().stream().map(i -> i.toText()).collect(Collectors.toList()));
 		
 		Iterator<DocumentId> docIt = getOtherIds().iterator();
+		assertEquals(docId4, docIt.next());
 		assertEquals(docId2, docIt.next());
 		assertEquals(docId3, docIt.next());
 		assertEquals(docId1, docIt.next());
-		assertEquals(docId4, docIt.next());
 	}
 }

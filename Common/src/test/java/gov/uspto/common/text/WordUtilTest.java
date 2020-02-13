@@ -24,7 +24,7 @@ public class WordUtilTest {
 		// Removing only leading and tailing quotes.
 		String expect = "AN";
 
-		assertEquals(expect, WordUtil.removeSurrounding("“AN”"));
+		assertEquals(expect, WordUtil.removeSurrounding("\u2018AN\u2019"));
 		assertEquals(expect, WordUtil.removeSurrounding("(AN)"));
 		assertEquals(expect, WordUtil.removeSurrounding("[AN]"));
 		assertEquals(expect, WordUtil.removeSurrounding("{AN}"));
@@ -41,6 +41,12 @@ public class WordUtilTest {
 	public void isUpperAlphaNumbericTest() {
 		assertTrue("Uppercase Letters with Number", WordUtil.isUpperAlphaNumberic("TEST1"));
 		assertFalse("Lowercase Letters with Number", WordUtil.isUpperAlphaNumberic("test1"));
+	}
+
+	@Test
+	public void isMixedCase() {
+		assertTrue(WordUtil.isMixedCase("GmbH"));
+		assertTrue(WordUtil.isMixedCase("SharkNinja Operating"));
 	}
 
 	@Test
@@ -100,16 +106,86 @@ public class WordUtilTest {
 	@Test
 	public void hasCaracter() {
 		boolean found = WordUtil.hasCharacter("one-two", "-");
-		assertEquals(true, found);
+		assertTrue(found);
 
 		boolean found2 = WordUtil.hasCharacter("one two", "-");
+		assertFalse(found2);
+	}
+
+	@Test
+	public void hasTrailingCharacter() {
+		assertTrue(WordUtil.hasTrailingCharacter("ending.", ".;,:"));
+
+		assertFalse(WordUtil.hasTrailingCharacter("ending.abc", ".;,:"));
+
+		assertFalse(WordUtil.hasTrailingCharacter(".leading", ".;,:"));
+	}
+
+	@Test
+	public void hasVowels() {
+		boolean found = WordUtil.hasVowel("Apple");
+		assertEquals(true, found);
+
+		boolean found2 = WordUtil.hasVowel("1234");
 		assertEquals(false, found2);
+
+		boolean found3 = WordUtil.hasVowel("BSTMR");
+		assertEquals(false, found3);
+	}
+
+	@Test
+	public void hasConsonant() {
+		boolean found = WordUtil.hasConsonant("BSTMR");
+		assertEquals(true, found);
+
+		boolean found2 = WordUtil.hasConsonant("1234");
+		assertEquals(false, found2);
+	}
+
+	@Test
+	public void hasVowelAndConsonant() {
+		boolean found = WordUtil.hasVowelAndConsonant("Apple");
+		assertEquals(true, found);
+
+		boolean found2 = WordUtil.hasVowelAndConsonant("BSTMR");
+		assertEquals(false, found2);
+	}
+
+	@Test
+	public void hasAllCapitals() {
+		String check = "AEIOU";
+		assertTrue(check, WordUtil.hasAllCapitals(check));
+
+		String check2 = "AEIOUaa";
+		assertFalse(check2, WordUtil.hasAllCapitals(check2));
+
+		String check3 = "AEIOU AEIOU";
+		assertTrue(check3, WordUtil.hasAllCapitals(check3));
+	}
+
+	@Test
+	public void startsWithCapital() {
+		assertTrue(WordUtil.startsWithCapital("Capital"));
+		assertFalse(WordUtil.startsWithCapital("lower"));
+		assertFalse(WordUtil.startsWithCapital("1Lower"));
 	}
 
 	@Test
 	public void wordCount() {
 		int wordCount = WordUtil.countWords("Wireless LAN", new char[] { ' ' });
 		assertEquals(2, wordCount);
+	}
+
+	@Test
+	public void countLeadChar() {
+		int charCount = WordUtil.countLeadChar("     wireless", ' ');
+		assertEquals(5, charCount);
+	}
+
+	@Test
+	public void startsWithCharacter() {
+		boolean bool = WordUtil.startsWithCharacter("Wireless-LAN", "W");
+		assertTrue(bool);
 	}
 
 	@Test

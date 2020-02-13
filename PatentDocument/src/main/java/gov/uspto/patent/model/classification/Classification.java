@@ -3,13 +3,11 @@ package gov.uspto.patent.model.classification;
 import java.text.ParseException;
 import java.util.List;
 
+import gov.uspto.common.tree.Tree;
+import gov.uspto.patent.InvalidDataException;
+
 public interface Classification extends Comparable<Classification> {
 	public ClassificationType getType();
-
-	/**
-	 * Classification symbol/parts/sections depth.
-	 */
-	public int getDepth();
 
 	/**
 	 * Parse Text
@@ -18,13 +16,6 @@ public interface Classification extends Comparable<Classification> {
 	 * @throws ParseException
 	 */
 	public void parseText(final String text) throws ParseException;
-
-	/**
-	 * Original Text
-	 * 
-	 * @param originalText
-	 */
-	public void setTextOriginal(final String originalText);
 
 	public String getTextOriginal();
 
@@ -35,6 +26,15 @@ public interface Classification extends Comparable<Classification> {
 	 */
 	public String getTextNormalized();
 
+	public int getDepth();
+
+	/**
+	 * Get Search Tokens
+	 * 
+	 * @return List<String>
+	 */
+	public List<String> getSearchTokens();
+	
 	/**
 	 * Text representation
 	 * 
@@ -50,16 +50,7 @@ public interface Classification extends Comparable<Classification> {
 	 */
 	public boolean isContained(PatentClassification check);
 
-	/**
-	 * Get Classification parts/sections in string array.
-	 * 
-	 * @return
-	 */
-	public String[] getParts();
+	public Tree getTree();
 
-	public String[] toFacet();
-
-	public <T extends PatentClassification> List<T> fromFacets(final List<String> classificationFacets, Class<T> clazz);
-
-	public String[] getTree();
+	public boolean validate() throws InvalidDataException;
 }

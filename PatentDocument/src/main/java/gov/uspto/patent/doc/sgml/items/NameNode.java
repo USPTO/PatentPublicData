@@ -2,7 +2,9 @@ package gov.uspto.patent.doc.sgml.items;
 
 import java.util.List;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,12 @@ import gov.uspto.patent.model.entity.NamePerson;
 public class NameNode extends ItemReader<Name> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NameNode.class);
 
+	private static final XPath NAMEXP = DocumentHelper.createXPath("NAM");
+	private static final XPath ORGNAMEXP = DocumentHelper.createXPath("ONM/STEXT");
+	private static final XPath FNAMEXP = DocumentHelper.createXPath("FNM/PDAT");
+	private static final XPath LNAMEXP = DocumentHelper.createXPath("SNM/STEXT");
+	private static final XPath VALUESXP = DocumentHelper.createXPath("descendant::PDAT");
+
 	public NameNode(Node itemNode) {
 		super(itemNode);
 	}
@@ -51,28 +59,28 @@ public class NameNode extends ItemReader<Name> {
 	public Name read() {
 		Name name = null;
 
-		Node nameNode = itemNode.selectSingleNode("NAM");
+		Node nameNode = NAMEXP.selectSingleNode(itemNode);
 
-		Node orgNameN = nameNode.selectSingleNode("ONM/STEXT");
+		Node orgNameN = ORGNAMEXP.selectSingleNode(nameNode);
 		if (orgNameN != null) {
 			String orgName = readSTEXT(orgNameN);
 			name = new NameOrg(orgName);
 			try {
 				((NameOrg)name).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Org Name Invalid: {}", nameNode.getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), nameNode.getParent().asXML());
 			}
 		} else {
-			Node firstNameN = nameNode.selectSingleNode("FNM/PDAT");
+			Node firstNameN = FNAMEXP.selectSingleNode(nameNode);
 			String firstName = firstNameN != null ? firstNameN.getText() : "";
 
-			Node lastNameN = nameNode.selectSingleNode("SNM/STEXT");
+			Node lastNameN = LNAMEXP.selectSingleNode(nameNode);
 			String lastName = readSTEXT(lastNameN);
 			name = new NamePerson(firstName, lastName);
 			try {
 				((NamePerson)name).validate();
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Person Name Invalid: {}", nameNode.getParent().asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), nameNode.getParent().asXML());
 			}
 		}
 
@@ -86,8 +94,7 @@ public class NameNode extends ItemReader<Name> {
 	 * @return
 	 */
 	public String readSTEXT(Node stextNode){
-		@SuppressWarnings("unchecked")
-		List<Node> namePartN = stextNode.selectNodes("descendant::PDAT");
+		List<Node> namePartN = VALUESXP.selectNodes(stextNode); //stextNode.selectNodes("descendant::PDAT");
 
 		String orgName;
 		if (namePartN.size() == 1){

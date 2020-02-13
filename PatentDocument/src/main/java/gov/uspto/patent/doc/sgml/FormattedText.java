@@ -12,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.nodes.Document.OutputSettings.Syntax;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
@@ -69,9 +68,9 @@ public class FormattedText implements TextProcessor {
 		rawText = rawText.replaceAll("“", "<q>");
 		rawText = rawText.replaceAll("”", "</q>");
 
-        Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
+		Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
 		jsoupDoc.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_16);
-			//.escapeMode(EscapeMode.xhtml);
+		// .escapeMode(EscapeMode.xhtml);
 
 		jsoupDoc.select("bold").tagName("b");
 
@@ -94,10 +93,9 @@ public class FormattedText implements TextProcessor {
 		}
 
 		/*
-		 * for (Element element : jsoupDoc.select("CLM PARA PTEXT > PDAT")) {
-		 * //String text = element.text(); //element.replaceWith(new
-		 * Node("claim-text")); element.unwrap();
-		 * //element.tagName("claim-text"); }
+		 * for (Element element : jsoupDoc.select("CLM PARA PTEXT > PDAT")) { //String
+		 * text = element.text(); //element.replaceWith(new Node("claim-text"));
+		 * element.unwrap(); //element.tagName("claim-text"); }
 		 */
 
 		// Paragraph headers.
@@ -112,31 +110,31 @@ public class FormattedText implements TextProcessor {
 			element.replaceWith(new TextNode("Table-Reference"));
 		}
 
-        /*
-         * Escape MathML math elements, to maintain all xml elements after
-         * sending through Cleaner.
-         */
-        boolean mathFound = false;
-        Elements mathEls = jsoupDoc.select("math");
-        for (int i = 1; i <= mathEls.size(); i++) {
-            Element element = mathEls.get(i - 1);
-            mathFound = true;
+		/*
+		 * Escape MathML math elements, to maintain all xml elements after sending
+		 * through Cleaner.
+		 */
+		boolean mathFound = false;
+		Elements mathEls = jsoupDoc.select("math");
+		for (int i = 1; i <= mathEls.size(); i++) {
+			Element element = mathEls.get(i - 1);
+			mathFound = true;
 
-            //String mathml = MathmlEscaper.escape(element.outerHtml());
-            String mathml = "";
-            try {
-                mathml = Base64.getEncoder().encodeToString(element.outerHtml().getBytes("utf-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+			// String mathml = MathmlEscaper.escape(element.outerHtml());
+			String mathml = "";
+			try {
+				mathml = Base64.getEncoder().encodeToString(element.outerHtml().getBytes("utf-8"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 
-            Element newEl = new Element(Tag.valueOf("span"), "");
-            newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
-            newEl.addClass("math");
-            newEl.attr("format", "mathml");
-            newEl.appendChild(new TextNode(mathml));
-            element.replaceWith(newEl);         
-        }
+			Element newEl = new Element(Tag.valueOf("span"), "");
+			newEl.attr("id", "MTH-" + Strings.padStart(String.valueOf(i), 4, '0'));
+			newEl.addClass("math");
+			newEl.attr("format", "mathml");
+			newEl.appendChild(new TextNode(mathml));
+			element.replaceWith(newEl);
+		}
 
 		jsoupDoc.select("CLM PARA").unwrap();
 		// jsoupDoc.select("CLM CLMSTEP").tagName("claim-text");
@@ -205,8 +203,8 @@ public class FormattedText implements TextProcessor {
 				}
 				row.tagName("tr");
 			}
-		}		
-		
+		}
+
 		String textStr = jsoupDoc.html();
 		textStr = textStr.replaceAll("\\\\n", "\n");
 
@@ -218,31 +216,31 @@ public class FormattedText implements TextProcessor {
 		outSettings.charset(Charsets.UTF_16);
 		outSettings.syntax(Syntax.xml);
 		outSettings.outline(true);
-		outSettings.prettyPrint(false);
-		//outSettings.escapeMode(EscapeMode.extended);
-        //outSettings.escapeMode(EscapeMode.xhtml);
-
+		outSettings.prettyPrint(true);
+		// outSettings.escapeMode(EscapeMode.extended);
+		// outSettings.escapeMode(EscapeMode.xhtml);
 
 		String fieldTextCleaned = Jsoup.clean(textStr, "", whitelist, outSettings);
 		// fieldTextCleaned = fieldTextCleaned.replaceAll("\\s+(\\r|\\n)\\s+", "
 		// ");
 
-        if (mathFound) {
-            // Reload document and un-base64 the mathml sections.
-            jsoupDoc = Jsoup.parse("<body>" + fieldTextCleaned + "</body>", "", Parser.xmlParser());
-            jsoupDoc.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml).charset(StandardCharsets.UTF_16);
+		if (mathFound) {
+			// Reload document and un-base64 the mathml sections.
+			jsoupDoc = Jsoup.parse("<body>" + fieldTextCleaned + "</body>", "", Parser.xmlParser());
+			jsoupDoc.outputSettings().prettyPrint(false).syntax(OutputSettings.Syntax.xml)
+					.charset(StandardCharsets.UTF_16);
 
-            for (Element el : jsoupDoc.select("span[class=math]")) {
-                try {
-                    String html = new String(Base64.getDecoder().decode(el.html()), "utf-8");
-                    el.text("");
-                    el.append(html);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            }
-            fieldTextCleaned = jsoupDoc.select("body").html();
-        }
+			for (Element el : jsoupDoc.select("span[class=math]")) {
+				try {
+					String html = new String(Base64.getDecoder().decode(el.html()), "utf-8");
+					el.text("");
+					el.append(html);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}
+			fieldTextCleaned = jsoupDoc.select("body").html();
+		}
 
 		return fieldTextCleaned;
 	}

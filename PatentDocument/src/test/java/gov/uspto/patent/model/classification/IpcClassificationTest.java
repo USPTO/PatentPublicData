@@ -22,14 +22,14 @@ public class IpcClassificationTest {
 
 	@Test(expected = ParseException.class)
 	public void failBlank() throws ParseException {		
-		IpcClassification ipc = new IpcClassification();
+		IpcClassification ipc = new IpcClassification("", false);
 		ipc.parseText("");
 	}
 
 	@Test
 	public void validParseCheck() throws ParseException {
 		for (Entry<String,String> check: validFromTo.entrySet()){
-			IpcClassification ipc = new IpcClassification();
+			IpcClassification ipc = new IpcClassification(check.getKey(), false);
 			ipc.parseText(check.getKey());
 			assertEquals( check.getValue(), ipc.getTextNormalized());
 		}

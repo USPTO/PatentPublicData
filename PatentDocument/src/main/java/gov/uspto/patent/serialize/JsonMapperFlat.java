@@ -26,8 +26,10 @@ import javax.json.stream.JsonGenerator;
 
 import org.apache.commons.text.WordUtils;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.FreetextField;
+import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.TextType;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
@@ -49,7 +51,6 @@ import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Entity;
 import gov.uspto.patent.model.entity.Examiner;
 import gov.uspto.patent.model.entity.Inventor;
-import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.NameOrg;
 import gov.uspto.patent.model.entity.NamePerson;
 
@@ -89,25 +90,25 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
 
         if (patent.getDateProduced() != null) {
             builder.add("productionDateRaw", patent.getDateProduced().getDateText(DateTextType.RAW));
-            builder.add("productionDateIso", patent.getDateProduced().getDateText(DateTextType.ISO));
+            builder.add("productionDateIso", patent.getDateProduced().getDateText(DateTextType.ISO_DATE_TIME));
         }
 
         if (patent.getDatePublished() != null) {
             builder.add("publishedDateRaw", patent.getDatePublished().getDateText(DateTextType.RAW));
-            builder.add("publishedDateIso", patent.getDatePublished().getDateText(DateTextType.ISO));
+            builder.add("publishedDateIso", patent.getDatePublished().getDateText(DateTextType.ISO_DATE_TIME));
         }
 
         builder.add("documentId", patent.getDocumentId().toText()); // Patent ID or Public Application ID.
         if (patent.getDocumentDate() != null) {
             builder.add("documentDateRaw", patent.getDocumentDate().getDateText(DateTextType.RAW));
-            builder.add("documentDateIso", patent.getDocumentDate().getDateText(DateTextType.ISO));
+            builder.add("documentDateIso", patent.getDocumentDate().getDateText(DateTextType.ISO_DATE_TIME));
         }
         builder.add("documentId_tokens", mapDocIdVariations(patent.getDocumentId()));
 
         builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
         if (patent.getApplicationDate() != null) {
             builder.add("applicationDateRaw", patent.getApplicationDate().getDateText(DateTextType.RAW));
-            builder.add("applicationDateIso", patent.getApplicationDate().getDateText(DateTextType.ISO));
+            builder.add("applicationDateIso", patent.getApplicationDate().getDateText(DateTextType.ISO_DATE_TIME));
         }
         builder.add("applicationId_tokens", mapDocIdVariations(patent.getApplicationId()));
 
@@ -127,22 +128,32 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         builder.add("agentAddress", mapEntity(patent.getAgent(), EntityField.ADDRESS));
         builder.add("agentRepType", mapAgentRep(patent.getAgent()));
 
+        builder.add("applicantRaw", mapEntity(patent.getApplicants(), EntityField.RAWNAME));
         builder.add("applicant", mapEntity(patent.getApplicants(), EntityField.NAME));
         builder.add("applicantLastName", mapEntity(patent.getApplicants(), EntityField.FIRSTNAME));
         builder.add("applicantFirstName", mapEntity(patent.getApplicants(), EntityField.LASTNAME));
+        builder.add("applicantSynonyms", mapEntity(patent.getApplicants(), EntityField.SYNONYMS));
+        builder.add("applicantAbbrev", mapEntity(patent.getApplicants(), EntityField.NAMEABBREV));
+        builder.add("applicantInitials", mapEntity(patent.getApplicants(), EntityField.NAMEINITIALS));
         builder.add("applicantCity", mapEntity(patent.getApplicants(), EntityField.CITY));
         builder.add("applicantState", mapEntity(patent.getApplicants(), EntityField.STATE));
         builder.add("applicantCountry", mapEntity(patent.getApplicants(), EntityField.COUNTRY));
 
+        builder.add("inventorRaw", mapEntity(patent.getInventors(), EntityField.RAWNAME));
         builder.add("inventor", mapEntity(patent.getInventors(), EntityField.NAME));
         builder.add("inventorLastName", mapEntity(patent.getInventors(), EntityField.FIRSTNAME));
         builder.add("inventorFirstName", mapEntity(patent.getInventors(), EntityField.LASTNAME));
+        builder.add("inventorSynonyms", mapEntity(patent.getInventors(), EntityField.SYNONYMS));
+        builder.add("inventorAbbrev", mapEntity(patent.getInventors(), EntityField.NAMEABBREV));
+        builder.add("inventorInitials", mapEntity(patent.getInventors(), EntityField.NAMEINITIALS));
         builder.add("inventorCity", mapEntity(patent.getInventors(), EntityField.CITY));
         builder.add("inventorState", mapEntity(patent.getInventors(), EntityField.STATE));
         builder.add("inventorCountry", mapEntity(patent.getInventors(), EntityField.COUNTRY));
         builder.add("inventorResidency", mapInventor(patent.getInventors(), InventorField.RESIDENCE));
 
+        builder.add("assigneeRaw", mapEntity(patent.getAssignee(), EntityField.RAWNAME));
         builder.add("assignee", mapEntity(patent.getAssignee(), EntityField.NAME));
+        builder.add("assigneeSynonyms", mapEntity(patent.getApplicants(), EntityField.SYNONYMS));
         builder.add("assigneeRoles", mapAssigneeRoles(patent.getAssignee()));
         builder.add("assigneeAddress", mapEntity(patent.getAssignee(), EntityField.ADDRESS));
         builder.add("assigneeCity", mapEntity(patent.getAssignee(), EntityField.CITY));
@@ -153,6 +164,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         builder.add("examinerDepartment", mapExaminerDepartment(patent.getExaminers()));
 
         builder.add("title", valueOrEmpty(patent.getTitle()));
+        builder.add("titleNorm", valueOrEmpty(StringCaseUtil.toTitleCase(patent.getTitle())));
 
         mapFreetextField(patent.getAbstract(), "abstract", builder);
 
@@ -277,23 +289,16 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
             JsonArrayBuilder futherNormAr = Json.createArrayBuilder();
             SortedSet<String> futherFacets = new TreeSet<String>();
         	
-        	if (claz.isInventive()) {
+        	if (claz.isMainOrInventive()) {
         		builder.add(prefixFieldName + "IpcInventiveRaw", claz.toText());
         		builder.add(prefixFieldName + "IpcInventiveNormalized", claz.getTextNormalized());
-        		builder.add(prefixFieldName + "IpcInventiveFacets", toJsonArray(claz.toFacet()));
+        		builder.add(prefixFieldName + "IpcInventiveFacets", toJsonArray(claz.getTree().getLeafFacets()));
         	}
         	else {
                 futherRawAr.add(claz.toText());
                 futherNormAr.add(claz.getTextNormalized());
-                futherFacets.addAll(Arrays.asList(claz.toFacet()));
+                futherFacets.addAll(claz.getTree().getLeafFacets());
         	}
-
-            for (PatentClassification furtherClassification : claz.getChildren()) {
-                IpcClassification furtherClass = (IpcClassification) furtherClassification;
-                futherRawAr.add(furtherClass.toText());
-                futherNormAr.add(furtherClass.getTextNormalized());
-                futherFacets.addAll(Arrays.asList(furtherClass.toFacet()));
-            }
 
             builder.add(prefixFieldName + "IpcAdditionalRaw", futherRawAr.build());
             builder.add(prefixFieldName + "IpcAdditionalNormalized", futherNormAr.build());
@@ -305,18 +310,12 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         for (UspcClassification claz : uspcClasses) {
             builder.add(prefixFieldName + "UspcMainRaw", claz.toText());
             builder.add(prefixFieldName + "UspcMainNormalized", claz.getTextNormalized());
-            builder.add(prefixFieldName + "UspcMainFacets", toJsonArray(claz.toFacet()));
+            builder.add(prefixFieldName + "UspcMainFacets", toJsonArray(claz.getTree().getLeafFacets()));
 
             JsonArrayBuilder futherRawAr = Json.createArrayBuilder();
             JsonArrayBuilder futherNormAr = Json.createArrayBuilder();
             SortedSet<String> futherFacets = new TreeSet<String>();
 
-            for (PatentClassification furtherClassification : claz.getChildren()) {
-                UspcClassification furtherClass = (UspcClassification) furtherClassification;
-                futherRawAr.add(furtherClass.toText());
-                futherNormAr.add(furtherClass.getTextNormalized());
-                futherFacets.addAll(Arrays.asList(furtherClass.toFacet()));
-            }
             builder.add(prefixFieldName + "UspcAdditionalRaw", futherRawAr.build());
             builder.add(prefixFieldName + "UspcAdditionalNormalized", futherNormAr.build());
             builder.add(prefixFieldName + "UspcAdditionalFacets", toJsonArray(futherFacets));
@@ -328,22 +327,15 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
         JsonArrayBuilder futherNormAr = Json.createArrayBuilder();
         SortedSet<String> futherFacets = new TreeSet<String>();
         for (CpcClassification claz : cpcClasses) {
-        	if (claz.isInventive()) {
+        	if (claz.isMainOrInventive()) {
         		builder.add(prefixFieldName + "CpcInventiveRaw", claz.toText());
         		builder.add(prefixFieldName + "CpcInventiveNormalized", claz.getTextNormalized());
-        		builder.add(prefixFieldName + "CpcInventiveFacets", toJsonArray(claz.toFacet()));
+        		builder.add(prefixFieldName + "CpcInventiveFacets", toJsonArray(claz.getTree().getLeafFacets()));
         	} else {
                 futherRawAr.add(claz.toText());
                 futherNormAr.add(claz.getTextNormalized());
-                futherFacets.addAll(Arrays.asList(claz.toFacet()));
+                futherFacets.addAll(claz.getTree().getLeafFacets());
         	}
-
-            for (PatentClassification furtherClassification : claz.getChildren()) {
-                CpcClassification furtherClass = (CpcClassification) furtherClassification;
-                futherRawAr.add(furtherClass.toText());
-                futherNormAr.add(furtherClass.getTextNormalized());
-                futherFacets.addAll(Arrays.asList(furtherClass.toFacet()));
-            }
         }
         builder.add(prefixFieldName + "CpcAdditionalRaw", futherRawAr.build());
         builder.add(prefixFieldName + "CpcAdditionalNormalized", futherNormAr.build());
@@ -436,13 +428,11 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
 
         for (Entity entity : entities) {
             switch (entityField) {
+			case RAWNAME:
+	            arBldr.add(entity.getName().getName());
+	            break;
             case NAME:
-                Name name = entity.getName();
-                if (name instanceof NamePerson) {
-                    arBldr.add(((NamePerson) name).getName());
-                } else {
-                    arBldr.add(((NameOrg) name).getName());
-                }
+	            arBldr.add(entity.getName().getNameNormalizeCase());
                 break;
             case FIRSTNAME:
                 if (entity.getName() instanceof NamePerson) {
@@ -454,11 +444,30 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
                 break;
             case LASTNAME:
                 if (entity.getName() instanceof NamePerson) {
-                    NamePerson name3 = (NamePerson) entity.getName();
-                    if (name3.getLastName() != null) {
-                        arBldr.add(name3.getLastName());
+                    NamePerson name4 = (NamePerson) entity.getName();
+                    if (name4.getLastName() != null) {
+                        arBldr.add(name4.getLastName());
                     }
                 }
+                break;
+            case NAMESUFFIX:
+                if (entity.getName() instanceof NamePerson) {
+                    NamePerson name5 = (NamePerson) entity.getName();
+                    if (name5.getLastName() != null) {
+                        arBldr.add(name5.getSuffix());
+                    }
+                }
+                break;
+            case NAMEABBREV:
+                if (entity.getName() instanceof NamePerson) {
+                    NamePerson name5 = (NamePerson) entity.getName();
+                    if (name5.getLastName() != null) {
+                        arBldr.add(name5.getAbbreviatedName());
+                    }
+                }
+                break;
+            case NAMEINITIALS:
+	            arBldr.add(entity.getName().getInitials());
                 break;
             case ADDRESS:
                 if (entity.getAddress() != null) {
@@ -480,6 +489,17 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
                     arBldr.add(entity.getAddress().getCity());
                 }
                 break;
+            case SYNONYMS:
+            	 if (entity.getName() instanceof NamePerson) {
+            		 NamePerson perName = (NamePerson) entity.getName();
+            		 arBldr.add(toJsonArray(perName.getSynonyms()));
+            	 } else {
+            		 new OrgSynonymGenerator().computeSynonyms(entity);
+            		 NameOrg orgName = (NameOrg) entity.getName();
+            		 arBldr.add(toJsonArray(orgName.getSynonyms()));
+            	 }
+			default:
+				break;
             }
         }
 
@@ -542,7 +562,7 @@ public class JsonMapperFlat implements DocumentBuilder<Patent> {
     }
 
     private enum EntityField {
-        NAME, FIRSTNAME, LASTNAME, ADDRESS, COUNTRY, STATE, CITY
+    	RAWNAME, NAME, NAMESUFFIX, NAMEABBREV, NAMEINITIALS, FIRSTNAME, LASTNAME, ADDRESS, COUNTRY, STATE, CITY, SYNONYMS
     }
 
     private enum InventorField {

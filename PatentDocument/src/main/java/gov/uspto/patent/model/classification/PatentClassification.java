@@ -4,12 +4,11 @@ import static gov.uspto.patent.model.classification.ClassificationPredicate.isTy
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -24,13 +23,12 @@ public abstract class PatentClassification implements Classification {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(PatentClassification.class);
 
-	private String originalText;
-	private Set<PatentClassification> children = new TreeSet<PatentClassification>();
-	private boolean inventive = false; // the main or inventive classification
+	private final String originalText;
+	private final boolean mainOrInventive;
 
-	@Override
-	public void setTextOriginal(String originalText) {
+	PatentClassification(String originalText, boolean mainOrInventive){
 		this.originalText = originalText;
+		this.mainOrInventive = mainOrInventive;
 	}
 
 	@Override
@@ -38,71 +36,8 @@ public abstract class PatentClassification implements Classification {
 		return originalText;
 	}
 
-	public void setInventive(boolean bool) {
-		this.inventive = bool;
-	}
-	
-	public boolean isInventive() {
-		return this.inventive;
-	}
-
-	public void setIsMainClassification(boolean bool) {
-		this.inventive = bool;
-	}
-
-	public boolean isMainClassification() {
-		return this.inventive;
-	}
-
-	public Set<PatentClassification> getChildren() {
-		return children;
-	}
-
-	public void setChildren(Set<PatentClassification> children) {
-		this.children = children;
-	}
-
-	public void addChild(PatentClassification classification) {
-		if (classification != null) {
-			children.add(classification);
-		}
-	}
-
-	public void addChildren(List<PatentClassification> childClassifications) {
-		children.addAll(childClassifications);
-	}
-
-	public boolean hasChildWithCode(String symbol) {
-		return getChildBySymbol(symbol) != null;
-	}
-
-	public PatentClassification getChildBySymbol(String code) {
-		for (PatentClassification classChild : this.children) {
-			if (classChild.getTextOriginal().equals(code)) {
-				return classChild;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Classification symbol/parts/sections depth.
-	 */
-	@Override
-	public int getDepth() {
-		String[] parts = getParts();
-		List<String> partList = Arrays.asList(parts);
-		return (int) partList.stream().filter(p -> Objects.nonNull(p)).count();
-	}
-
-	/**
-	 * Returns this classification and all it's children as a single collection.
-	 */
-	public SortedSet<PatentClassification> flatten() {
-		SortedSet<PatentClassification> flat = this.children.stream().map(x -> x.flatten()).flatMap(x -> x.stream())
-				.collect(Collectors.toCollection(TreeSet::new));
-		flat.add(this);
-		return flat;
+	public boolean isMainOrInventive() {
+		return this.mainOrInventive;
 	}
 
 	/**
@@ -120,59 +55,11 @@ public abstract class PatentClassification implements Classification {
 		}
 	}
 
-	/**
-	 * Facets used for Search
-	 * 
-	 * <pre>
-	 * D07B2201/2051 => [0/D, 1/D/D07, 2/D/D07/D07B, 3/D/D07/D07B/D07B2201, 4/D/D07/D07B/D07B2201/D07B22012051]
-	 * </pre>
-	 */
-	@Override
-	public String[] toFacet() {
-		return ClassificationTokenizer.partsToFacet(getParts());
-	}
-
-	/**
-	 * Parse Facet back into Classifications
-	 */
-	@Override
-	public <T extends PatentClassification> List<T> fromFacets(List<String> facets, Class<T> classificationClass) {
-		return ClassificationTokenizer.fromFacets(facets, classificationClass);
-	}
-
-	/**
-	 * Classification Tree, permutation of all classification parts.
-	 * 
-	 * <pre>
-	 * D07B2201/2051 =>
-	 * 
-	 * D 07 B 2201 2051
-	 * D 07 B 2201
-	 * D 07 B
-	 * D 07
-	 * D
-	 * </pre>
-	 */
-	@Override
-	public String[] getTree() {
-		return ClassificationTokenizer.partsToTree(getParts());
-	}
-
 	@Override
 	public int compareTo(Classification other) {
 		int last = this.toText().compareTo(other.toText());
 		return last == 0 ? this.toText().compareTo(other.toText()) : last;
 	}
-
-	/*
-	@Override
-	public int compareTo(Classification other) {
-        int b1 = this.isInventive() ? 1 : 0;
-        int b2 = ((PatentClassification) other).isInventive() ? 1 : 0;
-        int main = b2 - b1;
-		return main == 0 ? this.toText().compareTo(other.toText()) : main;
-	}
-	*/
 
 	public static <T extends PatentClassification> List<T> fromText(Iterable<String> classificationStrings,
 			Class<T> classificationClass) {
@@ -242,7 +129,18 @@ public abstract class PatentClassification implements Classification {
 		Set<PatentClassification> filtered = filter(classes, isType(wantedType));
 		Set<String> facets = new LinkedHashSet<String>();
 		for (PatentClassification clazz : filtered) {
-			facets.addAll(Arrays.asList(clazz.toFacet()));
+			facets.addAll(clazz.getTree().getLeafFacets());
+		}
+		return facets;
+	}
+
+	public static <T extends PatentClassification> Set<String> getFacet(Collection<T> classes) {
+		if (classes == null) {
+			return Collections.emptySet();
+		}
+		Set<String> facets = new TreeSet<String>();
+		for (PatentClassification clazz : classes) {
+			facets.addAll(clazz.getTree().getLeafFacets());
 		}
 		return facets;
 	}

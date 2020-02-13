@@ -7,6 +7,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -42,6 +43,8 @@ public class ZipReader implements Iterator<Reader>, Closeable {
 
     private final File file;
     private final FileFilter filter;
+	private final Charset entryfileCharset;
+
     private ZipFile zipFile;
     private Enumeration<ZipArchiveEntry> entries;
     private ZipArchiveEntry currentEntry;
@@ -52,13 +55,14 @@ public class ZipReader implements Iterator<Reader>, Closeable {
      * 
      * @param ZipFile
      */
-    public ZipReader(File zipfile, FileFilter filter) {
+    public ZipReader(File zipfile, FileFilter filter, Charset entryfileCharset) {
         Preconditions.checkArgument(zipfile.isFile() || zipfile.getName().endsWith("zip"),
                 "Input file is not a zipfile: " + zipfile.getAbsolutePath());
         Preconditions.checkNotNull(filter, "FileFilter can not be null.");
 
         this.file = zipfile;
         this.filter = filter;
+        this.entryfileCharset = entryfileCharset;
     }
 
     public ZipReader open() throws IOException {
@@ -134,7 +138,7 @@ public class ZipReader implements Iterator<Reader>, Closeable {
     }
 
     public BufferedReader readEntry(ZipArchiveEntry zipEntry) throws ZipException, IOException {
-        return new BufferedReader(new InputStreamReader(zipFile.getInputStream(zipEntry)));
+        return new BufferedReader(new InputStreamReader(zipFile.getInputStream(zipEntry), entryfileCharset));
     }
 
     @Override

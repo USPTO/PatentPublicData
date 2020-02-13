@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.parser.dom4j.Dom4JParser;
 import gov.uspto.parser.dom4j.Dom4jUtil;
 import gov.uspto.patent.InvalidDataException;
@@ -48,122 +47,118 @@ import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Inventor;
 
 public class ApplicationParser extends Dom4JParser {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationParser.class);
 
-    private PatentApplication patent;
+	public static final String XML_ROOT = "/us-patent-application";
 
-    public static final String XML_ROOT = "/us-patent-application";
+	@Override
+	public Patent parse(Document document) {
 
-    @Override
-    public Patent parse(Document document) {
+		DocumentId publicationId = new PublicationIdNode(document).read();
+		if (publicationId != null) {
+			MDC.put("DOCID", publicationId.toText());
+		} else {
+			LOGGER.warn("Publication ID not read!");
+		}
 
-        DocumentId publicationId = new PublicationIdNode(document).read();
-        if (publicationId != null) {
-            MDC.put("DOCID", publicationId.toText());
-        }
-        
-        String title = Dom4jUtil.getTextOrNull(document,
-                XML_ROOT + "/us-bibliographic-data-application/invention-title");
-        title = StringCaseUtil.toTitleCase(title);
+		String title = Dom4jUtil.getTextOrNull(document,
+				XML_ROOT + "/us-bibliographic-data-application/invention-title");
 
-        String dateProduced = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-produced");
-        String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");
+		String dateProduced = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-produced");
+		String datePublished = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/@date-publ");
 
-        DocumentDate dateProducedDate = null;
-        if (dateProduced != null) {
-            try {
-                dateProducedDate = new DocumentDate(dateProduced);
-            } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Produced: '{}'", dateProduced, e);
-            }
-        }
+		DocumentDate dateProducedDate = null;
+		if (dateProduced != null) {
+			try {
+				dateProducedDate = new DocumentDate(dateProduced);
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), "dateProduced");
+			}
+		}
 
-        DocumentDate datePublishedDate = null;
-        if (datePublished != null) {
-            try {
-                datePublishedDate = new DocumentDate(datePublished);
-            } catch (InvalidDataException e) {
-                LOGGER.warn("Invalid Date Published: '{}'", datePublished, e);
-            }
-        }
+		DocumentDate datePublishedDate = null;
+		if (datePublished != null) {
+			try {
+				datePublishedDate = new DocumentDate(datePublished);
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), "datePublished");
+			}
+		}
 
-        String patentTypeStr = Dom4jUtil.getTextOrNull(document, XML_ROOT + "/us-bibliographic-data-application/application-reference/@appl-type");
-        PatentType patentType = PatentType.UNDEFINED;
-        try {
-            patentType = PatentType.fromString(patentTypeStr);
-        } catch (InvalidDataException e1) {
-            LOGGER.warn("Invalid Patent Type: '{}'", patentTypeStr, e1);
-        }
+		String patentTypeStr = Dom4jUtil.getTextOrNull(document,
+				XML_ROOT + "/us-bibliographic-data-application/application-reference/@appl-type");
+		PatentType patentType = PatentType.UNDEFINED;
+		try {
+			patentType = PatentType.fromString(patentTypeStr);
+		} catch (InvalidDataException e1) {
+			LOGGER.warn("{} : {}", e1.getMessage(), "patentTypeStr");
+		}
 
-        DocumentId applicationId = new ApplicationIdNode(document).read();
+		DocumentId applicationId = new ApplicationIdNode(document).read();
 
-        List<DocumentId> priorityIds = new PriorityClaims(document).read();
-        List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
-        DocumentId relatedId = new RelatedIdNode(document).read();
-        List<DocumentId> relationIds = new Relations(document).read();
+		List<DocumentId> priorityIds = new PriorityClaims(document).read();
+		List<DocumentId> pctRegionalIds = new PctRegionalIdNode(document).read();
+		DocumentId relatedId = new RelatedIdNode(document).read();
+		List<DocumentId> relationIds = new Relations(document).read();
 
-        List<Inventor> inventors = new InventorNode(document).read();
-        List<Applicant> applicants = new ApplicantNode(document).read();
-        List<Agent> agents = new AgentNode(document).read();
-        List<Assignee> assignees = new AssigneeNode(document).read();
-        
-        List<Citation> citations = new CitationNode(document).read();
-        Set<PatentClassification> classifications = new ClassificationNode(document).read();
+		List<Inventor> inventors = new InventorNode(document).read();
+		List<Applicant> applicants = new ApplicantNode(document).read();
+		List<Agent> agents = new AgentNode(document).read();
+		List<Assignee> assignees = new AssigneeNode(document).read();
 
-        /*
-         * Formated Text
-         */
-        FormattedText textProcessor = new FormattedText();
-        Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
-        Description description = new DescriptionNode(document, textProcessor).read();
-        List<Claim> claims = new ClaimNode(document, textProcessor).read();
-        new ClaimTreeBuilder(claims).build();
+		List<Citation> citations = new CitationNode(document).read();
+		Set<PatentClassification> classifications = new ClassificationNode(document).read();
 
-        /*
-         * Start Building Patent Object.
-         */
-        //if (patent == null) {
-            patent = new PatentApplication(publicationId, patentType);
-        //} else {
-        //    patent.reset();
-		//	  patent.setDocumentId(publicationId);
-		//	  patent.setPatentType(patentType);
-        //}
+		/*
+		 * Formated Text
+		 */
+		FormattedText textProcessor = new FormattedText();
+		Abstract abstractText = new AbstractTextNode(document, textProcessor).read();
+		Description description = new DescriptionNode(document, textProcessor).read();
+		List<Claim> claims = new ClaimNode(document, textProcessor).read();
+		new ClaimTreeBuilder(claims).build();
 
-        patent.setDateProduced(dateProducedDate);
-        patent.setDatePublished(datePublishedDate);
+		/*
+		 * Start Building Patent Object.
+		 */
+		Patent patent = new PatentApplication(publicationId, patentType);
+		patent.setSource(getSource());
+		patent.setDateProduced(dateProducedDate);
+		patent.setDatePublished(datePublishedDate);
 
-        patent.setDocumentId(publicationId);
+		patent.setDocumentId(publicationId);
 
-        DocumentId docIdWithoutKind = new DocumentId(publicationId.getCountryCode(), publicationId.getDocNumber());
-        docIdWithoutKind.setType(DocumentIdType.PUBLISHED);
-        docIdWithoutKind.setDate(publicationId.getDate());
-        patent.addOtherId(docIdWithoutKind);
+		if (publicationId != null) {
+			DocumentId docIdWithoutKind = new DocumentId(publicationId.getCountryCode(), publicationId.getDocNumber());
+			docIdWithoutKind.setType(DocumentIdType.PUBLISHED);
+			docIdWithoutKind.setDate(publicationId.getDate());
+			patent.addOtherId(publicationId);
+		}
 
-        patent.setApplicationId(applicationId);
+		patent.setApplicationId(applicationId);
 
 		patent.addPriorityId(priorityIds);
 
 		patent.addOtherId(pctRegionalIds);
-        patent.addRelationIds(relationIds);
-        patent.addOtherId(patent.getApplicationId());
+		patent.addRelationIds(relationIds);
+		patent.addOtherId(patent.getApplicationId());
 		patent.addOtherId(patent.getPriorityIds());
 		patent.addRelationIds(patent.getOtherIds());
 
-        patent.setTitle(title);
-        patent.setAbstract(abstractText);
-        patent.setDescription(description);
-        patent.setInventor(inventors);
-        patent.setApplicant(applicants);
-        patent.setAgent(agents);
-        patent.setAssignee(assignees);
-        patent.setCitation(citations);
-        patent.setClaim(claims);
-        patent.setClassification(classifications);
+		patent.setTitle(title);
+		patent.setAbstract(abstractText);
+		patent.setDescription(description);
+		patent.setInventor(inventors);
+		patent.setApplicant(applicants);
+		patent.setAgent(agents);
+		patent.setAssignee(assignees);
+		patent.setCitation(citations);
+		patent.setClaim(claims);
+		patent.setClassification(classifications);
 
 		LOGGER.trace(patent.toString());
-        
-        return patent;
-    }
+
+		return patent;
+	}
 
 }

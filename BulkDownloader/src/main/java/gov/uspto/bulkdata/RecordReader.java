@@ -7,10 +7,16 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import gov.uspto.bulkdata.tools.grep.DocumentException;
@@ -25,6 +31,7 @@ import gov.uspto.patent.bulk.DumpFileXml;
 import gov.uspto.patent.bulk.DumpReader;
 
 public class RecordReader {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RecordReader.class);
 
 	private final BulkReaderArguments bulkReaderArgs;
 
@@ -69,8 +76,9 @@ public class RecordReader {
 		Writer writer = null;
 		if (outputFilePath != null) {
 			writer = new BufferedWriter(
-					new OutputStreamWriter(new FileOutputStream(outputFilePath.toFile()), Charset.forName("UTF-8")));
+					new OutputStreamWriter(new FileOutputStream(outputFilePath.toFile()), Charset.forName("UTF-16")));
 		} else {
+			// Eclipse Console does not support UTF-16.
 			writer = new BufferedWriter(new OutputStreamWriter(System.out, Charset.forName("UTF-8")));
 		}
 
@@ -78,7 +86,12 @@ public class RecordReader {
 	}
 
 	public RunStats read(File inputFile, RecordProcessor processor, Writer writer)
-			throws PatentReaderException, DocumentException, IOException {
+			throws PatentReaderException, IOException {
+
+		if (inputFile.isDirectory()) {
+			return readDirectory(inputFile, processor, writer);
+		}
+
 		FileFilterChain filters = new FileFilterChain();
 		DumpReader dumpReader;
 		if (bulkReaderArgs.isApsPatent()) {
@@ -100,8 +113,8 @@ public class RecordReader {
 				if (PatentDocFormat.Pap.equals(patentDocFormat) || bulkReaderArgs.addHtmlEntities()) {
 					dumpXml.addHTMLEntities();
 				}
+				filters.addRule(new SuffixFileFilter(new String[] { "xml", "sgm", "sgml"}, IOCase.INSENSITIVE));
 				dumpReader = dumpXml;
-				filters.addRule(new SuffixFileFilter(new String[] { "xml", "sgm", "sgml" }));
 			}
 			dumpReader.setFileFilter(filters);
 		}
@@ -109,8 +122,44 @@ public class RecordReader {
 		return read(dumpReader, processor, writer);
 	}
 
+	public RunStats readDirectory(File inputDirectory, RecordProcessor processor, Writer writer) {
+
+		RunStats runStats = new RunStats("directory:" + inputDirectory.getName());
+
+		DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+			// regular files modified over 20 seconds ago
+			public boolean accept(Path file) throws IOException {
+				long twentySecsAgo = System.currentTimeMillis() - 20000;
+				long lastModified = file.toFile().lastModified();
+				return (file.getFileName().toString().endsWith(".zip")
+						&& Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS) && lastModified < twentySecsAgo);
+			}
+		};
+
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inputDirectory.toPath(), filter)) {
+			for (Path filePath : stream) {
+				String filename = filePath.getFileName().toString();
+				MDC.put("DOCID", filename);
+				LOGGER.info("--- Reading File: {}", filename);
+				try {
+					RunStats fileStats = read(filePath.toFile(), processor, writer);
+					LOGGER.info("--- Done Reading File '{}' { success: {}, failure: {} }", filename,
+							fileStats.getSuccess(), fileStats.getFailure());
+					runStats.add(fileStats);
+				} catch (PatentReaderException | IOException e) {
+					LOGGER.error("!!! Failed Reading File: {}", filename, e);
+				}
+			}
+		} catch (IOException e1) {
+			runStats.incrementFailure(inputDirectory.toString());
+			LOGGER.error("!!! Failed to read directory: {}", inputDirectory, e1);
+		}
+
+		return runStats;
+	}
+
 	public RunStats read(DumpReader dumpReader, RecordProcessor processor, Writer writer)
-			throws PatentReaderException, DocumentException, IOException {
+			throws PatentReaderException, IOException {
 
 		dumpReader.open();
 		dumpReader.skip(bulkReaderArgs.getSkipRecordCount());
@@ -121,11 +170,15 @@ public class RecordReader {
 		try {
 			processor.initialize(writer);
 		} catch (Exception e1) {
-			throw new PatentReaderException(e1);
+			throw new PatentReaderException("Failed to Initialize Processor " + processor.getClass(), e1);
 		}
 
 		for (int checked = 1; dumpReader.hasNext(); checked++) {
 			runStats.incrementRecord();
+
+			if (LOGGER.isDebugEnabled() || dumpReader.getCurrentRecCount() % 100 == 0) {
+				LOGGER.info("... mark {}:{}", runStats.getTaskName(), dumpReader.getCurrentRecCount());
+			}
 
 			String sourceTxt = currentFileName + ":" + dumpReader.getCurrentRecCount();
 
@@ -138,10 +191,15 @@ public class RecordReader {
 				break;
 			}
 
-			Boolean success = processor.process(sourceTxt, rawRecord, writer);
-			if (success) {
-				runStats.incrementSucess();
-			} else {
+			try {
+				Boolean success = processor.process(sourceTxt, rawRecord, writer);
+				if (success) {
+					runStats.incrementSucess();
+				} else {
+					runStats.incrementFailure(sourceTxt);
+				}
+			} catch (DocumentException | IOException e) {
+				LOGGER.error("Exception occured on '{}'", sourceTxt, e);
 				runStats.incrementFailure(sourceTxt);
 			}
 
@@ -154,11 +212,10 @@ public class RecordReader {
 
 		try {
 			processor.finish(writer);
-		} catch (Exception e1) {
-			throw new PatentReaderException(e1);
+		} catch (IOException e1) {
+			throw new PatentReaderException("Failed when calling processor finish()", e1);
 		}
 
-		writer.close();
 		dumpReader.close();
 
 		return runStats;

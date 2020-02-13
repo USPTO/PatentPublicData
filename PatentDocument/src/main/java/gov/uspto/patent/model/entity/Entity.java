@@ -3,6 +3,10 @@ package gov.uspto.patent.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
+import gov.uspto.patent.model.CountryCode;
+
 /**
  * 
  * Entity can have a second name associated with it. Such as the business or
@@ -15,13 +19,19 @@ public abstract class Entity {
 
 	private final EntityType entityType;
 	private final Name name;
-	private final List<EntityRelationship> relations = new ArrayList<EntityRelationship>();
 	private final Address address;
+	private final List<EntityRelationship> relations = new ArrayList<EntityRelationship>();
 
 	public Entity(EntityType type, Name name, Address address) {
+		Preconditions.checkNotNull(type);
+		Preconditions.checkNotNull(name);
 		this.entityType = type;
 		this.name = name;
-		this.address = address;
+		if (address != null) {
+			this.address = address;
+		} else {
+			this.address = new Address("", "", CountryCode.UNDEFINED);
+		}
 	}
 
 	public void addRelationship(EntityRelationship relationship) {

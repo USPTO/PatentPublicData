@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,13 @@ import gov.uspto.patent.model.entity.Name;
 public class AgentNode extends DOMFragmentReader<List<Agent>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AgentNode.class);
 
-	private static final String FRAGMENT_PATH = "/DOCUMENT/LREP";
+	private static final XPath AGENTXP = DocumentHelper.createXPath("/DOCUMENT/LREP");
+	private static final XPath FR2XP = DocumentHelper.createXPath("FR2");
+	private static final XPath AATXP = DocumentHelper.createXPath("AAT");
+	private static final XPath ATTXP = DocumentHelper.createXPath("ATT");
+	private static final XPath AGTXP = DocumentHelper.createXPath("AGT");
+	private static final XPath NAMXP = DocumentHelper.createXPath("NAM");
+	private static final XPath FRMXP = DocumentHelper.createXPath("FRM");
 
 	private static NameNode nameParser = new NameNode(null);
 
@@ -51,17 +59,23 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 	public List<Agent> read() {
 		List<Agent> agentList = new ArrayList<Agent>();
 
-		Node legalRep = document.selectSingleNode(FRAGMENT_PATH);
+		Node legalRep = AGENTXP.selectSingleNode(document);
 		if (legalRep == null) {
 			return agentList;
 		}
 
 		Address address = new AddressNode(legalRep).read();
+		/*try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), legalRep.asXML());
+		}
+		*/
 
 		/*
 		 * Attorney Principle Name
 		 */
-		List<Node> attorneyPrinciples = legalRep.selectNodes("FR2"); // Multiple can exist.
+		List<Node> attorneyPrinciples = FR2XP.selectNodes(legalRep); // Multiple can exist.
 		for (Node attyPN : attorneyPrinciples) {
 			Name name = parseName(attyPN);
 			if (name != null) {
@@ -73,7 +87,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Attorney Associate Name
 		 */
-		List<Node> attorneyAssociates = legalRep.selectNodes("AAT");
+		List<Node> attorneyAssociates = AATXP.selectNodes(legalRep);
 		for (Node attyAN : attorneyAssociates) {
 			Name name = parseName(attyAN);
 			if (name != null) {
@@ -85,7 +99,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Attorney Name
 		 */
-		List<Node> attorneyNames = legalRep.selectNodes("ATT");
+		List<Node> attorneyNames = ATTXP.selectNodes(legalRep);
 		for (Node attorneyNameN : attorneyNames) {
 			Name name = parseName(attorneyNameN);
 			if (name != null) {
@@ -97,7 +111,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Agent Name
 		 */
-		List<Node> agents = legalRep.selectNodes("AGT");
+		List<Node> agents = AGTXP.selectNodes(legalRep);
 		for (Node agentN : agents) {
 			Name name = parseName(agentN);
 			if (name != null) {
@@ -109,7 +123,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Representative Name
 		 */
-		List<Node> nameNs = legalRep.selectNodes("NAM");
+		List<Node> nameNs = NAMXP.selectNodes(legalRep);
 		for (Node nameN : nameNs) {
 			Name name = parseName(nameN);
 			if (name != null) {
@@ -121,7 +135,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 		/*
 		 * Law Firm Name
 		 */
-		List<Node> lawFirmNs = legalRep.selectNodes("FRM");
+		List<Node> lawFirmNs = FRMXP.selectNodes(legalRep);
 		for (Node lawFirmN : lawFirmNs) {
 			Name name = parseName(lawFirmN);
 			if (name != null) {
@@ -130,15 +144,27 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
 			}
 		}
 
+
 		return agentList;
 	}
 
 	private Name parseName(Node fullNameNode) {
+		Name name = null;
+
 		try {
-			return nameParser.createName(fullNameNode.getText());
+			name = nameParser.createName(fullNameNode.getText().trim());
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Failed to Parse Name from: {}", fullNameNode.getName(), e);
+			LOGGER.warn("{} : {}", e.getMessage(), fullNameNode.asXML());
 		}
-		return null;
+
+		if (name != null) {
+			try {
+				name.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), fullNameNode.asXML());
+			}
+		}
+
+		return name;
 	}
 }

@@ -18,7 +18,7 @@ public class AssigneeNodeTest {
 
 	@Test
 	public void AssigneeOrg() throws DocumentException {
-		String xml ="<assignees>\r\n" + 
+		String xml ="<us-patent-grant><us-bibliographic-data-grant><assignees>\r\n" + 
 				"<assignee>\r\n" + 
 				"<addressbook>\r\n" + 
 				"<orgname>Company, Incorporated</orgname>\r\n" + 
@@ -30,14 +30,16 @@ public class AssigneeNodeTest {
 				"</address>\r\n" + 
 				"</addressbook>\r\n" + 
 				"</assignee>\r\n" + 
-				"</assignees>";
+				"</assignees></us-bibliographic-data-grant></us-patent-grant>";
 
 		Document doc = DocumentHelper.parseText(xml);
 
 		List<Assignee> assignees = new AssigneeNode(doc).read();
 		//assignees.forEach(System.out::println);
 
-		assertEquals("02", assignees.get(0).getRole());
+		assertEquals(1, assignees.size());
+
+		assertEquals(Assignee.RoleType.T2, assignees.get(0).getRole());
 		assertEquals("U.S. company or corporation", assignees.get(0).getRoleDesc());
 
 		assertEquals("Company, Incorporated", ((NameOrg) assignees.get(0).getName()).getName());
@@ -49,7 +51,7 @@ public class AssigneeNodeTest {
 
 	@Test
 	public void AssigneePerson() throws DocumentException {
-		String xml ="<assignees>\r\n" + 
+		String xml ="<us-patent-grant><us-bibliographic-data-grant><assignees>\r\n" + 
 				"<assignee>\r\n" + 
 				"<addressbook>\r\n" + 
 				"<last-name>Doe</last-name>\r\n" + 
@@ -62,14 +64,16 @@ public class AssigneeNodeTest {
 				"</address>\r\n" + 
 				"</addressbook>\r\n" + 
 				"</assignee>\r\n" + 
-				"</assignees>";
+				"</assignees></us-bibliographic-data-grant></us-patent-grant>";
 
 		Document doc = DocumentHelper.parseText(xml);
 
 		List<Assignee> assignees = new AssigneeNode(doc).read();
 		//assignees.forEach(System.out::println);
 
-		assertEquals("04", assignees.get(0).getRole());
+		assertEquals(1, assignees.size());
+		
+		assertEquals(Assignee.RoleType.T4, assignees.get(0).getRole());
 		assertEquals("U.S individual", assignees.get(0).getRoleDesc());
 
 		assertEquals("John", ((NamePerson) assignees.get(0).getName()).getFirstName());

@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.greenbook.items;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,10 @@ import gov.uspto.patent.model.entity.Address;
 public class AddressNode extends ItemReader<Address> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AddressNode.class);
 
+	private static final XPath CITYXP = DocumentHelper.createXPath("CTY");
+	private static final XPath STATEXP = DocumentHelper.createXPath("STA");
+	private static final XPath CNTRYXP = DocumentHelper.createXPath("CNT");
+	
 	private static final CountryCode DEFAULT_COUNTRYCODE = CountryCode.US;
 	private CountryCode defaultCountryCode;
 
@@ -47,30 +53,28 @@ public class AddressNode extends ItemReader<Address> {
 
 	@Override
 	public Address read() {
+		/*
 		Node streetN = itemNode.selectSingleNode("STR");
 		String street = streetN != null ? streetN.getText() : null;
 
-		Node cityN = itemNode.selectSingleNode("CTY");
-		String city = cityN != null ? cityN.getText() : null;
-
-		Node stateN = itemNode.selectSingleNode("STA");
-		String state = stateN != null ? stateN.getText() : null;
-
 		Node zipcodeN = itemNode.selectSingleNode("ZIP");
 		String zipcode = zipcodeN != null ? zipcodeN.getText() : null;
+		*/
 
-		Node countryN = itemNode.selectSingleNode("CNT");
-		String countryCodeStr = countryN != null ? countryN.getText() : null;
+		Node cityN = CITYXP.selectSingleNode(itemNode);
+		String city = cityN != null ? cityN.getText().trim() : null;
 
-		CountryCode countryCode = getCountryCode(countryCodeStr);
+		Node stateN = STATEXP.selectSingleNode(itemNode);
+		String state = stateN != null ? stateN.getText().trim() : null;
 
-		Address address = new Address(street, city, state, zipcode, countryCode);
-
-		try {
-			address.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Address: {}", itemNode.getParent().asXML(), e);
+		Node countryN = CNTRYXP.selectSingleNode(itemNode);
+		CountryCode countryCode = getCountryCode(countryN);
+		if (CountryCode.UNDEFINED.equals(countryCode)) {
+			countryCode = defaultCountryCode;
 		}
+
+		//Address address = new Address(street, city, state, zipcode, countryCode);
+		Address address = new Address(city, state, countryCode);
 
 		return address;
 	}
@@ -79,15 +83,17 @@ public class AddressNode extends ItemReader<Address> {
 	 * Country Code
 	 * 
 	 * Fix 3 digit country codes, in two digit country code field, by removing the
-	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
+	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2, GB3).
 	 * 
 	 * @param country
 	 * @return
 	 */
-	public static CountryCode getCountryCode(String country) {
-		if (country == null) {
+	public static CountryCode getCountryCode(Node countryNode) {
+		if (countryNode == null) {
 			return CountryCode.UNDEFINED;
 		}
+
+		String country = countryNode.getText().trim();
 
 		if (country.length() == 3) {
 			country = country.replaceFirst("(?:X|[0-9])$", "");
@@ -97,11 +103,8 @@ public class AddressNode extends ItemReader<Address> {
 		try {
 			countryCode = CountryCode.fromString(country);
 		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Country Code: '{}'", country);
-		}
-
-		if (countryCode == CountryCode.UNKNOWN) {
-			countryCode = AddressNode.getCountryCodeHistoric(country);
+			// LOGGER.warn("{} : {}", country, countryNode.getParent().asXML());
+			countryCode = AddressNode.getCountryCodeHistoric(countryNode);
 		}
 
 		return countryCode;
@@ -112,16 +115,18 @@ public class AddressNode extends ItemReader<Address> {
 	 * 
 	 * <p>
 	 * Fix 3 digit country codes, in two digit country code field, by removing the
-	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2).
+	 * trailing "X" or number (0-9) example: (DE is DEX, NL is NLX, GB1, GB2, GB3).
 	 * </p>
 	 * 
 	 * @param country
 	 * @return
 	 */
-	public static CountryCode getCountryCodeHistoric(String country) {
-		if (country == null) {
+	public static CountryCode getCountryCodeHistoric(Node countryNode) {
+		if (countryNode == null) {
 			return CountryCode.UNDEFINED;
 		}
+
+		String country = countryNode.getText().trim();
 
 		if (country.length() == 3) {
 			country = country.replaceFirst("(?:X|[0-9])$", "");
@@ -129,7 +134,7 @@ public class AddressNode extends ItemReader<Address> {
 
 		CountryCode countryCode = CountryCodeHistory.getCurrentCode(country);
 
-		LOGGER.warn("Historic Country Code: '{}' maps to '{}'", country, countryCode);
+		LOGGER.debug("Historic Country Code: '{}' maps to '{}'", country, countryCode);
 
 		return countryCode;
 	}

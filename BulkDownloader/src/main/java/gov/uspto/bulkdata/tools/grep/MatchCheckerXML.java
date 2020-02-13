@@ -65,6 +65,13 @@ public class MatchCheckerXML implements Match<MatchPattern> {
 						return true;
 					}
 				}
+			} else if (matchPattern instanceof MatchXPathNodeValues) {
+				if (((MatchXPathNodeValues) matchPattern).writeMatches(source, w3cdom, writer)) {
+					matched = true;
+					if (stopOnFirstMatch) {
+						return true;
+					}
+				}
 			}
 		}
 		return matched;

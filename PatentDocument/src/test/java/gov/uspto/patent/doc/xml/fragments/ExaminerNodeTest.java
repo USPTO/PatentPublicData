@@ -17,7 +17,7 @@ public class ExaminerNodeTest {
 
 	@Test
 	public void Examiner() throws DocumentException {
-		String xml = "<us-bibliographic-data-grant><examiners><primary-examiner>\r\n" + 
+		String xml = "<xml><us-bibliographic-data-grant><examiners><primary-examiner>\r\n" + 
 				"<last-name>Doe</last-name>\r\n" + 
 				"<first-name>John</first-name>\r\n" + 
 				"<department>1711</department>\r\n" + 
@@ -26,10 +26,10 @@ public class ExaminerNodeTest {
 				"<last-name>Smith</last-name>\r\n" + 
 				"<first-name>Benjamin L</first-name>\r\n" + 
 				"</assistant-examiner>\r\n" + 
-				"</examiners></us-bibliographic-data-grant>";
-		
+				"</examiners></us-bibliographic-data-grant></xml>";
+
 		Document doc = DocumentHelper.parseText(xml);
-		
+
 		List<Examiner> examiners = new ExaminerNode(doc).read();
 		//examiners.forEach(System.out::println);
 

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +21,10 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NameNode.class);
 
-	private static final String ARTUNIT = "/DOCUMENT/PATN/ART";
-	private static final String PRIMARY = "/DOCUMENT/PATN/EXP";
-	private static final String ASSISTANT = "/DOCUMENT/PATN/EXA";
+	private static final XPath PATXP = DocumentHelper.createXPath("/DOCUMENT/PATN");
+	private static final XPath ARTXP = DocumentHelper.createXPath("ART");
+	private static final XPath PEXAMINERXP = DocumentHelper.createXPath("EXP");
+	private static final XPath AEXAMINERXP = DocumentHelper.createXPath("EXA");
 
 	public ExaminerNode(Document document) {
 		super(document);
@@ -31,51 +34,53 @@ public class ExaminerNode extends DOMFragmentReader<List<Examiner>> {
 	public List<Examiner> read() {
 		List<Examiner> examinerList = new ArrayList<Examiner>();
 
-		String artUnit = getArtUnit();
+		Node parentNode = PATXP.selectSingleNode(document);
 
-		Examiner primary = getPrimaryExaminer(artUnit);
-		if (primary != null){
+		Node artN = ARTXP.selectSingleNode(parentNode);
+		String artUnit = artN != null ? artN.getText().trim() : null;
+		if (artN == null) {
+			LOGGER.warn("Art Unit is missing");
+		}
+
+		Node primaryNode = PEXAMINERXP.selectSingleNode(parentNode);
+
+		Examiner primary = getExaminer(primaryNode, ExaminerType.PRIMARY, artUnit);
+		if (primary != null) {
 			examinerList.add(primary);
 		}
-		
-		Examiner assistant = getAssistantExaminer();
-		if (assistant != null){
+
+		Node assistantNode = AEXAMINERXP.selectSingleNode(parentNode);
+		Examiner assistant = getExaminer(assistantNode, ExaminerType.ASSISTANT, artUnit);
+		if (assistant != null) {
 			examinerList.add(assistant);
 		}
 
 		return examinerList;
 	}
 
-	public String getArtUnit(){
-		Node artN = document.selectSingleNode(ARTUNIT);
-		return artN != null ? artN.getText() : null;
-	}
+	public Examiner getExaminer(Node examinerNode, ExaminerType type, String artUnit) {
 
-	public Examiner getPrimaryExaminer(String artUnit){
-		Node primaryN = document.selectSingleNode(PRIMARY);
-		if (primaryN != null) {
-			String fullName = primaryN != null ? primaryN.getText() : null;
+		if (examinerNode != null) {
+			String fullName = examinerNode != null ? examinerNode.getText().trim() : null;
+
+			Name name = null;
 			try {
-				Name name = new NameNode(primaryN).createName(fullName);
-				return new Examiner(name, artUnit, ExaminerType.PRIMARY);
+				name = new NameNode(examinerNode).createName(fullName);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Name: {}", fullName, e);
+				LOGGER.warn("{} : {}", e.getMessage(), examinerNode.asXML());
+			}
+
+			if (name != null) {
+				try {
+					name.validate();
+				} catch (InvalidDataException e) {
+					LOGGER.warn("{} : {}", e.getMessage(), examinerNode.asXML());
+				}
+
+				return new Examiner(name, artUnit, type);
 			}
 		}
-		return null;
-	}
 
-	public Examiner getAssistantExaminer(){
-		Node assistantN = document.selectSingleNode(ASSISTANT);
-		if (assistantN != null) {
-			String fullName = assistantN != null ? assistantN.getText() : null;
-			try {
-				Name name = new NameNode(assistantN).createName(fullName);
-				return new Examiner(name, null, ExaminerType.ASSISTANT);
-			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Name: {}", fullName, e);
-			}
-		}
 		return null;
 	}
 }

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +48,13 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CitationNode.class);
 
-	private static final String USPAT = "/DOCUMENT/UREF";
-	private static final String FORPAT = "/DOCUMENT/FREF";
-	private static final String NPL = "/DOCUMENT/OREF/PAL";
+	private static final XPath USPATXP = DocumentHelper.createXPath("/DOCUMENT/UREF");
+	private static final XPath FORPATXP = DocumentHelper.createXPath("/DOCUMENT/FREF");
+	private static final XPath NPLXP = DocumentHelper.createXPath("/DOCUMENT/OREF/PAL");
+	
+	private static final XPath CNTRYXP = DocumentHelper.createXPath("CNT");
+	private static final XPath PATNUMXP = DocumentHelper.createXPath("PNO");
+	private static final XPath ISSUEDATEXP = DocumentHelper.createXPath("ISD");
 
 	public CitationNode(Document document) {
 		super(document);
@@ -58,7 +64,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	public List<Citation> read() {
 		List<Citation> citations = new ArrayList<Citation>();
 
-		List<Node> usRels = document.selectNodes(USPAT);
+		List<Node> usRels = USPATXP.selectNodes(document);
 		for (int i = 0; i < usRels.size(); i++) {
 			Node usRelN = usRels.get(i);
 			DocumentId docId = readDocumentId(usRelN, CountryCode.US);
@@ -68,7 +74,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			}
 		}
 
-		List<Node> foreignRels = document.selectNodes(FORPAT);
+		List<Node> foreignRels = FORPATXP.selectNodes(document);
 		for (int i = 0; i < foreignRels.size(); i++) {
 			Node frelN = foreignRels.get(i);
 			CountryCode countryCode = readCountryCode(frelN);
@@ -80,10 +86,10 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 			}
 		}
 
-		List<Node> nplCites = document.selectNodes(NPL);
+		List<Node> nplCites = NPLXP.selectNodes(document);
 		for (int i = 0; i < nplCites.size(); i++) {
 			Node nplCiteN = nplCites.get(i);
-			Citation nplCite = new NplCitation(String.valueOf(i), nplCiteN.getText(),  CitedBy.UNDEFINED);
+			Citation nplCite = new NplCitation(String.valueOf(i), nplCiteN.getText().trim(),  CitedBy.UNDEFINED);
 			citations.add(nplCite);
 		}
 
@@ -91,29 +97,29 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 	}
 
 	public CountryCode readCountryCode(Node itemNode) {
-		Node countryN = itemNode.selectSingleNode("CNT");
-		String country = countryN != null ? countryN.getText() : null;
-		CountryCode countryCode = AddressNode.getCountryCode(country);
+		Node countryN = CNTRYXP.selectSingleNode(itemNode);
+		CountryCode countryCode = AddressNode.getCountryCode(countryN);
 		return countryCode;
 	}
 
 	public DocumentId readDocumentId(Node itemNode, CountryCode countryCode) {
 
-		Node docNumN = itemNode.selectSingleNode("PNO");
+		Node docNumN = PATNUMXP.selectSingleNode(itemNode);
 		if (docNumN == null) {
 			LOGGER.warn("DocNum not found, field 'PNO': {}", itemNode.asXML());
 			return null;
 		}
 
 		DocumentId documentId = new DocumentId(countryCode, docNumN.getText().trim());
+		documentId.setRawText(docNumN.getText().trim());
 
-		Node dateN = itemNode.selectSingleNode("ISD");
+		Node dateN = ISSUEDATEXP.selectSingleNode(itemNode);
 		if (dateN != null) {
 			String dateTxt = dateN.getText();
 			try {
 				documentId.setDate(new DocumentDate(dateTxt));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Failed to parse date: {}", dateTxt, e);
+				LOGGER.warn("{} : {}", e.getMessage(), itemNode.asXML());
 			}
 		}
 

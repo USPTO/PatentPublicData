@@ -31,11 +31,13 @@ import gov.uspto.patent.model.DocumentIdType;
  */
 public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentIdNode.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PriorityClaims.class);
 	
 	private static final Pattern SHORT_YEAR = Pattern.compile("^([09])[0-9][/-]\\d+");
-	
-    private static final String FRAGMENT_PATH = "//priority-claims/priority-claim";
+
+    private static final String FRAGMENT_PATH = "/*/*/priority-claims/priority-claim";
+
+    private static final String PROVISIONAL_PATH = "/*/*/us-related-documents/us-provisional-application";
 
     public PriorityClaims(Document document) {
         super(document);
@@ -44,6 +46,13 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
     @Override
     public List<DocumentId> read() {
         List<DocumentId> priorityDocIds = new ArrayList<DocumentId>();
+
+        Node provisionalNode = document.selectSingleNode(PROVISIONAL_PATH);
+        if (provisionalNode != null) {
+        	DocumentId provisionalDocId = new DocumentIdNode(provisionalNode).read();
+        	provisionalDocId.setType(DocumentIdType.PROVISIONAL);
+        	priorityDocIds.add(provisionalDocId);
+        }
 
         List<Node> fragmentNodes = document.selectNodes(FRAGMENT_PATH);
         for (Node fragNode : fragmentNodes) {       	
@@ -74,15 +83,19 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
         		}
 
         		Node countryN = fragNode.selectSingleNode("country");
-        		CountryCode countryCode = CountryCode.US;
+        		CountryCode countryCode = CountryCode.UNDEFINED;
         		String country = countryN != null ? countryN.getText() : null;
-        		try {
-        			countryCode = CountryCode.fromString(country);
-        		} catch (InvalidDataException e2) {
-        			LOGGER.warn("Invalid CountryCode '{}', from : {}", country, fragNode.asXML(), e2);
+        		if (country == null || country.trim().isEmpty()) {
+        			LOGGER.warn("Invalid CountryCode missing, using default countryCode 'US': {}", fragNode.asXML());
+        			countryCode = CountryCode.US;
+        		} else {
+	        		try {
+	        			countryCode = CountryCode.fromString(country);
+	        		} catch (InvalidDataException e2) {
+	        			LOGGER.warn("{} : {}", e2.getMessage(), fragNode.asXML());
+	        		}
         		}
 
-        		
         		String docNumber = docNumN.getText();
         		
         		if (docNumber.substring(0,2).toLowerCase().equals(countryCode.toString().toLowerCase())) {
@@ -122,7 +135,7 @@ public class PriorityClaims extends DOMFragmentReader<List<DocumentId>> {
         			try {
         				documentId.setDate(new DocumentDate(dateN.getText()));
         			} catch (InvalidDataException e) {
-        				LOGGER.warn("Failed to parse date from : {}", fragNode.asXML(), e);
+        				LOGGER.warn("{} : {}", e.getMessage(), fragNode.asXML());
         			}
         		}
 

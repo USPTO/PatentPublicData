@@ -1,5 +1,7 @@
 package gov.uspto.patent.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import gov.uspto.patent.InvalidDataException;
 
 /**
@@ -70,7 +72,7 @@ public enum CountryCode {
 	CV("Cape Verde"),
 	CW("Curacao"),
 	CY("Cyprus"),
-	CZ("Czech Republic"),
+	CZ("Czech Republic"), // Czechia
 	DE("Germany"),
 	DJ("Djibouti"),
 	DK("Denmark"),
@@ -220,7 +222,7 @@ public enum CountryCode {
 	SV("El Salvador"),
 	SX("Sint Maarten (Dutch part)"),
 	SY("Syria"),
-	SZ("Swaziland"),
+	SZ("Swaziland"), // Eswatini
 	TC("Turks and Caicos Islands"),
 	TD("Chad"),
 	TG("Togo"),
@@ -246,6 +248,7 @@ public enum CountryCode {
 	VG("Virgin Islands (British)"),
 	VN("Viet Nam"),
 	VU("Vanuatu"),
+	WF("Wallis and Futuna"),
 	WO("World IP Organization (WIPO)"),
 	WS("Samoa"),
 	XN("Nordic Patent Institute (NPI)"),
@@ -287,12 +290,10 @@ public enum CountryCode {
 	 * Following no longer exist.
 	 */
 	YU("Yugoslavia"),
-	CS("Czechoslovakia"),
-	DD("Democratic Yemen"),
 	SU("Soviet Union (USSR)");
 
 	private String name;
-	
+
 	private CountryCode(String name){
 		this.name = name;
 	}
@@ -303,12 +304,13 @@ public enum CountryCode {
 
 	public static CountryCode fromString(String strValue) throws InvalidDataException {
 		try {
-			if (strValue != null){
-				return CountryCode.valueOf(strValue.trim().toUpperCase());
+			if (StringUtils.isEmpty(strValue) || "UNKNOWN".equalsIgnoreCase(strValue)) {
+				throw new IllegalArgumentException();
 			}
-			return CountryCode.UNDEFINED;
+			return CountryCode.valueOf(strValue.trim().toUpperCase());
+			//return CountryCode.UNDEFINED;
 		} catch(IllegalArgumentException e) {
-			throw new InvalidDataException("Invalid Code: " + strValue);
+			throw new InvalidDataException("Invalid CountryCode: '" + strValue + "'");
 			//return CountryCode.UNKNOWN;
 		}
 	}

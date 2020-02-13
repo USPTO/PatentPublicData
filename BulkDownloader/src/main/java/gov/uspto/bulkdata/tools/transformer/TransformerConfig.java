@@ -3,6 +3,7 @@ package gov.uspto.bulkdata.tools.transformer;
 import static java.util.Arrays.asList;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -40,7 +41,7 @@ public class TransformerConfig extends BulkReaderArguments {
 		opParser.accepts("outDir").withRequiredArg().ofType(String.class).describedAs("Output Directory").required();
 
 		opParser.acceptsAll(asList("outBulk", "outputBulkFile")).withOptionalArg().ofType(Boolean.class)
-				.describedAs("Output bulk file, single file record per line").defaultsTo(true);
+				.describedAs("true: Output bulk file, patent record per line ; false: creates individual patent files within bulkfile named directory").defaultsTo(true);
 
 		opParser.accepts("bulkRecLimit").withOptionalArg().ofType(Integer.class)
 				.describedAs("Limit of records per bulk file").defaultsTo(-1);
@@ -52,7 +53,7 @@ public class TransformerConfig extends BulkReaderArguments {
 				.defaultsTo(false);
 
 		opParser.accepts("type").withOptionalArg().ofType(String.class)
-				.describedAs("types options: [raw,xml,json,json_flat,patft,object,text]").defaultsTo("json");
+				.describedAs("types options: [raw,json,json_flat,patft,solr,object,text]").defaultsTo("json");
 
 		return opParser;
 	}
@@ -66,6 +67,9 @@ public class TransformerConfig extends BulkReaderArguments {
 
 		if (options.has("type")) {
 			String type = (String) options.valueOf("type");
+			if ("?".equals(type) || type.length() < 2) {
+				super.printHelp();
+			}
 			setOutputType(type.toLowerCase());
 		}
 
@@ -80,6 +84,7 @@ public class TransformerConfig extends BulkReaderArguments {
 			setPrettyPrint((Boolean) options.valueOf("prettyPrint"));
 		}
 
+		setPrettyPrint((Boolean) options.valueOf("prettyPrint"));
 	}
 
 	public void setOutputDir(Path outDir) {

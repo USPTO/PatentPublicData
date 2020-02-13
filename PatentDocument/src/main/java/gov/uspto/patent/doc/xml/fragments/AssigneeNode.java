@@ -2,7 +2,9 @@ package gov.uspto.patent.doc.xml.fragments;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.xml.items.AddressBookNode;
+import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
@@ -21,7 +24,8 @@ import gov.uspto.patent.model.entity.Name;
 public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
 
-	private static final String FRAGMENT_PATH = "//assignees/assignee";
+	private static final String FRAGMENT_PATH = "/*/*/assignees/assignee";
+	private static final String APPLICANT_ASSIGNEE_PATH = "/*/*/us-parties/us-applicants/us-applicant[@applicant-authority-category='assignee']";
 
 	public AssigneeNode(Document document) {
 		super(document);
@@ -29,11 +33,29 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 
 	@Override
 	public List<Assignee> read() {
-		List<Assignee> assigneeList = new ArrayList<Assignee>();
+		Map<String, Assignee> assigneeList = new LinkedHashMap<String, Assignee>();
+
+		List<Node> applicantAssignees = document.selectNodes(APPLICANT_ASSIGNEE_PATH);
+		if (!applicantAssignees.isEmpty()) {
+			for (Assignee assign : readEntityNodes(applicantAssignees)) {
+				assigneeList.put(assign.getName().getName().toLowerCase(), assign);
+			}
+		}
 
 		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
+		if (!assignees.isEmpty()) {
+			for (Assignee assign : readEntityNodes(assignees)) {
+				assigneeList.put(assign.getName().getName().toLowerCase(), assign);
+			}
+		}
 
-		for (Node node : assignees) {
+		return new ArrayList<Assignee>(assigneeList.values());
+	}
+
+	private List<Assignee> readEntityNodes(List<Node> nodes) {
+		List<Assignee> assigneeList = new ArrayList<Assignee>();
+
+		for (Node node : nodes) {
 
 			AddressBookNode addressBook;
 			if (node.selectSingleNode("addressbook") != null) {
@@ -66,7 +88,16 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 				continue;
 			}
 
+			try {
+				assigneeName.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
+			}
+
 			Address address = addressBook.getAddress();
+			if (address == null) {
+				address = new Address("", "", CountryCode.UNDEFINED);
+			}
 
 			Node roleTypeN = node.selectSingleNode("addressbook/role");
 			String roleType = roleTypeN != null ? roleTypeN.getText() : "";
@@ -77,7 +108,7 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 			try {
 				assignee.setRole(roleType);
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid Assignee RoleType: {}", node.asXML(), e);
+				LOGGER.warn("{} : {}", e.getMessage(), node.asXML());
 			}
 		}
 

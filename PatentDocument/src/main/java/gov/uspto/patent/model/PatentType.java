@@ -5,32 +5,34 @@ import gov.uspto.patent.InvalidDataException;
 /**
  * Type of Patent
  *
- *<pre>
+ * <pre>
  * UTILITY : 1
  * REISSUE : 2
  * DESIGN  : 4
- * DEFENSIVE_PUBLICATION : 5
- * STATUTORY_INVENTION_REGISTRATION : 7
+ * DEF : 5
+ * SIR : 7
  * UNDEFINED : 0
- *</pre>
+ * </pre>
  */
 public enum PatentType {
-	UTILITY(1),  // over 90% of patents issued by USPTO.
-	DESIGN(4),
+	UTILITY(1), // over 90% of patents issued by USPTO.
+	DESIGN(4), 
 	PLANT(6),
 	REISSUE(2), // reissue to correct error in issued utility, design or plant patent.
-	DEFENSIVE_PUBLICATION(5), // (DEF) used until 1985-86.
-	STATUTORY_INVENTION_REGISTRATION(7), // (SIR) from 1985-86 to 2011.
+	DEF(5), // (DEF = DEFENSIVE_PUBLICATION) used until 1985-86.
+	SIR(7), // (SIR = STATUTORY_INVENTION_REGISTRATION) from 1985-86 to 2011. Occurs in
+			// Patent XML as app-type "SIR".
 	UNDEFINED(0);
 
 	private final int number;
 
-	PatentType(int number){
+	PatentType(int number) {
 		this.number = number;
 	}
 
 	/**
 	 * Number Representation
+	 * 
 	 * @return
 	 */
 	public int getNumber() {
@@ -38,7 +40,7 @@ public enum PatentType {
 	}
 
 	public static PatentType fromNumber(int num) throws InvalidDataException {
-		for (PatentType type: PatentType.values()) {
+		for (PatentType type : PatentType.values()) {
 			if (type.getNumber() == num) {
 				return type;
 			}
@@ -53,7 +55,7 @@ public enum PatentType {
 			}
 			return PatentType.UNDEFINED;
 		} catch (IllegalArgumentException e) {
-			throw new InvalidDataException("Invalid PatentType: " + strValue);
+			throw new InvalidDataException("Invalid PatentType: '" + strValue + "'");
 			// return CountryCode.UNKNOWN;
 		}
 	}

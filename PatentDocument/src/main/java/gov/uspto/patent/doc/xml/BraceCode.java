@@ -11,13 +11,17 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.ibm.icu.text.Normalizer2;
 
 /**
  * Brace Codes
  *
- *<p>Brace Codes are used to escape diacritic/accent characters in about 5% of Patent XML documents.<p>
+ *<p>Brace Codes are used to escape diacritic/accent characters in about 5% of Patent SGML, PAP and XML documents.
+ *Brace Codes are used similarly to Dot Codes used within the Patent Greenbook format.<p>
  *
  *<p>Patent XML is in UTF-8, some characters can only be encoded in UTF-16 (surrogate pairs), 
  *or no equivalent exists. Either way, most accents even when a UTF-8 equivalent exist are written as a brace code.</p>
@@ -37,9 +41,10 @@ import org.slf4j.LoggerFactory;
  * 2) Nested accents: {acute over ({hacek over (a)}s)} <br/>
  * </p>
  *
- * https://emw3.com/unicode-accents.html
- * https://www.unicode.org/charts/PDF/U0300.pdf
- * https://unicode.org/reports/tr25/
+ * @see gov.uspto.patent.doc.greenbook.DotCodes
+ * @see https://emw3.com/unicode-accents.html
+ * @see https://www.unicode.org/charts/PDF/U0300.pdf
+ * @see https://unicode.org/reports/tr25/
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
  *
@@ -647,9 +652,10 @@ public class BraceCode {
 		}
 		matcher.appendTail(stb);
 
-	    String norm = Normalizer.normalize(stb.toString(), Normalizer.Form.NFD);
-	    norm = norm.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+	    return StringUtils.stripAccents(stb.toString());
 
-		return norm;
+	    //String norm = Normalizer.normalize(stb.toString(), Normalizer.Form.NFD);
+	    //norm = norm.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		//return norm;
 	}
 }

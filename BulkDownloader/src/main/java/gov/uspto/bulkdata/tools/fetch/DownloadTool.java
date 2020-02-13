@@ -1,7 +1,10 @@
 package gov.uspto.bulkdata.tools.fetch;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -90,8 +93,11 @@ public class DownloadTool {
 	private RunStats downloadAndProcessFiles() throws IOException, DocumentException, PatentReaderException {
 		RunStats runStats = new RunStats("DownloadAndProcess");
 
+		//Writer writer = new DummyWriter();
+		Writer writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
 		try {
-			downloadProcessor.initialize(new DummyWriter());
+			downloadProcessor.initialize(writer);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -110,8 +116,8 @@ public class DownloadTool {
 				file.delete();
 			}
 		}
-    
-		downloadProcessor.finish(null);
+
+		downloadProcessor.finish(writer);
 		
 		return runStats;
 	}

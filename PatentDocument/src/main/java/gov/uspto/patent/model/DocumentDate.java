@@ -1,27 +1,25 @@
 package gov.uspto.patent.model;
 
-import java.text.ParseException;
-import java.util.Calendar;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
-import java.util.TimeZone;
 
-import org.apache.commons.lang3.time.DateParser;
-import org.apache.commons.lang3.time.FastDateFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.InvalidDataException;
 
 public class DocumentDate {
-	/*
-	 * FastDateFormat is Thread-Safe version of SimpleDateFormat
-	 */
-	private static final FastDateFormat DATE_ISO_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentDate.class);
 
-	private static final DateParser DATE_YEAR_FORMAT = FastDateFormat.getInstance("yyyy");
+	private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyyMM");
 
-	private static final DateParser DATE_PATENT_FORMAT = FastDateFormat.getInstance("yyyyMMdd");
-
-	private Date date;
+	private LocalDate date;
 	private String rawDate;
 
 	public DocumentDate(String date) throws InvalidDataException {
@@ -29,35 +27,51 @@ public class DocumentDate {
 		setDate(date);
 	}
 
-	public DocumentDate(Date date) throws InvalidDataException {
+	public DocumentDate(LocalDate date) throws InvalidDataException {
 		this.date = date;
 	}
 
-	public int getYear() {
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-		calendar.setTime(date);
-		return calendar.get(Calendar.YEAR);
+	public DocumentDate(Date date) throws InvalidDataException {
+		this.date = date.toInstant().atZone(ZoneId.of("GMT")).toLocalDate();
 	}
 
-	public void setDate(String date) throws InvalidDataException {
-		if (date != null && date.trim().length() == 8) {
+	public void setDate(final String date) throws InvalidDataException {
+		if (date == null || date.trim().isEmpty() || !date.trim().matches("\\d+")) {
 			try {
-				this.date = DATE_PATENT_FORMAT.parse(date);
-			} catch (ParseException e) {
-				throw new InvalidDataException("Invalid Date: " + date, e);
+				this.date = LocalDate.of(0, 1, 1);
+				return;
+			} catch (DateTimeParseException e) {
+				// empty.
 			}
-		} else if (date != null && date.trim().length() == 4) {
+		}
+
+		String dateStr = date.trim();
+
+		// Greenbook citations have yyyy0000 "19560000" and yyyy0000 "19560000"
+		dateStr = dateStr.replaceFirst("(?:0{4}|0{2})$", "");
+
+		if (dateStr.length() == 8) { // Full Date: Year Month Day
 			try {
-				this.date = DATE_YEAR_FORMAT.parse(date);
-			} catch (ParseException e) {
-				throw new InvalidDataException("Invalid Date: " + date, e);
+				this.date = LocalDate.parse(date.trim(), DateTimeFormatter.BASIC_ISO_DATE);
+			} catch (DateTimeParseException e) {
+				throw new InvalidDataException("Invalid Date: '" + date + "'", e);
 			}
+		} else if (dateStr.length() == 6) { // Year Month
+			try {
+				YearMonth ymDate = YearMonth.parse(dateStr, YEAR_MONTH);
+				this.date = ymDate.atDay(1);
+			} catch (DateTimeException e) {
+				LOGGER.warn("Invalid Date: {} ; trying with only year", dateStr);
+				setDate(dateStr.substring(0, 4));
+			}
+		} else if (dateStr.length() == 4) { // Year Only
+			this.date = LocalDate.of(Integer.parseInt(dateStr), 1, 1);
 		} else {
-			throw new InvalidDataException("Invalid Date: " + date);
+			throw new InvalidDataException("Invalid Date: '" + date + "'");
 		}
 	}
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
@@ -65,22 +79,37 @@ public class DocumentDate {
 		switch (dateType) {
 		case RAW:
 			return rawDate;
-		case ISO:
+		case ISO_DATE:
 			return getISOString();
+		case ISO_DATE_TIME:
+			return getISODateString();
 		default:
 			return rawDate;
 		}
 	}
 
+	public int getYear() {
+		return date.getYear();
+	}
+
+	private String getISODateString() {
+		return date.format(DateTimeFormatter.ISO_DATE);
+	}
+
 	private String getISOString() {
-		if (date == null) {
-			return null;
-		}
-		return DATE_ISO_FORMAT.format(date);
+		return DateTimeFormatter.ISO_INSTANT.format(date.atStartOfDay());
 	}
 
 	@Override
 	public String toString() {
-		return "DocumentDate [date=" + date + "]";
+		return "DocumentDate [date=" + getISODateString() + "]";
+	}
+
+	public static DocumentDate getEmpty() {
+		try {
+			return new DocumentDate("");
+		} catch (InvalidDataException e) {
+			return null;
+		}
 	}
 }

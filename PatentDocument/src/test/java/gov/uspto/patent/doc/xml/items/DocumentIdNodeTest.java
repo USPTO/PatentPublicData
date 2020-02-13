@@ -16,6 +16,17 @@ import gov.uspto.patent.model.DocumentId;
 public class DocumentIdNodeTest {
 
 	@Test
+	public void SmallId() throws DocumentException {
+		String xml = "<xml><document-id><country>US</country><doc-number>1</doc-number><kind>A</kind><date>18360700</date></document-id></xml>";
+		Document xmlDoc = createDocument(xml);
+		DocumentId docId = new DocumentIdNode(xmlDoc.getRootElement()).read();
+		assertEquals(CountryCode.US, docId.getCountryCode());
+		assertEquals("1", docId.getDocNumber());
+		assertEquals("18360700", docId.getDate().getDateText(DateTextType.RAW));
+		assertEquals("US1A", docId.toText());
+	}
+
+	@Test
 	public void SimpleAppId() throws DocumentException {
 		String xml = "<xml><document-id><country>US</country><doc-number>12345678</doc-number><kind>A1</kind><date>20010101</date></document-id></xml>";
 		Document xmlDoc = createDocument(xml);

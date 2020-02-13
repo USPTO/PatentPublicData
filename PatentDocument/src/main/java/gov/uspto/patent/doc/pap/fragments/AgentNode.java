@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.pap.items.AddressNode;
 import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Agent;
@@ -15,8 +20,10 @@ import gov.uspto.patent.model.entity.Name;
 import gov.uspto.patent.model.entity.NameOrg;
 
 public class AgentNode extends DOMFragmentReader<List<Agent>> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AgentNode.class);
 
-    private static final String FRAGMENT_PATH = "/patent-application-publication/subdoc-bibliographic-information/correspondence-address";
+	private static final XPath AGENTXP = DocumentHelper.createXPath("/patent-application-publication/subdoc-bibliographic-information/correspondence-address");
+	private static final XPath AGENTNAMEXP = DocumentHelper.createXPath("name-1|name-2");
 
     public AgentNode(Document document) {
         super(document);
@@ -26,7 +33,7 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
     public List<Agent> read() {
         List<Agent> agents = new ArrayList<Agent>();
 
-        Node correspondenceN = document.selectSingleNode(FRAGMENT_PATH);
+        Node correspondenceN = AGENTXP.selectSingleNode(document);
         if (correspondenceN == null){
         	return agents;
         }
@@ -43,17 +50,33 @@ public class AgentNode extends DOMFragmentReader<List<Agent>> {
          *   <name-1>COMPANY NAME</name-1>
          *   <name-2>FLOOR</name-2> 
          */
-        Node name1N = correspondenceN.selectSingleNode("name-1");
-        Node name2N = correspondenceN.selectSingleNode("name-2");
-
-        String name1Str = name1N != null ? name1N.getText() : "";
-        String name2Str = name2N != null ? name2N.getText() : "";
-        String addressName = name2Str.isEmpty() ? name1Str : name1Str + "; " + name2Str; // using semi-colon since commas may occur within name.
+        List<Node> namesN = AGENTNAMEXP.selectNodes(correspondenceN);
+        StringBuilder stb = new StringBuilder();
+        for (int i=0; namesN.size() > i; i++) {
+        	if (namesN.get(i).getText().trim().length() > 1) {
+            	if (i > 0) {
+            		stb.append(" ; ");  // using semi-colon since commas may occur within name.
+            	}
+        		stb.append(namesN.get(i).getText());
+        	}
+        }
+        String addressName = stb.toString();
 
         Address address = new AddressNode(correspondenceN).read();
-        
+		try {
+			address.validate();
+		} catch (InvalidDataException e) {
+			LOGGER.warn("{} : {}", e.getMessage(), correspondenceN.asXML());
+		}
+
         Name name = new NameOrg(addressName); // FIXME, need to disambiguate between Person and Organization.
         if (name != null){
+        	try {
+        		name.validate();
+    		} catch (InvalidDataException e) {
+    			LOGGER.warn("{} : {}", e.getMessage(), correspondenceN.asXML());
+    		}
+
             agents.add(new Agent(name, address, AgentRepType.AGENT));
         }
 

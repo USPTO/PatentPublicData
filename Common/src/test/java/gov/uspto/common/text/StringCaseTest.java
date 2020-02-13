@@ -8,8 +8,6 @@ import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import gov.uspto.common.text.StringCaseUtil;
-
 public class StringCaseTest {
 
 	// meta-analysis, anti-inflammatory, neo-orthodox, de-emphasize, re-enact, pre-election
@@ -18,15 +16,15 @@ public class StringCaseTest {
 	static {
 		TitleValidFromTo.put(null, null); // null returns null.
 		TitleValidFromTo.put("", ""); // empty returns empty.
-		TitleValidFromTo.put(" Leading space ", "Leading Space"); // Test for Fixed #58 index out of range when leading space.
+		TitleValidFromTo.put(" Leading space ", "Leading Space"); // Test for Fixed index out of range when leading space.
 		TitleValidFromTo.put("LED Lamp", "LED Lamp");
 		TitleValidFromTo.put("Light emitting diode lamp", "Light Emitting Diode Lamp");
 		TitleValidFromTo.put("LIGHT-EMITTING DIODE CIRCLE LAMP", "Light-emitting Diode Circle Lamp");
 		TitleValidFromTo.put("PRICE-AFFIXING MACHINE", "Price-affixing Machine");
 		TitleValidFromTo.put("IN-LINE MIXER", "In-line Mixer");
 		TitleValidFromTo.put("Dual-Tip Marker", "Dual-tip Marker");
-		TitleValidFromTo.put("LIRIOPE MUSCARI PLANT NAMED ‘LIRF’", "Liriope Muscari Plant Named 'LIRF'");
-		TitleValidFromTo.put("CHESTNUT PLANT NAMED ‘AU BUCK IV’", "Chestnut Plant Named 'AU BUCK IV'");
+		TitleValidFromTo.put("LIRIOPE MUSCARI PLANT NAMED \u2018LIRF\u2019", "Liriope Muscari Plant Named 'LIRF'");
+		TitleValidFromTo.put("CHESTNUT PLANT NAMED \u2018AU BUCK IV\u2019", "Chestnut Plant Named 'AU BUCK IV'");
 		TitleValidFromTo.put("IN-WHEEL MOTOR WITH HIGH DURABILITY", "In-wheel Motor with High Durability");
 		TitleValidFromTo.put("WIND-POWERED PNEUMATIC ENGINE AND A MOTOR VEHICLE EQUIPPED WITH THE ENGINE",
 				"Wind-powered Pneumatic Engine and a Motor Vehicle Equipped with the Engine");
@@ -60,8 +58,6 @@ public class StringCaseTest {
 		TitleValidFromTo.put("Ceiling mount for x-ray system", "Ceiling Mount for X-ray System");
 		TitleValidFromTo.put("Method and apparatus for multi-directional fiber optic connection", 
 				"Method and Apparatus for Multi-directional Fiber Optic Connection");
-
-		
 		
 		// Motor-Driven Power Steering Unit Support Structure
 		// Hand-Driven Wheelchair
@@ -104,6 +100,15 @@ public class StringCaseTest {
 		for (Entry<String,String> validFromTo: TitleValidFromTo.entrySet()){
 			assertEquals( validFromTo.getValue(), StringCaseUtil.toTitleCase(validFromTo.getKey()));
 		}
+	}
+
+	@Test
+	public void removeLowercaseTitleWords(){
+		String name = "The Regents of the University of California";
+		String[] words = StringCaseUtil.removeLowercaseTitleWords(name.split(" "));
+		assertEquals("Regents", words[0]);
+		assertEquals("University", words[1]);
+		assertEquals("California", words[2]);		
 	}
 
 }

@@ -18,6 +18,12 @@ public class WordUtil {
 	private static List<String> LOWERCASE_WORDS = Arrays.asList(new String[] { "a", "an", "and", "as", "at", "but",
 			"by", "for", "in", "nor", "of", "off", "on", "or", "per", "so", "the", "to", "up", "via", "with", "yet" });
 
+	private static String VOWELS = "AEIOUYaeiouy";
+
+	private static String CONSONANTS = "bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ";
+
+	private static String PUNC = ",!;:";
+
 	private static Map<Character, Character> surroundPairs = new HashMap<Character, Character>();
 	static {
 		surroundPairs.put('(', ')');
@@ -56,6 +62,32 @@ public class WordUtil {
 	}
 
 	/**
+	 * Check for both LowerCase and UpperCase Characters
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isMixedCase(String str) {
+		int upper = 0;
+		int lower = 0;
+		for (int i = 0; i < str.length(); i++) {
+			char ch = str.charAt(i);
+			if (Character.isUpperCase(ch)) {
+				upper++;
+				if (lower > 0) {
+					return true;
+				}
+			} else if (Character.isLowerCase(ch)) {
+				lower++;
+				if (upper > 0) {
+					return true;
+				}
+			}
+		}
+		return upper > 0 && lower > 0;
+	}
+
+	/**
 	 * Check for ONLY Uppercase letters and numbers in Word or Sequence of Words
 	 * 
 	 * @param str
@@ -86,6 +118,39 @@ public class WordUtil {
 	}
 
 	/**
+	 * Check for vowel (AEIOUY) Characters in Text
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasVowel(String str) {
+		return hasCharacter(str, VOWELS);
+	}
+
+	/**
+	 * Check for consonant Characters in Text
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasConsonant(String str) {
+		return hasCharacter(str, CONSONANTS);
+	}
+
+	/**
+	 * Check for both vowel and consonant Characters in Text
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasVowelAndConsonant(String str) {
+		return hasVowel(str) && hasConsonant(str);
+	}
+
+	/**
 	 * Check for defined Characters in Word or Sequence of words
 	 * 
 	 * @param str
@@ -101,6 +166,56 @@ public class WordUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check for defined Characters at end of Word
+	 * 
+	 * @param str
+	 * @param matchChars
+	 * @return
+	 */
+	public static boolean hasTrailingCharacter(String str, String matchChars) {
+		for (int i = str.length() - 1; i > 0; i--) {
+			final char ch = str.charAt(i);
+			final int index = matchChars.indexOf(ch);
+			if (index != -1) {
+				return true;
+			} else {
+				break;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Ends with Punctuation ,!;:
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean hasTrailingPuncuation(String str) {
+		return WordUtil.hasTrailingCharacter(str, PUNC);
+	}
+
+	/**
+	 * Count defined Character at the start of the Word
+	 * 
+	 * @param str
+	 * @param matchChar
+	 * @return number of times character occurs in front of the word without another
+	 *         character
+	 */
+	public static int countLeadChar(String str, char matchChar) {
+		int indentLength = 0;
+		for (int i = 0; i < str.length(); i++) {
+			if (str.charAt(i) == matchChar) {
+				indentLength++;
+			} else {
+				break;
+			}
+		}
+		return indentLength;
 	}
 
 	/**
@@ -166,6 +281,38 @@ public class WordUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Word starts with a capital letter
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean startsWithCapital(String str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (Character.isUpperCase(str.charAt(i))) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check for Capital Letters in Word or Sequence of Words
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean hasAllCapitals(String str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (Character.isLowerCase(str.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

@@ -8,9 +8,13 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.model.classification.IpcClassification;
@@ -58,7 +62,9 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationNode.class);
 
-	private static final String FRAGMENT_PATH = "/DOCUMENT/CLAS";
+	private static final XPath CLASSXP = DocumentHelper.createXPath("/DOCUMENT/CLAS");
+	private static final XPath USPCXP = DocumentHelper.createXPath("OCL");
+	private static final XPath IPCXP = DocumentHelper.createXPath("ICL");
 
 	/*
 	 * IPC Classification for Design Patents: Jan 5, 1971 through March 6, 1984 with
@@ -75,7 +81,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 	public Set<PatentClassification> read() {
 		Set<PatentClassification> classifications = new LinkedHashSet<PatentClassification>();
 
-		List<Node> classNodes = document.selectNodes(FRAGMENT_PATH);
+		List<Node> classNodes = CLASSXP.selectNodes(document);
 		for (Node classN : classNodes) {
 			UspcClassification uspc = getUSPC(classN);
 			if (uspc != null) {
@@ -90,31 +96,31 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 	}
 
 	public UspcClassification getUSPC(Node classN) {
-		Node uspcN = classN.selectSingleNode("OCL");
+		Node uspcN = USPCXP.selectSingleNode(classN);
 		if (uspcN != null) {
+			String classStr = uspcN.getText().trim();
+			UspcClassification uspc = new UspcClassification(classStr, true);
 			try {
-				String classStr = uspcN.getText().trim();
-				UspcClassification uspc = new UspcClassification();
+				classStr = Strings.padStart(classStr, 6, '0');
 				uspc.parseText(classStr);
-				uspc.setIsMainClassification(true);
-				return uspc;
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to Parse USPC Classification: '{}' from : {}", uspcN.getText(), classN.asXML());
 			}
+			return uspc;
 		}
 		return null;
 	}
 
 	public Set<PatentClassification> getIPC(Node classN) {
 		Set<PatentClassification> ipcClasses = new HashSet<PatentClassification>();
-		List<Node> ipcNs = classN.selectNodes("ICL");
+		List<Node> ipcNs = IPCXP.selectNodes(classN);
 
 		for (Node ipcN : ipcNs) {
 			if (ipcN != null) {
 				String classStr = ipcN.getText().trim();
-				classStr = classStr.replaceAll("\\s+", " ");
 				try {
-					IpcClassification ipc = new IpcClassification();
+					IpcClassification ipc = new IpcClassification(classStr, true);
+					classStr = classStr.replaceAll("\\s+", " ");
 					ipc.parseText(classStr);
 					// ipc.setIsMainClassification(true);
 					ipcClasses.add(ipc);
@@ -123,19 +129,19 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 						// FIXME.. implement.
 						LOGGER.warn("IPC DESIGN CLASS: {}", classStr);
 					} else {
+						/*
+						 * USPTO Design Patents started LocarnoClassification for International
+						 * Classification May 6, 1997; only 1 per design patent. US Design Patents are
+						 * also assigned USPC Classifications.
+						 */
+						LocarnoClassification locarno = new LocarnoClassification(classStr, true);
 						try {
-							/*
-							 * USPTO Design Patents started LocarnoClassification for International
-							 * Classification May 6, 1997; only 1 per design patent. US Design Patents are
-							 * also assigned USPC Classifications.
-							 */
-							LocarnoClassification locarno = new LocarnoClassification();
 							locarno.parseText(classStr);
-							ipcClasses.add(locarno);
 						} catch (ParseException e1) {
-							LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(),
+							LOGGER.warn("Failed to Parse locarno IPC Classification: '{}' from : {}", ipcN.getText(),
 									classN.asXML());
 						}
+						ipcClasses.add(locarno);
 					}
 				}
 			}

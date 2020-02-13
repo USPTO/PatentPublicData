@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
+import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.doc.sgml.items.AddressNode;
 import gov.uspto.patent.doc.sgml.items.NameNode;
 import gov.uspto.patent.model.entity.Address;
@@ -14,7 +19,10 @@ import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
 
 public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
-	private static final String FRAGMENT_PATH = "/PATDOC/SDOBI/B700/B730/B731";
+	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
+
+	private static final XPath ASSIGNEXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B700/B730/B731");
+	private static final XPath ASSIGNDATAEXP = DocumentHelper.createXPath("PARTY-US");
 
 	public AssigneeNode(Document document) {
 		super(document);
@@ -24,14 +32,13 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 	public List<Assignee> read() {
 		List<Assignee> assigneeList = new ArrayList<Assignee>();
 
-		@SuppressWarnings("unchecked")
-		List<Node> assignees = document.selectNodes(FRAGMENT_PATH);
+		List<Node> assignees = ASSIGNEXP.selectNodes(document);
 		for (Node assigneeN : assignees) {
-			Node dataNode = assigneeN.selectSingleNode("PARTY-US");
+			Node dataNode = ASSIGNDATAEXP.selectSingleNode(assigneeN);
 
 			Assignee assignee = readAssignee(dataNode);
 
-			if (assignee != null){
+			if (assignee != null) {
 				assigneeList.add(assignee);
 			}
 		}
@@ -39,10 +46,17 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		return assigneeList;
 	}
 
-	public Assignee readAssignee(Node assigneeNode){
+	public Assignee readAssignee(Node assigneeNode) {
 		Name name = new NameNode(assigneeNode).read();
-		if (name != null){
+		if (name != null) {
 			Address address = new AddressNode(assigneeNode).read();
+
+			try {
+				address.validate();
+			} catch (InvalidDataException e) {
+				LOGGER.warn("{} : {}", e.getMessage(), assigneeNode.asXML());
+			}
+
 			return new Assignee(name, address);
 		}
 		return null;

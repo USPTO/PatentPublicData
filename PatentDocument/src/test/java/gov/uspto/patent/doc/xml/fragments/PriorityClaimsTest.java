@@ -19,7 +19,7 @@ public class PriorityClaimsTest {
 
 	@Test
 	public void test() throws DocumentException, InvalidDataException {
-		String xml = "<xml><priority-claims>\r\n" + 
+		String xml = "<xml><biblio><priority-claims>\r\n" + 
 				"<priority-claim kind=\"regional\" sequence=\"01\">\r\n" + 
 				"<country>EM</country>\r\n" + 
 				"<doc-number>002705756-0001</doc-number>\r\n" + 
@@ -35,11 +35,13 @@ public class PriorityClaimsTest {
 				"<doc-number>002705756-0003</doc-number>\r\n" + 
 				"<date>20150522</date>\r\n" + 
 				"</priority-claim>\r\n" + 
-				"</priority-claims></xml>";
+				"</priority-claims></biblio></xml>";
 		
 		Document doc = DocumentHelper.parseText(xml);
 		List<DocumentId> docIds = new PriorityClaims(doc).read();
 
+		assertEquals("Expect 3 docIds", 3, docIds.size());
+		
 		DocumentId id1 = new DocumentId(CountryCode.EM, "0027057560001");
 		id1.setType(DocumentIdType.REGIONAL_FILING);
 		id1.setDate(new DocumentDate("20150522"));

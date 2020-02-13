@@ -1,12 +1,11 @@
 package gov.uspto.patent.model.classification;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.base.Joiner;
+
+import gov.uspto.common.tree.Tree;
 
 /**
  * Classification Tokenizer
@@ -16,6 +15,8 @@ import com.google.common.base.Joiner;
  * </p>
  * 
  * @author Brian G. Feldman (brian.feldman@uspto.gov)
+ * 
+ * @deprecated replaced with gov.common.tree.Tree
  *
  */
 public class ClassificationTokenizer {
@@ -30,29 +31,10 @@ public class ClassificationTokenizer {
 	 * D07B2201/2051 => [0/D, 1/D/D07, 2/D/D07/D07B, 3/D/D07/D07B/D07B2201, 4/D/D07/D07B/D07B2201/D07B22012051]
 	 * </pre>
 	 */
-	public static String[] partsToFacet(String... parts) {
-		List<String> facets = new LinkedList<String>();
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < parts.length; i++) {
-			if (parts[i] == null) {
-				break;
-			}
-
-			sb.append("").append(parts[i]);
-			if (facets.size() > 0) {
-				facets.add(facets.get(i - 1) + "/" + sb.toString());
-			} else {
-				facets.add(sb.toString());
-			}
-		}
-
-		for (int k = 0; k < facets.size(); k++) {
-			facets.set(k, k + "/" + facets.get(k));
-		}
-
-		Set<String> facetSet = new LinkedHashSet<String>(facets.size());
-		facetSet.addAll(facets);
-		return facetSet.toArray(new String[facetSet.size()]);
+	public static List<String> partsToFacet(List<String[]> parts) {
+		Tree tree = new Tree();
+		tree.buildFromList(parts);
+		return tree.getLeafFacets();
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -20,6 +21,7 @@ import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.OrgSynonymGenerator;
 import gov.uspto.patent.model.Abstract;
@@ -30,6 +32,7 @@ import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.DescSection;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DescriptionSection;
+import gov.uspto.patent.model.DocType;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
@@ -90,14 +93,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("productionDate", mapDate(patent.getDateProduced()));
         builder.add("publishedDate", mapDate(patent.getDatePublished()));
 
-        builder.add("documentId", patent.getDocumentId() != null ? patent.getDocumentId().toText() : ""); // Patent ID or Public Application ID.
-        builder.add("documentId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
-        
-        builder.add("documentDate", mapDate(patent.getDocumentDate()));
+        builder.add("documentId", mapDocumentId(patent.getDocumentId(), true));
 
-        builder.add("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
-        builder.add("applicationId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
-        builder.add("applicationDate", mapDate(patent.getApplicationDate()));
+        //builder.add("documentId_tokens", mapDocumentIdVariations(patent.getDocumentId()));
+
+        builder.add("applicationId", mapDocumentId(patent.getApplicationId(), false));
 
         builder.add("priorityIds", mapDocumentIds(patent.getPriorityIds()));
         builder.add("priorityIds_tokens", mapDocumentIdVariations(patent.getPriorityIds()));
@@ -115,7 +115,10 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         builder.add("assignees", mapAssignees(patent.getAssignee()));
         builder.add("examiners", mapExaminers(patent.getExaminers()));
 
-        builder.add("title", valueOrEmpty(patent.getTitle()));
+        JsonObjectBuilder titleObj = Json.createObjectBuilder();
+        titleObj.add("raw", valueOrEmpty(patent.getTitle()));
+        titleObj.add("normalized", valueOrEmpty(StringCaseUtil.toTitleCase(patent.getTitle())));
+        builder.add("title", titleObj);
 
         builder.add("abstract", mapAbstract(patent.getAbstract()));
 
@@ -169,7 +172,31 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 		}
 		return idTokens;
 	}
-    
+	
+    private JsonObject mapDocumentId(DocumentId docId, boolean wantNoKind) {
+
+		JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+		if (docId != null) {
+			jsonObj.add("id", docId.toText());
+			if (wantNoKind) {
+				jsonObj.add("idNoKind", docId.toTextNoKind());
+				jsonObj.add("kind", valueOrEmpty(docId.getKindCode()));
+			}
+			jsonObj.add("number", docId.getDocNumber());
+			jsonObj.add("date", mapDate(docId.getDate()));
+		} else {
+			jsonObj.add("id", "");
+			if (wantNoKind) {
+				jsonObj.add("idNoKind", "");
+				jsonObj.add("kind", "");
+			}
+			jsonObj.add("number", "");
+			jsonObj.add("date", mapDate(null));			
+		}
+
+        return jsonObj.build();
+    }
+
     private JsonArray mapDocumentIdVariations(Collection<DocumentId> docIds) {
     	
     	Set<String> docIdVariations = new LinkedHashSet<String>();
@@ -185,31 +212,20 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
         return arBldr.build();
     }
-	
-    private JsonArray mapDocumentIdVariations(DocumentId docId) {
-        JsonArrayBuilder arBldr = Json.createArrayBuilder();
-        Set<String> docIds = getDocIdTokens(docId);
-        
-        for (String docid : docIds) {
-            arBldr.add(docid);
-        }
-
-        return arBldr.build();
-    }
 
     private JsonArray mapDocumentIds(Collection<DocumentId> docIds) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
 
-        for (DocumentId docid : docIds) {
-            JsonObjectBuilder jsonObj = Json.createObjectBuilder();
-            jsonObj.add("id", docid.toText());
-            jsonObj.add("date", mapDate(docid.getDate()));
-            arBldr.add(jsonObj);
+        if (docIds != null) {
+	        for (DocumentId docid : docIds) {
+	        	JsonObject jsonObj = mapDocumentId(docid, true);
+	            arBldr.add(jsonObj);
+	        }
         }
 
         return arBldr.build();
     }
-    
+
     private JsonArray mapDocIds(Collection<DocumentId> docIds) {
         JsonArrayBuilder arBldr = Json.createArrayBuilder();
         if (docIds != null) {
@@ -231,23 +247,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         JsonArrayBuilder ipcAr = Json.createArrayBuilder();
         for (IpcClassification claz : ipcClasses) {
             JsonObjectBuilder ipcObj = Json.createObjectBuilder();
-            ipcObj.add("type", claz.isInventive() ? "inventive" : "additional");
+            ipcObj.add("type", claz.isMainOrInventive() ? "inventive" : "additional");
             ipcObj.add("raw", claz.toText());
             ipcObj.add("normalized", claz.getTextNormalized());
-            ipcObj.add("facets", toJsonArray(claz.toFacet()));
+            ipcObj.add("facets", toJsonArray(claz.getTree().getLeafFacets()));
             ipcAr.add(ipcObj.build());
-
-            if (!claz.getChildren().isEmpty()) {
-	            JsonObjectBuilder ipcObj2 = Json.createObjectBuilder();
-	            for (PatentClassification furtherClassification : claz.getChildren()) {
-	                IpcClassification furtherIpc = (IpcClassification) furtherClassification;
-	                ipcObj2.add("type", claz.isInventive() ? "inventive" : "additional");
-	                ipcObj2.add("raw", furtherIpc.toText());
-	                ipcObj2.add("normalized", furtherIpc.getTextNormalized());
-	                ipcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
-	            }
-	            ipcAr.add(ipcObj2.build());
-            }
         }
         builder.add("ipc", ipcAr.build());
 
@@ -257,23 +261,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         for (UspcClassification claz : uspcClasses) {
             JsonObjectBuilder uspcObj = Json.createObjectBuilder();
             // note for type: inventive doesn't really fit USPTO's USPC.
-            uspcObj.add("type", claz.isMainClassification() ? "main" : "additional");
+            uspcObj.add("type", claz.isMainOrInventive() ? "main" : "additional");
             uspcObj.add("raw", claz.toText());
             uspcObj.add("normalized", claz.getTextNormalized());
-            uspcObj.add("facets", toJsonArray(claz.toFacet()));
+            uspcObj.add("facets", toJsonArray(claz.getTree().getLeafFacets()));
             uspcAr.add(uspcObj.build());
-
-            if (!claz.getChildren().isEmpty()) {
-	            JsonObjectBuilder uspcObj2 = Json.createObjectBuilder();
-	            for (PatentClassification furtherClassification : claz.getChildren()) {
-	                UspcClassification furtherIpc = (UspcClassification) furtherClassification;
-	                uspcObj.add("type", claz.isMainClassification() ? "main" : "additional");
-	                uspcObj2.add("raw", furtherIpc.toText());
-	                uspcObj2.add("normalized", furtherIpc.getTextNormalized());
-	                uspcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
-	            }
-	            uspcAr.add(uspcObj2.build());
-            }
         }
         builder.add("uspc", uspcAr.build());
 
@@ -282,23 +274,11 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         JsonArrayBuilder cpcAr = Json.createArrayBuilder();
         for (CpcClassification claz : cpcClasses) {
             JsonObjectBuilder cpcObj = Json.createObjectBuilder();
-            cpcObj.add("type", claz.isInventive() ? "inventive" : "additional");
+            cpcObj.add("type", claz.isMainOrInventive() ? "inventive" : "additional");
             cpcObj.add("raw", claz.toText());
             cpcObj.add("normalized", claz.getTextNormalized());
-            cpcObj.add("facets", toJsonArray(claz.toFacet()));
+            cpcObj.add("facets", toJsonArray(claz.getTree().getLeafFacets()));
             cpcAr.add(cpcObj.build());
-
-            if (!claz.getChildren().isEmpty()) {
-	            JsonObjectBuilder cpcObj2 = Json.createObjectBuilder();
-	            for (PatentClassification furtherClassification : claz.getChildren()) {
-	                CpcClassification furtherIpc = (CpcClassification) furtherClassification;
-	                cpcObj2.add("type", furtherIpc.isInventive() ? "inventive" : "additional");
-	                cpcObj2.add("raw", furtherIpc.toText());
-	                cpcObj2.add("normalized", furtherIpc.getTextNormalized());
-	                cpcObj2.add("facets", toJsonArray(furtherIpc.toFacet()));
-	            }
-	            cpcAr.add(cpcObj2.build());
-            }
         }
         builder.add("cpc", cpcAr.build());
 
@@ -327,11 +307,19 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         }
     }
 
+    private Collection<?> valueOrEmpty(Collection<?> value) {
+        if (value == null) {
+            return Collections.EMPTY_LIST;
+        } else {
+            return value;
+        }
+    }
+    
     private JsonObject mapDate(DocumentDate date) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         if (date != null) {
             builder.add("raw", date.getDateText(DateTextType.RAW));
-            builder.add("iso", date.getDateText(DateTextType.ISO));
+            builder.add("iso", date.getDateText(DateTextType.ISO_DATE_TIME));
         } else {
             builder.add("raw", "");
             builder.add("iso", "");
@@ -459,23 +447,28 @@ public class JsonMapper implements DocumentBuilder<Patent> {
         if (name instanceof NamePerson) {
             NamePerson perName = (NamePerson) name;
             jsonObj.add("type", "person");
-            jsonObj.add("raw", valueOrEmpty(perName.getName()));
+            jsonObj.add("name", valueOrEmpty(perName.getName()));
+            jsonObj.add("name_normcase", valueOrEmpty(perName.getNameNormalizeCase()));
             jsonObj.add("prefix", valueOrEmpty(perName.getPrefix()));
             jsonObj.add("firstName", valueOrEmpty(perName.getFirstName()));
             jsonObj.add("middleName", valueOrEmpty(perName.getMiddleName()));
             jsonObj.add("lastName", valueOrEmpty(perName.getLastName()));
             jsonObj.add("suffix", valueOrEmpty(perName.getPrefix()));
-            jsonObj.add("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
             jsonObj.add("synonyms", toJsonArray(perName.getSynonyms()));
+            jsonObj.add("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
+            jsonObj.add("initials", valueOrEmpty(perName.getInitials()));
         } else {
             NameOrg orgName = (NameOrg) name;
             jsonObj.add("type", "org");
-            jsonObj.add("raw", valueOrEmpty(orgName.getName()));
+            jsonObj.add("name", valueOrEmpty(orgName.getName()));
+            jsonObj.add("name_normcase", valueOrEmpty(orgName.getNameNormalizeCase()));
             jsonObj.add("prefix", valueOrEmpty(orgName.getPrefix()));
             jsonObj.add("suffix", valueOrEmpty(orgName.getSuffix()));
-            
+
             new OrgSynonymGenerator().computeSynonyms(entity);
             jsonObj.add("synonyms", toJsonArray(orgName.getSynonyms()));
+            jsonObj.add("abbreviated", valueOrEmpty(orgName.getShortestSynonym()));
+            jsonObj.add("initials", valueOrEmpty(orgName.getInitials()));
         }
         return jsonObj.build();
     }
@@ -553,7 +546,7 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
                 JsonObjectBuilder nplObj = Json.createObjectBuilder()
         		.add("num", nplCite.getNum())
-        		.add("type", "NPL")
+        		.add("type", "NPLCITE")
                 .add("citedBy", nplCite.getCitedBy().toString())
                 .add("text", nplCite.getCiteText());
 
@@ -566,11 +559,16 @@ public class JsonMapper implements DocumentBuilder<Patent> {
 
             } else if (cite.getCitType() == CitationType.PATCIT) {
                 PatCitation patCite = (PatCitation) cite;
+                DocType docType = patCite.getDocumentId().getDocType();
                 arBldr.add(Json.createObjectBuilder()
                 		.add("num", patCite.getNum())
-                		.add("type", "PATENT")
+                		.add("type", "PATCITE")
+                		.add("doctype", docType != null ? docType.toString().toUpperCase(): "")
                         .add("citedBy", patCite.getCitedBy().toString())
-                        .add("text", patCite.getDocumentId().toText()));
+                        .add("raw", patCite.getDocumentId().getRawText())
+                        .add("text", patCite.getDocumentId().toTextNoKind())
+                        //.add("name", patCite.getDocumentId().getName())
+                		);
             }
         }
 

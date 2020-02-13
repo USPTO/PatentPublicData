@@ -24,8 +24,7 @@ public class ClassificationRuleTest {
 	@Test
 	public void passContainsClassification() {
 		PatentApplication patent = new PatentApplication(new DocumentId(CountryCode.US, "99999"), PatentType.UTILITY);
-		UspcClassification uspc = new UspcClassification();
-		uspc.setTextOriginal("A01Z");
+		UspcClassification uspc = new UspcClassification("A01Z", false);
 		patent.addClassification(uspc);
 		assertTrue(classificationRule.test(patent));
 	}

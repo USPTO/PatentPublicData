@@ -28,7 +28,7 @@ public class Inventor extends Entity {
 	}
 
 	public Boolean validate() {
-		return null;
+		return true;
 	}
 
 	@Override

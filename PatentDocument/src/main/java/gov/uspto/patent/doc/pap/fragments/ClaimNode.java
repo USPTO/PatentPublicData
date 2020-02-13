@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.XPath;
+import org.dom4j.Attribute ;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.TextProcessor;
@@ -20,7 +24,10 @@ import gov.uspto.patent.model.ClaimType;
  *
  */
 public class ClaimNode extends DOMFragmentReader<List<Claim>> {
-	private static final String PATENT_PATH = "//subdoc-claims/claim";
+
+	private static final XPath CLAIMXP = DocumentHelper
+			.createXPath("/patent-application-publication/subdoc-claims/claim");
+	private static final XPath DEPENDANCE_XP = DocumentHelper.createXPath("*/dependent-claim-reference/@depends_on");
 
 	public ClaimNode(Document document, TextProcessor textProcessor) {
 		super(document, textProcessor);
@@ -30,8 +37,7 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 	public List<Claim> read() {
 		List<Claim> claims = new ArrayList<Claim>();
 
-		@SuppressWarnings("unchecked")
-		List<Node> claimNodes = document.selectNodes(PATENT_PATH);
+		List<Node> claimNodes = CLAIMXP.selectNodes(document);
 		for (Node claimNode : claimNodes) {
 			Claim claim = readClaim(claimNode);
 			claims.add(claim);
@@ -41,10 +47,12 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 	}
 
 	public Claim readClaim(Node claimNode) {
-		String id = claimNode.selectSingleNode("@id").getText();
+		//String id = claimNode.selectSingleNode("@id").getText();
+		Attribute idA = ((Element) claimNode).attribute("id");
+		String id = idA.getStringValue();
 
 		Claim claim;
-		List<Node> dependentN = claimNode.selectNodes("*/dependent-claim-reference/@depends_on");
+		List<Node> dependentN = DEPENDANCE_XP.selectNodes(claimNode);
 		if (dependentN != null && !dependentN.isEmpty()) {
 			claim = new Claim(id, claimNode.asXML(), ClaimType.DEPENDENT, textProcessor);
 			Set<String> dependentIds = new HashSet<String>();

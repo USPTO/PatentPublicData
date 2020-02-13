@@ -1,6 +1,8 @@
 package gov.uspto.patent.doc.pap.items;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,56 +42,45 @@ import gov.uspto.patent.model.entity.Address;
 public class AddressNode extends ItemReader<Address> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AddressNode.class);
 
-	private static final String ITEM_NODE_NAME = "address";
+	private static final XPath ADDRESSXP = DocumentHelper.createXPath("address");
+	private static final XPath CITYXP = DocumentHelper.createXPath("city");
+	private static final XPath STATEXP = DocumentHelper.createXPath("state");
+	private static final XPath COUNTRYXP = DocumentHelper.createXPath("country-code|country/country-code");
+
+	//private static final String ITEM_NODE_NAME = "address";
 
 	public AddressNode(Node itemNode) {
-		super(itemNode, ITEM_NODE_NAME);
+		super(itemNode, ADDRESSXP);
 	}
 
 	@Override
 	public Address read() {
 		return readAddress(itemNode);
 	}
+	
+	public Address readAddress(Node node) {	
+		Node cityN = CITYXP.selectSingleNode(node); //node.selectSingleNode("city");
+		String city = cityN != null ? cityN.getText().trim() : null;
 
-	public Address readAddress(Node node) {
-		Node emailN = node.selectSingleNode("email");
-		String email = emailN != null ? emailN.getText() : null;
+		Node stateN = STATEXP.selectSingleNode(node); //node.selectSingleNode("state");
+		String state = stateN != null ? stateN.getText().trim() : null;
 
-		Node phoneN = node.selectSingleNode("telephone");
-		String phone = phoneN != null ? phoneN.getText() : null;
-
-		Node faxN = node.selectSingleNode("fax");
-		String fax = faxN != null ? faxN.getText() : null;
-
-		Node cityN = node.selectSingleNode("city");
-		String city = cityN != null ? cityN.getText() : null;
-
-		Node stateN = node.selectSingleNode("state");
-		String state = stateN != null ? stateN.getText() : null;
-
-		Node zipCodeN = node.selectSingleNode("postalcode");
-		String zipCode = zipCodeN != null ? zipCodeN.getText() : null;
-
-		Node countryN = node.selectSingleNode("country-code");
+		Node countryN = COUNTRYXP.selectSingleNode(node); //node.selectSingleNode("country-code|country/country-code");
 		CountryCode countryCode = CountryCode.UNDEFINED;
 		if (countryN != null) {
 			try {
-				countryCode = CountryCode.fromString(countryN.getText());
+				countryCode = CountryCode.fromString(countryN.getText().trim());
 			} catch (InvalidDataException e) {
-				LOGGER.warn("Invalid CountryCode: {} from: {}", countryN.getText(), node.asXML());
+				LOGGER.warn("{} : {}", e.getMessage(), node.getParent().asXML());
+			}
+		} else {
+			if (state != null) {
+				LOGGER.debug("Missing CountryCode using 'US' : {}", node.getParent().asXML());
+				countryCode = CountryCode.US;
 			}
 		}
 
-		Address address = new Address(null, city, state, zipCode, countryCode);
-		address.setEmail(email);
-		address.setPhoneNumber(phone);
-		address.setFaxNumber(fax);
-
-		try {
-			address.validate();
-		} catch (InvalidDataException e) {
-			LOGGER.warn("Invalid Address: {}", node.getParent().asXML(), e);
-		}
+		Address address = new Address(city, state, countryCode);
 		return address;
 	}
 }

@@ -2,8 +2,6 @@ package gov.uspto.patent.doc.xml.fragments;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -19,12 +17,12 @@ public class PublicationIdNodeTest {
 
 	@Test
 	public void test() throws DocumentException, InvalidDataException {
-		String xml = "<xml><publication-reference><document-id>\r\n" + 
+		String xml = "<xml><biblio><publication-reference><document-id>\r\n" + 
 				"<country>US</country>\r\n" + 
 				"<doc-number>09855244</doc-number>\r\n" + 
 				"<kind>B2</kind>\r\n" + 
 				"<date>20180102</date>\r\n" + 
-				"</document-id></publication-reference></xml>";
+				"</document-id></publication-reference></biblio></xml>";
 		
 		Document doc = DocumentHelper.parseText(xml);
 		DocumentId docId = new PublicationIdNode(doc).read();

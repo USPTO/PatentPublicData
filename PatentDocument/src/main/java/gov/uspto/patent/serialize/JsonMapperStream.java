@@ -10,17 +10,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 
+import gov.uspto.common.text.StringCaseUtil;
 import gov.uspto.patent.DateTextType;
 import gov.uspto.patent.OrgSynonymGenerator;
+import gov.uspto.patent.doc.simplehtml.FreetextConfig;
 import gov.uspto.patent.model.Abstract;
 import gov.uspto.patent.model.Citation;
 import gov.uspto.patent.model.CitationType;
@@ -28,6 +31,7 @@ import gov.uspto.patent.model.Claim;
 import gov.uspto.patent.model.CountryCode;
 import gov.uspto.patent.model.Description;
 import gov.uspto.patent.model.DescriptionSection;
+import gov.uspto.patent.model.DocType;
 import gov.uspto.patent.model.DocumentDate;
 import gov.uspto.patent.model.DocumentId;
 import gov.uspto.patent.model.NplCitation;
@@ -55,162 +59,216 @@ import gov.uspto.patent.model.entity.NamePerson;
  */
 public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 
-    private JsonGenerator jGenerator;
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonMapperStream.class);
+	
+	private JsonGenerator jGenerator;
 	private JsonFactory jfactory = new JsonFactory();
 
 	private final boolean pretty;
+	private final boolean specOnly;
+	private final boolean plainRemoveNewlines = true;
 
-    public JsonMapperStream(boolean pretty) {
-        this.pretty = pretty;
-    }
+	private FreetextConfig freeTextConfig;
 
-    @Override
-    public void write(Patent patent, Writer writer) throws IOException {
-    	jGenerator = jfactory.createGenerator(writer);
-    	if (pretty) {
-    		jGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
-    	}
+	public JsonMapperStream(boolean pretty) {
+		this(pretty, false);
+	}
 
-    	output(patent, writer);
-    }
+	public JsonMapperStream(boolean pretty, boolean specOnly) {
+		this(pretty, specOnly, new FreetextConfig(false, true));
+	}
 
-    private void output(Patent patent, Writer writer) throws IOException {
-    	jGenerator.writeStartObject(); // root.
+	public JsonMapperStream(boolean pretty, boolean specOnly, FreetextConfig freeTextConfig) {
+		this.pretty = pretty;
+		this.specOnly = specOnly;
+		this.freeTextConfig = freeTextConfig;
+	}
 
-    	jGenerator.writeStringField("patentCorpus", patent.getPatentCorpus().toString());
-    	jGenerator.writeStringField("patentType", patent.getPatentType().toString());
-    	writeDateObj("productionDate", patent.getDateProduced());
-    	writeDateObj("publishedDate", patent.getDatePublished());
+	@Override
+	public void write(Patent patent, Writer writer) throws IOException {
+		try(JsonGenerator jGenerator = jfactory.createGenerator(writer)){
+			jGenerator.configure(Feature.ESCAPE_NON_ASCII, false);
+			jGenerator.configure(Feature.AUTO_CLOSE_TARGET, false);
+			if (pretty) {
+				jGenerator.useDefaultPrettyPrinter();
+				//jGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+			}
+			this.jGenerator = jGenerator;
+			output(patent, writer);
+		}
+	}
 
-    	jGenerator.writeStringField("documentId", patent.getDocumentId() != null ? patent.getDocumentId().toText() : ""); // Patent ID or Public Application ID.
-    	writeDocTokens("documentId_tokens", patent.getDocumentId());
-    	writeDateObj("documentDate", patent.getDocumentDate());
+	private void output(Patent patent, Writer writer) throws IOException {
+		jGenerator.writeStartObject(); // root.
 
-    	jGenerator.writeStringField("applicationId", patent.getApplicationId() != null ? patent.getApplicationId().toText() : "");
-    	writeDocTokens("applicationId_tokens", patent.getApplicationId());
-    	writeDateObj("applicationDate", patent.getApplicationDate());
+		jGenerator.writeStringField("patentCorpus", patent.getPatentCorpus().toString());
+		jGenerator.writeStringField("patentType", patent.getPatentType().toString());
+		writeDateObj("productionDate", patent.getDateProduced());
+		writeDateObj("publishedDate", patent.getDatePublished());
 
-    	writeDocArray("priorityIds", patent.getPriorityIds(), true);
-    	writeDocTokens("priorityIds_tokens", patent.getPriorityIds());
+		writeDocId("documentId", patent.getDocumentId(), true);
+		writeDocId("applicationId", patent.getApplicationId(), false);
 
-    	writeDocArray("relatedIds", patent.getRelationIds(), false);
-    	writeDocTokens("relatedIds_tokens", patent.getRelationIds());
+		writeDocArray("priorityIds", patent.getPriorityIds(), true);
+		writeDocTokens("priorityIds_tokens", patent.getPriorityIds());
 
-        // OtherIds contain [documentId, applicationId, relatedIds]
-    	writeDocArray("otherIds", patent.getOtherIds(), false);
-    	writeDocTokens("otherIds_tokens", patent.getOtherIds());
+		writeDocArray("relatedIds", patent.getRelationIds(), false);
+		writeDocTokens("relatedIds_tokens", patent.getRelationIds());
 
-    	writeEntity("agent", patent.getAgent());
-    	writeEntity("applicant", patent.getApplicants());
+		// OtherIds contain [documentId, applicationId, relatedIds]
+		writeDocArray("otherIds", patent.getOtherIds(), false);
+		writeDocTokens("otherIds_tokens", patent.getOtherIds());
 
-    	writeEntity("inventors", patent.getInventors());
-    	writeEntity("assignees", patent.getAssignee());
-    	writeEntity("examiners", patent.getExaminers());
+		if (!specOnly) {
+			writeEntity("agent", patent.getAgent());
+			writeEntity("applicant", patent.getApplicants());
 
-    	jGenerator.writeStringField("title", valueOrEmpty(patent.getTitle()));
+			writeEntity("inventors", patent.getInventors());
+			writeEntity("original_assignees", patent.getAssignee());
+			writeEntity("examiners", patent.getExaminers());
+		}
 
-    	writeAbstract("abstract", patent.getAbstract());
+		jGenerator.writeFieldName("title");
+		jGenerator.writeStartObject();
+		jGenerator.writeStringField("raw", valueOrEmpty(patent.getTitle()));
+		jGenerator.writeStringField("normalized", valueOrEmpty(StringCaseUtil.toTitleCase(patent.getTitle())));
+		jGenerator.writeEndObject();
 
-    	writeDescription("description", patent.getDescription());
+		writeAbstract("abstract", patent.getAbstract());
 
-        writeClaims("claims", patent.getClaims());
+		writeDescription("description", patent.getDescription());
 
-        writeCitations("citations", patent.getCitations());
+		writeClaims("claims", patent.getClaims());
 
-        writeClassifications("classification", patent.getClassification());
+		writeCitations("citations", patent.getCitations());
 
-        writeClassifications("search_classification", patent.getSearchClassification());
+		writeClassifications("original_classification", patent.getClassification());
 
-    	jGenerator.writeEndObject(); // root.
+		writeClassifications("search_classification", patent.getSearchClassification());
 
-    	jGenerator.flush();
-    }
+		jGenerator.writeEndObject(); // root.
 
-    private void writeArray(String fieldName, Collection<String> strings) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartArray();
-        if (strings != null) {
-            for (String tok : strings) {
-            	jGenerator.writeString(valueOrEmpty(tok));
-            }
-        }
-        jGenerator.writeEndArray();
-    }
+		jGenerator.flush();
+	}
 
-    private void writeArray(String fieldName, String... strings) throws IOException {
-    	writeArray(fieldName, Arrays.asList(strings));
-    }
+	private void writeArray(String fieldName, Collection<String> strings) throws IOException {
+		try {
+			if (strings != null && strings.size() > 0) {
+				jGenerator.writeFieldName(fieldName);
+				jGenerator.writeStartArray(strings.size());
+				for (String tok : strings) {
+					if (tok == null || tok.length() == 0) {
+						LOGGER.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! writeArray EMPTY STRING");
+					} else {
+						jGenerator.writeString(valueOrEmpty(tok));
+					}
+				}
+				jGenerator.writeEndArray();
+			}
+		} catch (JsonGenerationException e) {
+			LOGGER.error("Error writing field '{}' : {}", fieldName, strings.toString(), e);
+		}
+	}
 
-    private void writeDateObj(String fieldName, DocumentDate date) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartObject();
-        if (date != null) {
-        	jGenerator.writeStringField("raw", date.getDateText(DateTextType.RAW));
-        	jGenerator.writeStringField("iso", date.getDateText(DateTextType.ISO));
-        } else {
-        	jGenerator.writeStringField("raw", "");
-        	jGenerator.writeStringField("iso", "");
-        }
-        jGenerator.writeEndObject();
-    }
+	private void writeArray(String fieldName, String... strings) throws IOException {
+		writeArray(fieldName, Arrays.asList(strings));
+	}
 
-    private void writeDocArray(String fieldName, Iterable<DocumentId> docIds, boolean withDate) throws IOException {  
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartArray();
-   
-        for (DocumentId docid : docIds) {
-        	if (withDate) {
-	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("id", docid.toText());
-	            writeDateObj("date", docid.getDate());
-	            jGenerator.writeEndObject();
-        	} else {
-        		if (docid != null) {
-        			jGenerator.writeString(docid.toText());
-        		}
-        	}
-        }
- 
-        jGenerator.writeEndArray();
-    }
+	private void writeDateObj(String fieldName, DocumentDate date) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartObject();
+		if (date != null) {
+			jGenerator.writeStringField("raw", date.getDateText(DateTextType.RAW));
+			jGenerator.writeStringField("iso", date.getDateText(DateTextType.ISO_DATE_TIME));
+		} else {
+			jGenerator.writeStringField("raw", "");
+			jGenerator.writeStringField("iso", "");
+		}
+		jGenerator.writeEndObject();
+	}
+
+	private void writeDocId(String fieldName, DocumentId docId, boolean wantNoKind) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartObject();
+
+		if (docId != null) {
+			jGenerator.writeStringField("id", docId.toText());
+			if (wantNoKind) {
+				jGenerator.writeStringField("idNoKind", docId.toTextNoKind());
+				jGenerator.writeStringField("kind", docId.getKindCode());
+			}
+			jGenerator.writeStringField("number", docId.getDocNumber());
+			writeDateObj("date", docId.getDate());
+		} else {
+			jGenerator.writeStringField("id", "");
+			if (wantNoKind) {
+				jGenerator.writeStringField("idNoKind", "");
+				jGenerator.writeStringField("kind", "");
+			}
+			jGenerator.writeStringField("number", "");
+			writeDateObj("date", null);
+		}
+
+		jGenerator.writeEndObject();
+	}
+
+	private void writeDocArray(String fieldName, Iterable<DocumentId> docIds, boolean withDate) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartArray();
+
+		for (DocumentId docid : docIds) {
+			if (withDate) {
+				jGenerator.writeStartObject();
+				jGenerator.writeStringField("id", docid.toText());
+				writeDateObj("date", docid.getDate());
+				jGenerator.writeEndObject();
+			} else {
+				if (docid != null) {
+					jGenerator.writeString(docid.toText());
+				}
+			}
+		}
+
+		jGenerator.writeEndArray();
+	}
 
 	private void writeDocTokens(String fieldName, Iterable<DocumentId> docIds) throws IOException {
 		Set<String> idTokens = new LinkedHashSet<String>();
 
-		for(DocumentId docId : docIds) {
+		for (DocumentId docId : docIds) {
 			if (docId != null) {
 				idTokens.addAll(getDocIdTokens(docId));
 			}
 		}
 
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartArray();
-   
-        for (String docid : idTokens) {
-       		if (docid != null) {
-       			jGenerator.writeString(docid);
-        	}
-        }
- 
-        jGenerator.writeEndArray();
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartArray();
+
+		for (String docid : idTokens) {
+			if (docid != null) {
+				jGenerator.writeString(docid);
+			}
+		}
+
+		jGenerator.writeEndArray();
 	}
-	
+
 	private void writeDocTokens(String fieldName, DocumentId docId) throws IOException {
 		Set<String> idTokens = new LinkedHashSet<String>();
 		if (docId != null) {
 			idTokens.addAll(getDocIdTokens(docId));
 		}
 
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartArray();
-   
-        for (String docid : idTokens) {
-       		if (docid != null) {
-       			jGenerator.writeString(docid);
-        	}
-        }
- 
-        jGenerator.writeEndArray();
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartArray();
+
+		for (String docid : idTokens) {
+			if (docid != null) {
+				jGenerator.writeString(docid);
+			}
+		}
+
+		jGenerator.writeEndArray();
 	}
 
 	/**
@@ -220,249 +278,271 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 	 *
 	 * @param docId
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private Set<String> getDocIdTokens(DocumentId docId) {
 		Set<String> idTokens = new LinkedHashSet<String>();
 		if (docId != null) {
 			idTokens.add(docId.toText()); // full normalized.
-			idTokens.add(docId.getCountryCode() + docId.getDocNumber()); // without Kindcode.
-			//idTokens.add(docId.getRawText());
+			idTokens.add(docId.toTextNoKind()); // without Kindcode.
+			// idTokens.add(docId.getRawText());
 
 			if (docId.getCountryCode() == CountryCode.US) {
-				// within corpus of US Patents don't need US country code prefix. examiners and others prefer to search without it.
-				idTokens.add(docId.getDocNumber()); 
+				// within corpus of US Patents don't need US country code prefix. examiners and
+				// others prefer to search without it.
+				idTokens.add(docId.getDocNumber());
 			}
 		}
 		return idTokens;
 	}
 
-    /**
-     * JsonObjects can not set a null value so return empty string.
-     * 
-     * @param value
-     * @return
-     */
-    private String valueOrEmpty(String value) {
-    	return value == null ? "" : value;
-    }
+	/**
+	 * JsonObjects can not set a null value so return empty string.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String valueOrEmpty(String value) {
+		return value == null ? "" : value;
+	}
 
-    private String valueOrEmpty(Enum<?> value) {
-    	return value == null ? "" : value.toString();
-    }
- 
-    /**
-     * Entities[Agents,Applicants,Inventor,Assignee,Examiner]
-     * @param entities
-     * @throws IOException 
-     */
-    private <T extends Entity> void writeEntity(String fieldName, Collection<T> entities) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartArray();
+	private String valueOrEmpty(Enum<?> value) {
+		return value == null ? "" : value.toString();
+	}
 
-    	for(Entity entity: entities) {
-            jGenerator.writeStartObject();
+	/**
+	 * Entities[Agents,Applicants,Inventor,Assignee,Examiner]
+	 * 
+	 * @param entities
+	 * @throws IOException
+	 */
+	private <T extends Entity> void writeEntity(String fieldName, Collection<T> entities) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartArray();
 
-        	jGenerator.writeFieldName("name");
-        	writeName(entity);
+		for (Entity entity : entities) {
+			jGenerator.writeStartObject();
 
-        	if (entity instanceof Inventor) {
-        		Inventor inventor = (Inventor) entity;
-            	jGenerator.writeStringField("sequence", inventor.getSequence());
-        	}
-        	else if (entity instanceof Assignee) {
-        		Assignee assignee = (Assignee) entity;
-            	jGenerator.writeStringField("role", valueOrEmpty(assignee.getRole()));
-            	jGenerator.writeStringField("roleDefinition", valueOrEmpty(assignee.getRoleDesc()));
-        	} 
-        	else if (entity instanceof Examiner) {
-        		Examiner examiner = (Examiner) entity;
-            	jGenerator.writeStringField("type", valueOrEmpty(examiner.getExaminerType()));
-            	jGenerator.writeStringField("department", valueOrEmpty(examiner.getDepartment()));
-            	jGenerator.writeEndObject();
-            	continue;
-        	}
- 
-        	writeAddress(entity);
+			jGenerator.writeFieldName("name");
+			writeName(entity);
 
-        	jGenerator.writeEndObject();
-    	}
+			if (entity instanceof Inventor) {
+				Inventor inventor = (Inventor) entity;
+				jGenerator.writeStringField("sequence", inventor.getSequence());
+			} else if (entity instanceof Assignee) {
+				Assignee assignee = (Assignee) entity;
+				jGenerator.writeStringField("role", valueOrEmpty(assignee.getRole()));
+				jGenerator.writeStringField("roleDefinition", valueOrEmpty(assignee.getRoleDesc()));
+			} else if (entity instanceof Examiner) {
+				Examiner examiner = (Examiner) entity;
+				jGenerator.writeStringField("type", valueOrEmpty(examiner.getExaminerType()));
+				jGenerator.writeStringField("department", valueOrEmpty(examiner.getDepartment()));
+				jGenerator.writeEndObject();
+				continue;
+			}
 
-        jGenerator.writeEndArray();
-    }
+			writeAddress(entity);
 
-    private void writeName(Entity entity) throws IOException {
-        Name name = entity.getName();
+			jGenerator.writeEndObject();
+		}
 
-    	//jGenerator.writeFieldName("name");
-        jGenerator.writeStartObject();
+		jGenerator.writeEndArray();
+	}
 
-        if (name instanceof NamePerson) {
-            NamePerson perName = (NamePerson) name;
-        	jGenerator.writeStringField("type", "person");
-        	jGenerator.writeStringField("raw", valueOrEmpty(perName.getName()));
-        	jGenerator.writeStringField("prefix", valueOrEmpty(perName.getPrefix()));
-        	jGenerator.writeStringField("firstName", valueOrEmpty(perName.getFirstName()));
-        	jGenerator.writeStringField("middleName", valueOrEmpty(perName.getMiddleName()));
-        	jGenerator.writeStringField("lastName", valueOrEmpty(perName.getLastName()));
-        	jGenerator.writeStringField("suffix", valueOrEmpty(perName.getSuffix()));
-        	jGenerator.writeStringField("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
-        	writeArray("synonyms", perName.getSynonyms());
-        } else {
-            NameOrg orgName = (NameOrg) name;
-        	jGenerator.writeStringField("type", "org");
-        	jGenerator.writeStringField("raw", valueOrEmpty(orgName.getName()));
-        	jGenerator.writeStringField("prefix", valueOrEmpty(orgName.getPrefix()));
-        	jGenerator.writeStringField("suffix", valueOrEmpty(orgName.getSuffix()));
+	private void writeName(Entity entity) throws IOException {
+		Name name = entity.getName();
 
-            new OrgSynonymGenerator().computeSynonyms(entity);
-        	writeArray("synonyms", orgName.getSynonyms());
-        }
-        
-    	jGenerator.writeEndObject();
-    }
+		// jGenerator.writeFieldName("name");
+		jGenerator.writeStartObject();
 
-    private void writeAddress(Entity entity) throws IOException {
-    	Address address = entity.getAddress();
-        if (address != null) {
-        	jGenerator.writeFieldName("Address");
-            jGenerator.writeStartObject();
-        	//jGenerator.writeStringField("street", valueOrEmpty(address.getStreet()));
-        	jGenerator.writeStringField("city", valueOrEmpty(address.getCity()));
-        	jGenerator.writeStringField("state", valueOrEmpty(address.getState()));
-        	//jGenerator.writeStringField("zipCode", valueOrEmpty(address.getZipCode()));
-        	jGenerator.writeStringField("country", valueOrEmpty(address.getCountry()));
-        	//jGenerator.writeStringField("email", valueOrEmpty(address.getEmail()));
-        	//jGenerator.writeStringField("fax", valueOrEmpty(address.getFaxNumber()));
-        	//jGenerator.writeStringField("phone", valueOrEmpty(address.getPhoneNumber()));
-        	//writeArray("tokens", address.getTokenSet());
-        	jGenerator.writeEndObject();
-        }
-    }
+		if (name instanceof NamePerson) {
+			NamePerson perName = (NamePerson) name;
+			jGenerator.writeStringField("type", "person");
+			jGenerator.writeStringField("name", valueOrEmpty(perName.getName()));
+			jGenerator.writeStringField("name_normcase", valueOrEmpty(perName.getNameNormalizeCase()));
+			jGenerator.writeStringField("prefix", valueOrEmpty(perName.getPrefix()));
+			jGenerator.writeStringField("firstName", valueOrEmpty(perName.getFirstName()));
+			jGenerator.writeStringField("middleName", valueOrEmpty(perName.getMiddleName()));
+			jGenerator.writeStringField("lastName", valueOrEmpty(perName.getLastName()));
+			jGenerator.writeStringField("suffix", valueOrEmpty(perName.getSuffix()));
+			jGenerator.writeStringField("abbreviated", valueOrEmpty(perName.getAbbreviatedName()));
+			jGenerator.writeStringField("initials", valueOrEmpty(perName.getInitials()));
+			writeArray("synonyms", perName.getSynonyms());
+		} else {
+			NameOrg orgName = (NameOrg) name;
+			jGenerator.writeStringField("type", "org");
+			jGenerator.writeStringField("name", valueOrEmpty(orgName.getName()));
+			jGenerator.writeStringField("name_normcase", valueOrEmpty(orgName.getNameNormalizeCase()));
+			jGenerator.writeStringField("prefix", valueOrEmpty(orgName.getPrefix()));
+			jGenerator.writeStringField("suffix", valueOrEmpty(orgName.getSuffix()));
 
-    private void writeAbstract(String fieldName, Abstract abstractObj) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-        jGenerator.writeStartObject();
- 
-        if (abstractObj != null){
-        	jGenerator.writeStringField("raw", abstractObj.getRawText());
-        	jGenerator.writeStringField("normalized", abstractObj.getSimpleHtml());
-        	jGenerator.writeStringField("plain", abstractObj.getPlainText());
-        }
-        else {
-        	jGenerator.writeStringField("raw", "");
-        	jGenerator.writeStringField("normalized", "");
-        	jGenerator.writeStringField("plain", "");       
-        }
+			new OrgSynonymGenerator().computeSynonyms(entity);
+			jGenerator.writeStringField("abbreviated", valueOrEmpty(orgName.getShortestSynonym()));
+			jGenerator.writeStringField("initials", valueOrEmpty(orgName.getInitials()));
+			writeArray("synonyms", orgName.getSynonyms());
+		}
 
-    	jGenerator.writeEndObject();
-    }
+		jGenerator.writeEndObject();
+	}
 
-    private void writeClaims(String fieldName, Collection<Claim> claimList) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartArray();
+	private void writeAddress(Entity entity) throws IOException {
+		Address address = entity.getAddress();
+		if (address != null) {
+			jGenerator.writeFieldName("Address");
+			jGenerator.writeStartObject();
+			// jGenerator.writeStringField("street", valueOrEmpty(address.getStreet()));
+			jGenerator.writeStringField("city", valueOrEmpty(address.getCity()));
+			jGenerator.writeStringField("state", valueOrEmpty(address.getState()));
+			// jGenerator.writeStringField("zipCode", valueOrEmpty(address.getZipCode()));
+			jGenerator.writeStringField("country", valueOrEmpty(address.getCountry()));
+			// jGenerator.writeStringField("email", valueOrEmpty(address.getEmail()));
+			// jGenerator.writeStringField("fax", valueOrEmpty(address.getFaxNumber()));
+			// jGenerator.writeStringField("phone", valueOrEmpty(address.getPhoneNumber()));
+			// writeArray("tokens", address.getTokenSet());
+			jGenerator.writeEndObject();
+		}
+	}
 
-        for (Claim claim : claimList) {
-            jGenerator.writeStartObject(); // start claim
-        	jGenerator.writeStringField("id", claim.getId());
-        	jGenerator.writeStringField("type", claim.getClaimType().toString());
-        	jGenerator.writeStringField("raw",  claim.getRawText());
-        	jGenerator.writeStringField("normalized",  claim.getSimpleHtml());
-        	jGenerator.writeStringField("plain",  claim.getPlainText());
-           
-        	jGenerator.writeFieldName("claimTree");
-            jGenerator.writeStartObject();
-            writeArray("parentIds", claim.getDependentIds());
-        	jGenerator.writeNumberField("parentCount",  claim.getDependentIds() != null ? claim.getDependentIds().size() : 0);
-        	jGenerator.writeNumberField("childCount",  claim.getChildClaims() != null ? claim.getChildClaims().size() : 0);
-        	jGenerator.writeNumberField("claimTreelevel",  claim.getClaimTreeLevel());
-        	jGenerator.writeEndObject(); // end claimTree
+	private void writeAbstract(String fieldName, Abstract abstractObj) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartObject();
 
-            List<String> childClaims = new ArrayList<String>();
-            for (Claim childClaim : claim.getChildClaims()) {
-            	childClaims.add(childClaim.getId());
-            }
-            writeArray("childIds", childClaims);
+		if (abstractObj != null) {
+			jGenerator.writeStringField("raw", abstractObj.getRawText());
+			jGenerator.writeStringField("normalized", abstractObj.getSimpleHtml());
+			jGenerator.writeStringField("plain",
+					plainRemoveNewlines ? removeNewline(abstractObj.getPlainText(freeTextConfig))
+							: abstractObj.getPlainText(freeTextConfig));
+		} else {
+			jGenerator.writeStringField("raw", "");
+			jGenerator.writeStringField("normalized", "");
+			jGenerator.writeStringField("plain", "");
+		}
 
-        	jGenerator.writeEndObject(); // end claim
-        }
+		jGenerator.writeEndObject();
+	}
 
-        jGenerator.writeEndArray();
-    }    
-    
-    private void writeCitations(String fieldName, Collection<Citation> CitationList) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartArray();
+	private void writeClaims(String fieldName, Collection<Claim> claimList) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartArray();
 
-    	Set<DocumentId> docIds = new LinkedHashSet<DocumentId>();
-        for (Citation cite : CitationList) {
-            jGenerator.writeStartObject(); // start cited            
-        	jGenerator.writeStringField("num", cite.getNum());
+		for (Claim claim : claimList) {
+			jGenerator.writeStartObject(); // start claim
+			jGenerator.writeStringField("id", claim.getId());
+			jGenerator.writeStringField("type", claim.getClaimType().toString());
+			jGenerator.writeStringField("raw", claim.getRawText());
+			jGenerator.writeStringField("normalized", claim.getSimpleHtml());
+			jGenerator.writeStringField("plain", plainRemoveNewlines ? removeNewline(claim.getPlainText(freeTextConfig))
+					: claim.getPlainText(freeTextConfig));
 
-            if (cite.getCitType() == CitationType.NPLCIT) {
-                NplCitation nplCite = (NplCitation) cite;
+			jGenerator.writeFieldName("claimTree");
+			jGenerator.writeStartObject();
+			writeArray("parentIds", claim.getDependentIds());
+			jGenerator.writeNumberField("parentCount",
+					claim.getDependentIds() != null ? claim.getDependentIds().size() : 0);
+			jGenerator.writeNumberField("childCount",
+					claim.getChildClaims() != null ? claim.getChildClaims().size() : 0);
+			jGenerator.writeNumberField("claimTreelevel", claim.getClaimTreeLevel());
+			jGenerator.writeEndObject(); // end claimTree
 
-            	jGenerator.writeStringField("type", "NPL");
-            	jGenerator.writeStringField("citedBy", nplCite.getCitedBy().toString());
-            	jGenerator.writeStringField("text", nplCite.getCiteText());
+			List<String> childClaims = new ArrayList<String>();
+			for (Claim childClaim : claim.getChildClaims()) {
+				childClaims.add(childClaim.getId());
+			}
+			writeArray("childIds", childClaims);
 
-            	jGenerator.writeFieldName("extracted");
-                jGenerator.writeStartObject();
-            	jGenerator.writeStringField("quotedText", nplCite.getQuotedText());
-            	jGenerator.writeStringField("patentId", nplCite.getPatentId() != null ? nplCite.getPatentId().toText() : "");
-            	docIds.add(nplCite.getPatentId());
-            	jGenerator.writeEndObject(); // end extracted.
+			jGenerator.writeEndObject(); // end claim
+		}
 
-            } else if (cite.getCitType() == CitationType.PATCIT) {
-                PatCitation patCite = (PatCitation) cite;
-                docIds.add(patCite.getDocumentId());
-            	jGenerator.writeStringField("type", "PATENT");
-            	jGenerator.writeStringField("citedBy", patCite.getCitedBy().toString());
-            	jGenerator.writeStringField("raw", patCite.getDocumentId().getRawText());
-            	jGenerator.writeStringField("text", patCite.getDocumentId().toTextNoKind());
-            	jGenerator.writeFieldName("classification");
-            	jGenerator.writeStartObject();
-	                writeSingleClassificationType(patCite.getClassification(), ClassificationType.USPC);
-	                writeSingleClassificationType(patCite.getClassification(), ClassificationType.CPC);
-	                writeSingleClassificationType(patCite.getClassification(), ClassificationType.IPC);
-                jGenerator.writeEndObject();
-            }
+		jGenerator.writeEndArray();
+	}
 
-        	jGenerator.writeEndObject(); // end cite
-        }
+	private void writeCitations(String fieldName, Collection<Citation> CitationList) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartArray();
 
-    	jGenerator.writeEndArray(); // end citation array
+		Set<DocumentId> docIds = new LinkedHashSet<DocumentId>();
+		for (Citation cite : CitationList) {
+			jGenerator.writeStartObject(); // start cited
+			jGenerator.writeStringField("num", cite.getNum());
 
-    	jGenerator.writeFieldName(fieldName + "_patent_tokens");
-    	jGenerator.writeStartArray();
-    	for(DocumentId docId: docIds) {
-    		for(String token : getDocIdTokens(docId)) {
-    			jGenerator.writeString(token);
-    		}
-    	}
-    	jGenerator.writeEndArray(); // end citation tokens array
- 
-    }
+			if (cite.getCitType() == CitationType.NPLCIT) {
+				NplCitation nplCite = (NplCitation) cite;
 
-    private void writeDescription(String fieldName, Description patentDescription) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartObject();
+				jGenerator.writeStringField("type", "NPLCITE");
+				jGenerator.writeStringField("citedBy", nplCite.getCitedBy().toString());
+				jGenerator.writeStringField("text", nplCite.getCiteText());
 
-    	jGenerator.writeStringField("full_raw", patentDescription.getAllRawText());
+				jGenerator.writeFieldName("extracted");
+				jGenerator.writeStartObject();
+				jGenerator.writeStringField("quotedText", nplCite.getQuotedText());
+				jGenerator.writeStringField("patentId",
+						nplCite.getPatentId() != null ? nplCite.getPatentId().toText() : "");
+				docIds.add(nplCite.getPatentId());
+				jGenerator.writeEndObject(); // end extracted.
 
-    	for(DescriptionSection section: patentDescription.getSections()) {
-            if (section != null) {
-            	jGenerator.writeFieldName(section.getSection().toString());
-            	jGenerator.writeStartObject();
-            	jGenerator.writeStringField("raw", section.getRawText());
-            	jGenerator.writeStringField("normalized", section.getSimpleHtml());
-            	jGenerator.writeStringField("plain", section.getPlainText());
-                jGenerator.writeEndObject();
-            }
-    	}
+			} else if (cite.getCitType() == CitationType.PATCIT) {
+				PatCitation patCite = (PatCitation) cite;
+				DocType docType = patCite.getDocumentId().getDocType();
 
-        jGenerator.writeEndObject();
-    }
+				docIds.add(patCite.getDocumentId());
+				jGenerator.writeStringField("type", "PATCITE");
+				jGenerator.writeStringField("doctype", docType != null ? docType.toString().toUpperCase() : "");
+				jGenerator.writeStringField("citedBy", patCite.getCitedBy().toString());
+				jGenerator.writeStringField("raw", patCite.getDocumentId().getRawText());
+				jGenerator.writeStringField("text", patCite.getDocumentId().toTextNoKind());
+				//jGenerator.writeStringField("name", patCite.getDocumentId().getName());
+				/*
+					jGenerator.writeFieldName("classification");
+					jGenerator.writeStartObject();
+					writeSingleClassificationType(patCite.getClassification(), ClassificationType.USPC);
+					writeSingleClassificationType(patCite.getClassification(), ClassificationType.CPC);
+					writeSingleClassificationType(patCite.getClassification(), ClassificationType.IPC);
+					jGenerator.writeEndObject();
+				*/
+			}
+
+			jGenerator.writeEndObject(); // end cite
+		}
+
+		jGenerator.writeEndArray(); // end citation array
+
+		jGenerator.writeFieldName(fieldName + "_patent_tokens");
+		jGenerator.writeStartArray();
+		for (DocumentId docId : docIds) {
+			for (String token : getDocIdTokens(docId)) {
+				jGenerator.writeString(token);
+			}
+		}
+		jGenerator.writeEndArray(); // end citation tokens array
+
+	}
+
+	private void writeDescription(String fieldName, Description patentDescription) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartObject();
+
+		jGenerator.writeStringField("full_raw", patentDescription.getAllRawText());
+
+		for (DescriptionSection section : patentDescription.getSections()) {
+			if (section != null) {
+				jGenerator.writeFieldName(section.getSection().toString());
+				jGenerator.writeStartObject();
+				jGenerator.writeStringField("raw", section.getRawText());
+				jGenerator.writeStringField("normalized", section.getSimpleHtml());
+				jGenerator.writeStringField("plain",
+						plainRemoveNewlines ? removeNewline(section.getPlainText(freeTextConfig))
+								: section.getPlainText(freeTextConfig));
+				jGenerator.writeEndObject();
+			}
+		}
+
+		jGenerator.writeEndObject();
+	}
+
+	private String removeNewline(String line) {
+		return line.replaceAll("[\n\t]", " ");
+	}
 
 	@Override
 	public void close() throws IOException {
@@ -471,166 +551,157 @@ public class JsonMapperStream implements DocumentBuilder<Patent>, Closeable {
 		}
 	}
 
-    private void writeClassifications(String fieldName, Collection<PatentClassification> classes) throws IOException {
-    	jGenerator.writeFieldName(fieldName);
-    	jGenerator.writeStartObject();
+	private void writeClassifications(String fieldName, Collection<PatentClassification> classes) throws IOException {
+		jGenerator.writeFieldName(fieldName);
+		jGenerator.writeStartObject();
 
-    	writeUspcClassification(classes);
-    	writeCpcClassification(classes);
-        writeIpcClassification(classes);
-        writeSingleClassificationType(classes, ClassificationType.LOCARNO);
+		writeUspcClassification(classes);
+		writeCpcClassification(classes);
+		writeIpcClassification(classes);
+		writeSingleClassificationType(classes, ClassificationType.LOCARNO);
 
-        jGenerator.writeEndObject();
-    }
+		jGenerator.writeEndObject();
+	}
 
-    private <T extends PatentClassification> void writeIpcClassification(Collection<PatentClassification> classes) throws IOException {
+	private <T extends PatentClassification> void writeIpcClassification(Collection<PatentClassification> classes)
+			throws IOException {
 
-        Map<String, List<IpcClassification>> retClasses = IpcClassification.filterCpc(classes);
+		Map<String, List<IpcClassification>> retClasses = IpcClassification.filterIpc(classes);
 
-    	jGenerator.writeFieldName("ipc_inventive");
-    	jGenerator.writeStartArray();
-    	if (retClasses.containsKey("inventive")) {
-	    	for (IpcClassification ipc : retClasses.get("inventive")) {
-	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("raw", ipc.toText());
-	        	jGenerator.writeStringField("normalized", ipc.getTextNormalized());
-	        	writeArray("facets", ipc.toFacet());
-	            jGenerator.writeEndObject();
+		jGenerator.writeFieldName("ipc");
+		jGenerator.writeStartObject(); // ipc start
 
-	            // TODO fix nested classifications.
-	            for (PatentClassification furtherClass : ipc.getChildren()) {
-	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("type", "additional");
-	            	jGenerator.writeStringField("raw", furtherClass.toText());
-	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
-	            	writeArray("facets", furtherClass.toFacet());
-	                jGenerator.writeEndObject();
-	            }
-	    	}
-    	}
-    	jGenerator.writeEndArray();
- 
-    	jGenerator.writeFieldName("ipc_additional");
-    	jGenerator.writeStartArray();
-    	if (retClasses.containsKey("additional")) {
-	    	for (IpcClassification ipc : retClasses.get("additional")) {
-	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("raw", ipc.toText());
-	        	jGenerator.writeStringField("normalized", ipc.getTextNormalized());
-	        	writeArray("facets", ipc.toFacet());
-	            jGenerator.writeEndObject();
+		writeArray("facets_inventive", PatentClassification.getFacet(retClasses.get("inventive")));
 
-	            for (PatentClassification furtherClass : ipc.getChildren()) {
-	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("raw", furtherClass.toText());
-	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
-	            	writeArray("facets", furtherClass.toFacet());
-	                jGenerator.writeEndObject();
-	            }
-	    	}
-    	}
-    	jGenerator.writeEndArray();
-    }
-    
-    private <T extends PatentClassification> void writeCpcClassification(Collection<PatentClassification> classes) throws IOException {
+		jGenerator.writeFieldName("inventive");
+		jGenerator.writeStartArray();
+		if (retClasses.containsKey("inventive")) {
+			for (IpcClassification ipc : retClasses.get("inventive")) {
+				jGenerator.writeStartObject();
+				jGenerator.writeStringField("raw", ipc.toText());
+				jGenerator.writeStringField("normalized", ipc.getTextNormalized());
+				// writeArray("facets", ipc.toFacet());
+				jGenerator.writeEndObject();
+			}
+		}
+		jGenerator.writeEndArray();
 
-        Map<String, List<CpcClassification>> retClasses = CpcClassification.filterCpc(classes);
+		writeArray("facets_additional", PatentClassification.getFacet(retClasses.get("additional")));
 
-    	jGenerator.writeFieldName("cpc_inventive");
-    	jGenerator.writeStartArray();
-    	if (retClasses.containsKey("inventive")) {
-	    	for (CpcClassification cpci : retClasses.get("inventive")) {
-	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("raw", cpci.toText());
-	        	jGenerator.writeStringField("normalized", cpci.getTextNormalized());
-	        	writeArray("facets", cpci.toFacet());
-	            jGenerator.writeEndObject();
-	
-	            for (PatentClassification furtherClass : cpci.getChildren()) {
-	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("type", "additional");
-	            	jGenerator.writeStringField("raw", furtherClass.toText());
-	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
-	            	writeArray("facets", furtherClass.toFacet());
-	                jGenerator.writeEndObject();
-	            }
-	    	}
-    	}
-    	jGenerator.writeEndArray();
- 
-    	jGenerator.writeFieldName("cpc_additional");
-    	jGenerator.writeStartArray();
-    	if (retClasses.containsKey("additional")) {
-	    	for (CpcClassification cpci : retClasses.get("additional")) {
-	        	jGenerator.writeStartObject();
-	        	jGenerator.writeStringField("raw", cpci.toText());
-	        	jGenerator.writeStringField("normalized", cpci.getTextNormalized());
-	        	writeArray("facets", cpci.toFacet());
-	            jGenerator.writeEndObject();
+		jGenerator.writeFieldName("additional");
+		jGenerator.writeStartArray();
+		if (retClasses.containsKey("additional")) {
+			for (IpcClassification ipc : retClasses.get("additional")) {
+				jGenerator.writeStartObject();
+				jGenerator.writeStringField("raw", ipc.toText());
+				jGenerator.writeStringField("normalized", ipc.getTextNormalized());
+				// writeArray("facets", ipc.toFacet());
+				jGenerator.writeEndObject();
+			}
+		}
+		jGenerator.writeEndArray();
 
-	            for (PatentClassification furtherClass : cpci.getChildren()) {
-	            	jGenerator.writeStartObject();
-	            	jGenerator.writeStringField("type", "additional");
-	            	jGenerator.writeStringField("raw", furtherClass.toText());
-	            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
-	            	writeArray("facets", furtherClass.toFacet());
-	                jGenerator.writeEndObject();
-	            }
-	    	}
-    	}
-    	jGenerator.writeEndArray();
-    }
-    
-    private <T extends PatentClassification> void writeUspcClassification(Collection<PatentClassification> classes) throws IOException {
-    	jGenerator.writeFieldName("uspc");
-    	jGenerator.writeStartArray();
+		jGenerator.writeEndObject(); // ipc end.
+	}
 
-        Set<UspcClassification> classesOfType = PatentClassification.filterByType(classes, ClassificationType.USPC);
+	private <T extends PatentClassification> void writeCpcClassification(Collection<PatentClassification> classes)
+			throws IOException {
 
-        for (PatentClassification mainClass : classesOfType) {
-        	jGenerator.writeStartObject();
-        	jGenerator.writeStringField("type", "main");
-        	jGenerator.writeStringField("raw", mainClass.toText());
-        	jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
-        	writeArray("facets", mainClass.toFacet());
-            jGenerator.writeEndObject();
+		Map<String, List<CpcClassification>> retClasses = CpcClassification.filterCpc(classes);
 
-            for (PatentClassification furtherClass : mainClass.getChildren()) {
-            	jGenerator.writeStartObject();
-            	jGenerator.writeStringField("type", "additional");
-            	jGenerator.writeStringField("raw", furtherClass.toText());
-            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
-            	writeArray("facets", furtherClass.toFacet());
-                jGenerator.writeEndObject();
-            }
-        }
+		jGenerator.writeFieldName("cpc");
+		jGenerator.writeStartObject();
 
-    	jGenerator.writeEndArray();
-    }
-    
-    private void writeSingleClassificationType(Collection<PatentClassification> classes, ClassificationType classType) throws IOException {
-    	jGenerator.writeFieldName(classType.name().toLowerCase());
-    	jGenerator.writeStartArray();
+		writeArray("facets_inventive", PatentClassification.getFacet(retClasses.get("inventive")));
 
-        Set<PatentClassification> classesOfType = (Set<PatentClassification>) PatentClassification.filterByType(classes, classType.getJavaClass());
+		jGenerator.writeFieldName("inventive");
+		jGenerator.writeStartArray();
 
-        for (PatentClassification mainClass : classesOfType) {
-        	jGenerator.writeStartObject();
-        	jGenerator.writeStringField("raw", mainClass.toText());
-        	jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
-        	writeArray("facets", mainClass.toFacet());
-            jGenerator.writeEndObject();
+		if (retClasses.containsKey("inventive")) {
+			for (CpcClassification cpci : retClasses.get("inventive")) {
+				jGenerator.writeStartObject();
+				jGenerator.writeStringField("raw", cpci.toText());
+				jGenerator.writeStringField("normalized", cpci.getTextNormalized());
+				writeArray("facets", cpci.getTree().getLeafFacets());
+				jGenerator.writeEndObject();
+			}
+		}
+		jGenerator.writeEndArray();
 
-            for (PatentClassification furtherClass : mainClass.getChildren()) {
-            	jGenerator.writeStartObject();
-            	jGenerator.writeStringField("raw", furtherClass.toText());
-            	jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
-            	writeArray("facets", furtherClass.toFacet());
-                jGenerator.writeEndObject();
-            }
-        }
+		writeArray("facets_additional", PatentClassification.getFacet(retClasses.get("additional")));
 
-    	jGenerator.writeEndArray();
-    }
+		jGenerator.writeFieldName("additional");
+		jGenerator.writeStartArray();
+		if (retClasses.containsKey("additional")) {
+			for (CpcClassification cpci : retClasses.get("additional")) {
+				jGenerator.writeStartObject();
+				jGenerator.writeStringField("raw", cpci.toText());
+				jGenerator.writeStringField("normalized", cpci.getTextNormalized());
+				writeArray("facets", cpci.getTree().getLeafFacets());
+				jGenerator.writeEndObject();
+			}
+		}
+		jGenerator.writeEndArray();
+
+		jGenerator.writeEndObject();
+	}
+
+	private <T extends PatentClassification> void writeUspcClassification(Collection<PatentClassification> classes)
+			throws IOException {
+
+		jGenerator.writeFieldName("uspc");
+		jGenerator.writeStartObject();
+
+		Set<UspcClassification> classesOfType = PatentClassification.filterByType(classes, ClassificationType.USPC);
+
+		List<UspcClassification> mainClasses = classesOfType.stream().filter(cl->cl.isMainOrInventive()).collect(Collectors.toList());
+		
+		writeArray("facets", PatentClassification.getFacet(classesOfType));
+
+		jGenerator.writeFieldName("main");
+		jGenerator.writeStartArray();
+		for (PatentClassification mainClass : mainClasses) {
+			jGenerator.writeStartObject();
+			jGenerator.writeStringField("raw", mainClass.toText());
+			jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
+			writeArray("facets", mainClass.getTree().getLeafFacets());
+			jGenerator.writeEndObject();
+		}
+		jGenerator.writeEndArray();
+
+		List<UspcClassification> furtherClasses = classesOfType.stream().filter(cl->!cl.isMainOrInventive()).collect(Collectors.toList());
+		
+		jGenerator.writeFieldName("further");
+		jGenerator.writeStartArray();
+		for (PatentClassification furtherClass : furtherClasses) {
+			jGenerator.writeStartObject();
+			jGenerator.writeStringField("raw", furtherClass.toText());
+			jGenerator.writeStringField("normalized", furtherClass.getTextNormalized());
+			writeArray("facets", furtherClass.getTree().getLeafFacets());
+			jGenerator.writeEndObject();
+		}
+		jGenerator.writeEndArray();
+
+		jGenerator.writeEndObject();
+	}
+
+	private void writeSingleClassificationType(Collection<PatentClassification> classes, ClassificationType classType)
+			throws IOException {
+		jGenerator.writeFieldName(classType.name().toLowerCase());
+		jGenerator.writeStartArray();
+
+		Set<PatentClassification> classesOfType = (Set<PatentClassification>) PatentClassification.filterByType(classes,
+				classType.getJavaClass());
+
+		for (PatentClassification mainClass : classesOfType) {
+			jGenerator.writeStartObject();
+			jGenerator.writeStringField("raw", mainClass.toText());
+			jGenerator.writeStringField("normalized", mainClass.getTextNormalized());
+			writeArray("facets", mainClass.getTree().getLeafFacets());
+			jGenerator.writeEndObject();
+		}
+
+		jGenerator.writeEndArray();
+	}
 
 }

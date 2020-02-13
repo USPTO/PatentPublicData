@@ -46,7 +46,7 @@ public class PatentValidator {
 		rules.add(new DescriptionRule());
 		rules.add(new ClaimRule());
 		rules.add(new ClassificationRule());
-		rules.add(new DescriptionFiguresRule());
+		//rules.add(new DescriptionFiguresRule());
 		return new PatentValidator(rules);
 	}
 }

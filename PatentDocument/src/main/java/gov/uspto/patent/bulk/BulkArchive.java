@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -31,7 +32,7 @@ public class BulkArchive implements Iterator<DumpFile>, AutoCloseable {
 	public BulkArchive(File zipFile, FileFilter fileFilter) {
 		Preconditions.checkArgument(zipFile.canRead(), "ZipFile not readble: " + zipFile.getAbsolutePath());
 
-		this.zipArchive = new ZipReader(zipFile, fileFilter);
+		this.zipArchive = new ZipReader(zipFile, fileFilter, StandardCharsets.UTF_8);
 	}
 
 	public void open() throws IOException {

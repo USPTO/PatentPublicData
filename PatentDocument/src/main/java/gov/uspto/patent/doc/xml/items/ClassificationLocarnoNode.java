@@ -1,6 +1,7 @@
 package gov.uspto.patent.doc.xml.items;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Node;
@@ -11,7 +12,7 @@ import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.model.classification.LocarnoClassification;
 import gov.uspto.patent.model.classification.PatentClassification;
 
-public class ClassificationLocarnoNode extends ItemReader<PatentClassification> {
+public class ClassificationLocarnoNode extends ItemReader<List<PatentClassification>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationLocarnoNode.class);
 
 	private final static String ITEM_NODE_NAME = "classification-locarno";
@@ -21,41 +22,40 @@ public class ClassificationLocarnoNode extends ItemReader<PatentClassification> 
 	}
 
 	@Override
-	public PatentClassification read() {
-
+	public List<PatentClassification> read() {
+		List<PatentClassification> classes = new ArrayList<PatentClassification>();
+		
 		Node mainClass = itemNode.selectSingleNode("main-classification");
 		if (mainClass == null) {
-			return null;
+			return classes;
 		}
 
 		String mainClassTxt = mainClass.getText();
 		if ("None".equalsIgnoreCase(mainClassTxt)) {
 			LOGGER.trace("Invalid Locarno classification 'main-classification': 'None'");
-			return null;
+			return classes;
 		}
 
-		LocarnoClassification classification;
+		LocarnoClassification classification = new LocarnoClassification(mainClass.getText(), true);
 		try {
-			classification = new LocarnoClassification();
 			classification.parseText(mainClass.getText());
-			classification.setIsMainClassification(true);
+			classes.add(classification);
 		} catch (ParseException e1) {
-			LOGGER.warn("Failed to parse Locarno classification 'main-classification': {}", mainClass.asXML(), e1);
-			return null;
+			LOGGER.warn("Failed to parse Locarno classification 'main-classification': {}", mainClass.asXML());
 		}
 
 		List<Node> furtherClasses = itemNode.selectNodes("further-classification");
 		for (Node subclass : furtherClasses) {
+			LocarnoClassification locarnoClass = new LocarnoClassification(subclass.getText(), false);
 			try {
-				LocarnoClassification locarnoClass = new LocarnoClassification();
 				locarnoClass.parseText(subclass.getText());
-				classification.addChild(locarnoClass);
 			} catch (ParseException e) {
-				LOGGER.warn("Failed to parse Locarno classification 'further-classification': {}", subclass.asXML(), e);
+				LOGGER.warn("Failed to parse Locarno classification 'further-classification': {}", subclass.asXML());
 			}
+			classes.add(locarnoClass);
 		}
 
-		return classification;
+		return classes;
 	}
 
 }

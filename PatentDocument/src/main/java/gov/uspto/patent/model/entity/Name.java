@@ -1,35 +1,20 @@
 package gov.uspto.patent.model.entity;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.Ordering;
-import com.google.common.primitives.Ints;
-
-import gov.uspto.common.text.StringCaseUtil;
+import gov.uspto.patent.InvalidDataException;
 
 public abstract class Name {
 
-	private final String fullName;
 	private Set<String> synonym = new HashSet<String>(); // nickname, aliases, variants.
 	private String suffix; // LLP, LLC, Ltd;
 	private String prefix; // Dr.
-
-	public Name(final String fullName) {
-		this.fullName = fullName;
-	}
-
-	public String getName() {
-		return fullName;
-	}
-
-	public String getNameTitleCase() {
-		return StringCaseUtil.toTitleCase(fullName);
-	}
 
 	public Set<String> getSynonymSet() {
 		return synonym;
@@ -40,10 +25,36 @@ public abstract class Name {
 	 * 
 	 * @return length sorted list
 	 */
-	public Collection<String> getSynonyms() {
-		List<String> synArray = Arrays.asList(synonym.toArray(new String[0]));
-		Collections.sort(synArray, new OrderingByLength());
-		return synArray;
+	public List<String> getSynonyms() {
+		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? 0 : 1;
+		return synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength).collect(Collectors.toList());
+	}
+
+	public List<String> getFuzzySynonyms() {
+		return synonym.stream().filter(e -> e.startsWith("fuzz:")).collect(Collectors.toList());
+	}
+
+	public String getFuzzySynonyms(String name, boolean removeName) {
+		String key = "fuzz:" + name + "-";
+		Optional<String> first = synonym.stream().filter(e -> e.startsWith(key)).findFirst();
+		if (removeName) {
+			return first.isPresent() ? first.get().substring(key.length()) : "";
+		} else {
+			return first.isPresent() ? first.get() : "";
+		}
+	}
+
+	public String getShortestSynonym() {
+		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? -1 : 1;
+		Optional<String> shortest = synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength.reversed())
+				.findFirst();
+		return shortest.isPresent() ? shortest.get() : "";
+	}
+
+	public String getLongestSynonym() {
+		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? -1 : 1;
+		Optional<String> shortest = synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength).findFirst();
+		return shortest.isPresent() ? shortest.get() : "";
 	}
 
 	public void setSynonyms(Set<String> synonym) {
@@ -52,6 +63,10 @@ public abstract class Name {
 
 	public void addSynonym(String synonym) {
 		this.synonym.add(synonym);
+	}
+
+	public void addFuzzSynonym(String name, String synonym) {
+		this.synonym.add("fuzz:" + name + "-" + synonym);
 	}
 
 	public void addSynonymNorm(String synonym) {
@@ -89,15 +104,17 @@ public abstract class Name {
 		this.prefix = prefix;
 	}
 
-	private class OrderingByLength extends Ordering<String> {
-		@Override
-		public int compare(String s1, String s2) {
-			return Ints.compare(s1.length(), s2.length());
-		}
-	}
-
 	@Override
 	public String toString() {
-		return " synonym=" + synonym + ", prefix=" + prefix + ", suffix=" + suffix + ", fullName=" + fullName;
+		return " synonym=" + synonym + ", prefix=" + prefix + ", suffix=" + suffix + ", fullName=" + getName()
+				+ ", initials=" + getInitials();
 	}
+
+	public abstract String getName();
+
+	public abstract String getNameNormalizeCase();
+
+	public abstract String getInitials();
+	
+	public abstract boolean validate() throws InvalidDataException;
 }

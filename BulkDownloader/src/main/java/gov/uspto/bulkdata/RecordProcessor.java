@@ -5,10 +5,11 @@ import java.io.Writer;
 
 import gov.uspto.bulkdata.tools.grep.DocumentException;
 import gov.uspto.patent.PatentDocFormat;
+import gov.uspto.patent.PatentReaderException;
 
 public interface RecordProcessor {
 	//public void process(String sourceTxt, String rawRecord) throws DocumentException, IOException;
-	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws DocumentException, IOException;
+	public Boolean process(String sourceTxt, String rawRecord, Writer writer) throws DocumentException, IOException, PatentReaderException;
 
 	/**
 	 * Executes before processing task starts complete

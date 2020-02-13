@@ -28,6 +28,7 @@ import gov.uspto.patent.model.DocumentIdType;
 public class RelationNode extends ItemReader<List<DocumentId>> {
 	private static final String ITEM_NODE_NAME = "relation";
 	private static final String REL_PARENT = "parent-doc/document-id";
+	private static final String REL_PARENT_GRANT = "parent-doc/parent-grant-document/document-id";
 	private static final String REL_PCT_PARENT = "parent-doc/parent-pct-document/document-id";
 
 	private static final String REL_CHILD = "child-doc/document-id";
@@ -48,6 +49,13 @@ public class RelationNode extends ItemReader<List<DocumentId>> {
 		parentDocId.setType(docIdType);
 		docIds.add(parentDocId);
 
+		Node parentGrantN = itemNode.selectSingleNode(REL_PARENT_GRANT);
+		if (parentGrantN != null) {
+			DocumentId parentGrantId = new DocumentIdNode(parentGrantN).read();
+			parentGrantId.setType(docIdType);
+			docIds.add(parentGrantId);
+		}
+
 		Node pctdN = itemNode.selectSingleNode(REL_PCT_PARENT);
 		if (pctdN != null) {
 			DocumentId docId = new DocumentIdNode(pctdN).read();
@@ -56,7 +64,7 @@ public class RelationNode extends ItemReader<List<DocumentId>> {
 				docIds.add(docId);
 			}
 		}
-		
+
 		Node childN = itemNode.selectSingleNode(REL_CHILD);
 		if (childN != null) {
 			DocumentId childDocId = new DocumentIdNode(childN).read();

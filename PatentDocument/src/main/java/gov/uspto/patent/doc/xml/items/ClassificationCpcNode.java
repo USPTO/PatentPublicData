@@ -1,9 +1,13 @@
 package gov.uspto.patent.doc.xml.items;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,90 +47,122 @@ import gov.uspto.patent.model.classification.PatentClassification;
 	}
  * </pre>
  */
-public class ClassificationCpcNode extends ItemReader<PatentClassification> {
+public class ClassificationCpcNode extends ItemReader<List<PatentClassification>> {
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassificationCpcNode.class);
+	
+	private static final XPath CPCXP = DocumentHelper.createXPath("self::classification-cpc|classification-cpc");
+	private static final XPath SECTIONXP = DocumentHelper.createXPath("section");
+	private static final XPath MCLASSXP = DocumentHelper.createXPath("class");
+	private static final XPath SCLASSXP = DocumentHelper.createXPath("subclass");
+	private static final XPath MGROUPXP = DocumentHelper.createXPath("main-group");
+	private static final XPath SGROUPXP = DocumentHelper.createXPath("subgroup");
+	private static final XPath TYPEXP = DocumentHelper.createXPath("classification-value");
 
-	public ClassificationCpcNode(Node itemNode) {
+	private static final XPath CPCTXTXP = DocumentHelper.createXPath("self::classification-cpc-text|classification-cpc-text");
+	private static final XPath MAINCLASSXP = DocumentHelper.createXPath("main-classification");
+	private static final XPath FURTHERCLASSXP = DocumentHelper.createXPath("further-classification");
+
+	private boolean isInventive;
+	
+	public ClassificationCpcNode(Node itemNode, boolean isInventive) {
 		super(itemNode);
+		this.isInventive = isInventive;
 	}
 
 	@Override
-	public PatentClassification read() {
-
-		Node cpcN = itemNode.selectSingleNode("self::classification-cpc|classification-cpc");
+	public List<PatentClassification> read() {
+		
+		Node cpcN = CPCXP.selectSingleNode(itemNode);
 		if (cpcN != null) {
-
-			String section = cpcN.selectSingleNode("section").getText();
-			String mainClass = cpcN.selectSingleNode("class").getText();
-			String subclass = cpcN.selectSingleNode("subclass").getText();
-			String mainGroup = cpcN.selectSingleNode("main-group").getText();
-			String subgroup = cpcN.selectSingleNode("subgroup").getText();
-
-			// classification-value: I = inventive, A = additional
-			String type = cpcN.selectSingleNode("classification-value").getText();
-
-			CpcClassification cpcClass = new CpcClassification();
-			cpcClass.setSection(section);
-			cpcClass.setMainClass(mainClass);
-			cpcClass.setSubClass(subclass);
-			cpcClass.setMainGroup(mainGroup);
-			cpcClass.setSubGroup(subgroup);
-
-			if ("I".equals(type)) {
-				cpcClass.setInventive(true);
-			} else {
-				cpcClass.setInventive(false);
+			return readSectionedFormat(cpcN);
+		}
+		else {
+			Node cpcTxtN = CPCTXTXP.selectSingleNode(itemNode);
+			if (cpcTxtN != null) {
+				return readFlatFormat(cpcTxtN);
 			}
-
-			LOGGER.trace("{}", cpcClass);
-
-			return cpcClass;
 		}
 
-		Node classTxt = itemNode.selectSingleNode("self::classification-cpc-text|classification-cpc-text");
+		return Collections.emptyList();
+	}
+
+	public List<PatentClassification> readSectionedFormat(Node cpcN) {
+		List<PatentClassification> cpcClasses = new ArrayList<PatentClassification>();
+		if (cpcN == null) {
+			return cpcClasses;
+		}
+
+		String section = SECTIONXP.selectSingleNode(cpcN).getText();
+		String mainClass = MCLASSXP.selectSingleNode(cpcN).getText();
+		String subclass = SCLASSXP.selectSingleNode(cpcN).getText();
+		String mainGroup = MGROUPXP.selectSingleNode(cpcN).getText();
+		String subgroup = SGROUPXP.selectSingleNode(cpcN).getText();
+
+		// classification-value: I = inventive, A = additional
+		String type = TYPEXP.selectSingleNode(cpcN).getText();
+		boolean inventive = false;
+		if ("I".equals(type)) {
+			inventive = true;
+		}
+
+		CpcClassification cpcClass = new CpcClassification("", inventive);
+		cpcClass.setSection(section);
+		cpcClass.setMainClass(mainClass);
+		cpcClass.setSubClass(subclass);
+		cpcClass.setMainGroup(new String[] {mainGroup});
+		cpcClass.setSubGroup(new String[] {subgroup});
+		cpcClasses.add(cpcClass);
+
+		return cpcClasses;
+	}
+
+	public List<PatentClassification> readFlatFormat(Node cpcTxtN) {
+		
+		List<PatentClassification> cpcClasses = new ArrayList<PatentClassification>();
+		if (cpcTxtN == null) {
+			return cpcClasses;
+		}
+		
+		Node classTxt = CPCTXTXP.selectSingleNode(cpcTxtN);
 		if (classTxt != null) {
 
-			CpcClassification classification = null;
+			CpcClassification classification = new CpcClassification(classTxt.getText(), true);
 			try {
-				classification = new CpcClassification();
 				classification.parseText(classTxt.getText());
 			} catch (ParseException e) {
 				LOGGER.warn("Failed to parse CPC classification: {}", classTxt.asXML());
-
 			}
-
-			return classification;
+			cpcClasses.add(classification);
+			
+			return cpcClasses;
 		}
 
-		Node mainClass = itemNode.selectSingleNode("main-classification");
+		Node mainClass = MAINCLASSXP.selectSingleNode(cpcTxtN);
 		if (mainClass != null) {
 
-			CpcClassification classification;
+			CpcClassification classification = new CpcClassification(mainClass.getText(), true);
 			try {
-				classification = new CpcClassification();
 				classification.parseText(mainClass.getText());
 			} catch (ParseException e1) {
 				LOGGER.warn("Failed to parse CPC classification: {}", mainClass.asXML());
-				return null;
 			}
+			cpcClasses.add(classification);
 
-			List<Node> furtherClasses = itemNode.selectNodes("further-classification");
+			List<Node> furtherClasses = FURTHERCLASSXP.selectNodes(cpcTxtN);
 			for (Node subclass : furtherClasses) {
-
+				CpcClassification cpcClass = new CpcClassification(subclass.getText(), false);
 				try {
-					CpcClassification cpcClass = new CpcClassification();
 					cpcClass.parseText(subclass.getText());
-					classification.addChild(cpcClass);
 				} catch (ParseException e) {
 					LOGGER.warn("Failed to parse CPC classification: {}", subclass.asXML());
 				}
-
+				cpcClasses.add(cpcClass);
 			}
-
-			return classification;
 		}
+		
+		return cpcClasses;
 
-		return null;
 	}
 
 }

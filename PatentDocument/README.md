@@ -21,6 +21,8 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | references-cited | variation: us-references-cited |
 | citation | variation: us-citation |
 | inventor | variation: Applicant with attribute "app-type" value "applicant-inventor" |
+| assignee | variation: Applicant with attribute "applicant-authority-category" value "assignee" |
+| applicant | missing address with attribute "applicant-authority-category value "assignee" ; read address from matching assignee |
 | address/street | variation: address-1 address-2
 | agent | fix: if missing use "correspondence-address" field |
 | description | fix to corresponds with non-xml patent versions, improvement since individual sections are often searched on: break description into individual sections by XML Processing Instructions |
@@ -29,6 +31,8 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | classification | normalization: CPC, IPC and USPC patent classifications |
 | documentId / patentId | normalization; including removing leading 0 padding, currently added to patent ids with length less than 8 digits, in the near future patent ids may increase to 13 digits |
 | country | improvement: mapping of country codes to country name, current and historic codes used before 1978 or individual codes dropped or changed since |
+| patent title and all names | normalization; inconsistent case, normalize case |
+| Org Names | parse suffixes and short name ; save variations as synonyms |
 | address and name | not-fixed, lookout for switched value errors: within name the first-name and last-name or middle name switched; within address the country and state switched ; farther back in time more likely to see these data errors. Older Greenbook patents sometimes have first name or last name switched with middle name (presented as an initial), making searching by a person's name more difficult |
 | description | not-fixed, Node elements within the description fields have "id" and "num" attributes which can be incorrect with duplicates, since they are entered by humans, by the filing law firms. Data Scientist may wish to create their own id and number for these data elements i.e. (heading \\| p \\| li \\| table). The num attribute is more likely to be off, since it is not as visbile to the examiner. |
 
@@ -46,23 +50,6 @@ Short list of some of the XML variations handled and improvements made by the Pa
 | Classification  | parse and normalize Classification (USPC, IPC, CPC) |
 | Date            | date format yyyyMMdd |
 | Address         | must have a country |
-
-
-## CLI Tool to export all Patents as indexable JSON:
-    Single Line Per Record: 
-       gov.uspto.patent.TransformerCli --input="ipa_corpusApps_2005.zip"
-       
-    Single File Per Record:
-       gov.uspto.patent.TransformerCli --input="ipa_corpusApps_2005.zip" --outBulk=false
-
-     Options:
-         --input="FILE.zip"    Patent Bulk Zip
-         --outdir="output"     Output Directory      
-         --outBulk=true        Single file, JSON record per line
-         --limit=100           Total Record Limit
-         --flat=false          Denormalized/Flat JSON or Objecet Hierarchy
-         --pettyPrint=true     Pretty Print JSON
-         --stdout=true         Write to Terminal instead of file 
          
 
 ## Example Usage:

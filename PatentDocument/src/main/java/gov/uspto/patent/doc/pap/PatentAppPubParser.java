@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -18,7 +20,6 @@ import gov.uspto.patent.doc.pap.fragments.AbstractTextNode;
 import gov.uspto.patent.doc.pap.fragments.AgentNode;
 import gov.uspto.patent.doc.pap.fragments.ApplicantNode;
 import gov.uspto.patent.doc.pap.fragments.ApplicationIdNode;
-import gov.uspto.patent.doc.pap.fragments.AssigneeNode;
 import gov.uspto.patent.doc.pap.fragments.ClaimNode;
 import gov.uspto.patent.doc.pap.fragments.ClassificationNode;
 import gov.uspto.patent.doc.pap.fragments.DescriptionNode;
@@ -39,7 +40,6 @@ import gov.uspto.patent.model.UsKindCode2PatentType;
 import gov.uspto.patent.model.classification.PatentClassification;
 import gov.uspto.patent.model.entity.Agent;
 import gov.uspto.patent.model.entity.Applicant;
-import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Inventor;
 
 /**
@@ -55,6 +55,13 @@ public class PatentAppPubParser extends Dom4JParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PatentAppPubParser.class);
 
 	private PatentApplication patent;
+
+	private static final XPath TITLE_XP = DocumentHelper.createXPath(
+			"/patent-application-publication/subdoc-bibliographic-information/technical-information/title-of-invention");
+	private static final XPath FILING_DATE_XP = DocumentHelper.createXPath(
+			"/patent-application-publication/subdoc-bibliographic-information/domestic-filing-data/filing-date");
+	private static final XPath PAT_TYPE_XP = DocumentHelper
+			.createXPath("/patent-application-publication/subdoc-bibliographic-information/publication-filing-type");
 
 	public static final String XML_ROOT = "/patent-application-publication";
 
@@ -73,18 +80,14 @@ public class PatentAppPubParser extends Dom4JParser {
 			MDC.put("DOCID", publicationId.toText());
 		}
 
-		String title = Dom4jUtil.getTextOrNull(document,
-				XML_ROOT + "/subdoc-bibliographic-information/technical-information/title-of-invention");
+		String title = Dom4jUtil.getTextOrNull(document, TITLE_XP);
 
-		String dateProduced = Dom4jUtil.getTextOrNull(document,
-				XML_ROOT + "/subdoc-bibliographic-information/domestic-filing-data/filing-date");
-		
+		String dateProduced = Dom4jUtil.getTextOrNull(document, FILING_DATE_XP);
+
 		/*
 		 * Patent Type from field or from kindCode.
 		 */
-		String patentTypeStr = Dom4jUtil
-				.getTextOrEmpty(document, XML_ROOT + "/subdoc-bibliographic-information/publication-filing-type")
-				.replaceFirst("^new-", "");
+		String patentTypeStr = Dom4jUtil.getTextOrEmpty(document, PAT_TYPE_XP).replaceFirst("^new-", "");
 		PatentType patentType = null;
 		try {
 			patentType = PatentType.fromString(patentTypeStr);
@@ -98,8 +101,6 @@ public class PatentAppPubParser extends Dom4JParser {
 		List<Inventor> inventors = new InventorNode(document).read();
 		List<Applicant> applicants = new ApplicantNode(document).read();
 		List<Agent> agents = new AgentNode(document).read();
-
-		List<Assignee> assignees = new AssigneeNode(document).read();
 
 		Set<PatentClassification> classifications = new ClassificationNode(document).read();
 
@@ -115,19 +116,21 @@ public class PatentAppPubParser extends Dom4JParser {
 		/*
 		 * Start Building Patent Object.
 		 */
-		//if (patent == null) {
-			patent = new PatentApplication(publicationId, patentType);
-		//} else {
-		//	patent.reset();
-		//	patent.setDocumentId(publicationId);
-		//	patent.setPatentType(patentType);
-		//}
+		// if (patent == null) {
+		patent = new PatentApplication(publicationId, patentType);
+		// } else {
+		// patent.reset();
+		// patent.setDocumentId(publicationId);
+		// patent.setPatentType(patentType);
+		// }
+
+		patent.setSource(getSource());
 
 		patent.setApplicationId(applicationId);
 		patent.addPriorityId(priorityIds);
 		patent.addRelationIds(relatedIds);
 
-        patent.addOtherId(patent.getApplicationId());
+		patent.addOtherId(patent.getApplicationId());
 		patent.addOtherId(patent.getPriorityIds());
 		patent.addRelationIds(patent.getOtherIds());
 
@@ -135,7 +138,6 @@ public class PatentAppPubParser extends Dom4JParser {
 		patent.setAbstract(abstractText);
 		patent.setDescription(description);
 		patent.setInventor(inventors);
-		patent.setAssignee(assignees);
 		patent.setApplicant(applicants);
 		patent.setAgent(agents);
 		// patent.setCitation(citations); // Applications made public don't
@@ -147,15 +149,7 @@ public class PatentAppPubParser extends Dom4JParser {
 			try {
 				patent.setDateProduced(dateProduced);
 			} catch (InvalidDataException e) {
-				LOGGER.error("Invalid Date: {}", dateProduced, e);
-			}
-		}
-
-		if (dateProduced != null) {
-			try {
-				patent.setDateProduced(dateProduced);
-			} catch (InvalidDataException e) {
-				LOGGER.error("Invalid Date: {}", dateProduced, e);
+				LOGGER.warn("{} : {}", e.getMessage(), "dateProduced");
 			}
 		}
 

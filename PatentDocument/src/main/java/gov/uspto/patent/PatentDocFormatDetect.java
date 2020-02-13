@@ -2,13 +2,18 @@ package gov.uspto.patent;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gov.uspto.patent.model.Patent;
+import gov.uspto.patent.model.PatentCorpus;
 
 public class PatentDocFormatDetect {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PatentDocFormatDetect.class);
@@ -20,11 +25,11 @@ public class PatentDocFormatDetect {
 	 * @return
 	 */
 	public PatentDocFormat fromFileName(File file) {
-	    PatentDocFormat format = PatentDocFormat.findMimeType(file.getName());
+		PatentDocFormat format = PatentDocFormat.findMimeType(file.getName());
 		if (format == PatentDocFormat.Unknown) {
 
 			if (file.getName().endsWith(".greenbook") || file.getName().endsWith(".gbk")) {
-			    format = PatentDocFormat.Greenbook;
+				format = PatentDocFormat.Greenbook;
 			}
 		}
 
@@ -40,7 +45,7 @@ public class PatentDocFormatDetect {
 	}
 
 	public PatentDocFormat fromContent(BufferedReader br) throws IOException {
-	    PatentDocFormat foundMimeType = PatentDocFormat.Unknown;
+		PatentDocFormat foundMimeType = PatentDocFormat.Unknown;
 		br.mark(1000);
 		LINES: for (int i = 0; br.ready() && i < 150; i++) {
 			String line = br.readLine();
@@ -59,7 +64,7 @@ public class PatentDocFormatDetect {
 	}
 
 	public PatentDocFormat fromContent(Reader reader) throws IOException {
-	    PatentDocFormat foundMimeType = PatentDocFormat.Unknown;
+		PatentDocFormat foundMimeType = PatentDocFormat.Unknown;
 		try (BufferedReader br = new BufferedReader(reader)) {
 			// PAP-XML contains list of entities for each image embodiment first
 			// number of lines (seen 38+ lines in header).
@@ -85,8 +90,42 @@ public class PatentDocFormatDetect {
 		if (file.getName().endsWith(".zip")) {
 			return PatentDocFormat.Unknown;
 		} else {
-			return fromContent(new FileReader(file));
+			try (Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)){
+				return fromContent(reader);
+			}
 		}
+	}
+
+	/**
+	 * Detect PatentDocFormat from Patent Type and Date Produced
+	 * 
+	 * @param patent
+	 * @return
+	 */
+	public static PatentDocFormat fromPatent(Patent patent) {
+		if (patent.getDateProduced() == null) {
+			return PatentDocFormat.Unknown;
+		}
+
+		int yearProduced = patent.getDateProduced().getDate().getYear();
+		if (PatentCorpus.PGPUB.equals(patent.getPatentCorpus())) {
+			if (yearProduced < 2004) {
+				return PatentDocFormat.Pap;
+			}
+			if (yearProduced >= 2004) {
+				return PatentDocFormat.RedbookApplication;
+			}
+		} else if (PatentCorpus.USPAT.equals(patent.getPatentCorpus())) {
+			if (yearProduced >= 2004) {
+				return PatentDocFormat.RedbookGrant;
+			} else if (yearProduced == 2001) {
+				return PatentDocFormat.Sgml;
+			} else if (yearProduced < 2002 && yearProduced > 1975) {
+				return PatentDocFormat.Greenbook;
+			}
+		}
+
+		return PatentDocFormat.Unknown;
 	}
 
 	public static void main(String[] args) throws IOException {

@@ -36,6 +36,7 @@ public class DownloadFileProcessor {
 		RecordReader reader = new RecordReader(config);
 		RunStats runStats = new RunStats(inBulkFile.getName());
 		for (RecordProcessor processor : recordProcessors) {
+			LOGGER.info("Processor: {}", processor.getClass().getSimpleName());
 			RunStats processStats = reader.read(inBulkFile, processor);
 			processStats.setTaskName(processor.getClass().getName());
 			runStats.add(processStats);

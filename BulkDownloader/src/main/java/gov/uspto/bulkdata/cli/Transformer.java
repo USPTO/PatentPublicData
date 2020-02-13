@@ -89,7 +89,7 @@ public class Transformer {
 	  /*
 	   * Disable Logging except for Errors.
 	   *
-	   */
+	   *
 	  Logger.getRootLogger().getLoggerRepository().resetConfiguration();
 	  ConsoleAppender console = new ConsoleAppender();
 	  String PATTERN = "%d [%p|%c|%C{1}] %m%n";
@@ -97,6 +97,7 @@ public class Transformer {
 	  console.setThreshold(Level.ERROR);
 	  console.activateOptions();
 	  Logger.getRootLogger().addAppender(console);
+	  */
 
       TransformerConfig config = new TransformerConfig();
       OptionParser opParser = config.buildArgs();

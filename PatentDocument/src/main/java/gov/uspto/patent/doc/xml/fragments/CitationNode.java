@@ -163,19 +163,25 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 
 			PatCitation citation = new PatCitation(num, documentId, citedBy);
 
-			PatentClassification mainClassNational = new ClassificationNationalNode(patcit.getParent()).read();
-			if (mainClassNational != null) {
-				citation.addClassification(mainClassNational);
+			List<PatentClassification> mainClassNational = new ClassificationNationalNode(patcit.getParent()).read();
+			if (!mainClassNational.isEmpty()) {
+				for(PatentClassification patClass: mainClassNational) {
+					citation.addClassification(patClass);
+				}
 			}
 
-			PatentClassification mainClassCpc = new ClassificationCpcNode(patcit.getParent()).read();
-			if (mainClassCpc != null) {
-				citation.addClassification(mainClassCpc);
+			List<PatentClassification> mainClassCpc = new ClassificationCpcNode(patcit.getParent(), true).read();
+			if (!mainClassCpc.isEmpty()) {
+				for(PatentClassification patClass: mainClassCpc) {
+					citation.addClassification(patClass);
+				}
 			}
 
-			PatentClassification mainClassIpc = new ClassificationIPCNode(patcit.getParent()).read();
-			if (mainClassCpc != null) {
-				citation.addClassification(mainClassIpc);
+			List<PatentClassification> mainClassIpc = new ClassificationIPCNode(patcit.getParent()).read();
+			if (!mainClassCpc.isEmpty()) {
+				for(PatentClassification patClass: mainClassIpc) {
+					citation.addClassification(patClass);
+				}
 			}
 
 			patCitations.add(citation);

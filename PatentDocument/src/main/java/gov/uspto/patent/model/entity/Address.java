@@ -80,9 +80,25 @@ public class Address {
 		this.email = email;
 	}
 
+	public boolean hasCity() {
+		return (city != null && ! city.trim().isEmpty());
+	}
+
+	public boolean hasCountry() {
+		return (country != null && (! CountryCode.UNDEFINED.equals(country) && ! CountryCode.UNKNOWN.equals(country)));
+	}
+
 	public boolean validate() throws InvalidDataException {
-		if (country == null) {
-			throw new InvalidDataException("Invalid Address: country is null");
+		boolean cityOccurs = hasCity();
+		boolean countryOccurs = hasCountry();
+		if (cityOccurs == false && countryOccurs == false) {
+			throw new InvalidDataException("Invalid Address: missing city and country");
+		}
+		else if (countryOccurs == false) {
+			throw new InvalidDataException("Invalid Address: missing country");
+		}
+		else if (cityOccurs == false) {
+			throw new InvalidDataException("Invalid Address: missing city");
 		}
 
 		return true;

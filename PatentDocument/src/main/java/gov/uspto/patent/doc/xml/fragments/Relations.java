@@ -21,17 +21,19 @@ import gov.uspto.patent.model.DocumentIdType;
 public class Relations extends DOMFragmentReader<List<DocumentId>> {
 	// us-divisional-reissue/us-relation
 
-	private static final String ADDITION = "//addition/relation";
-	private static final String CONTINUATION = "//continuation/relation";
-	private static final String CONTINUATION_IN_PART = "//continuation-in-part/relation";
-	private static final String CONTINUATION_REISSUE = "//continuing-reissue/relation";
-	private static final String DIVISION = "//division/relation";
+	private static final String PARENT_PATH = "/*/*/us-related-documents";
 
-	private static final String REEXAMINATION = "//reexamination/relation";
-	private static final String REISSUE = "//reissue/relation";
-	private static final String SUBSITUTION = "//substitution/relation";
-	private static final String USREEX = "//us-reexamination-reissue-merger/relation";
-	private static final String UTILITY_MODEL = "//utility-model-basis/relation";
+	private static final String ADDITION = "addition/relation";
+	private static final String CONTINUATION = "continuation/relation";
+	private static final String CONTINUATION_IN_PART = "continuation-in-part/relation";
+	private static final String CONTINUATION_REISSUE = "continuing-reissue/relation";
+	private static final String DIVISION = "division/relation";
+
+	private static final String REEXAMINATION = "reexamination/relation";
+	private static final String REISSUE = "reissue/relation";
+	private static final String SUBSITUTION = "substitution/relation";
+	private static final String USREEX = "us-reexamination-reissue-merger/relation";
+	private static final String UTILITY_MODEL = "utility-model-basis/relation";
 
 	private List<DocumentId> docIds;
 
@@ -43,31 +45,36 @@ public class Relations extends DOMFragmentReader<List<DocumentId>> {
 	public List<DocumentId> read() {
 		docIds = new ArrayList<DocumentId>();
 
-		getDocIds(ADDITION, DocumentIdType.ADDITION);
+		Node parentNode = document.selectSingleNode(PARENT_PATH);
+		if (parentNode == null) {
+			return docIds;
+		}
 
-		getDocIds(CONTINUATION, DocumentIdType.CONTINUATION);
+		getDocIds(parentNode, ADDITION, DocumentIdType.ADDITION);
 
-		getDocIds(CONTINUATION_IN_PART, DocumentIdType.CONTINUATION_IN_PART);
+		getDocIds(parentNode, CONTINUATION, DocumentIdType.CONTINUATION);
 
-		getDocIds(CONTINUATION_REISSUE, DocumentIdType.CONTINUATION_REISSUE);
+		getDocIds(parentNode, CONTINUATION_IN_PART, DocumentIdType.CONTINUATION_IN_PART);
 
-		getDocIds(DIVISION, DocumentIdType.DIVISION);
+		getDocIds(parentNode, CONTINUATION_REISSUE, DocumentIdType.CONTINUATION_REISSUE);
 
-		getDocIds(REEXAMINATION, DocumentIdType.REEXAMINATION);
+		getDocIds(parentNode, DIVISION, DocumentIdType.DIVISION);
 
-		getDocIds(REISSUE, DocumentIdType.REISSUE);
+		getDocIds(parentNode, REEXAMINATION, DocumentIdType.REEXAMINATION);
 
-		getDocIds(SUBSITUTION, DocumentIdType.SUBSITUTION);
+		getDocIds(parentNode, REISSUE, DocumentIdType.REISSUE);
 
-		getDocIds(USREEX, DocumentIdType.USREEX);
+		getDocIds(parentNode, SUBSITUTION, DocumentIdType.SUBSITUTION);
 
-		getDocIds(UTILITY_MODEL, DocumentIdType.UTILITY_MODEL);
+		getDocIds(parentNode, USREEX, DocumentIdType.USREEX);
+
+		getDocIds(parentNode, UTILITY_MODEL, DocumentIdType.UTILITY_MODEL);
 
 		return docIds;
 	}
 
-	public void getDocIds(String xmlPath, DocumentIdType docIdType) {
-		Node node = document.selectSingleNode(xmlPath);
+	public void getDocIds(Node parentNode, String xmlPath, DocumentIdType docIdType) {
+		Node node = parentNode.selectSingleNode(xmlPath);
 		if (node != null) {
 			docIds.addAll(new RelationNode(node, docIdType).read());
 		}

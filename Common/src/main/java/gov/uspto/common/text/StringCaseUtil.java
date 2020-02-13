@@ -1,7 +1,9 @@
 package gov.uspto.common.text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.base.Joiner;
@@ -26,6 +28,26 @@ public class StringCaseUtil {
 				"Pseudo", "Socio", "Electro", "Single", "Dual", "Triple", "Quad"}));
 
 		lowerTrailHyphen.addAll(Arrays.asList(new String[] { "Like", "Type", "Driven" }));
+	}
+
+	/**
+	 * Check if Word is lowercase title word
+	 * 
+	 * @param word
+	 * @return boolean
+	 */
+	public static boolean isLowercaseTitleWord(String word) {
+		return word.matches("^[a-z\\-]+$") || lowerCaseWords.contains(capitalizeFirstLetter(word));
+	}
+
+	public static String[] removeLowercaseTitleWords(String[] words) {
+		List<String> ret = new ArrayList<String>();
+		for(String word: words) {
+			if (!isLowercaseTitleWord(word)) {
+				ret.add(word);
+			}
+		}
+		return ret.toArray(new String[0]);
 	}
 
 	public static String join(String delimiter, String... elements) {
@@ -107,16 +129,16 @@ public class StringCaseUtil {
 			 */
 			char firstChar = words[i].charAt(0);
 			char lastChar = words[i].charAt(words[i].length()-1);
-			if (('‘' == firstChar && '’' == lastChar) || '(' == firstChar && ')' == lastChar || (')' == lastChar && !inBlock)) {
-				if ('‘' == firstChar) {
+			if (('\u2018' == firstChar && '\u2019' == lastChar) || '(' == firstChar && ')' == lastChar || (')' == lastChar && !inBlock)) {
+				if ('\u2018' == firstChar) {
 					words[i] = "'" + words[i].substring(1, words[i].length()-1) + "'";
 				}
 				continue;
 			}
-			else if ('‘' == firstChar || '(' == firstChar || words[i].indexOf('(') != -1) {
-				if ('‘' == firstChar) {
+			else if ('\u2018' == firstChar || '(' == firstChar || words[i].indexOf('(') != -1) {
+				if ('\u2018' == firstChar) {
 					words[i] = "'" + words[i].substring(1);
-					wantCloseBlockChar = '’';
+					wantCloseBlockChar = '\u2019';
 				} else {
 					wantCloseBlockChar = ')';
 				}
@@ -124,7 +146,7 @@ public class StringCaseUtil {
 				continue;
 			}
 			else if (wantCloseBlockChar == lastChar) {
-				if ('’' == lastChar) {
+				if ('\u2019' == lastChar) {
 					words[i] = words[i].substring(0, words[i].length()-1) + "'";
 				}
 				inBlock = false;
