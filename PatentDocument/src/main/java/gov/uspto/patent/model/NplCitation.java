@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public class NplCitation extends Citation {
 
-	private static Pattern QUOTED_TEXT = Pattern.compile("(?:[\"“]|<i>)([^\"”]+)(?:[\"”]|<\\/i>)");
+	private static Pattern QUOTED_TEXT = Pattern.compile("(?:[\"Â“]|<i>)([^\"Â”]+)(?:[\"Â”]|<\\/i>)");
 	private String citeText; // raw cite text
 	private DocumentId patDocId; // Patent DocumentId parsed from raw text.
 

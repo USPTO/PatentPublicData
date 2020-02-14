@@ -31,7 +31,7 @@ import gov.uspto.patent.InvalidDataException;
  * </ul>
  * <li>Fractional Patents</li>
  * <ul>
- * <li>end with [A-O] e.g. D90793½ becomes D90793H</li>
+ * <li>end with [A-O] e.g. D90793Â½ becomes D90793H</li>
  * <li>issued ____ to 1966</li>
  * <li>purpose was to group patent families issued together</li>
  * </ul>

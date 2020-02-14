@@ -269,7 +269,7 @@ public class DotCodes {
 
 	/*
 	 * .En. found but is NOT a Dot Code in US4238984A: 38 at the timing T.sub.En. In
-	 * this case, the output Q.sub.1, Q.sub.2 and The dots are NOT shared – we
+	 * this case, the output Q.sub.1, Q.sub.2 and The dots are NOT shared Â– we
 	 * handled this type of exception with a simple change to our code.
 	 * 
 	 * .En. found again, but is NOT a Dot Code in US3992364A: F E.As. No Illness 250

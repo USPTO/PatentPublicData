@@ -26,8 +26,8 @@ public class CitationNodeTest {
 
 	private static Map<String, List<String>> NPL_US_APPS = new LinkedHashMap<String, List<String>>();
 	static {
-		NPL_US_APPS.put("U.S. Appl. No. 12/163,684, filed Jun. 27, 2008, by Peter Sebastian Slusarczyk et al., entitled “Dimpled Food Product”.", Arrays.asList("12163684","20080627"));
-		NPL_US_APPS.put("U.S. Appl. No. 29/308,915, filed on Jul. 14, 2008—First named inventor Alvaro Gonzalez.", Arrays.asList("29308915","20080714"));
+		NPL_US_APPS.put("U.S. Appl. No. 12/163,684, filed Jun. 27, 2008, by Peter Sebastian Slusarczyk et al., entitled Â“Dimpled Food ProductÂ”.", Arrays.asList("12163684","20080627"));
+		NPL_US_APPS.put("U.S. Appl. No. 29/308,915, filed on Jul. 14, 2008Â—First named inventor Alvaro Gonzalez.", Arrays.asList("29308915","20080714"));
 		NPL_US_APPS.put("U.S. Appl. No. 29/327,632; entitled Doughnut Product With Six Appendages and Without a Hole; filed Nov. 10, 2008.", Arrays.asList("29327632","20081110"));
 		NPL_US_APPS.put("U.S. Appl. No. 29/327,634; entitled Doughnut Product With Six Appendages; filed Nov. 10, 2008.", Arrays.asList("29327634","20081110"));	
 		NPL_US_APPS.put("U.S. Appl. No. 29/294,234, filed Dec. 28, 2007, Pidgeon et al.", Arrays.asList("29294234","20071228"));
@@ -99,13 +99,13 @@ public class CitationNodeTest {
 			"</us-citation>\r\n" + 
 			"<us-citation>\r\n" + 
 			"<nplcit num=\"00003\">\r\n" + 
-			"<othercit>“Cool Cite”, Internet: http://www.website.com, Mar. 2003, PDF p. 23.</othercit>\r\n" + 
+			"<othercit>Â“Cool CiteÂ”, Internet: http://www.website.com, Mar. 2003, PDF p. 23.</othercit>\r\n" + 
 			"</nplcit>\r\n" + 
 			"<category>cited by applicant</category>\r\n" + 
 			"</us-citation>\r\n" + 
 			"<us-citation>\r\n" + 
 			"<nplcit num=\"00004\">\r\n" + 
-			"<othercit>“Office Supplies, Jan. 2, 2001, p. 70, Office Supplies Shop, Apr. 29, 2000, p. 75”.</othercit>\r\n" + 
+			"<othercit>Â“Office Supplies, Jan. 2, 2001, p. 70, Office Supplies Shop, Apr. 29, 2000, p. 75Â”.</othercit>\r\n" + 
 			"</nplcit>\r\n" + 
 			"<category>cited by applicant</category>\r\n" + 
 			"</us-citation></us-references-cited></us-bibliographic-data-grant></xml>";
@@ -125,11 +125,11 @@ public class CitationNodeTest {
 
 		assertEquals("00003", citations.get(2).getNum());
 		assertEquals(CitationType.NPLCIT, citations.get(2).getCitType());
-		assertEquals("“Cool Cite”, Internet: http://www.website.com, Mar. 2003, PDF p. 23.", ((NplCitation) citations.get(2)).getCiteText());
+		assertEquals("Â“Cool CiteÂ”, Internet: http://www.website.com, Mar. 2003, PDF p. 23.", ((NplCitation) citations.get(2)).getCiteText());
 
 		assertEquals("00004", citations.get(3).getNum());
 		assertEquals(CitationType.NPLCIT, citations.get(3).getCitType());
-		assertEquals("“Office Supplies, Jan. 2, 2001, p. 70, Office Supplies Shop, Apr. 29, 2000, p. 75”.", ((NplCitation) citations.get(3)).getCiteText());
+		assertEquals("Â“Office Supplies, Jan. 2, 2001, p. 70, Office Supplies Shop, Apr. 29, 2000, p. 75Â”.", ((NplCitation) citations.get(3)).getCiteText());
 
 	}
 }

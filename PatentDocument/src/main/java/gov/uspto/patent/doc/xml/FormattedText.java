@@ -21,6 +21,9 @@ import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -39,6 +42,8 @@ import gov.uspto.patent.doc.simplehtml.HtmlToPlainText;
  *
  */
 public class FormattedText implements TextProcessor {
+    
+    private static Logger LOGGER = LoggerFactory.getLogger(FormattedText.class);
 
 	private static final Pattern TRAILING_REGEX = Pattern.compile("^\\s?(?:[.,;(])?([a-z])([.,;)]|\\b)");
 
@@ -403,6 +408,10 @@ public class FormattedText implements TextProcessor {
 
 		if (trailingTxt.matches("^(, |,? and )")) {
 			next = element.nextSibling().nextSibling();
+
+			if (next == null) {
+                LOGGER.warn("FigrefListItem element is null");
+            }
 			if (next != null && next.nodeName().toLowerCase().equals("b")) {
 				String containedTxt = ((TextNode) next.childNode(0)).getWholeText();
 				if (containedTxt.matches("[0-9]{1,2}[A-z]?")) {
