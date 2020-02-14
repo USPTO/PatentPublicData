@@ -129,7 +129,8 @@ public class TmBrs extends KvReaderFixedWidth {
 
 		File inputFile = new File(args[0]);
 
-		DumpFileAps dumpReader = new DumpFileAps(inputFile, "<XX>");
+        DumpFileAps dumpReader = new DumpFileAps(inputFile);
+		//DumpFileAps dumpReader = new DumpFileAps(inputFile, "<XX>");
 		//DumpFileAps dumpReader = new DumpFileAps(inputFile, "*** BRS DOCUMENT BOUNDARY ***");
 
 		//List<FieldGroup> fieldGroups = new ArrayList<FieldGroup>();

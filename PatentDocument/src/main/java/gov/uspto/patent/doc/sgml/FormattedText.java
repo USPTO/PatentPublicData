@@ -65,8 +65,8 @@ public class FormattedText implements TextProcessor {
 	@Override
 	public String getSimpleHtml(String rawText) {
 
-		rawText = rawText.replaceAll("“", "<q>");
-		rawText = rawText.replaceAll("”", "</q>");
+		rawText = rawText.replaceAll("Â“", "<q>");
+		rawText = rawText.replaceAll("Â”", "</q>");
 
 		Document jsoupDoc = Jsoup.parse("<body>" + rawText + "</body>", "", Parser.xmlParser());
 		jsoupDoc.outputSettings().prettyPrint(false).syntax(Syntax.xml).charset(StandardCharsets.UTF_16);

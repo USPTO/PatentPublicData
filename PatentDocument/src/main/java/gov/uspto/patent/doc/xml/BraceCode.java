@@ -119,22 +119,22 @@ public class BraceCode {
 	private static final Map<String, Character> UTF8_ACCENTS = new HashMap<String, Character>();
 	static {
 		// \u00A0
-		UTF8_ACCENTS.put(" _umlaut", '\u00A8');
-		UTF8_ACCENTS.put(" _diaeresis", '\u00A8');
-		UTF8_ACCENTS.put(" _tilde", '\u223C'); // ~
-		UTF8_ACCENTS.put(" _grave", '\u0060');
+		UTF8_ACCENTS.put("Â _umlaut", '\u00A8');
+		UTF8_ACCENTS.put("Â _diaeresis", '\u00A8');
+		UTF8_ACCENTS.put("Â _tilde", '\u223C'); // ~
+		UTF8_ACCENTS.put("Â _grave", '\u0060');
 		// Spacing Modifier Letters
-		UTF8_ACCENTS.put(" _circumflex", '\u02C6'); // \u005E
-		UTF8_ACCENTS.put(" _caron", '\u02C7');
-		UTF8_ACCENTS.put(" _hacek", '\u02C7');
-		UTF8_ACCENTS.put(" _acute", '\u02CA'); // \u00B4
-		UTF8_ACCENTS.put(" _grave", '\u02CB');
-		UTF8_ACCENTS.put(" _macron", '\u02C9');
-		UTF8_ACCENTS.put(" _breve", '\u02D8');
-		UTF8_ACCENTS.put(" _dot", '\u02D9');
-		UTF8_ACCENTS.put(" _ring", '\u02DA');
-		UTF8_ACCENTS.put(" _ogonek", '\u02DB');
-		UTF8_ACCENTS.put(" _grave", '\u02CB');
+		UTF8_ACCENTS.put("Â _circumflex", '\u02C6'); // \u005E
+		UTF8_ACCENTS.put("Â _caron", '\u02C7');
+		UTF8_ACCENTS.put("Â _hacek", '\u02C7');
+		UTF8_ACCENTS.put("Â _acute", '\u02CA'); // \u00B4
+		UTF8_ACCENTS.put("Â _grave", '\u02CB');
+		UTF8_ACCENTS.put("Â _macron", '\u02C9');
+		UTF8_ACCENTS.put("Â _breve", '\u02D8');
+		UTF8_ACCENTS.put("Â _dot", '\u02D9');
+		UTF8_ACCENTS.put("Â _ring", '\u02DA');
+		UTF8_ACCENTS.put("Â _ogonek", '\u02DB');
+		UTF8_ACCENTS.put("Â _grave", '\u02CB');
 
 		UTF8_ACCENTS.put("a_grave", '\u00E0');
 		UTF8_ACCENTS.put("a_acute", '\u00E1');

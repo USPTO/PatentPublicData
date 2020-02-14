@@ -25,8 +25,8 @@ public class NameOrgTest {
 		variations.put("Meiji University","MJ-UN");
 		variations.put("Battelle UK Limited","BTL-UK");
 		variations.put("Mitsui AgriScience International", "MTS-AKR");
-		variations.put("Glashütte", "GLK");
-		variations.put("Berggießhübel", "BRK");
+		variations.put("GlashÃ¼tte", "GLK");
+		variations.put("BerggieÃŸhÃ¼bel", "BRK");
 		variations.put("Meijir\u014d", "MJR");
 		variations.put("OneHundred-TwentyTwo Company", "ONT-TNT");
 		variations.put("United States President", "UNT-STS");
