@@ -1,6 +1,7 @@
 package gov.uspto.patent.doc.sgml.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -77,13 +78,13 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
 
         if (continuationN != null) {
             Node continueN = continuationN.selectSingleNode("B631");
-            readChildParent(divitionalNodes, DocumentIdType.CONTINUATION);
+            readChildParent(continueN, DocumentIdType.CONTINUATION);
 
             Node continueInPartN = continuationN.selectSingleNode("B632/PARENT-US");
-            readChildParent(divitionalNodes, DocumentIdType.CONTINUATION_IN_PART);
+            readChildParent(continueInPartN, DocumentIdType.CONTINUATION_IN_PART);
 
             Node continueReIssueN = continuationN.selectSingleNode("B633/PARENT-US");
-            readChildParent(divitionalNodes, DocumentIdType.CONTINUATION_REISSUE);
+            readChildParent(continueReIssueN, DocumentIdType.CONTINUATION_REISSUE);
         }
 
         /*
@@ -115,6 +116,12 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
         }
 
         return docIds;
+    }
+
+    private void readChildParent(Node node, DocumentIdType docIdType) {
+        if (node != null) {
+            readChildParent(Collections.singletonList(node), docIdType);
+        }
     }
 
     private void readChildParent(List<Node> nodes, DocumentIdType docIdType) {
