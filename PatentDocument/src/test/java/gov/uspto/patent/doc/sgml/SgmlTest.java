@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import gov.uspto.patent.model.DocumentId;
+import gov.uspto.patent.model.DocumentIdType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,5 +58,24 @@ public class SgmlTest {
 		Path filePath = samplePath.resolve("US06337117.xml");
 		Patent patent = sgml.parse(filePath.toFile());
 		assertEquals("Multiple Inventors", 5, patent.getInventors().size());
+	}
+
+	@Test
+	public void shouldExtractContinuationRelations() throws PatentReaderException, IOException {
+		Sgml sgml = new Sgml();
+		Path filePath = samplePath.resolve("US06336130.xml");
+		Patent patent = sgml.parse(filePath.toFile());
+		List<String> continuationDocNumbers =
+				patent.getRelationIds().stream()
+						.filter(r -> r.getType() == DocumentIdType.CONTINUATION)
+						.map(DocumentId::getDocNumber)
+						.collect(Collectors.toList());
+		assertEquals("Continuations not extracted", 2, continuationDocNumbers.size());
+		assertTrue(
+				"Continuation child missing from " + continuationDocNumbers,
+				continuationDocNumbers.contains("9413215"));
+		assertTrue(
+				"Continuation parent missing from " + continuationDocNumbers,
+				continuationDocNumbers.contains("PCTNO9800107"));
 	}
 }

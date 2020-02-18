@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import gov.uspto.patent.InvalidDataException;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
 /**
  * Document ID for Patents and Patent Applications
@@ -401,7 +402,11 @@ public class DocumentId implements Comparable<DocumentId> {
 		if (getDate() == null || o.getDate() == null || getDate().getDate() == null || o.getDate().getDate() == null) {
 			return 1;
 		}
-		return getDate().getDate().compareTo(o.getDate().getDate());
+
+		return new CompareToBuilder()
+				.append(getDate().getDate(), o.getDate().getDate())
+				.append(getDocNumber(), o.getDocNumber())
+				.build();
 	}
 
 	@Override
