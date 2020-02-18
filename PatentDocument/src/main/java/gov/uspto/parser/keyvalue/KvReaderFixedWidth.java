@@ -63,23 +63,24 @@ public abstract class KvReaderFixedWidth {
 
 				if (isKeyValid(key)) {
 					key = keyTransform(key);
+					String keyRenamed = keyRename(key);
 					if (value.trim().isEmpty()) {
 						// Section
-						keyValues.add(new KeyValue(key, ""));
+						keyValues.add(new KeyValue(keyRenamed, "").setKeyOriginal(key));
 					} else {
 						// Key-Value
-						value = valueTransform(key, value);
+						value = valueTransform(key, keyRenamed, value);
 						if (maintainSpaceFields.contains(key.toUpperCase())) {
 							value += "\n";
 						}
-						keyValues.add(new KeyValue(key, value));
+						keyValues.add(new KeyValue(keyRenamed, value).setKeyOriginal(key));
 						currentFieldName = key.toLowerCase();
 					}
 				} else if (indented && !keyValues.isEmpty()) {
 					// Continued Value
 					int lastLoc = keyValues.size() - 1;
 					KeyValue lastKv = keyValues.get(lastLoc);
-					value = valueTransform(lastKv.getKey(), value);
+					value = valueTransform(lastKv.getKeyOriginal(), lastKv.getKey(), value);
 					if (maintainSpaceFields.contains(currentFieldName)) {
 						value += "\n";
 						lastKv.appendValue(value);
@@ -95,14 +96,23 @@ public abstract class KvReaderFixedWidth {
 		} catch (IOException e) {
 			throw new PatentReaderException(e);
 		}
-
-		return keyValues;
+		
+		return postProcess(keyValues);
 	}
 
 	public abstract boolean isKeyValid(final String key);
 
 	public abstract String keyTransform(String key);
 
-	public abstract String valueTransform(String key, String value);
+	public abstract String keyRename(String key);
 
+	public abstract String valueTransform(String key, String keyRenamed, String value);
+
+	/**
+	 * Perform Action Across multiple KeyValues or split/tokenize a value into multiple instances of a key
+	 * 
+	 * @param keyValues
+	 * @return
+	 */
+	public abstract List<KeyValue> postProcess(List<KeyValue> keyValues);
 }

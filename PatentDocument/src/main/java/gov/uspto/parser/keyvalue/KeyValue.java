@@ -8,6 +8,7 @@ import com.google.common.hash.Hashing;
 public class KeyValue {
 	private final String key;
 	private String value;
+	private String originalKey;
 
 	public KeyValue(String key, String value) {
 		this.key = key;
@@ -23,6 +24,22 @@ public class KeyValue {
 
 	public String getKey() {
 		return key;
+	}
+
+	public String getKeyOriginal() {
+		if (originalKey == null) {
+			return key;
+		}
+		return originalKey;
+	}
+
+	/**
+	 * Set Original Keyname; useful when renaming field name to keep track of original name.
+	 * @param originalKeyName
+	 */
+	public KeyValue setKeyOriginal(String originalKeyName) {
+		this.originalKey = originalKeyName;
+		return this;
 	}
 
 	public String getValue() {
@@ -55,6 +72,6 @@ public class KeyValue {
 
 	@Override
 	public String toString() {
-		return "KeyValue [key=" + key + ", value=" + value + "]";
+		return "KeyValue [key=" + key + ", value=" + value + ", originalKey=" + originalKey + "]";
 	}
 }
