@@ -1,17 +1,16 @@
 package gov.uspto.tm.doc.brs;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.dom4j.Document;
 import org.junit.Test;
 
 import gov.uspto.parser.keyvalue.KeyValue;
-import gov.uspto.parser.keyvalue.KeyValue2Dom4j;
+import gov.uspto.parser.keyvalue.Kv2KvXml;
+import gov.uspto.parser.keyvalue.KvWriter;
 import gov.uspto.patent.PatentReaderException;
 
 public class TmBrsTest {
@@ -97,17 +96,16 @@ public class TmBrsTest {
 				"  <TP>0000</TP>\n" + 
 				"</DOCUMENT>\n";
 
-		TmBrs brs = new TmBrs();
+		TmBrs brs = new TmBrs(false, false);
 		List<KeyValue> keyValues = brs.parse(rawRec);
 
 		//keyValues.stream().forEach(System.out::println);
-		KeyValue2Dom4j kvWriter = new KeyValue2Dom4j();
-		Document xmlDoc = kvWriter.genXml(keyValues);
-		
-		StringWriter outXmlStr = new StringWriter();
-		KeyValue2Dom4j.serializeDom(outXmlStr, xmlDoc, StandardCharsets.UTF_8, true);
-		String actualXML = outXmlStr.toString().replaceAll("\r", "");
-		System.out.println(actualXML);
+
+		StringWriter writer = new StringWriter();
+		KvWriter kvWriter = new Kv2KvXml(true, writer, true);
+		kvWriter.write(keyValues);
+		String actualXML = writer.toString().replaceAll("\r", "");
+		//System.out.println(actualXML);
 
 		assertEquals(xmlExpected, actualXML);
 	}
