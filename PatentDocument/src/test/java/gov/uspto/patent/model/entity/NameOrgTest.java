@@ -25,8 +25,9 @@ public class NameOrgTest {
 		variations.put("Meiji University","MJ-UN");
 		variations.put("Battelle UK Limited","BTL-UK");
 		variations.put("Mitsui AgriScience International", "MTS-AKR");
-		variations.put("Glashütte", "GLK");
-		variations.put("Berggießhübel", "BRK");
+		variations.put("Glash\u00fctte", "GLK");
+		variations.put("Berggiesshubel", "BRK");
+		variations.put("Berggie\u00DFh\\u00fcbel", "BRK");
 		variations.put("Meijir\u014d", "MJR");
 		variations.put("OneHundred-TwentyTwo Company", "ONT-TNT");
 		variations.put("United States President", "UNT-STS");
@@ -36,7 +37,7 @@ public class NameOrgTest {
 	}
 
 	@Test
-	public void testInitializeName() throws InvalidDataException {
+	public void initializeName() throws InvalidDataException {
 		for(Entry<String, String> entry: variations.entrySet()) {
 			NameOrg name = new NameOrg(entry.getKey());
 			Entity entity = new Assignee(name, new Address("","", CountryCode.UNKNOWN));
@@ -45,5 +46,22 @@ public class NameOrgTest {
 			assertEquals(entry.getValue(), abbrev);
 		}
 	}
-	
+
+	@Test
+	public void getShortestSynonym() throws InvalidDataException {
+		NameOrg name = new NameOrg("School Supplies Inc");
+		name.addSynonym("School Supplies");
+		name.addSynonym("School Supplies Incorperated");
+		String actual = name.getShortestSynonym();
+		assertEquals("School Supplies", actual);
+	}
+
+	@Test
+	public void getLongestSynonym() throws InvalidDataException {
+		NameOrg name = new NameOrg("School Supplies Inc");
+		name.addSynonym("School Supplies");
+		name.addSynonym("School Supplies Incorperated");
+		String actual = name.getLongestSynonym();
+		assertEquals("School Supplies Incorperated", actual);
+	}
 }

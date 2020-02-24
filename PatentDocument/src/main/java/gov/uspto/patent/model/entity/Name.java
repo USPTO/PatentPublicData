@@ -45,16 +45,15 @@ public abstract class Name {
 	}
 
 	public String getShortestSynonym() {
-		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? -1 : 1;
-		Optional<String> shortest = synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength.reversed())
-				.findFirst();
+		Comparator<String> byLength = Comparator.comparingInt(String::length);
+		Optional<String> shortest = synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength).findFirst();
 		return shortest.isPresent() ? shortest.get() : "";
 	}
 
 	public String getLongestSynonym() {
-		Comparator<String> byLength = (e1, e2) -> e1.length() > e2.length() ? -1 : 1;
-		Optional<String> shortest = synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength).findFirst();
-		return shortest.isPresent() ? shortest.get() : "";
+		Comparator<String> byLength = Comparator.comparingInt(String::length).reversed();
+		Optional<String> longest = synonym.stream().filter(e -> !e.startsWith("fuzz:")).sorted(byLength).findFirst();
+		return longest.isPresent() ? longest.get() : "";
 	}
 
 	public void setSynonyms(Set<String> synonym) {
@@ -115,6 +114,6 @@ public abstract class Name {
 	public abstract String getNameNormalizeCase();
 
 	public abstract String getInitials();
-	
+
 	public abstract boolean validate() throws InvalidDataException;
 }
