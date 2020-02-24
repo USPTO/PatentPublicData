@@ -34,6 +34,6 @@ public interface DumpReader extends Iterator<String>, Closeable {
 	void setFileFilter(FileFilter filter);
 
 	int getCurrentRecCount();
-	
-	String read();
+
+	String read() throws IOException;
 }

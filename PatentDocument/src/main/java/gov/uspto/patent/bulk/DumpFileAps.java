@@ -9,58 +9,56 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class DumpFileAps extends DumpFile {
+	
+	private static final String START_TAG = "PATN";
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFileAps.class);
-
-	private static final String startTag = "PATN";
-
+	private final String startTag;
 	private boolean startTagSeen = false;
 	private int currentRecCount;
-
+	
 	public DumpFileAps(File file) {
-		super(file);
+		this(file, START_TAG);
 	}
 
 	public DumpFileAps(String name, BufferedReader reader) {
+		this(name, reader, START_TAG);
+	}
+
+	public DumpFileAps(File file, String startTag) {
+		super(file);
+		this.startTag = startTag;
+	}
+
+	public DumpFileAps(String name, BufferedReader reader, String startTag) {
 		super(name, reader);
+		this.startTag = startTag;
 	}
 
 	@Override
-	public String read() {
+	public String read() throws IOException {
 		StringBuilder content = new StringBuilder();
 
-		try {
-			String line;
-			while (super.getReader().ready() && (line = super.getReader().readLine()) != null) {
-				if (startTagSeen == false) {
-					if (line.startsWith(startTag)) {
-						startTagSeen = true;
-					}
-				} else {
-					if (line.startsWith(startTag)) {
-						currentRecCount++;
-						MDC.put("RECNUM", String.valueOf(currentRecCount));
-						return startTag + "\n" + content.toString();
-					} else {
-						content.append(line).append('\n');
-					}
+		String line;
+		while (super.getReader().ready() && (line = super.getReader().readLine()) != null) {
+			if (line.startsWith(startTag)) {
+				if (startTagSeen) {
+					currentRecCount++;
+					MDC.put("RECNUM", String.valueOf(currentRecCount));
+					return START_TAG + "\n" + content.toString();
 				}
+				startTagSeen = true;
+			} else {
+				content.append(line).append('\n');
 			}
-		} catch (IOException e) {
-			LOGGER.error("Error while reading file: {}:{}", super.getFile(), currentRecCount, e);
 		}
 
 		if (content.length() == 0) {
-			return null;
+			return null; // no more records.
 		} else {
-			return startTag + "\n" + content.toString();
-		}
-	}
-
-	@Override
-	public void skip(int skipCount) throws IOException {
-		for (int i = 1; i < skipCount; i++) {
-			super.next();
+			// last record
+			currentRecCount++;
+			MDC.put("RECNUM", String.valueOf(currentRecCount));
+			return START_TAG + "\n" + content.toString();
 		}
 	}
 

@@ -40,7 +40,7 @@ public class DumpFileXml extends DumpFile {
 	}
 
 	@Override
-	public String read() {
+	public String read() throws IOException {
 		String xmlTag = super.getPatentDocFormat().getParentElement();
 		this.xmlStartTag = "<" + xmlTag;
 		this.xmlEndTag = "</" + xmlTag;
@@ -48,45 +48,34 @@ public class DumpFileXml extends DumpFile {
 		StringBuilder content = new StringBuilder();
 		content.append(header);
 
-		try {
-			String line;
-			while (super.getReader().ready() && (line = super.getReader().readLine()) != null) {
-				
-				if (isStartTag(line)) {
-					content = new StringBuilder();
-					content.append(header);
-				} else if (isEndTag(line)) {
-					// Fix for Patent PAP with trailing XML tag.
-					// '</patent-application-publication><?xml version="1.0" encoding="UTF-8"?>'
-					if (line.contains("<?xml")) {
-						String[] parts = line.split("<\\?xml");
-						line = parts[0];
-					}
+		String line;
+		while (super.getReader().ready() && (line = super.getReader().readLine()) != null) {
 
-					content.append(line).append('\n');
-					currentRecCount++;
-					MDC.put("RECNUM", String.valueOf(currentRecCount));
-
-					String docString = content.toString();
-
-					return docString;
+			if (isStartTag(line)) {
+				content = new StringBuilder();
+				content.append(header);
+			} else if (isEndTag(line)) {
+				// Fix for Patent PAP with trailing XML tag.
+				// '</patent-application-publication><?xml version="1.0" encoding="UTF-8"?>'
+				if (line.contains("<?xml")) {
+					String[] parts = line.split("<\\?xml");
+					line = parts[0];
 				}
 
 				content.append(line).append('\n');
+				currentRecCount++;
+				MDC.put("RECNUM", String.valueOf(currentRecCount));
+
+				String docString = content.toString();
+
+				return docString;
 			}
-		} catch (IOException e) {
-			LOGGER.error("Error while reading file: {}; record: {}", super.getFile(), currentRecCount, e);
+
+			content.append(line).append('\n');
 		}
 
 		return null;
 		// throw new NoSuchElementException();
-	}
-
-	@Override
-	public void skip(int skipCount) throws IOException {
-		for (int i = 1; i < skipCount; i++) {
-			super.next();
-		}
 	}
 
 	@Override

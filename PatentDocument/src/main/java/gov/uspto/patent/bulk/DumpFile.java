@@ -98,10 +98,21 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	public String next() {
 		String doc = currentRawDoc;
 		if (doc != null) {
-			currentRawDoc = read();
+			try {
+				currentRawDoc = read();
+			} catch (IOException e) {
+				// error reading next record.
+				LOGGER.error("Error while reading file: {}:{}", getFile(), getCurrentRecCount(), e);
+			}
 			return doc;
 		} else {
 			throw new NoSuchElementException();
+		}
+	}
+	
+	public void skip(int skipCount) throws IOException {
+		for (int i = 1; i < skipCount; i++) {
+			next();
 		}
 	}
 
