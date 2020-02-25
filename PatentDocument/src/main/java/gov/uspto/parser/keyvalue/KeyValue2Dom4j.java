@@ -1,10 +1,8 @@
 package gov.uspto.parser.keyvalue;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,8 +22,9 @@ import gov.uspto.parser.dom4j.keyvalue.config.IndexEntry;
 
 public class KeyValue2Dom4j {
 
-	private static final Pattern QNAME_INVALID = Pattern.compile("^[0-9].+$");
-	
+	private static final Pattern QNAME_INVALID = Pattern.compile("^[0-9\\-].+$");
+	private static final Pattern NOT_ALPHANUMERIC = Pattern.compile("[^A-z0-9-_]");
+
 	private List<String> paragraphFields = new ArrayList<String>();
 	private List<String> headerFields = new ArrayList<String>();
 	private List<String> tableFields = new ArrayList<String>();	
@@ -263,12 +262,13 @@ public class KeyValue2Dom4j {
 		}
 
 		return document;
-	}	
+	}
 
 	private String cleanXMLElementName(String name) {
 		if (QNAME_INVALID.matcher(name).matches()) {
 			name = "_" + name;
 		}
+		name = NOT_ALPHANUMERIC.matcher(name).replaceAll("_");
 		return name.trim();
 	}
 
