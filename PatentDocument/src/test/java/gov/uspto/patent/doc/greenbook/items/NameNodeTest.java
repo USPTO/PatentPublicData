@@ -4,18 +4,57 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import gov.uspto.patent.InvalidDataException;
+import gov.uspto.patent.model.entity.Name;
+import gov.uspto.patent.model.entity.NameOrg;
+import gov.uspto.patent.model.entity.NamePerson;
+
 public class NameNodeTest {
 
 	@Test
-	public void suffixFix() {
-		NameNode name = new NameNode(null);
-		String[] expect  = new String[] {"Haines", "SR"};
-		String[] actual = name.suffixFix("Haines, Sr");
-		assertArrayEquals(expect, actual);
-
-		String[] expect2  = new String[] {"Swann", "III"};
-		String[] actual2 = name.suffixFix("Swann, III");
-		assertArrayEquals(expect2, actual2);
+	public void suffixFix_per() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Doe, Sr; John");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("John", ((NamePerson)name).getFirstName());
+		assertEquals("Doe", ((NamePerson)name).getLastName());
+		assertEquals("Sr", name.getSuffix());
 	}
 
+	@Test
+	public void suffixFix_org() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Flint Steel, LLC");
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+	}
+
+	@Test
+	public void suffixFix_per_org() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Flint, LLC; Steel");
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+		assertEquals("LLC", name.getSuffix());
+	}
+
+	@Test
+	public void suffixFix_nee() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Flintston, nee Dinotopia; Betty");
+		assertTrue("expect NameOrg", name instanceof NamePerson);
+		assertEquals("Betty", ((NamePerson)name).getFirstName());
+		assertEquals("Flintston", ((NamePerson)name).getLastName());
+		assertEquals("Dinotopia, B.", ((NamePerson)name).getShortestSynonym());
+		assertEquals("Dinotopia, Betty", ((NamePerson)name).getLongestSynonym());
+		assertEquals("nee Dinotopia", name.getSuffix());
+	}	
+
+	@Test
+	public void suffixFix_changeOfName() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Doe, now by change of name Jane Doe Smith; Jane");
+		assertTrue("expect NameOrg", name instanceof NamePerson);
+		assertEquals("Jane", ((NamePerson)name).getFirstName());
+		assertEquals("Doe", ((NamePerson)name).getLastName());
+		assertEquals("Jane Doe Smith", ((NamePerson)name).getShortestSynonym());
+	}
 }

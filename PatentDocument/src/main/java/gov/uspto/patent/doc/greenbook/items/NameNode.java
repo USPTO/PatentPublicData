@@ -43,9 +43,8 @@ public class NameNode extends ItemReader<Name> {
 			"LEGAL", "LEGALESS", "JR. ESQ", "IV ESQ", "PH.D", "JR. ATTY"));
 
 	public static final Set<String> COMPANY_SUFFIXES = new HashSet<String>(
-			Arrays.asList("INC", "LLC", "LTD", "LTD PLC", "PLC", "P.L.C", "LLP", "L.L.P", "PLLC", "S.C", "P.A", "PA", "P.C", "PC"));
-
-	// AKA also known as: FORMERLY -or- NEE -or- WIDOW
+			Arrays.asList("INC", "LLC", "L.L.C", "LTD", "LTD PLC", "PLC", "P.L.C", "L.C.", "LC", "LLP", "L.L.P",
+					"P.L.L.C", "PLLC", "S.C", "P.A", "PA", "P.C", "PC", "P.S.", "S.P.A", "S.P.C", "CHTD"));
 
 	public NameNode(Node itemNode) {
 		super(itemNode);
@@ -69,15 +68,23 @@ public class NameNode extends ItemReader<Name> {
 	protected String[] suffixFix(String lastName) {
 		String[] parts = lastName.split(",");
 		if (parts.length == 2) {
-			String suffixCheck = parts[1].trim().replaceFirst("\\.$", "").toUpperCase();
-			if (COMPANY_SUFFIXES.contains(suffixCheck)) {
-				return new String[] { "org", parts[0], suffixCheck };
-			} else if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck))
+			String suffix = parts[1].trim();
+			String suffixCheck = suffix.replaceFirst("\\.$", "").toUpperCase();
+			if (COMPANY_SUFFIXES.contains(suffixCheck.toUpperCase())) {
+				return new String[] { "org", parts[0], suffix };
+			} else if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck.toUpperCase()))
 					|| PERSON_LONG_SUFFIXES.contains(suffixCheck)) {
 				LOGGER.debug("Suffix Fixed, parsed common suffix '{}' from lastname: '{}'", suffixCheck, lastName);
-				return new String[] { "per", parts[0], suffixCheck };
+				return new String[] { "per", parts[0], suffix };
+			} else if (suffixCheck.startsWith("NEE ") || suffixCheck.startsWith("FORMERLY ")
+					|| suffixCheck.startsWith("WIDOW ")) {
+				String synonym = suffix.substring(suffix.indexOf(" ") + 1);
+				return new String[] { "per-syn", parts[0], suffix, synonym };
+			} else if (suffixCheck.startsWith("BY CHANGE OF NAME ") || suffixCheck.startsWith("NOW BY CHANGE OF NAME ")) {
+				String synonym = suffix.substring(suffixCheck.indexOf("NAME")+5);
+				return new String[] { "per-syn-full", parts[0], suffix, synonym };
 			} else {
-				LOGGER.info("Unmatched Suffix: {} :: {} -> {}", lastName, suffixCheck);
+				LOGGER.info("Unmatched Suffix: {} :: {} -> {}", lastName, suffix);
 			}
 		}
 
@@ -93,39 +100,48 @@ public class NameNode extends ItemReader<Name> {
 	 * @throws InvalidAttributesException
 	 */
 	public Name createName(String fullName) throws InvalidDataException {
-		if (fullName == null) {
-			throw new InvalidDataException("Full Name is Null");
+		if (fullName == null || fullName.trim().isEmpty()) {
+			throw new InvalidDataException("Name is missing");
 		}
 
 		List<String> nameParts = Splitter.onPattern(";").limit(2).trimResults().splitToList(fullName);
 
-		Name entityName;
+		Name entityName = null;
 		if (nameParts.size() == 2) {
 			String lastName = nameParts.get(0);
 			String firstName = nameParts.get(1);
-			String suffix = null;
-			boolean isPerson = true;
 
 			if (lastName.contains(",")) {
 				String[] parts = suffixFix(lastName);
 				if (parts != null && "per".equals(parts[0])) {
-					isPerson = true;
 					lastName = parts[1];
-					suffix = parts[2];
+					entityName = new NamePerson(firstName, lastName);
+					entityName.setSuffix(parts[2]);
 				} else if (parts != null && "org".equals(parts[0])) {
-					isPerson = false;
 					lastName = parts[1];
-					suffix = parts[2];
+					entityName = new NameOrg(fullName);
+					entityName.setSuffix(parts[2]);
+				} else if (parts != null && "per-syn".endsWith(parts[0])) {
+					lastName = parts[1];
+					String suffix = parts[2];
+					String synonym = parts[3];
+					if (synonym.contains(firstName)) {
+						synonym = synonym.replace(firstName, "");
+					}
+					entityName = new NamePerson(firstName, lastName);
+					entityName.setSuffix(suffix);
+					entityName.addSynonym(synonym + ", " + firstName);
+					entityName.addSynonym(synonym + ", " + firstName.subSequence(0, 1) + ".");
+				} else if (parts != null && "per-syn-full".endsWith(parts[0])) {
+					lastName = parts[1];
+					String suffix = parts[2];
+					String synonym = parts[3];
+					entityName = new NamePerson(firstName, lastName);
+					entityName.setSuffix(suffix);
+					entityName.addSynonym(synonym);
 				}
 			}
 
-			if (isPerson) {
-				entityName = new NamePerson(firstName, lastName);
-				entityName.setSuffix(suffix);
-			} else {
-				entityName = new NameOrg(lastName + ", " + firstName);
-				entityName.setSuffix(suffix);
-			}
 		} else {
 			entityName = new NameOrg(fullName);
 		}
