@@ -43,7 +43,7 @@ public class NameNode extends ItemReader<Name> {
 			"LEGAL", "LEGALESS", "JR. ESQ", "IV ESQ", "PH.D", "JR. ATTY"));
 
 	public static final Set<String> COMPANY_SUFFIXES = new HashSet<String>(
-			Arrays.asList("INC", "LLC", "LLP", "LTD PLC", "P.L.C", "S.C", "P.A", "PA", "P.C", "PC", "L.L.P", "PLLC"));
+			Arrays.asList("INC", "LLC", "LTD", "LTD PLC", "PLC", "P.L.C", "LLP", "L.L.P", "PLLC", "S.C", "P.A", "PA", "P.C", "PC"));
 
 	// AKA also known as: FORMERLY -or- NEE -or- WIDOW
 
@@ -110,12 +110,12 @@ public class NameNode extends ItemReader<Name> {
 				String[] parts = suffixFix(lastName);
 				if (parts != null && "per".equals(parts[0])) {
 					isPerson = true;
-					lastName = parts[0];
-					suffix = parts[1];
+					lastName = parts[1];
+					suffix = parts[2];
 				} else if (parts != null && "org".equals(parts[0])) {
 					isPerson = false;
-					lastName = parts[0];
-					suffix = parts[1];
+					lastName = parts[1];
+					suffix = parts[2];
 				}
 			}
 
@@ -123,7 +123,7 @@ public class NameNode extends ItemReader<Name> {
 				entityName = new NamePerson(firstName, lastName);
 				entityName.setSuffix(suffix);
 			} else {
-				entityName = new NameOrg(fullName);
+				entityName = new NameOrg(lastName + ", " + firstName);
 				entityName.setSuffix(suffix);
 			}
 		} else {
