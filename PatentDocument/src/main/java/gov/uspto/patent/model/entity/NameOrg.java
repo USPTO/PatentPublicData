@@ -114,7 +114,7 @@ public class NameOrg extends Name {
 		String fullName = getName();
 
 		if (fullName == null || fullName.trim().length() < 2) {
-			throw new InvalidDataException("Invalid NameOrg: name can not be blank");
+			throw new InvalidDataException("Invalid NameOrg, fullName can not be blank or smaller than 2.");
 		}
 
 		return true;
