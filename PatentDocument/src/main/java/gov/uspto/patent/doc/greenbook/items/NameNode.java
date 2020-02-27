@@ -140,6 +140,8 @@ public class NameNode extends ItemReader<Name> {
 					entityName.setSuffix(suffix);
 					entityName.addSynonym(synonym);
 				}
+			} else {
+				entityName = new NamePerson(firstName, lastName);
 			}
 
 		} else {
