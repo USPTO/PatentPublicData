@@ -24,6 +24,7 @@ public class PartitionFileWriter extends Writer {
 	private final String fileName;
 	private final String fileSuffix;
 	private String header;
+	private String footer;
 
 	private Writer writer;
 	private int filePart = 0;
@@ -65,10 +66,18 @@ public class PartitionFileWriter extends Writer {
 		this.header = header;
 	}
 
+	public void setFooter(String footer) {
+		this.footer = footer;
+	}
+
 	@Override
 	public void write(String str) throws IOException {
 		if (writer == null || predicate.thresholdReached(str)) {
+			if (writer != null && footer != null) {
+				writer.write(footer);
+			}
 			this.close();
+
 			Path filePath = getOutputFilePath();
 			LOGGER.info("Opening Writer: {}", filePath);
 			writer = new BufferedWriter(new FileWriter(filePath.toFile(), false));
@@ -76,6 +85,7 @@ public class PartitionFileWriter extends Writer {
 				writer.write(header);
 			}
 		}
+
 		writer.write(str);
 	}
 
