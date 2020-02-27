@@ -1,9 +1,11 @@
 package gov.uspto.common.io;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ public class PartitionFileWriter extends Writer {
 	private final Path outputPath;
 	private final String fileName;
 	private final String fileSuffix;
+	private final Charset charset;
 	private String header;
 	private String footer;
 
@@ -35,19 +38,38 @@ public class PartitionFileWriter extends Writer {
 	 * @param fileName   - file name
 	 * @param fileSuffix - file extension suffix
 	 * @param predicate  - partition threshold predicate
+	 * @param charset
 	 * 
 	 * @see PartitionPredicate
 	 */
 	public PartitionFileWriter(final Path outputPath, final String fileName, final String fileSuffix,
-			PartitionPredicate predicate) {
+			PartitionPredicate predicate, Charset charset) {
 		this.outputPath = outputPath;
 		this.fileName = fileName;
 		this.fileSuffix = fileSuffix;
 		this.predicate = predicate;
+		this.charset = charset;
 	}
 
 	/**
 	 * PartitionFileWriter which uses the default partition predicate
+	 * 
+	 * @param outputPath
+	 * @param fileName
+	 * @param fileSuffix
+	 * @param recordLimit
+	 * @param sizeLimitMB
+	 * @param charset
+	 * 
+	 * @see PartitionPredicateDefault
+	 */
+	public PartitionFileWriter(final Path outputPath, final String fileName, final String fileSuffix,
+			final int recordLimit, final int sizeLimitMB, Charset charset) {
+		this(outputPath, fileName, fileSuffix, new PartitionPredicateDefault(recordLimit, sizeLimitMB), charset);
+	}
+
+	/**
+	 * PartitionFileWriter which uses the default partition predicate and default character set
 	 * 
 	 * @param outputPath
 	 * @param fileName
@@ -59,7 +81,7 @@ public class PartitionFileWriter extends Writer {
 	 */
 	public PartitionFileWriter(final Path outputPath, final String fileName, final String fileSuffix,
 			final int recordLimit, final int sizeLimitMB) {
-		this(outputPath, fileName, fileSuffix, new PartitionPredicateDefault(recordLimit, sizeLimitMB));
+		this(outputPath, fileName, fileSuffix, new PartitionPredicateDefault(recordLimit, sizeLimitMB),  Charset.defaultCharset());
 	}
 
 	public void setHeader(String header) {
@@ -77,7 +99,7 @@ public class PartitionFileWriter extends Writer {
 
 			Path filePath = getOutputFilePath();
 			LOGGER.info("Opening Writer: {}", filePath);
-			writer = new BufferedWriter(new FileWriter(filePath.toFile(), false));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath.toFile()), charset));
 			if (header != null) {
 				writer.write(header);
 			}
