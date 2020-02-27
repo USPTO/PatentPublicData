@@ -239,6 +239,54 @@ public class WordUtil {
 	}
 
 	/**
+	 * <p>
+	 * Replaces repeated characters with a single instance. <b>Address</b> would
+	 * become <b>Adres</b>.
+	 * </p>
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String compactRepeatedChars(String str) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			if (builder.length() == 0 || builder.charAt(builder.length() - 1) != c) {
+				builder.append(c);
+			}
+		}
+		return builder.toString();
+	}
+
+	/**
+	 * Converts all characters within a string to their unicode equivalent
+	 *
+	 * @param string The string to escape
+	 * @return The escaped string
+	 */
+	public static String toUnicode(String str) {
+		StringBuilder b = new StringBuilder();
+		for (char c : str.toCharArray()) {
+			b.append("\\u").append(String.format("%04X", (int) c));
+		}
+		return b.toString();
+	}
+
+	/**
+	 * Converts all characters within a string to their decimal equivalent
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static String toDecimal(String str) {
+		StringBuilder b = new StringBuilder();
+		for (char c : str.toCharArray()) {
+			b.append((int) c).append(" ");
+		}
+		return b.substring(0, b.length()-1);
+	}
+
+	/**
 	 * Check for Number in Word or Sequence of Words
 	 * 
 	 * @param str

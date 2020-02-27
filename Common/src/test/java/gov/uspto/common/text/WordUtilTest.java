@@ -169,7 +169,7 @@ public class WordUtilTest {
 		assertFalse(WordUtil.startsWithCapital("lower"));
 		assertFalse(WordUtil.startsWithCapital("1Lower"));
 	}
-
+	
 	@Test
 	public void wordCount() {
 		int wordCount = WordUtil.countWords("Wireless LAN", new char[] { ' ' });
@@ -188,6 +188,17 @@ public class WordUtilTest {
 		assertTrue(bool);
 	}
 
+	@Test
+	public void toDecimal() {
+		assertEquals("109 121 32 97 100 100 114 101 115 115 33", WordUtil.toDecimal("my address!"));
+	}
+
+	@Test
+	public void compactRepeatedChars() {
+		assertEquals("baby", WordUtil.compactRepeatedChars("babby"));
+		assertEquals("adres", WordUtil.compactRepeatedChars("address"));
+	}	
+	
 	@Test
 	public void longestCommonSubstringTest() {
 		String longestCommon = WordUtil.longestCommonSubstring("Local Area Network Connection", "Local Area Network");
