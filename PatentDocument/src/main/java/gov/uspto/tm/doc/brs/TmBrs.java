@@ -2,12 +2,15 @@ package gov.uspto.tm.doc.brs;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeParseException;
@@ -430,7 +433,8 @@ public class TmBrs extends KvReaderFixedWidth {
 
 	public void run(File inputFile, KvDocBuilder kvDocBuilder, Writer writer) throws IOException {
 
-		DumpFileAps dumpReader = new DumpFileAps(inputFile, "<XX>");
+		//DumpFileAps dumpReader = new DumpFileAps(inputFile, "<XX>");
+		DumpFileAps dumpReader = new DumpFileAps(inputFile, "*** BRS DOCUMENT BOUNDARY ***");
 
 		long totalLimit = Long.MAX_VALUE;
 
@@ -446,14 +450,21 @@ public class TmBrs extends KvReaderFixedWidth {
 					LOGGER.info("... mark {}", dumpReader.getCurrentRecCount());
 				}
 
-				// Write out individual raw input files
-				// Writer writer = new FileWriter(outputPath.resolve(docLoc + ".txt").toFile());
-
 				String rawDocStr = dumpReader.next();
 				if (rawDocStr == null) {
 					break;
 				}
 				LOGGER.trace("Raw Document: {}", rawDocStr);
+
+				// Write out individual raw input files for debugging
+//				Path rawOutPath = Paths.get("./output/raw");
+//				rawOutPath.toFile().mkdirs();
+//				try (Writer rawWriter = new BufferedWriter(new OutputStreamWriter(
+//						new FileOutputStream(Paths.get("./output/raw").resolve(docLoc + ".txt").toFile()),
+//						StandardCharsets.UTF_8))) {
+//					rawWriter.write(rawDocStr);
+//					rawWriter.flush();
+//				}
 
 				List<KeyValue> keyValues;
 				try {
@@ -462,7 +473,8 @@ public class TmBrs extends KvReaderFixedWidth {
 
 					LOGGER.trace("Key Values: {}", keyValues);
 
-					// Adding raw document text for debugging.
+					// Adding record source and raw document text for debugging.
+					keyValues.add(new KeyValue("record_source_s", docLoc));
 					keyValues.add(new KeyValue("brs_doc_txt", rawDocStr));
 
 					StringWriter outRecord = new StringWriter();
@@ -495,12 +507,12 @@ public class TmBrs extends KvReaderFixedWidth {
 		Writer writer;
 		if (LOGGER.isDebugEnabled() || LOGGER.isTraceEnabled()) {
 			PartitionFileWriter partWrite = new PartitionFileWriter(outputPath, inputFile.getName(), "-solr.xml",
-					partitionRecordLimit, partitionSizeMBLimit);
+					partitionRecordLimit, partitionSizeMBLimit, StandardCharsets.UTF_8);
 			Writer stdout = new BufferedWriter(new OutputStreamWriter(System.out));
 			writer = new TeeWriter(partWrite, stdout);
 		} else {
 			PartitionFileWriter partWrite = new PartitionFileWriter(outputPath, inputFile.getName(), "-solr.xml",
-					partitionRecordLimit, partitionSizeMBLimit);
+					partitionRecordLimit, partitionSizeMBLimit, StandardCharsets.UTF_8);
 			partWrite.setHeader(SOLR_HEADER);
 			partWrite.setFooter(SOLR_FOOTER);
 			writer = partWrite;

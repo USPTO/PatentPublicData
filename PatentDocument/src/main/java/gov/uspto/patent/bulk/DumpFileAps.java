@@ -3,19 +3,18 @@ package gov.uspto.patent.bulk;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class DumpFileAps extends DumpFile {
-	
+
 	private static final String START_TAG = "PATN";
 
 	private final String startTag;
 	private boolean startTagSeen = false;
 	private int currentRecCount;
-	
+
 	public DumpFileAps(File file) {
 		this(file, START_TAG);
 	}
@@ -25,7 +24,7 @@ public class DumpFileAps extends DumpFile {
 	}
 
 	public DumpFileAps(File file, String startTag) {
-		super(file);
+		super(file, StandardCharsets.ISO_8859_1);
 		this.startTag = startTag;
 	}
 

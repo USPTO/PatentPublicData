@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -27,6 +28,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	private static final Logger LOGGER = LoggerFactory.getLogger(DumpFile.class);
 
 	private final File file;
+	private final Charset charSet;
 	private PatentDocFormat patentDocFormat;
 
 	private ZipReader zipFile;
@@ -35,11 +37,17 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	private FileFilter fileFilter;
 	private String currentRawDoc;
 
-	public DumpFile(File file) {
+
+	public DumpFile(File file, Charset charset) {
 		Preconditions.checkNotNull(file, "File can not be Null");
 		Preconditions.checkArgument(file.isFile(), "File not found:" + file.getAbsolutePath());
 		MDC.put("SOURCE", String.valueOf(file.getName()));
 		this.file = file;
+		this.charSet = charset;
+	}	
+	
+	public DumpFile(File file) {
+		this(file, StandardCharsets.UTF_8);
 	}
 
 	/**
@@ -49,6 +57,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 	public DumpFile(String name, BufferedReader reader) {
 		this.file = new File(name);
 		this.reader = reader;
+		this.charSet = StandardCharsets.UTF_8;
 	}
 
 	public void setPatentDocFormat(PatentDocFormat patentDocFormat) {
@@ -61,7 +70,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 
 	public void open() throws IOException {
 		if (file.getName().endsWith(".zip")) {
-			zipFile = new ZipReader(file, fileFilter, StandardCharsets.UTF_8);
+			zipFile = new ZipReader(file, fileFilter, charSet);
 			try {
 				reader = zipFile.open().next();
 			} catch (NoSuchElementException e) {
@@ -71,7 +80,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 		} else if (reader != null) {
 			// use defined reader.
 		} else {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charSet));
 		}
 
 		patentDocFormat = new PatentDocFormatDetect().fromContent(reader);
@@ -123,7 +132,7 @@ public abstract class DumpFile implements Iterator<String>, Closeable, DumpReade
 
 	@Override
 	public InputStream nextDocument() {
-		return new ByteArrayInputStream(next().getBytes(StandardCharsets.UTF_8));
+		return new ByteArrayInputStream(next().getBytes(charSet));
 	}
 
 	@Override
