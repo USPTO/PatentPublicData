@@ -73,9 +73,6 @@ public class PartitionFileWriter extends Writer {
 	@Override
 	public void write(String str) throws IOException {
 		if (writer == null || predicate.thresholdReached(str)) {
-			if (writer != null && footer != null) {
-				writer.write(footer);
-			}
 			this.close();
 
 			Path filePath = getOutputFilePath();
