@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.dom4j.Document;
@@ -12,39 +13,37 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-public class Kv2KvXml extends KvWriter {
+public class Kv2KvXml extends KvDocBuilder {
 
 	private static String ROOT_NODE_NAME = "DOCUMENT";
 	private static final Pattern QNAME_INVALID = Pattern.compile("^[0-9].+$");
 
-	private final Writer writer;
 	private final boolean useOriginalKeyName;
 	private final Charset outCharSet;
-	private final boolean prettyPrint;	
-	
+	private final boolean prettyPrint;
+
 	private Document doc;
 	private Element rootNode;
 	private Element currentSection;
 
-	public Kv2KvXml(Writer writer) {
-		this(true, writer, StandardCharsets.UTF_8, false);
+	public Kv2KvXml() {
+		this(false, StandardCharsets.UTF_8, false);
 	}
 
-	public Kv2KvXml(boolean useOriginalKeyName, Writer writer) {
-		this(useOriginalKeyName, writer, StandardCharsets.UTF_8, false);
+	public Kv2KvXml(boolean useOriginalKeyName) {
+		this(useOriginalKeyName, StandardCharsets.UTF_8, false);
 	}
 
-	public Kv2KvXml(boolean useOriginalKeyName, Writer writer, boolean prettyPrint) {
-		this(useOriginalKeyName, writer, StandardCharsets.UTF_8, prettyPrint);
+	public Kv2KvXml(boolean useOriginalKeyName, boolean prettyPrint) {
+		this(useOriginalKeyName, StandardCharsets.UTF_8, prettyPrint);
 	}
 
-	public Kv2KvXml(boolean useOriginalKeyName, Writer writer, Charset outCharset, boolean prettyPrint) {
+	public Kv2KvXml(boolean useOriginalKeyName, Charset outCharset, boolean prettyPrint) {
 		this.useOriginalKeyName = useOriginalKeyName;
-		this.writer = writer;
 		this.outCharSet = outCharset;
 		this.prettyPrint = prettyPrint;
 	}
-	
+
 	@Override
 	public String getRootElementName() {
 		return ROOT_NODE_NAME;
@@ -87,7 +86,7 @@ public class Kv2KvXml extends KvWriter {
 	}
 
 	@Override
-	public void writeRecord() throws IOException {
+	public void writeRecord(Writer writer) throws IOException {
 		OutputFormat outFormat;
 		if (prettyPrint) {
 			outFormat = OutputFormat.createPrettyPrint();
@@ -97,13 +96,8 @@ public class Kv2KvXml extends KvWriter {
 		outFormat.setEncoding(outCharSet.name());
 		XMLWriter xmlWriter = new XMLWriter(writer, outFormat);
 		xmlWriter.write(doc);
-	}
-
-	@Override
-	public void close() throws Exception {
-		if (writer != null) {
-			writer.close();
-		}
+		writer.write('\n');
+		writer.flush();
 	}
 
 	private String cleanXMLElementName(String name) {

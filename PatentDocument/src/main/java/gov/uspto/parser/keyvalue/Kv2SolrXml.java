@@ -2,7 +2,6 @@ package gov.uspto.parser.keyvalue;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.dom4j.Document;
@@ -11,23 +10,21 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-public class Kv2SolrXml extends KvWriter {
+public class Kv2SolrXml extends KvDocBuilder {
 
 	private static String ROOT_NODE_NAME = "doc";
 
-	private final Writer writer;
 	private final OutputFormat outFormat;
 
 	private Document doc;
 	private Element rootNode;
 	private Element currentSection;
 
-	public Kv2SolrXml(Writer writer) {
-		this(writer, defaultOutputFormat());
+	public Kv2SolrXml() {
+		this(defaultOutputFormat());
 	}
 
-	public Kv2SolrXml(Writer writer, OutputFormat outFormat) {
-		this.writer = writer;
+	public Kv2SolrXml(OutputFormat outFormat) {
 		this.outFormat = outFormat;
 	}
 
@@ -70,16 +67,11 @@ public class Kv2SolrXml extends KvWriter {
 	}
 
 	@Override
-	public void writeRecord() throws IOException {
+	public void writeRecord(Writer writer) throws IOException {
 		XMLWriter xmlWriter = new XMLWriter(writer, outFormat);
 		xmlWriter.write(doc);
-	}
-
-	@Override
-	public void close() throws Exception {
-		if (writer != null) {
-			writer.close();
-		}
+		writer.write('\n');
+		writer.flush();
 	}
 
 }

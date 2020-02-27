@@ -2,25 +2,25 @@ package gov.uspto.tm.doc.brs;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -28,13 +28,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import gov.uspto.common.io.PartitionFileWriter;
 import gov.uspto.common.io.TeeWriter;
 import gov.uspto.common.text.DateUtil;
+import gov.uspto.common.text.WordUtil;
 import gov.uspto.parser.keyvalue.KeyValue;
 import gov.uspto.parser.keyvalue.Kv2KvXml;
 import gov.uspto.parser.keyvalue.Kv2SolrXml;
+import gov.uspto.parser.keyvalue.KvDocBuilder;
 import gov.uspto.parser.keyvalue.KvReaderFixedWidth;
-import gov.uspto.parser.keyvalue.KvWriter;
 import gov.uspto.patent.PatentReaderException;
 import gov.uspto.patent.bulk.DumpFileAps;
 
@@ -113,10 +115,20 @@ public class TmBrs extends KvReaderFixedWidth {
 	// before sending to Solr.
 	private static final Pattern PATTERN_TOKENIZER = Pattern.compile("[,; ]");
 	private static final Pattern POST_TOKEN_PATTERN_FILTER = Pattern.compile("[^A-z0-9-\\\\/]");
+
 	private static final Set<String> TOKENIZE_FIELDS = new HashSet<>(Arrays.asList("DC", "US", "CP", "CL"));
 
 	private static final Set<String> DATE_FIELDS = new HashSet<>(
-			Arrays.asList("PD", "PO", "FD", "PF", "RE", "RD", "AD", "CD", "U1", "U2"));
+			Arrays.asList("PD", "PO", "FD", "PF", "RD", "AD", "CD", "U1", "U2", "SR"));
+
+	private static final Map<String, String> BOOLEAN_FIELDS = new HashMap<String, String>() {
+		{
+			put("ST", "STANDARD CHARACTERS CLAIMED");
+			put("CR", "CHANGE IN REGISTRATION HAS OCCURRED");
+			put("AR", "ASSIGNMENT RECORDED");
+			put("LD", "LIVE");
+		}
+	};
 
 	private static final Map<String, String> RENAME_FIELDS = new HashMap<String, String>() {
 		{
@@ -124,7 +136,7 @@ public class TmBrs extends KvReaderFixedWidth {
 			put("SO", "serial_other_id_ss"); // 77-367856
 			put("IR", "intl_id_ss"); // 0272587
 			put("RN", "reg_id_s");
-			put("PR", "prior_reg_ids_td"); // "3282741;3891127;3891128"
+			put("PR", "prior_reg_ids_td"); // "3282741;3891127;3891128" "0541197;0839755;AND OTHERS"
 			put("WM", "wmark_s");
 			put("PM", "wmark_pseudo_t");
 			put("PD", "priority_dt");
@@ -132,7 +144,7 @@ public class TmBrs extends KvReaderFixedWidth {
 			put("RD", "register_dt");
 			put("AD", "abandon_dt");
 			put("CD", "cancel_dt");
-			put("RE", "renewal_dt");
+			put("RE", "renewal_t"); // 2ND RENEWAL 20160123
 			put("PF", "phys_filed_dt"); // Physical Filing Date
 			put("PO", "pub_op_dt"); // Published for Opposition Date
 			put("SR", "supp_reg_dt"); // Supplemental Register Date
@@ -156,6 +168,8 @@ public class TmBrs extends KvReaderFixedWidth {
 			put("SC", "owner_state_cntry_addr_txt");
 			put("AT", "attorney_t");
 			put("MD", "drawing_code_i");
+			put("AR", "assignment_recorded_b"); // ASSIGNMENT RECORDED
+			put("CR", "reg_changed_b"); // CHANGE IN REGISTRATION HAS OCCURRED
 			put("ST", "st_char_claimed_b");
 			put("LD", "alive_b");
 			put("TM", "mark_type_s");
@@ -165,17 +179,35 @@ public class TmBrs extends KvReaderFixedWidth {
 			put("DC", "design_code_txt"); // 020102 020107
 			put("CL", "intl_class_txt"); // 009
 			put("CP", "coordinated_class_txt"); // 042 001 002 003
+			put("PC", "psudo_class_txt"); // IC: 039; PSEUDO CLASS(ES): 035
 			put("US", "us_class_txt"); // 100 101
 			put("OW", "ignored_OW");
-
+			put("AF", "affidavit_t"); // SECT 12C. SECT 15. SECTION 8(10-YR) 20050214.
 			put("U1", "u1_dts");
 			put("U2", "u2_dts");
 			put("AN", "an_txt"); // The mark was first used anywhere in a different form other than that sought
 									// to be registered at least as early as 12/01/2018
 			put("TD", "td_i"); // 0000
 			put("TP", "tp_i"); // 0000
+
+			put("D0", "d0_txt");
+			put("NC", "nc_txt");
 		}
 	};
+
+	Map<String, String> AF_SECTION = new HashMap<String, String>() {
+		{
+			put("SECT 12C", "12C");
+			put("SECT 15", "15");
+			put("SECT 8 (6-YR)", "8_6yr");
+			put("SECTION 8(10-YR)", "8_10yr");
+			put("PARTIAL SECTION 8(10-YR)", "8_partial_10yr");
+			put("SECTION 71", "71");
+		}
+	};
+
+	private static final String SOLR_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<add>\n";
+	private static final String SOLR_FOOTER = "</add>\n";
 
 	private final boolean convertValues;
 	private final boolean renameFields;
@@ -225,15 +257,15 @@ public class TmBrs extends KvReaderFixedWidth {
 
 	public String convertValue(final String key, String value) {
 		if (DATE_FIELDS.contains(key.toUpperCase())) {
-			return DateUtil.toDateTimeISO(value.trim());
+			try {
+				return DateUtil.toDateTimeISO(value.trim());
+			} catch (DateTimeParseException e) {
+				LOGGER.warn("!! Invalid Date: '{}' from field: '{}'", value.trim(), key, e);
+			}
 		}
 
-		if ("ST".equalsIgnoreCase(key)) {
-			return String.valueOf("STANDARD CHARACTERS CLAIMED".equals(value.trim()));
-		}
-
-		if ("LD".equalsIgnoreCase(key)) {
-			return String.valueOf("LIVE".equals(value.trim()));
+		if (BOOLEAN_FIELDS.containsKey(key.toUpperCase())) {
+			return String.valueOf(BOOLEAN_FIELDS.get(key.toUpperCase()).equals(value.trim()));
 		}
 
 		/*
@@ -256,14 +288,7 @@ public class TmBrs extends KvReaderFixedWidth {
 		Reader reader = new StringReader(rawRecord);
 		List<KeyValue> keyValues = parse(reader);
 
-		keyValues = keyValues.stream().filter(e -> !e.getKey().equals("XX"))
-				// .filter(e -> !e.getKey().equals("EN"))
-				// .filter(e -> !e.getKey().equals("TP"))
-				// .filter(e -> !e.getKey().equals("ST"))
-				// .filter(e -> !e.getKey().equals("ON"))
-				// .filter(e -> !e.getKey().equals("OW"))
-				// .distinct()
-				.collect(Collectors.toList());
+		keyValues = keyValues.stream().filter(e -> !e.getKey().equals("XX")).collect(Collectors.toList());
 
 		return keyValues;
 	}
@@ -272,9 +297,39 @@ public class TmBrs extends KvReaderFixedWidth {
 	public List<KeyValue> postProcess(List<KeyValue> keyValues) {
 		List<KeyValue> newList = new ArrayList<KeyValue>();
 		Iterator<KeyValue> it = keyValues.iterator();
-		//for (int i = 0; it.hasNext(); i++) {
-		while(it.hasNext()) {
+		// for (int i = 0; it.hasNext(); i++) {
+		while (it.hasNext()) {
 			KeyValue kv = it.next();
+
+			if ("WM".equalsIgnoreCase(kv.getKeyOriginal())) {
+				String value = WordUtil.toDecimal(kv.getValue().trim());
+				KeyValue kv2 = new KeyValue("wmark_decimal_ws", value);
+				kv2.setKeyOriginal("WM:DECIMAL");
+				newList.add(kv2);
+			}
+
+			if ("RE".equalsIgnoreCase(kv.getKeyOriginal())) {
+				Pattern RENEWAL = Pattern.compile("(\\d+)(?:ST|ND|RD|TH) RENEWAL \\s+(\\d+)$");
+				Matcher renMatcher = RENEWAL.matcher(kv.getValue().trim());
+				if (renMatcher.matches()) {
+					String renCount = renMatcher.group(1);
+					String dateStr = renMatcher.group(2);
+
+					try {
+						String date = DateUtil.toDateTimeISO(dateStr);
+						KeyValue kv2 = new KeyValue(kv.getKey().replaceFirst("_t$", "_dt"), date);
+						kv2.setKeyOriginal(kv.getKeyOriginal());
+						newList.add(kv2);
+					} catch (DateTimeParseException e) {
+						LOGGER.warn("!! Invalid Date: '{}' from field: '{}'", dateStr, kv.getKeyOriginal());
+					}
+
+					KeyValue kv2 = new KeyValue(kv.getKey().replaceFirst("_t$", "_count_i"), renCount);
+					kv2.setKeyOriginal(kv.getKeyOriginal());
+					newList.add(kv2);
+				}
+			}
+
 			if (TOKENIZE_FIELDS.contains(kv.getKeyOriginal())) {
 				String[] tokens = PATTERN_TOKENIZER.split(kv.getValue());
 				for (String tok : tokens) {
@@ -284,43 +339,98 @@ public class TmBrs extends KvReaderFixedWidth {
 					newList.add(kv2);
 				}
 			}
+
+			if ("AF".equalsIgnoreCase(kv.getKeyOriginal())) {
+				String[] tokens = kv.getValue().trim().split("\\.\\s?");
+				for (String tok : tokens) {
+					tok = tok.trim().replaceFirst("\\s+\\d{8}$", ""); // remove trailing date.
+					String secNum = AF_SECTION.get(tok);
+					if (secNum != null) {
+						KeyValue kv2 = new KeyValue("af_section_" + secNum + "_bs", "true");
+						kv2.setKeyOriginal(kv.getKeyOriginal());
+						newList.add(kv2);
+					}
+				}
+			}
+		}
+
+		List<Map<String, String>> entities = parseEntities(keyValues);
+		for (Map<String, String> entity : entities) {
+			String nameStr = entity.get("PN");
+			String dbStr = entity.get("DB");
+			String street1 = entity.get("AI");
+			String street2 = entity.get("AS");
+			String city = entity.get("CY");
+			String stateCountry = entity.get("SC");
+
+			StringBuilder stb = new StringBuilder();
+			stb.append(nameStr.trim());
+			if (dbStr != null && !dbStr.trim().isEmpty()) {
+				stb.append(", ");
+				stb.append(dbStr.trim());
+			}
+			if (street1 != null && !street1.trim().isEmpty()) {
+				stb.append(", ");
+				stb.append(street1.trim());
+			}
+			stb.append(",");
+			if (street2 != null && !street2.trim().isEmpty()) {
+				stb.append(", ");
+				stb.append(street2.trim());
+			}
+			if (city != null && !city.trim().isEmpty()) {
+				stb.append(", ");
+				stb.append(city.trim());
+			}
+			if (stateCountry != null && !stateCountry.trim().isEmpty()) {
+				stb.append(", ");
+				stb.append(stateCountry.trim());
+			}
+
+			KeyValue kv2 = new KeyValue("owner_addr_txt", stb.toString());
+			kv2.setKeyOriginal("PN:AI:AS:CY:SC");
+			newList.add(kv2);
 		}
 
 		keyValues.addAll(newList);
 		return keyValues;
 	}
 
-	public static void main(String[] args) throws PatentReaderException, IOException {
+	public List<Map<String, String>> parseEntities(List<KeyValue> keyValues) {
+		List<Map<String, String>> entities = new ArrayList<Map<String, String>>();
+		List<String> ENTITY_FIELDS = Arrays.asList("PN", "EN", "CI", "CO", "DB", "AI", "AS", "CY", "SC", "NC");
+		Iterator<KeyValue> it = keyValues.iterator();
+		boolean entityBlock = false;
+		List<KeyValue> entityFields = new ArrayList<KeyValue>();
+		while (it.hasNext()) {
+			KeyValue kv = it.next();
 
-		File inputFile = new File(args[0]);
+			if (entityBlock == true) {
+				if (ENTITY_FIELDS.contains(kv.getKeyOriginal())) {
+					entityFields.add(kv);
+				} else {
+					entityBlock = false;
+					Map<String, String> entity = entityFields.stream()
+							.collect(Collectors.toMap(KeyValue::getKeyOriginal, KeyValue::getValue, (u, v) -> {
+								throw new IllegalStateException(String.format("Duplicate key %s", u));
+							}, LinkedHashMap::new));
+					// LOGGER.info(" {} PE {}", kv.getKeyOriginal(), entity);
+					entities.add(entity);
+				}
+			}
 
-		boolean wantSolrXml = true;
-
-		Path outputPath = Paths.get("./output");
-		if (!outputPath.toFile().isDirectory()) {
-			outputPath.toFile().mkdirs();
+			if ("OW".equalsIgnoreCase(kv.getKeyOriginal())) {
+				entityFields = new ArrayList<KeyValue>();
+				entityFields.add(kv);
+				entityBlock = true;
+			}
 		}
+		return entities;
+	}
+
+	public void run(File inputFile, KvDocBuilder kvDocBuilder, Writer writer) throws IOException {
 
 		DumpFileAps dumpReader = new DumpFileAps(inputFile, "<XX>");
-		// DumpFileAps dumpReader = new DumpFileAps(inputFile, "*** BRS DOCUMENT BOUNDARY ***");
-
-		Set<String> fields = new LinkedHashSet<String>();
-
-		Path outputFileTmp = outputPath.resolve(dumpReader.getFile().getName() + "-solr.tmp");
-		Path outputFile = outputPath.resolve(dumpReader.getFile().getName() + "-solr.xml");
-
-		Writer writer;
-		if (LOGGER.isDebugEnabled()) {
-			Writer fileW = new BufferedWriter(new FileWriter(outputFileTmp.toFile()));
-			Writer stdout = new BufferedWriter(new OutputStreamWriter(System.out));
-			writer = new TeeWriter(fileW, stdout);
-		} else {
-			writer = new BufferedWriter(new FileWriter(outputFileTmp.toFile()));
-		}
-		// Writer writer = new OutputStreamWriter(System.out);
-
-		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n");
-		writer.write("<add>\n");
 
 		long totalLimit = Long.MAX_VALUE;
 
@@ -332,51 +442,39 @@ public class TmBrs extends KvReaderFixedWidth {
 				String docLoc = dumpReader.getFile().getName() + "-" + dumpReader.getCurrentRecCount();
 				MDC.put("DOCID", docLoc);
 
-				// Writer writer = new FileWriter(outputPath.resolve(docLoc + ".xml").toFile());
+				if (dumpReader.getCurrentRecCount() % 1000 == 0) {
+					LOGGER.info("... mark {}", dumpReader.getCurrentRecCount());
+				}
+
+				// Write out individual raw input files
+				// Writer writer = new FileWriter(outputPath.resolve(docLoc + ".txt").toFile());
 
 				String rawDocStr = dumpReader.next();
 				if (rawDocStr == null) {
 					break;
 				}
-
 				LOGGER.trace("Raw Document: {}", rawDocStr);
 
-				TmBrs kvReader = new TmBrs(true, true);
+				List<KeyValue> keyValues;
+				try {
+					keyValues = parse(new StringReader(rawDocStr));
+					keyValues = keyValues.stream().filter(e -> !e.getKey().equals("XX")).collect(Collectors.toList());
 
-				KvWriter kvWriter;
+					LOGGER.trace("Key Values: {}", keyValues);
 
-				if (wantSolrXml) {
-					kvWriter = new Kv2SolrXml(writer);
-				} else {
-					kvWriter = new Kv2KvXml(writer);
+					// Adding raw document text for debugging.
+					keyValues.add(new KeyValue("brs_doc_txt", rawDocStr));
+
+					StringWriter outRecord = new StringWriter();
+					kvDocBuilder.write(keyValues, outRecord);
+					writer.write(outRecord.toString());
+				} catch (PatentReaderException e) {
+					LOGGER.error("!! Failed processing record : {}", dumpReader.getCurrentRecCount(), e);
 				}
-
-				Reader reader = new StringReader(rawDocStr);
-
-				List<KeyValue> keyValues = kvReader.parse(reader);
-				keyValues = keyValues.stream().filter(e -> !e.getKey().equals("XX")).collect(Collectors.toList());
-
-				Set<String> iFields = keyValues.stream().map(e -> e.getKey()).collect(Collectors.toSet());
-				fields.addAll(iFields);
-
-				LOGGER.trace("Key Values: {}", keyValues);
-
-				writer.write("  ");
-				kvWriter.write(keyValues);
-				writer.write('\n');
-				writer.flush();
 			}
 
-			writer.write("</add>\n");
-			writer.close();
-
-			LOGGER.info("****** File Processed '{}', record count: {}", dumpReader.getFile().getName(), dumpReader.getCurrentRecCount());
-
-			try {
-				Files.move(outputFileTmp, outputFile, StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException e) {
-				LOGGER.error("!! Failed to rename file '{}' to '{}'", outputFileTmp, outputFile, e);
-			}
+			LOGGER.info("****** File Processed '{}', record count: {}", dumpReader.getFile().getName(),
+					dumpReader.getCurrentRecCount());
 
 		} catch (IOException e) {
 			LOGGER.error("!! Failed when processing file: '{}'", inputFile, e);
@@ -384,6 +482,41 @@ public class TmBrs extends KvReaderFixedWidth {
 			writer.close();
 			dumpReader.close();
 		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		File inputFile = new File(args[0]);
+		boolean wantSolrXml = true;
+		int partitionRecordLimit = 5000;
+		int partitionSizeMBLimit = 25;
+
+		Path outputPath = Paths.get("./output");
+
+		Writer writer;
+		if (LOGGER.isDebugEnabled() || LOGGER.isTraceEnabled()) {
+			PartitionFileWriter partWrite = new PartitionFileWriter(outputPath, inputFile.getName(), "-solr.xml",
+					partitionRecordLimit, partitionSizeMBLimit);
+			Writer stdout = new BufferedWriter(new OutputStreamWriter(System.out));
+			writer = new TeeWriter(partWrite, stdout);
+		} else {
+			PartitionFileWriter partWrite = new PartitionFileWriter(outputPath, inputFile.getName(), "-solr.xml",
+					partitionRecordLimit, partitionSizeMBLimit);
+			partWrite.setHeader(SOLR_HEADER);
+			partWrite.setFooter(SOLR_FOOTER);
+			writer = partWrite;
+		}
+		// Test without writing output
+		// writer = new DummyWriter();
+
+		KvDocBuilder kvDocBuilder;
+		if (wantSolrXml) {
+			kvDocBuilder = new Kv2SolrXml();
+		} else {
+			kvDocBuilder = new Kv2KvXml();
+		}
+
+		TmBrs kvReader = new TmBrs(true, true);
+		kvReader.run(inputFile, kvDocBuilder, writer);
 	}
 
 }

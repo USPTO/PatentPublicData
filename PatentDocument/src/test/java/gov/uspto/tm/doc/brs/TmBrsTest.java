@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import gov.uspto.parser.keyvalue.KeyValue;
 import gov.uspto.parser.keyvalue.Kv2KvXml;
-import gov.uspto.parser.keyvalue.KvWriter;
+import gov.uspto.parser.keyvalue.KvDocBuilder;
 import gov.uspto.patent.PatentReaderException;
 
 public class TmBrsTest {
@@ -18,13 +18,7 @@ public class TmBrsTest {
 	@Test
 	public void test() throws PatentReaderException, IOException {
 
-		String rawRec = "<WM> VCA VASCULAR CENTERS OF AMERICA         \n" + 
-				"</WM>                                        \n" + 
-				"</BI>                                        \n" + 
-				"<CL> IC  044.                                \n" + 
-				"<US>   US 100 101.                           \n" + 
-				"<CP> 044 001 003 005 009 010 018 021 031 035 \n" + 
-				"     036 037 038 039 040 041 042 043 045.    \n" + 
+		String rawRec = "</BI>                                        \n" + 
 				"<GS> Medical services, including treatment an\n" + 
 				"     d diagnoses of cardiac and vascular dise\n" + 
 				"     ase, and percutaneous interventional tre\n" + 
@@ -64,10 +58,6 @@ public class TmBrsTest {
 
 		String xmlExpected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n" +
 				"<DOCUMENT>\n" + 
-				"  <WM>VCA VASCULAR CENTERS OF AMERICA</WM>\n" + 
-				"  <CL>IC 044.</CL>\n" + 
-				"  <US>US 100 101.</US>\n" + 
-				"  <CP>044 001 003 005 009 010 018 021 031 035 036 037 038 039 040 041 042 043 045.</CP>\n" + 
 				"  <GS>Medical services, including treatment and diagnoses of cardiac and vascular disease, and percutaneous interventional treatment for cardiac and vascular illness and disease</GS>\n" + 
 				"  <U1>20170101</U1>\n" + 
 				"  <U2>20170101</U2>\n" + 
@@ -93,8 +83,9 @@ public class TmBrsTest {
 				"  <TM>SERVICE MARK</TM>\n" + 
 				"  <RG>PRINCIPAL</RG>\n" + 
 				"  <LD>LIVE</LD>\n" + 
-				"  <TP>0000</TP>\n" + 
-				"</DOCUMENT>\n";
+				"  <TP>0000</TP>\n" + 		
+				"  <PN:AI:AS:CY:SC>Modern Management Center LLC, 25130 Southfield Rd,, Southfield, MICHIGAN 48075</PN:AI:AS:CY:SC>\n" + 
+				"</DOCUMENT>\n\n";
 
 		TmBrs brs = new TmBrs(false, false);
 		List<KeyValue> keyValues = brs.parse(rawRec);
@@ -102,8 +93,8 @@ public class TmBrsTest {
 		//keyValues.stream().forEach(System.out::println);
 
 		StringWriter writer = new StringWriter();
-		KvWriter kvWriter = new Kv2KvXml(true, writer, true);
-		kvWriter.write(keyValues);
+		KvDocBuilder kvWriter = new Kv2KvXml(true, true);
+		kvWriter.write(keyValues, writer);
 		String actualXML = writer.toString().replaceAll("\r", "");
 		//System.out.println(actualXML);
 
