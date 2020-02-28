@@ -12,13 +12,26 @@ import gov.uspto.patent.model.entity.NamePerson;
 public class NameNodeTest {
 
 	@Test
-	public void suffixFix_per() throws InvalidDataException {
+	public void person_deceased() throws InvalidDataException {
 		NameNode parser = new NameNode(null);
-		Name name = parser.createName("Doe, Sr; John");
+		Name name = parser.createName("Gee, Sr., deceased; Samuel");
 		assertTrue("expect NamePerson", name instanceof NamePerson);
-		assertEquals("John", ((NamePerson)name).getFirstName());
-		assertEquals("Doe", ((NamePerson)name).getLastName());
-		assertEquals("Sr", name.getSuffix());
+		assertEquals("Sr.", name.getSuffix());
+	}
+
+	@Test
+	public void semicolon_andsign_person() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Fletcher; James C. Administrator of the National Aeronautics & Space Administration");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+	}
+
+	//@Test @TODO
+	public void semicolon_org() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Doe; John & Jane");
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+		assertEquals("Doe; John & Jane", ((NameOrg)name).getName());
 	}
 
 	@Test
@@ -26,6 +39,17 @@ public class NameNodeTest {
 		NameNode parser = new NameNode(null);
 		Name name = parser.createName("Flint Steel, LLC");
 		assertTrue("expect NameOrg", name instanceof NameOrg);
+	}
+
+
+	@Test
+	public void suffixFix_per() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Doe, Sr; John");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("John", ((NamePerson)name).getFirstName());
+		assertEquals("Doe", ((NamePerson)name).getLastName());
+		assertEquals("Sr", name.getSuffix());
 	}
 
 	@Test
