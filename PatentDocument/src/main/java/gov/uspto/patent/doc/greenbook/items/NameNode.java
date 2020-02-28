@@ -41,11 +41,12 @@ public class NameNode extends ItemReader<Name> {
 			"A LEGAL REPRESENTATIVE", "LEGAL REPRESENTATIVE AND HEIR", "SUCCESSOR", "SOLE BENEFICIARY", "SOLE HEIR",
 			"REPRESENTATIVE", "PERSONAL REPRESENTATIVE", "JOINT PERSONAL REPRESENTATIVE", "SURVIVING SPOUSE",
 			"SPECIAL ADMINISTRATOR", "TRUST", "TRUSTEE", "TRUSTEE OR SUCCESSOR TRUSTEE", "DECEASED", "DECESASED",
-			"LEGAL", "LEGALESS", "JR. ESQ", "IV ESQ", "PH.D", "JR. ATTY"));
+			"LEGAL", "LEGALESS", "JR. ESQ", "IV ESQ", "PH.D", "JR. ATTY", "JR. EXECUTOR"));
 
 	public static final Set<String> COMPANY_SUFFIXES = new HashSet<String>(
-			Arrays.asList("INC", "LLC", "L.L.C", "LTD", "LTD PLC", "PLC", "P.L.C", "L.C.", "LC", "LLP", "L.L.P",
-					"P.L.L.C", "PLLC", "S.C", "P.A", "PA", "P.C", "PC", "P.S.", "S.P.A", "S.P.C", "CHTD"));
+			Arrays.asList("INC", "LLC", "L.L.C", "LTD", "LTD PLC", "PLC", "P.L.C", "L.C", "LC", "LLP", "L.L.P",
+					"P.L.L.C", "PLLC", "S.C", "P.A", "PA", "P.C", "PC", "P.L", "P.S", "S.P.A", "S.P.C", "CHTD",
+					"IP GROUP", "INTELLECTUAL PROPERTY PRACTICE GROUP", "GROUP", "COMPANY"));
 
 	public NameNode(Node itemNode) {
 		super(itemNode);
@@ -67,26 +68,48 @@ public class NameNode extends ItemReader<Name> {
 	}
 
 	protected String[] suffixFix(String lastName) {
-		String[] parts = lastName.split(",");
-		if (parts.length == 2) {
-			String suffix = parts[1].trim();
-			String suffixCheck = suffix.replaceFirst("\\.$", "").toUpperCase();
+		List<String> parts = Splitter.onPattern(",").limit(2).trimResults().splitToList(lastName);
+		List<String> words = Splitter.onPattern("\\s").trimResults().splitToList(lastName);
+		List<String> commas = Splitter.onPattern("\\s").trimResults().splitToList(lastName);
 
-			if (COMPANY_SUFFIXES.contains(suffixCheck.toUpperCase())) {
-				return new String[] { "org", parts[0], suffix };
+		if (parts.size() == 2) {
+			String suffix = parts.get(1);
+			String suffixCheck = suffix.replaceFirst("\\.$", "").replace(",", "").toUpperCase();
+			String finalWord = words.get(words.size() - 1).replaceFirst("\\.$", "").replace(",", "").toUpperCase();
+			String finalComma = words.get(commas.size() - 1).replaceFirst("\\.$", "").replace(",", "").toUpperCase();
+
+			if (COMPANY_SUFFIXES.contains(suffixCheck) || COMPANY_SUFFIXES.contains(finalWord)
+					|| COMPANY_SUFFIXES.contains(finalComma)) {
+				return new String[] { "org", parts.get(0), suffix };
 			} else if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck.toUpperCase()))
 					|| PERSON_LONG_SUFFIXES.contains(suffixCheck)) {
-				LOGGER.debug("Suffix Fixed, parsed common suffix '{}' from lastname: '{}'", suffixCheck, lastName);
-				return new String[] { "per", parts[0], suffix };
+				LOGGER.debug("Suffix Fixed, common suffix '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName,
+						parts.get(0));
+				return new String[] { "per", parts.get(0), suffix };
 			} else if (suffixCheck.startsWith("NEE ") || suffixCheck.startsWith("FORMERLY ")
 					|| suffixCheck.startsWith("WIDOW ")) {
 				String synonym = suffix.substring(suffix.indexOf(" ") + 1);
-				return new String[] { "per-syn", parts[0], suffix, synonym };
-			} else if (suffixCheck.startsWith("BY CHANGE OF NAME ") || suffixCheck.startsWith("NOW BY CHANGE OF NAME ")) {
-				String synonym = suffix.substring(suffixCheck.indexOf("NAME")+5);
-				return new String[] { "per-syn-full", parts[0], suffix, synonym };
+				String[] synCheck = suffixFix(synonym);
+				String synname = synCheck != null ? synCheck[1] : synonym;
+				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, synname, parts.get(0));
+				return new String[] { "per-syn", parts.get(0), suffix, synonym };
+			} else if (suffixCheck.startsWith("BY CHANGE OF NAME ")
+					|| suffixCheck.startsWith("NOW BY CHANGE OF NAME ")) {
+				String synonym = suffix.substring(suffixCheck.indexOf("NAME") + 5);
+				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName, parts.get(0));
+				return new String[] { "per-syn-full", parts.get(0), suffix, synonym };
+			} else if (suffixCheck.startsWith("BY SAID ")) {
+				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName, parts.get(0));
+				return new String[] { "per", parts.get(0), suffix };
+			} else if (suffixCheck.startsWith("A/K/A ")) {
+				String synonym = suffix.substring(6);
+				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName, parts.get(0));
+				String[] synCheck = suffixFix(synonym);
+				String synname = synCheck != null ? synCheck[1] : synonym;
+				LOGGER.debug("Suffix Synonym '{}' from lastname '{}'", synname, lastName);
+				return new String[] { "per-syn", parts.get(0), suffix, synname };
 			} else {
-				LOGGER.info("Unmatched Suffix: {} :: {} -> {}", lastName, suffix);
+				LOGGER.info("Unmatched Suffix: '{}' from lastname: '{}'", suffix, lastName);
 			}
 		}
 
@@ -105,7 +128,7 @@ public class NameNode extends ItemReader<Name> {
 		if (fullName == null || fullName.trim().isEmpty()) {
 			throw new InvalidDataException("Name is missing");
 		}
-	
+
 		List<String> nameParts = Splitter.onPattern(";").limit(2).trimResults().splitToList(fullName);
 
 		Name entityName = null;
@@ -113,7 +136,16 @@ public class NameNode extends ItemReader<Name> {
 			String lastName = nameParts.get(0);
 			String firstName = nameParts.get(1);
 
-			lastName = lastName.replace(", deceased", "");
+			if (firstName.length() > 50 && isOrgName(firstName)) {
+				return new NameOrg(fullName);
+			}
+
+			if (firstName.length() > 50) {
+				LOGGER.warn("Long FirstName: '{}' : {}", firstName, fullName);
+			}
+
+			lastName = lastName.replaceFirst(",? deceased\\b", "");
+			lastName = lastName.replaceFirst("([a-z]) nee ", "$1, nee ");
 
 			if (lastName.contains(",")) {
 				String[] parts = suffixFix(lastName);
@@ -155,9 +187,11 @@ public class NameNode extends ItemReader<Name> {
 		return entityName;
 	}
 
-	public boolean isOrgName(String fullName) {		
+	public boolean isOrgName(String name) {
+		String[] ret = suffixFix(name);
+		if (ret != null && "org".equals(ret[0])) {
+			return true;
+		}
 		return false;
-		// special characters in orgName "&"
-		//
 	}
 }

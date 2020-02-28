@@ -12,6 +12,35 @@ import gov.uspto.patent.model.entity.NamePerson;
 public class NameNodeTest {
 
 	@Test
+	public void person_aka() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Cory, a/k/a Cynthia S. Timmerman, executrix; Cynthia S.");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("Cynthia S.", ((NamePerson) name).getFirstName());
+		assertEquals("Cory", ((NamePerson) name).getLastName());
+		assertEquals("a/k/a Cynthia S. Timmerman, executrix", name.getSuffix());
+		assertEquals("Timmerman, Cynthia S.", ((NamePerson) name).getLongestSynonym().trim());
+	}
+
+	@Test
+	public void person_bySaid() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Schutz, by said Murdoch N. McIntosh; Juris E.");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("Juris E.", ((NamePerson) name).getFirstName());
+		assertEquals("Schutz", ((NamePerson) name).getLastName());
+		assertEquals("by said Murdoch N. McIntosh", name.getSuffix());
+	}
+
+	@Test
+	public void person_multicomma() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Crisafulli, Jr., executor; by Joseph");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("Jr., executor", name.getSuffix());
+	}
+
+	@Test
 	public void person_deceased() throws InvalidDataException {
 		NameNode parser = new NameNode(null);
 		Name name = parser.createName("Gee, Sr., deceased; Samuel");
@@ -22,16 +51,17 @@ public class NameNodeTest {
 	@Test
 	public void semicolon_andsign_person() throws InvalidDataException {
 		NameNode parser = new NameNode(null);
-		Name name = parser.createName("Fletcher; James C. Administrator of the National Aeronautics & Space Administration");
+		Name name = parser
+				.createName("Fletcher; James C. Administrator of the National Aeronautics & Space Administration");
 		assertTrue("expect NamePerson", name instanceof NamePerson);
 	}
 
-	//@Test @TODO
+	// @Test @TODO
 	public void semicolon_org() throws InvalidDataException {
 		NameNode parser = new NameNode(null);
 		Name name = parser.createName("Doe; John & Jane");
 		assertTrue("expect NameOrg", name instanceof NameOrg);
-		assertEquals("Doe; John & Jane", ((NameOrg)name).getName());
+		assertEquals("Doe; John & Jane", ((NameOrg) name).getName());
 	}
 
 	@Test
@@ -41,14 +71,13 @@ public class NameNodeTest {
 		assertTrue("expect NameOrg", name instanceof NameOrg);
 	}
 
-
 	@Test
 	public void suffixFix_per() throws InvalidDataException {
 		NameNode parser = new NameNode(null);
 		Name name = parser.createName("Doe, Sr; John");
 		assertTrue("expect NamePerson", name instanceof NamePerson);
-		assertEquals("John", ((NamePerson)name).getFirstName());
-		assertEquals("Doe", ((NamePerson)name).getLastName());
+		assertEquals("John", ((NamePerson) name).getFirstName());
+		assertEquals("Doe", ((NamePerson) name).getLastName());
 		assertEquals("Sr", name.getSuffix());
 	}
 
@@ -63,22 +92,60 @@ public class NameNodeTest {
 	@Test
 	public void suffixFix_nee() throws InvalidDataException {
 		NameNode parser = new NameNode(null);
-		Name name = parser.createName("Flintston, nee Dinotopia; Betty");
-		assertTrue("expect NameOrg", name instanceof NamePerson);
-		assertEquals("Betty", ((NamePerson)name).getFirstName());
-		assertEquals("Flintston", ((NamePerson)name).getLastName());
-		assertEquals("Dinotopia, B.", ((NamePerson)name).getShortestSynonym());
-		assertEquals("Dinotopia, Betty", ((NamePerson)name).getLongestSynonym());
+		Name name = parser.createName("Flintstone, nee Dinotopia; Betty");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("Betty", ((NamePerson) name).getFirstName());
+		assertEquals("Flintstone", ((NamePerson) name).getLastName());
+		assertEquals("Dinotopia, B.", ((NamePerson) name).getShortestSynonym());
+		assertEquals("Dinotopia, Betty", ((NamePerson) name).getLongestSynonym());
 		assertEquals("nee Dinotopia", name.getSuffix());
-	}	
+	}
+
+	@Test
+	public void suffixFix_nee_2() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Flintstone nee Dinotopia, legal guardian; Betty");
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("Betty", ((NamePerson) name).getFirstName());
+		assertEquals("Flintstone", ((NamePerson) name).getLastName());
+		// assertEquals("Dinotopia, B.", ((NamePerson) name).getShortestSynonym());
+		// assertEquals("Dinotopia, Betty", ((NamePerson) name).getLongestSynonym());
+		assertEquals("nee Dinotopia, legal guardian", name.getSuffix());
+	}
 
 	@Test
 	public void suffixFix_changeOfName() throws InvalidDataException {
 		NameNode parser = new NameNode(null);
 		Name name = parser.createName("Doe, now by change of name Jane Doe Smith; Jane");
-		assertTrue("expect NameOrg", name instanceof NamePerson);
-		assertEquals("Jane", ((NamePerson)name).getFirstName());
-		assertEquals("Doe", ((NamePerson)name).getLastName());
-		assertEquals("Jane Doe Smith", ((NamePerson)name).getShortestSynonym());
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("Jane", ((NamePerson) name).getFirstName());
+		assertEquals("Doe", ((NamePerson) name).getLastName());
+		assertEquals("Jane Doe Smith", ((NamePerson) name).getShortestSynonym());
 	}
+
+	@Test
+	public void company_semicolon_final_comma() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Schecter; Manny W. Felsman, Bradley, Vaden, Gunter & Dillon, LLP");
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+		assertEquals("Schecter; Manny W. Felsman, Bradley, Vaden, Gunter & Dillon, LLP", ((NameOrg) name).getName());
+	}
+
+	@Test
+	public void company_semicolon_final_word() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Bongini; Stephen Fleit, Kahn, Gibbons, Gutman & Bongini P.L.");
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+		assertEquals("Bongini; Stephen Fleit, Kahn, Gibbons, Gutman & Bongini P.L.", ((NameOrg) name).getName());
+	}
+
+	@Test
+	public void company_semicolon_final_words() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Christine; Christine, Roberts and Cushman, Intellectual Property Practice Group");
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+		assertEquals("Christine; Christine, Roberts and Cushman, Intellectual Property Practice Group",
+				((NameOrg) name).getName());
+	}
+
 }
