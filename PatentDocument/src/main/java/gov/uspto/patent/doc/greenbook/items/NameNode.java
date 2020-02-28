@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.naming.directory.InvalidAttributesException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 import org.dom4j.XPath;
@@ -70,6 +71,7 @@ public class NameNode extends ItemReader<Name> {
 		if (parts.length == 2) {
 			String suffix = parts[1].trim();
 			String suffixCheck = suffix.replaceFirst("\\.$", "").toUpperCase();
+
 			if (COMPANY_SUFFIXES.contains(suffixCheck.toUpperCase())) {
 				return new String[] { "org", parts[0], suffix };
 			} else if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck.toUpperCase()))
@@ -103,13 +105,15 @@ public class NameNode extends ItemReader<Name> {
 		if (fullName == null || fullName.trim().isEmpty()) {
 			throw new InvalidDataException("Name is missing");
 		}
-
+	
 		List<String> nameParts = Splitter.onPattern(";").limit(2).trimResults().splitToList(fullName);
 
 		Name entityName = null;
 		if (nameParts.size() == 2) {
 			String lastName = nameParts.get(0);
 			String firstName = nameParts.get(1);
+
+			lastName = lastName.replace(", deceased", "");
 
 			if (lastName.contains(",")) {
 				String[] parts = suffixFix(lastName);
@@ -151,7 +155,7 @@ public class NameNode extends ItemReader<Name> {
 		return entityName;
 	}
 
-	public boolean isOrgName(String name) {
+	public boolean isOrgName(String fullName) {		
 		return false;
 		// special characters in orgName "&"
 		//
