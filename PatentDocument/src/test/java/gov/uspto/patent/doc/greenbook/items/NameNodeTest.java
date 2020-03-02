@@ -96,6 +96,8 @@ public class NameNodeTest {
 		assertTrue("expect NamePerson", name instanceof NamePerson);
 		assertEquals("Betty", ((NamePerson) name).getFirstName());
 		assertEquals("Flintstone", ((NamePerson) name).getLastName());
+		assertEquals("Flintstone, Betty, nee Dinotopia", ((NamePerson) name).getName());
+		assertEquals("Flintstone, B.", ((NamePerson) name).getAbbreviatedName());
 		assertEquals("Dinotopia, B.", ((NamePerson) name).getShortestSynonym());
 		assertEquals("Dinotopia, Betty", ((NamePerson) name).getLongestSynonym());
 		assertEquals("nee Dinotopia", name.getSuffix());
@@ -120,7 +122,10 @@ public class NameNodeTest {
 		assertTrue("expect NamePerson", name instanceof NamePerson);
 		assertEquals("Jane", ((NamePerson) name).getFirstName());
 		assertEquals("Doe", ((NamePerson) name).getLastName());
-		assertEquals("Jane Doe Smith", ((NamePerson) name).getShortestSynonym());
+		assertEquals("Doe Smith, Jane", ((NamePerson) name).getLongestSynonym().trim());
+		assertEquals("Doe Smith, J.", ((NamePerson) name).getShortestSynonym().trim());
+		assertEquals("Doe, J.", ((NamePerson) name).getAbbreviatedName());
+		assertEquals("JD", ((NamePerson) name).getInitials());
 	}
 
 	@Test
@@ -129,6 +134,15 @@ public class NameNodeTest {
 		Name name = parser.createName("Schecter; Manny W. Felsman, Bradley, Vaden, Gunter & Dillon, LLP");
 		assertTrue("expect NameOrg", name instanceof NameOrg);
 		assertEquals("Schecter; Manny W. Felsman, Bradley, Vaden, Gunter & Dillon, LLP", ((NameOrg) name).getName());
+	}
+	
+	@Test
+	public void company_semicolon() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("AT&T Information Systems Inc; AT&T Bell Laboratories");
+		assertFalse(name == null);
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+		assertEquals("AT&T Information Systems Inc; AT&T Bell Laboratories", ((NameOrg) name).getName());
 	}
 
 	@Test
@@ -146,6 +160,26 @@ public class NameNodeTest {
 		assertTrue("expect NameOrg", name instanceof NameOrg);
 		assertEquals("Christine; Christine, Roberts and Cushman, Intellectual Property Practice Group",
 				((NameOrg) name).getName());
+	}
+
+	@Test
+	public void long_suffix() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Hayashi, President, University of Tokyo; Kentaro");
+		assertFalse(name == null);
+		assertTrue("expect NamePerson", name instanceof NamePerson);
+		assertEquals("Kentaro",((NamePerson) name).getFirstName());
+		assertEquals("Hayashi",((NamePerson) name).getLastName());
+		assertEquals("Hayashi, Kentaro, President, University of Tokyo",((NamePerson) name).getName());
+	}
+
+	@Test
+	public void name_space_company() throws InvalidDataException {
+		NameNode parser = new NameNode(null);
+		Name name = parser.createName("Eugene M. The Law Offices of Eugene M. Lee P.L.L.C.");
+		assertFalse(name == null);
+		assertTrue("expect NameOrg", name instanceof NameOrg);
+		assertEquals("Eugene M. The Law Offices of Eugene M. Lee P.L.L.C.",((NameOrg) name).getName());
 	}
 
 }

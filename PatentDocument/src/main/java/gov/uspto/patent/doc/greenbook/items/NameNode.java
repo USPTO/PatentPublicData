@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.naming.directory.InvalidAttributesException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 import org.dom4j.XPath;
@@ -15,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Splitter;
+
 import gov.uspto.parser.dom4j.ItemReader;
 import gov.uspto.patent.InvalidDataException;
 import gov.uspto.patent.model.entity.Name;
@@ -41,12 +41,18 @@ public class NameNode extends ItemReader<Name> {
 			"A LEGAL REPRESENTATIVE", "LEGAL REPRESENTATIVE AND HEIR", "SUCCESSOR", "SOLE BENEFICIARY", "SOLE HEIR",
 			"REPRESENTATIVE", "PERSONAL REPRESENTATIVE", "JOINT PERSONAL REPRESENTATIVE", "SURVIVING SPOUSE",
 			"SPECIAL ADMINISTRATOR", "TRUST", "TRUSTEE", "TRUSTEE OR SUCCESSOR TRUSTEE", "DECEASED", "DECESASED",
-			"LEGAL", "LEGALESS", "JR. ESQ", "IV ESQ", "PH.D", "JR. ATTY", "JR. EXECUTOR"));
+			"LEGAL", "LEGALESS", "JR. ESQ", "IV ESQ", "PH.D", "JR. ATTY", "JR. EXECUTOR", "JR., CO-EXECUTOR"));
 
 	public static final Set<String> COMPANY_SUFFIXES = new HashSet<String>(
 			Arrays.asList("INC", "LLC", "L.L.C", "LTD", "LTD PLC", "PLC", "P.L.C", "L.C", "LC", "LLP", "L.L.P",
 					"P.L.L.C", "PLLC", "S.C", "P.A", "PA", "P.C", "PC", "P.L", "P.S", "S.P.A", "S.P.C", "CHTD",
 					"IP GROUP", "INTELLECTUAL PROPERTY PRACTICE GROUP", "GROUP", "COMPANY"));
+
+	public static final Set<String> PERSON_FORMERLY = new HashSet<String>(
+			Arrays.asList("NEE", "FORMERLY", "WIDOW", "BY CHANGE OF NAME", "NOW BY CHANGE OF NAME", "A/K/A"));
+
+	public static final Set<String> PER_SUFFIX_STARTS = new HashSet<String>(
+			Arrays.asList("BY SAID", "PRESIDENT", "ADMINISTRATOR OF", "EXECUTOR OF ESTATE OF"));
 
 	public NameNode(Node itemNode) {
 		super(itemNode);
@@ -68,46 +74,40 @@ public class NameNode extends ItemReader<Name> {
 	}
 
 	protected String[] suffixFix(String lastName) {
+
+		String lastWord = lastName.substring(lastName.lastIndexOf(' ') + 1).replaceFirst("\\.$", "").replace(",", "")
+				.trim().toUpperCase();
+		if (COMPANY_SUFFIXES.contains(lastWord)) {
+			return new String[] { "org", lastName, lastWord };
+		}
+
 		List<String> parts = Splitter.onPattern(",").limit(2).trimResults().splitToList(lastName);
-		List<String> words = Splitter.onPattern("\\s").trimResults().splitToList(lastName);
-		List<String> commas = Splitter.onPattern("\\s").trimResults().splitToList(lastName);
 
 		if (parts.size() == 2) {
+			String lastCommaWord = lastName.substring(lastName.lastIndexOf(',') + 1).replaceFirst("\\.$", "")
+					.replace(",", "").trim().toUpperCase();
 			String suffix = parts.get(1);
 			String suffixCheck = suffix.replaceFirst("\\.$", "").replace(",", "").toUpperCase();
-			String finalWord = words.get(words.size() - 1).replaceFirst("\\.$", "").replace(",", "").toUpperCase();
-			String finalComma = words.get(commas.size() - 1).replaceFirst("\\.$", "").replace(",", "").toUpperCase();
 
-			if (COMPANY_SUFFIXES.contains(suffixCheck) || COMPANY_SUFFIXES.contains(finalWord)
-					|| COMPANY_SUFFIXES.contains(finalComma)) {
+			if (COMPANY_SUFFIXES.contains(suffixCheck) || COMPANY_SUFFIXES.contains(lastCommaWord)) {
 				return new String[] { "org", parts.get(0), suffix };
-			} else if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck.toUpperCase()))
+			} else if ((suffixCheck.length() < 4 && PERSON_SUFFIXES.contains(suffixCheck))
 					|| PERSON_LONG_SUFFIXES.contains(suffixCheck)) {
 				LOGGER.debug("Suffix Fixed, common suffix '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName,
 						parts.get(0));
 				return new String[] { "per", parts.get(0), suffix };
-			} else if (suffixCheck.startsWith("NEE ") || suffixCheck.startsWith("FORMERLY ")
-					|| suffixCheck.startsWith("WIDOW ")) {
-				String synonym = suffix.substring(suffix.indexOf(" ") + 1);
+			} else if (PERSON_FORMERLY.stream().anyMatch(s -> suffixCheck.startsWith(s + " "))) {
+				String matched = PERSON_FORMERLY.stream().filter(s -> suffixCheck.startsWith(s + " ")).findFirst()
+						.orElse("");
+				String synonym = suffix.substring(matched.length() + 1);
 				String[] synCheck = suffixFix(synonym);
 				String synname = synCheck != null ? synCheck[1] : synonym;
-				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, synname, parts.get(0));
-				return new String[] { "per-syn", parts.get(0), suffix, synonym };
-			} else if (suffixCheck.startsWith("BY CHANGE OF NAME ")
-					|| suffixCheck.startsWith("NOW BY CHANGE OF NAME ")) {
-				String synonym = suffix.substring(suffixCheck.indexOf("NAME") + 5);
-				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName, parts.get(0));
-				return new String[] { "per-syn-full", parts.get(0), suffix, synonym };
-			} else if (suffixCheck.startsWith("BY SAID ")) {
+				LOGGER.debug("Suffix Fixed '{}' [{}] from lastname: '{}' -> '{}'", suffixCheck, matched, synname,
+						parts.get(0));
+				return new String[] { "per-syn", parts.get(0), suffix, synname };
+			} else if (PER_SUFFIX_STARTS.stream().anyMatch(s -> suffixCheck.startsWith(s + " "))) {
 				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName, parts.get(0));
 				return new String[] { "per", parts.get(0), suffix };
-			} else if (suffixCheck.startsWith("A/K/A ")) {
-				String synonym = suffix.substring(6);
-				LOGGER.debug("Suffix Fixed '{}' from lastname: '{}' -> '{}'", suffixCheck, lastName, parts.get(0));
-				String[] synCheck = suffixFix(synonym);
-				String synname = synCheck != null ? synCheck[1] : synonym;
-				LOGGER.debug("Suffix Synonym '{}' from lastname '{}'", synname, lastName);
-				return new String[] { "per-syn", parts.get(0), suffix, synname };
 			} else {
 				LOGGER.info("Unmatched Suffix: '{}' from lastname: '{}'", suffix, lastName);
 			}
@@ -136,7 +136,7 @@ public class NameNode extends ItemReader<Name> {
 			String lastName = nameParts.get(0);
 			String firstName = nameParts.get(1);
 
-			if (firstName.length() > 50 && isOrgName(firstName)) {
+			if ((firstName.length() > 18 || lastName.length() > 18) && (isOrgName(firstName) || isOrgName(lastName))) {
 				return new NameOrg(fullName);
 			}
 
@@ -168,13 +168,8 @@ public class NameNode extends ItemReader<Name> {
 					entityName.setSuffix(suffix);
 					entityName.addSynonym(synonym + ", " + firstName);
 					entityName.addSynonym(synonym + ", " + firstName.subSequence(0, 1) + ".");
-				} else if (parts != null && "per-syn-full".endsWith(parts[0])) {
-					lastName = parts[1];
-					String suffix = parts[2];
-					String synonym = parts[3];
-					entityName = new NamePerson(firstName, lastName);
-					entityName.setSuffix(suffix);
-					entityName.addSynonym(synonym);
+				} else {
+					entityName = new NameOrg(fullName);
 				}
 			} else {
 				entityName = new NamePerson(firstName, lastName);
