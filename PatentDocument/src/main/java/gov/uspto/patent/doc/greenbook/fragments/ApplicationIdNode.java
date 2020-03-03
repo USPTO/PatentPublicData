@@ -45,8 +45,8 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 		String docId = docNumN.getText().trim();
 		if (docId.endsWith("&")) {
+			// Remove trailing '&'
 			docId = docId.substring(0, docId.length()-1);
-			// LOGGER.warn("!!!!!!!!!!!!!! Application ID ends with & '{}' -> '{}'", docNumN.getText(), docId);
 		}
 
 		DocumentId documentId = new DocumentId(defaultCountryCode, docId);
@@ -57,7 +57,7 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 			try {
 				documentId.setDate(new DocumentDate(dateN.getText().trim()));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), dateN.getParent().asXML());
+				LOGGER.warn("{} : {}", e.getMessage(), dateN.asXML());
 			}
 		}
 

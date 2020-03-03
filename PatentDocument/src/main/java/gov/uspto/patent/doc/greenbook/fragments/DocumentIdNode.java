@@ -46,9 +46,9 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 
 		String patNum = docNumN.getText().trim();
 
-		if (patNum.startsWith("RE")) {
-			// Remove 'RE' - REISSUE prefix.
-			patNum = patNum.substring(2);
+		if (patNum.endsWith("&")) {
+			// Remove trailing '&'
+			patNum = patNum.substring(0, patNum.length()-1);
 		}
 
 		DocumentId documentId = new DocumentId(fallbackCountryCode, patNum);
@@ -60,7 +60,7 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 			try {
 				documentId.setDate(new DocumentDate(dateTxt));
 			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), dateN.getParent().asXML());
+				LOGGER.warn("{} : {}", e.getMessage(), dateN.asXML());
 			}
 		}
 
