@@ -73,20 +73,7 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 			String[] fss = fssN.getText().trim().split(";");
 			for(String subClass: fss) {
 
-				// 06315-15.8 -> 063015-015.8
-				String subClass2 = Strings.padStart(subClass, 3, '0');
-				String[] parts = subClass.split("-");
-				if (parts.length == 2) {
-					parts[0] = Strings.padStart(parts[0], 3, '0');
-					if (parts[1].contains(".")) {
-						String[] part2P = parts[1].split("\\.");
-						part2P[0] = Strings.padStart(part2P[0], 3, '0');
-						parts[1] = String.join(".", part2P);
-					} else {
-						parts[1] = Strings.padStart(parts[1], 3, '0');
-					}
-					subClass2 = String.join("-", parts);
-				}
+				String subClass2 = normSubClass(subClass); 
 				LOGGER.debug("Normalized Classification: {} -> {}", searchClass+subClass, searchClass+subClass2);
 
 				String searchCL = searchClass + subClass2;
@@ -102,4 +89,31 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 
 		return classifications;
 	}
+	
+	protected String normSubClass(String subClass) {
+		// 06315-15.8 -> 063015-015.8
+		String subClass2 = Strings.padStart(subClass, 3, '0');
+		String[] parts = subClass.split("-");
+		if (parts.length == 2) {
+			parts[0] = Strings.padStart(parts[0], 3, '0');
+			if (parts[1].contains(".")) {
+				String[] part2P = parts[1].split("\\.");
+				part2P[0] = Strings.padStart(part2P[0], 3, '0');
+				parts[1] = String.join(".", part2P);
+			} else {
+				parts[1] = Strings.padStart(parts[1], 3, '0');
+			}
+			subClass2 = String.join("-", parts);
+		}
+
+		// 23C21/00 -> 23C021/00
+		String[] parts2 = subClass.split("/");
+		if (parts2.length == 2) {
+			parts2[0] = Strings.padStart(parts2[0], 3, '0');
+			subClass2 = String.join("/", parts2);
+		}
+
+		return subClass2;
+	}
+
 }
