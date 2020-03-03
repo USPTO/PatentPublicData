@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.naming.directory.InvalidAttributesException;
 
@@ -30,29 +31,38 @@ public class NameNode extends ItemReader<Name> {
 			Arrays.asList("PHD", "ESQ", "J.D", "MR", "MRS", "M.D", "DR", "P.L", "P.E", "JR", "SR", "I", "II", "III",
 					"IV", "V", "1ST", "2ND", "3RD", "4TH", "5TH", "1", "2", "3", "4", "5"));
 
-	public static final Set<String> PERSON_LONG_SUFFIXES = new HashSet<String>(Arrays.asList("ADMINISTRATOR",
+	public static final Set<String> PERSON_LONG_SUFFIXES = new HashSet<String>(Arrays.asList("PH.D", "ADMINISTRATOR",
 			"ADMINSTRATOR", "ADMINISTRATOR AND EXECUTOR", "ADMINISTRATOR BY", "ADMINISTRATORS",
 			"ADMINISTRATRIX/EXECUTRIX", "ADMINISTRATRIX", "AMINISTRATRIX", "AGENT", "PATENT AGENT", "PAT. AGENT",
 			"ASSOC", "ASSICIATE", "ATTY", "ATTORNEY", "PATENT ATTORNEY", "PAT. ATTY", "CO-EXECUTRIX", "COEXECUTRIX",
 			"EXECTRIX", "EXECUTOR", "EXECUTER", "EXECUTORS", "EXECUTOR OF ESTATE", "EXECUTRIX", "ESQUIRE",
-			"LEGAL GUARDIAN", "GUARDIAN", "JR. DECEASED", "JR. II", "HEIR", "HEIR AND LEGAL SUCCESSOR", "HEIRS",
-			"HEIRS-AT-LAW", "HEIR-AT-LAW", "HEIR AT LAW", "HEIRESS", "COEXECUTOR", "CO-EXECUTOR", "INHERITOR",
-			"LEGAL AUTHORIZED HEIR", "LEGAL HEIR", "LEGAL REPRESENTATIVE", "LEGAL REPRESENTIVE",
-			"A LEGAL REPRESENTATIVE", "LEGAL REPRESENTATIVE AND HEIR", "SUCCESSOR", "SOLE BENEFICIARY", "SOLE HEIR",
-			"REPRESENTATIVE", "PERSONAL REPRESENTATIVE", "JOINT PERSONAL REPRESENTATIVE", "SURVIVING SPOUSE",
+			"LEGAL GUARDIAN", "GUARDIAN", "HEIR", "HEIR AND LEGAL SUCCESSOR", "HEIRS", "HEIRS-AT-LAW", "HEIR-AT-LAW",
+			"HEIR AT LAW", "HEIRESS", "COEXECUTOR", "CO-EXECUTOR", "INHERITOR", "LEGAL AUTHORIZED HEIR", "LEGAL HEIR",
+			"LEGAL REPRESENTATIVE", "LEGAL REPRESENTIVE", "A LEGAL REPRESENTATIVE", "LEGAL REPRESENTATIVE AND HEIR",
+			"SUCCESSOR", "SOLE BENEFICIARY", "SOLE HEIR", "REPRESENTATIVE", "PERSONAL REPRESENTATIVE",
+			"PERSONAL REPRESENTATIVE OF THE ESTATE", "JOINT PERSONAL REPRESENTATIVE", "SURVIVING SPOUSE",
 			"SPECIAL ADMINISTRATOR", "TRUST", "TRUSTEE", "TRUSTEE OR SUCCESSOR TRUSTEE", "DECEASED", "DECESASED",
-			"LEGAL", "LEGALESS", "JR. ESQ", "IV ESQ", "PH.D", "JR. ATTY", "JR. EXECUTOR", "JR., CO-EXECUTOR"));
+			"LEGAL", "LEGALESS", "IV ESQ", "JR. DECEASED", "JR. II", "JR. ESQ", "JR. ATTY", "JR. EXECUTOR",
+			"JR. CO-EXECUTOR", "SR. DECEASED", "JR. HEIR"));
 
 	public static final Set<String> COMPANY_SUFFIXES = new HashSet<String>(
-			Arrays.asList("INC", "LLC", "L.L.C", "LTD", "LTD PLC", "PLC", "P.L.C", "L.C", "LC", "LLP", "L.L.P",
-					"P.L.L.C", "PLLC", "S.C", "P.A", "PA", "P.C", "PC", "P.L", "P.S", "S.P.A", "S.P.C", "CHTD",
-					"IP GROUP", "INTELLECTUAL PROPERTY PRACTICE GROUP", "GROUP", "COMPANY"));
+			Arrays.asList("INCORPORATED", "INC", "LLC", "L.L.C", "LTD", "LTD PLC", "PLC", "P.L.C", "L.C", "LC", "LLP",
+					"L.L.P", "P.L.L.C", "PLLC", "S.C", "P.A", "PA", "P.C", "PC", "P.L", "P.S", "S.P.A", "S.P.C", "CHTD",
+					"L.P.A", "IP GROUP", "INTELLECTUAL PROPERTY PRACTICE GROUP", "GROUP", "COMPANY",
+					"A PROFESSIONAL CORP", "A PROF. CORP", "CORP", "PATENT & TRADEMARK ATTORNEYS"));
 
 	public static final Set<String> PERSON_FORMERLY = new HashSet<String>(
-			Arrays.asList("NEE", "FORMERLY", "WIDOW", "BY CHANGE OF NAME", "NOW BY CHANGE OF NAME", "A/K/A"));
+			Arrays.asList("NEE", "BORN", "FORMERLY", "WIDOW", "BY CHANGE OF NAME", "NOW BY CHANGE OF NAME", "A/K/A",
+					"ALSO KNOWN AS", "EXECUTRIX ALSO KNOWN AS"));
 
 	public static final Set<String> PER_SUFFIX_STARTS = new HashSet<String>(
 			Arrays.asList("BY SAID", "PRESIDENT", "ADMINISTRATOR OF", "EXECUTOR OF ESTATE OF"));
+
+	private static final int longNameLen = 18;
+
+	private static final Pattern LN_CLEAN = Pattern.compile(",? deceased\\b");
+	private static final Pattern FN_CLEAN = Pattern.compile("^by ");
+	private static final Pattern LN_COMMA_FIX = Pattern.compile("([a-z]) (nee|born|formerly|widow|also known as) ");
 
 	public NameNode(Node itemNode) {
 		super(itemNode);
@@ -136,16 +146,17 @@ public class NameNode extends ItemReader<Name> {
 			String lastName = nameParts.get(0);
 			String firstName = nameParts.get(1);
 
-			if ((firstName.length() > 18 || lastName.length() > 18) && (isOrgName(firstName) || isOrgName(lastName))) {
+			if ((firstName.length() > longNameLen || lastName.length() > longNameLen)
+					&& (isOrgName(firstName) || isOrgName(lastName))) {
 				return new NameOrg(fullName);
 			}
 
-			if (firstName.length() > 50) {
-				LOGGER.warn("Long FirstName: '{}' : {}", firstName, fullName);
-			}
+			firstName = FN_CLEAN.matcher(firstName).replaceFirst("");
+			lastName = LN_CLEAN.matcher(lastName).replaceFirst("");
+			lastName = LN_COMMA_FIX.matcher(lastName).replaceFirst("$1, $2 ");
 
-			lastName = lastName.replaceFirst(",? deceased\\b", "");
-			lastName = lastName.replaceFirst("([a-z]) nee ", "$1, nee ");
+			// long commaCount = fullName.trim().chars().filter(c -> c == ',').count();
+			// long spaceCount = fullName.trim().chars().filter(c -> c == ' ').count();
 
 			if (lastName.contains(",")) {
 				String[] parts = suffixFix(lastName);
@@ -185,6 +196,7 @@ public class NameNode extends ItemReader<Name> {
 	public boolean isOrgName(String name) {
 		String[] ret = suffixFix(name);
 		if (ret != null && "org".equals(ret[0])) {
+			// Use of: & and ;; counts of space and commas
 			return true;
 		}
 		return false;
