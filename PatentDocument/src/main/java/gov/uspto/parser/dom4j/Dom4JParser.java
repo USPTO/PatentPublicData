@@ -1,16 +1,10 @@
 package gov.uspto.parser.dom4j;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -73,7 +67,7 @@ public abstract class Dom4JParser implements Dom4j {
 		String content = FileUtils.readFileToString(file, "UTF-8");
 		content = content.replaceFirst("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>\n", "");
 		content = content.replaceFirst("<!DOCTYPE .+>\n", "");
-		//System.out.println(file.getAbsolutePath());
+		// System.out.println(file.getAbsolutePath());
 		return parse(content);
 	}
 
@@ -89,7 +83,7 @@ public abstract class Dom4JParser implements Dom4j {
 	public Patent parse(InputStream inputStream) throws PatentReaderException {
 		try {
 			SAXReader sax = new SAXReader(false);
-			//sax.setValidation(false);
+			// sax.setValidation(false);
 			sax.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 			sax.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
 			Document document = sax.read(inputStream);
@@ -200,12 +194,13 @@ public abstract class Dom4JParser implements Dom4j {
 				Parser.xmlParser().settings(ParseSettings.preserveCase));
 		jsoupDoc.outputSettings().prettyPrint(false);
 		String doc = jsoupDoc.select("body").html();
-		
-		System.out.println(doc);
-		
+
+		//System.out.println(doc);
+
 		// Add HTML DTD to ensure HTML entities do not cause any problems.
-		//doc = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
-		//		+ doc;
+		// doc = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+		// \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+		// + doc;
 		try {
 			SAXReader sax = new SAXReader(false);
 			sax.setIncludeExternalDTDDeclarations(false);
