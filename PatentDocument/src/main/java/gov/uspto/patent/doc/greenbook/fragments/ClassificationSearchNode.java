@@ -1,10 +1,8 @@
 package gov.uspto.patent.doc.greenbook.fragments;
 
-import java.text.ParseException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -66,21 +64,24 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 
 		List<Node> classNodes = CLASSXP.selectNodes(document);
 		for (Node classN : classNodes) {
-			Node fssN =  CLASSUBXP.selectSingleNode(classN);
+			if (classN != null) {
+				String searchMainClass = classN.getText().trim();
+				searchMainClass = Strings.padStart(searchMainClass, 3, '0');
 
-			String searchMainClass = classN.getText().trim();
-			searchMainClass = Strings.padStart(searchMainClass, 3, '0');
+				Node fssN = CLASSUBXP.selectSingleNode(classN);
+				if (fssN != null) {
+					String[] fss = fssN.getText().trim().split(";");
+					for (String subClass : fss) {
 
-			String[] fss = fssN.getText().trim().split(";");
-			for(String subClass: fss) {
+						String searchCL = searchMainClass + subClass;
 
-				String searchCL = searchMainClass + subClass;
+						UspcClassification uspc = new UspcClassification(searchCL, false);
+						uspc.setMainClass(searchMainClass);
+						uspc.setSubClass(subClass);
 
-				UspcClassification uspc = new UspcClassification(searchCL, false);
-				uspc.setMainClass(searchMainClass);
-				uspc.setSubClass(subClass);
-
-				classifications.add(uspc);
+						classifications.add(uspc);
+					}
+				}
 			}
 		}
 
