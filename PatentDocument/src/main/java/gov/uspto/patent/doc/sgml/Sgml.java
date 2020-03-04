@@ -23,6 +23,7 @@ import gov.uspto.patent.doc.sgml.fragments.AssigneeNode;
 import gov.uspto.patent.doc.sgml.fragments.CitationNode;
 import gov.uspto.patent.doc.sgml.fragments.ClaimNode;
 import gov.uspto.patent.doc.sgml.fragments.ClassificationNode;
+import gov.uspto.patent.doc.sgml.fragments.ClassificationSearchNode;
 import gov.uspto.patent.doc.sgml.fragments.DescriptionNode;
 import gov.uspto.patent.doc.sgml.fragments.DocumentIdNode;
 import gov.uspto.patent.doc.sgml.fragments.ExaminerNode;
@@ -57,7 +58,7 @@ import gov.uspto.patent.model.entity.Inventor;
 public class Sgml extends Dom4JParser {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Sgml.class);
 
-	//private static final XPath ROOTXP = DocumentHelper.createXPath("/PATDOC");
+	// private static final XPath ROOTXP = DocumentHelper.createXPath("/PATDOC");
 	private static final XPath TITLEXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B500/B540/STEXT/PDAT");
 
 	@Override
@@ -82,6 +83,8 @@ public class Sgml extends Dom4JParser {
 		String title = titleN != null ? titleN.getText() : null;
 
 		Set<PatentClassification> classifications = new ClassificationNode(document).read();
+		Set<PatentClassification> searchClassifications = new ClassificationSearchNode(document).read();
+
 		List<Inventor> inventors = new InventorNode(document).read();
 		List<Assignee> assignees = new AssigneeNode(document).read();
 		List<Agent> agents = new AgentNode(document).read();
@@ -130,6 +133,11 @@ public class Sgml extends Dom4JParser {
 		if (classifications != null) {
 			patent.setClassification(classifications);
 		}
+
+		if (searchClassifications != null) {
+			patent.setSearchClassification(searchClassifications);
+		}
+
 		patent.setInventor(inventors);
 		patent.setAssignee(assignees);
 		patent.setAgent(agents);
