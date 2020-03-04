@@ -169,6 +169,17 @@ public class UspcClassificationTest {
 		assertEquals("D11144000", tokens.get(1));
 	}
 
+	@Test
+	public void subclass_range() {
+		UspcClassification uspc = new UspcClassification("", false);
+		uspc.setMainClass("063");
+		uspc.setSubClass("015-015.8");
+		assertEquals("015", uspc.getSubClass()[0]);
+		assertEquals("015.8", uspc.getSubClass()[1]);
+		assertEquals("063/015-015.8", uspc.getTextNormalized());
+		
+	}
+
 	/*
 	 * @Test public void testEquals() throws ParseException { UspcClassification
 	 * uspc1 = UspcClassification.fromText(" D2907"); UspcClassification uspc2 =

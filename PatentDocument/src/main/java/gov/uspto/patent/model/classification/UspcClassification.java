@@ -101,7 +101,7 @@ public class UspcClassification extends PatentClassification {
 	}
 
 	public void setSubClass(String subClass) {
-		this.subClass = new String[] { subClass };
+		setSubClass(normSubClass(subClass));
 	}
 
 	/**
@@ -269,6 +269,27 @@ public class UspcClassification extends PatentClassification {
 				0);
 	}
 
+	private String[] normSubClass(String subClass) {
+		// 063 15-15.8 -> 063 015-015.8
+		String subClass2 = Strings.padStart(subClass, 3, '0');
+		String[] parts = subClass.split("-");
+		if (parts.length == 2) {
+			/*
+			if (parts[0].length() == 2 && parts[1].matches("\\d{2}\\.\\d{2}")) {
+				String[] part2P = parts[1].split("\\.");
+				part2P[0] = Strings.padStart(part2P[0], 3, '0');
+				parts[1] = String.join(".", part2P);
+			} else {
+				parts[1] = Strings.padStart(parts[1], 3, '0');
+			}
+			parts[0] = Strings.padStart(parts[0], 3, '0');
+			*/
+			return parts;
+		}
+
+		return new String[] { subClass2 };
+	}
+	
 	@Override
 	public boolean validate() throws InvalidDataException {
 		if (parseFailed) {
