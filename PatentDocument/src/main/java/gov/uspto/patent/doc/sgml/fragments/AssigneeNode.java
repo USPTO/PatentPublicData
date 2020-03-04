@@ -39,6 +39,11 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 			Assignee assignee = readAssignee(dataNode);
 
 			if (assignee != null) {
+				try {
+					assignee.setRole(null);
+				} catch (InvalidDataException e) {
+					e.printStackTrace();
+				}
 				assigneeList.add(assignee);
 			}
 		}
