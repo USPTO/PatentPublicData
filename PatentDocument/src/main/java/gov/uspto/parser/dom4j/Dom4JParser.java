@@ -193,9 +193,10 @@ public abstract class Dom4JParser implements Dom4j {
 		org.jsoup.nodes.Document jsoupDoc = Jsoup.parse("<body>" + badXml + "</body>", "",
 				Parser.xmlParser().settings(ParseSettings.preserveCase));
 		jsoupDoc.outputSettings().prettyPrint(false);
-		String doc = jsoupDoc.select("body").html();
 
-		//System.out.println(doc);
+		String missingEntity = "<!DOCTYPE test [ <!ENTITY nbsp \"&#160;\"> ]>\n";
+
+		String doc = missingEntity + jsoupDoc.select("body").html();
 
 		// Add HTML DTD to ensure HTML entities do not cause any problems.
 		// doc = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
@@ -210,7 +211,7 @@ public abstract class Dom4JParser implements Dom4j {
 			sax.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
 			return sax.read(new StringReader(doc));
 		} catch (DocumentException | SAXException e) {
-			throw new PatentReaderException("Failed to Fix and Parse Docuemnt", e);
+			throw new PatentReaderException("Failed to Fix and Parse Docuemnt ", e);
 		}
 	}
 }
