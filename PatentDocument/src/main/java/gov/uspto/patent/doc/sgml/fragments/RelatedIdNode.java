@@ -21,7 +21,7 @@ import gov.uspto.patent.model.DocumentIdType;
  *
  */
 public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
-	
+
 	private static final XPath RELIDSXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B600");
 	private static final XPath ADDITIONALXP = DocumentHelper.createXPath("B610");
 	private static final XPath DIVISIONALXP = DocumentHelper.createXPath("B620");
@@ -127,14 +127,18 @@ public class RelatedIdNode extends DOMFragmentReader<List<DocumentId>> {
     private void readChildParent(List<Node> nodes, DocumentIdType docIdType) {
         for (Node node : nodes) {
             Node childDocN = CHILDDOCXP.selectSingleNode(node);
-            DocumentId childDocId = new DocNode(childDocN).read();
-            childDocId.setType(docIdType);
-            docIds.add(childDocId);
+            if (childDocN != null) {
+	            DocumentId childDocId = new DocNode(childDocN).read();
+	            childDocId.setType(docIdType);
+	            docIds.add(childDocId);
+            }
 
             Node parentDocN = PARENTDOCXP.selectSingleNode(node);
-            DocumentId parentDocId = new DocNode(parentDocN).read();
-            parentDocId.setType(docIdType);
-            docIds.add(parentDocId);
+            if (parentDocN != null) {
+            	DocumentId parentDocId = new DocNode(parentDocN).read();
+            	parentDocId.setType(docIdType);
+            	docIds.add(parentDocId);
+            }
         }
     }
 
