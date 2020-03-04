@@ -7,8 +7,8 @@ public enum PatentDocFormat {
 	Sgml("text/grant-sgml", "pg", "PATDOC", "<PATDOC "),
 	Greenbook("text/greenbook-aps", "pftaps", "PATN", "PATN"),
     CpcMasterFile("text/cpc-masterfile", "", "uspat:CPCMasterClassificationRecord", "<uspat:CPCMasterClassificationRecord>"),
-    TmBRS("text/trademark-brs", "tmbrs", "<XX>", ""),
-    BRS("text/?-brs", "tmbrs", "*** BRS DOCUMENT BOUNDARY ***", ""),
+    TmBRS("text/trademark-brs", "tmbrs", "<XX>", "<XX>"),
+    BRS("text/?-brs", "tmbrs", "*** BRS DOCUMENT BOUNDARY ***", "*** BRS DOCUMENT BOUNDARY ***"),
 	Unknown("UNKOWN", "UNKOWN", "UNKOWN", "UNKOWN");
 
 	private String parentElement;
