@@ -7,8 +7,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 import org.dom4j.XPath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import gov.uspto.parser.dom4j.DOMFragmentReader;
 import gov.uspto.patent.InvalidDataException;
@@ -18,8 +16,15 @@ import gov.uspto.patent.model.entity.Address;
 import gov.uspto.patent.model.entity.Assignee;
 import gov.uspto.patent.model.entity.Name;
 
+/**
+ * Assignee Node
+ * 
+ * <p>
+ * Note: Assignee's city is often missing in SGML.
+ * </p>
+ */
 public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
+	// private static final Logger LOGGER = LoggerFactory.getLogger(AssigneeNode.class);
 
 	private static final XPath ASSIGNEXP = DocumentHelper.createXPath("/PATDOC/SDOBI/B700/B730/B731");
 	private static final XPath ASSIGNDATAEXP = DocumentHelper.createXPath("PARTY-US");
@@ -56,11 +61,12 @@ public class AssigneeNode extends DOMFragmentReader<List<Assignee>> {
 		if (name != null) {
 			Address address = new AddressNode(assigneeNode).read();
 
-			try {
-				address.validate();
-			} catch (InvalidDataException e) {
-				LOGGER.warn("{} : {}", e.getMessage(), assigneeNode.asXML());
-			}
+			// Note: Assignee's city is often missing in SGML.
+			// try {
+			// address.validate();
+			// } catch (InvalidDataException e) {
+			// LOGGER.warn("{} : {}", e.getMessage(), assigneeNode.asXML());
+			// }
 
 			return new Assignee(name, address);
 		}
