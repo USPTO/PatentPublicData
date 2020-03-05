@@ -114,6 +114,7 @@ public enum CountryCode {
 	GW("Guinea-Bissau"),
 	GY("Guyana"),
 	HK("China, Hong Kong SAR"),
+	HM("Heard Island and McDonald Islands"),
 	HN("Honduras"),
 	HR("Croatia"),
 	HT("Haiti"),
