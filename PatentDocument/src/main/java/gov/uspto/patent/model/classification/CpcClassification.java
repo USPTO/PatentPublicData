@@ -92,7 +92,7 @@ public class CpcClassification extends PatentClassification {
 	private static Logger LOGGER = LoggerFactory.getLogger(CpcClassification.class);
 
 	private final static Pattern REGEX = Pattern.compile(
-			"^(?<section>[A-HY])(?<mainClass>\\d\\d)(?<subClass>[A-Z])\\s?(?<mainGroup1>\\d{1,4})/?(?<subGroup1>\\d{2,6})(-(?<mainGroup2>\\d{1,4})/(?<subGroup2>\\d{2,6})|-(?<subGroup2SameMain>\\d{2,6}))?$");
+			"^(?<section>[A-HY])(?<mainClass>\\d\\d)(?<subClass>[A-Z])\\s{0,2}(?<mainGroup1>\\d{1,4})/?(?<subGroup1>\\d{2,6})(-(?<mainGroup2>\\d{1,4})/(?<subGroup2>\\d{2,6})|-(?<subGroup2SameMain>\\d{2,6}))?$");
 
 	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])(\\d\\d)$");
 
@@ -414,34 +414,36 @@ public class CpcClassification extends PatentClassification {
 				subGroup = new String[] { subGroup1 };
 			}
 
-			LOGGER.trace(classificationStr + " " + Arrays.toString(mainGroup) + " " + Arrays.toString(subGroup));
+			//LOGGER.trace(classificationStr + " " + Arrays.toString(mainGroup) + " " + Arrays.toString(subGroup));
 
 			setSection(section);
 			setMainClass(mainClass);
 			setSubClass(subClass);
 			setMainGroup(mainGroup);
 			setSubGroup(subGroup);
-			
-			LOGGER.debug("'{}','{}'", classificationStr, this.toText());
-		} else if (classificationStr.length() == 3) {
-			Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
-			if (matchL3.matches()) {
+
+			//LOGGER.debug("'{}','{}'", classificationStr, this.toText());
+			return;
+		}
+		
+		Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
+		if (classificationStr.length() == 3 && matchL3.matches()) {
 				String section = matchL3.group(1);
 				String mainClass = matchL3.group(2);
 				setSection(section);
 				setMainClass(mainClass);
-			}
-		} else if (classificationStr.length() == 4) {
-			Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
-			if (matchL4.matches()) {
+				return;
+		} 
+		
+		Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
+		if (classificationStr.length() == 4 && matchL4.matches()) {		
 				String section = matchL4.group(1);
 				String mainClass = matchL4.group(2);
 				String subClass = matchL4.group(3);
-
 				setSection(section);
 				setMainClass(mainClass);
 				setSubClass(subClass);
-			}
+				return;
 		} else {
 			parseFailed = true;
 			LOGGER.debug("CPC parse failed '{}'", classificationStr);

@@ -47,9 +47,9 @@ public class IpcClassification extends PatentClassification {
 	private final static Pattern REGEX_OLD = Pattern
 			.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d\\s?\\d{1,3})/?(\\d{2,})$");
 
-	private final static Pattern REGEX = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s?(\\d{1,4})/?(\\d{2,})$");
-	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])\\s?(\\d\\d)$");
-	private final static Pattern REGEX_LEN4 = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])$");
+	private final static Pattern REGEX = Pattern.compile("^([A-HY])\\s?(\\d\\d)([A-Z])\\s{0,2}(\\d{1,4})/?(\\d{2,})$");
+	private final static Pattern REGEX_LEN3 = Pattern.compile("^([A-HY])\\s{0,2}(\\d\\d)$");
+	private final static Pattern REGEX_LEN4 = Pattern.compile("^([A-HY])\\s{0,2}(\\d\\d)([A-Z])$");
 
 	private String section;
 	private String mainClass;
@@ -178,8 +178,8 @@ public class IpcClassification extends PatentClassification {
 	public List<String> getSearchTokens() {
 		// TODO Auto-generated method stub
 		return null;
-	}	
-	
+	}
+
 	/**
 	 * Classification depth
 	 * 
@@ -301,32 +301,29 @@ public class IpcClassification extends PatentClassification {
 			return;
 		}
 
-		if (classificationStr.length() >= 3) {
-			Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
-			if (matchL3.matches()) {
-				String section = matchL3.group(1);
-				String mainClass = matchL3.group(2);
-				setSection(section);
-				setMainClass(mainClass);
-				return;
-			}
+		Matcher matchL3 = REGEX_LEN3.matcher(classificationStr);
+		if (classificationStr.length() >= 3 && matchL3.matches()) {
+			String section = matchL3.group(1);
+			String mainClass = matchL3.group(2);
+			setSection(section);
+			setMainClass(mainClass);
+			return;
 		}
 
-		if (classificationStr.length() >= 4) {
-			Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
-			if (matchL4.matches()) {
-				String section = matchL4.group(1);
-				String mainClass = matchL4.group(2);
-				String subClass = matchL4.group(3);
+		Matcher matchL4 = REGEX_LEN4.matcher(classificationStr);
+		if (classificationStr.length() >= 4 && matchL4.matches()) {
+			String section = matchL4.group(1);
+			String mainClass = matchL4.group(2);
+			String subClass = matchL4.group(3);
+			System.out.println("4" + classificationStr + classificationStr.length());
 
-				setSection(section);
-				setMainClass(mainClass);
-				setSubClass(subClass);
-				return;
-			}
+			setSection(section);
+			setMainClass(mainClass);
+			setSubClass(subClass);
+			return;
 		} else {
 			parseFailed = true;
-			LOGGER.debug("IPC parse failed '{}'", classificationStr);
+			LOGGER.warn("IPC parse failed '{}'", classificationStr);
 			throw new ParseException("Failed to regex parse IPC Classification: " + classificationStr, 0);
 		}
 	}

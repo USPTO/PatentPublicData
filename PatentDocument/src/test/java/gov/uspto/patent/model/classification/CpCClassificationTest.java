@@ -164,7 +164,7 @@ public class CpCClassificationTest {
 		CpcClassification cpc = new CpcClassification(cpctext, false);
 		cpc.parseText(cpctext);
 
-		//System.out.println(cpc.getTree().getLeafFacets());
+		// System.out.println(cpc.getTree().getLeafFacets());
 
 		List<String> facetTokens = cpc.getTree().getLeafFacets();
 		assertEquals("expect 6 facet tokens;", 6, facetTokens.size());
@@ -182,7 +182,7 @@ public class CpCClassificationTest {
 		CpcClassification cpc = new CpcClassification(cpctext, false);
 		cpc.parseText(cpctext);
 
-		//System.out.println(cpc.getSearchTokens());
+		// System.out.println(cpc.getSearchTokens());
 
 		List<String> tokens = cpc.getSearchTokens();
 		assertEquals("expect 2 tokens;", 2, tokens.size());
@@ -221,5 +221,11 @@ public class CpCClassificationTest {
 		assertEquals(cpcClasses.get("additional").size(), 2);
 		assertEquals(cpcClass3, cpcClasses.get("additional").get(0));
 		assertEquals(cpcClass2, cpcClasses.get("additional").get(1));
+	}
+
+	@Test(expected = ParseException.class)
+	public void failParseCheck() throws ParseException {
+		CpcClassification cpc = new CpcClassification("A61F  BAD", false);
+		cpc.parseText("A61F  BAD");
 	}
 }
