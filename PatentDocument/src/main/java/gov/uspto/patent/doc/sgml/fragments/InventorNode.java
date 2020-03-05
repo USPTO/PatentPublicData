@@ -35,10 +35,11 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 
 		List<Node> inventors = INVENTORXP.selectNodes(document);
 
-		for (Node inventorN : inventors) {
-			Node dataNode = DATAXP.selectSingleNode(inventorN);
+		for(int i=0; i < inventors.size(); i++) {
+			Node dataNode = DATAXP.selectSingleNode(inventors.get(i));
 			Inventor inventor = readInventor(dataNode);
 			if (inventor != null) {
+				inventor.setSequence(String.valueOf(i+1));
 				inventorList.add(inventor);
 			}
 		}
