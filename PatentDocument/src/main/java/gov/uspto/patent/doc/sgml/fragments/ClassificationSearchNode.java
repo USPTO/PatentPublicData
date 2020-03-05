@@ -52,9 +52,12 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 		if (ipcN != null) {
 			IpcClassification ipc = new IpcClassification(ipcN.getText(), false);
 			try {
-				ipc.parseText(ipcN.getText());
+				String txt = ipcN.getText();
+				if (!txt.isEmpty()) {
+					ipc.parseText(txt);
+				}
 			} catch (ParseException e) {
-				LOGGER.debug("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), ipcN.asXML());
+				LOGGER.warn("Failed to Parse IPC Classification: '{}' from : {}", ipcN.getText(), ipcN.asXML());
 			}
 			classifications.add(ipc);
 		}
@@ -64,9 +67,12 @@ public class ClassificationSearchNode extends DOMFragmentReader<Set<PatentClassi
 		if (uspcN != null) {
 			UspcClassification uspc = new UspcClassification(uspcN.getText(), false);
 			try {
-				uspc.parseText(uspcN.getText());
+				String txt = uspcN.getText();
+				if (!txt.isEmpty()) {
+					uspc.parseText(txt);
+				}
 			} catch (ParseException e) {
-				LOGGER.debug("Failed to Parse USPC Classification: '{}' from : {}", uspcN.getText(), uspcN.asXML());
+				LOGGER.warn("Failed to Parse USPC Classification: '{}' from : {}", uspcN.getText(), uspcN.asXML());
 			}
 			classifications.add(uspc);
 		}

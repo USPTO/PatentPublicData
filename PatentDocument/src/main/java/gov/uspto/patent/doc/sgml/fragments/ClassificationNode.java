@@ -70,11 +70,11 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 				try {
 					locarno.parseText(txt);
 				} catch (ParseException e) {
-					LOGGER.debug("Failed to Parse Secondary Locarno Classification: '{}' from : {}", txt, ipcNode.asXML());
+					LOGGER.debug("Failed to Parse Primary Locarno Classification: '{}' from : {}", txt, ipcNode.asXML());
 				}
 				classifications.add(locarno);				
 			}
-			else if (txt != null) {
+			else if (txt != null && !txt.isEmpty()) {
 				IpcClassification ipc = new IpcClassification(txt, true);
 				try {
 					ipc.parseText(txt);
@@ -95,16 +95,16 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 				try {
 					locarno.parseText(txt);
 				} catch (ParseException e) {
-					LOGGER.debug("Failed to Parse Secondary Locarno Classification: '{}' from : {}", txt, ipcNode.asXML());
+					LOGGER.warn("Failed to Parse Secondary Locarno Classification: '{}' from : {}", txt, ipcNode.asXML());
 				}
 				classifications.add(locarno);				
 			}
-			else if (txt != null) {
+			else if (txt != null && !txt.isEmpty()) {
 				IpcClassification ipc = new IpcClassification(txt, false);
 				try {
 					ipc.parseText(txt);
 				} catch (ParseException e) {
-					LOGGER.debug("Failed to Parse Primary IPC Classification: '{}' from : {}", txt,
+					LOGGER.warn("Failed to Parse Secondary IPC Classification: '{}' from : {}", txt,
 							ipcPrimaryN.asXML());
 				}
 				classifications.add(ipc);
@@ -125,7 +125,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 		Node uspcPrimaryN = USPC_PRIMARY_XP.selectSingleNode(uspcNode);
 		if (uspcPrimaryN != null) {
 			String uspcTxt = uspcPrimaryN.getText();
-			if (uspcTxt != null) {
+			if (uspcTxt != null && !uspcTxt.isEmpty()) {
 				UspcClassification uspc = new UspcClassification(uspcTxt, true);
 				try {
 					uspc.parseText(uspcTxt);
@@ -141,7 +141,7 @@ public class ClassificationNode extends DOMFragmentReader<Set<PatentClassificati
 		List<Node> uspcNodes = USPC_SECONDARY_XP.selectNodes(uspcNode);
 		for (Node uspcN : uspcNodes) {
 			String uspcTxt = uspcN.getText();
-			if (uspcTxt != null) {
+			if (uspcTxt != null && !uspcTxt.isEmpty()) {
 				UspcClassification uspc = new UspcClassification(uspcTxt, false);
 				try {
 					uspc.parseText(uspcTxt);
