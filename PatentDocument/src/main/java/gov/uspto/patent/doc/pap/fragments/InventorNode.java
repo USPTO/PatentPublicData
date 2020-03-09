@@ -47,7 +47,9 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 
 	private List<Inventor> readInventors(List<Node> inventors) {
 		List<Inventor> inventorList = new ArrayList<Inventor>();
-		for (Node inventorNode : inventors) {
+
+		for(int i=0; i < inventors.size(); i++) {
+			Node inventorNode = inventors.get(i);
 			Name name = new NameNode(inventorNode).read();
 			if (name == null) {
 				LOGGER.warn("Inventor does not have name : {}", inventorNode.asXML());
@@ -77,6 +79,7 @@ public class InventorNode extends DOMFragmentReader<List<Inventor>> {
 			}
 
 			Inventor inventor = new Inventor(name, address);
+			inventor.setSequence(String.valueOf(i+1));
 			inventorList.add(inventor);
 		}
 		return inventorList;
