@@ -20,26 +20,27 @@ public class DocumentDate {
 	private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyyMM");
 
 	private LocalDate date;
-	private String rawDate;
+	private final String rawDate;
 
-	public DocumentDate(String date) throws InvalidDataException {
-		this.rawDate = date;
-		setDate(date);
+	public DocumentDate(String rawDate) throws InvalidDataException {
+		this.rawDate = rawDate;
+		this.date = toDate(rawDate);
 	}
 
-	public DocumentDate(LocalDate date) throws InvalidDataException {
+	public DocumentDate(String rawDate, LocalDate date) throws InvalidDataException {
+		this.rawDate = rawDate;
 		this.date = date;
 	}
 
-	public DocumentDate(Date date) throws InvalidDataException {
+	public DocumentDate(String rawDate, Date date) throws InvalidDataException {
+		this.rawDate = rawDate;
 		this.date = date.toInstant().atZone(ZoneId.of("GMT")).toLocalDate();
 	}
 
-	public void setDate(final String date) throws InvalidDataException {
+	private LocalDate toDate(final String date) throws InvalidDataException {
 		if (date == null || date.trim().isEmpty() || !date.trim().matches("\\d+")) {
 			try {
-				this.date = LocalDate.of(0, 1, 1);
-				return;
+				return LocalDate.of(0, 1, 1);
 			} catch (DateTimeParseException e) {
 				// empty.
 			}
@@ -52,7 +53,7 @@ public class DocumentDate {
 
 		if (dateStr.length() == 8) { // Full Date: Year Month Day
 			try {
-				this.date = LocalDate.parse(date.trim(), DateTimeFormatter.BASIC_ISO_DATE);
+				return LocalDate.parse(date.trim(), DateTimeFormatter.BASIC_ISO_DATE);
 			} catch (DateTimeParseException e) {
 				throw new InvalidDataException("Invalid Date: '" + date + "'", e);
 			}
@@ -62,13 +63,15 @@ public class DocumentDate {
 				this.date = ymDate.atDay(1);
 			} catch (DateTimeException e) {
 				LOGGER.warn("Invalid Date: {} ; trying with only year", dateStr);
-				setDate(dateStr.substring(0, 4));
+				return toDate(dateStr.substring(0, 4));
 			}
 		} else if (dateStr.length() == 4) { // Year Only
-			this.date = LocalDate.of(Integer.parseInt(dateStr), 1, 1);
+			return LocalDate.of(Integer.parseInt(dateStr), 1, 1);
 		} else {
 			throw new InvalidDataException("Invalid Date: '" + date + "'");
 		}
+
+		return null;
 	}
 
 	public LocalDate getDate() {
@@ -101,6 +104,29 @@ public class DocumentDate {
 	}
 
 	@Override
+	public final int hashCode() {
+		if (date != null) {
+			return date.hashCode();
+		} else if (rawDate != null) {
+			return rawDate.hashCode();
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof DocumentDate)) {
+			return false;
+		}
+		DocumentDate other = (DocumentDate) o;
+		return other.date.equals(this.date);
+	}
+
+	@Override
 	public String toString() {
 		return "DocumentDate [date=" + getISODateString() + "]";
 	}
@@ -112,4 +138,5 @@ public class DocumentDate {
 			return null;
 		}
 	}
+
 }

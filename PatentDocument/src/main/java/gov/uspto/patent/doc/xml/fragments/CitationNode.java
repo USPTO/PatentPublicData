@@ -115,7 +115,7 @@ public class CitationNode extends DOMFragmentReader<List<Citation>> {
 				String dateStr = dateMatcher.group(1);
 				try {
 					Date date = NPL_DATE_FORMAT.parse(dateStr);
-					docDate = new DocumentDate(date);
+					docDate = new DocumentDate(dateStr, date);
 				} catch (ParseException e) {
 					// LOGGER.warn("NPL date parse failed.");
 				} catch (InvalidDataException e) {
