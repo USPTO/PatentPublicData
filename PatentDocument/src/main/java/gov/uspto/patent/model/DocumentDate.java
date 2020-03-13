@@ -18,6 +18,7 @@ public class DocumentDate {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentDate.class);
 
 	private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyyMM");
+	private static final DateTimeFormatter YEAR_DAY_MONTH = DateTimeFormatter.ofPattern("yyyyddMM");
 
 	private LocalDate date;
 	private final String rawDate;
@@ -53,7 +54,7 @@ public class DocumentDate {
 
 		if (dateStr.length() == 8) { // Full Date: Year Month Day
 			try {
-				return LocalDate.parse(date.trim(), DateTimeFormatter.BASIC_ISO_DATE);
+				return LocalDate.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
 			} catch (DateTimeParseException e) {
 				throw new InvalidDataException("Invalid Date: '" + date + "'", e);
 			}
@@ -62,8 +63,12 @@ public class DocumentDate {
 				YearMonth ymDate = YearMonth.parse(dateStr, YEAR_MONTH);
 				this.date = ymDate.atDay(1);
 			} catch (DateTimeException e) {
-				LOGGER.warn("Invalid Date: {} ; trying with only year", dateStr);
-				return toDate(dateStr.substring(0, 4));
+				try {
+					return LocalDate.parse(dateStr, YEAR_DAY_MONTH);
+				} catch (DateTimeException e1) {
+					LOGGER.warn("Invalid Date: {} ; trying with only year", dateStr);
+					return toDate(dateStr.substring(0, 4));
+				}
 			}
 		} else if (dateStr.length() == 4) { // Year Only
 			return LocalDate.of(Integer.parseInt(dateStr), 1, 1);
@@ -92,10 +97,16 @@ public class DocumentDate {
 	}
 
 	public int getYear() {
+		if (date == null) {
+			return 0;
+		}
 		return date.getYear();
 	}
 
 	private String getISODateString() {
+		if (date == null) {
+			return null;
+		}
 		return date.format(DateTimeFormatter.ISO_DATE);
 	}
 
@@ -116,11 +127,11 @@ public class DocumentDate {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null || !(o instanceof DocumentDate)) {
+			return false;
+		}
 		if (o == this) {
 			return true;
-		}
-		if (!(o instanceof DocumentDate)) {
-			return false;
 		}
 		DocumentDate other = (DocumentDate) o;
 		return other.date.equals(this.date);
