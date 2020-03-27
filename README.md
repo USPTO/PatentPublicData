@@ -2,6 +2,10 @@
 # Patent Public Bulk Files
 Tool kit to download, read, and utilize open patent data provided to the public.
 
+### How to install
+
+`mvn install`
+
 ### Notice
 This source code is a work in progress and has not been fully vetted for a production environment. 
 
