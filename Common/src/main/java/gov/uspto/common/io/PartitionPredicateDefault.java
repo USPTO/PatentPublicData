@@ -31,6 +31,11 @@ public class PartitionPredicateDefault implements PartitionPredicate {
 	}
 
 	@Override
+	public int getRecordCount() {
+		return recordCount;
+	}
+
+	@Override
 	public boolean thresholdReached(String str) {
 		currentSize += str.length();
 		recordCount++;

@@ -1,6 +1,7 @@
 package gov.uspto.common.io;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -10,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.io.Files;
 
 /**
  * Buffered File Writer which automatically rolls over to a new file when
@@ -26,10 +29,12 @@ public class PartitionFileWriter extends Writer {
 	private final String fileName;
 	private final String fileSuffix;
 	private final Charset charset;
+	private int lastRecordCount = 0;
 	private String header;
 	private String footer;
 
 	private Writer writer;
+	private File tempFile;
 	private int filePart = 0;
 	private PartitionPredicate predicate;
 
@@ -69,7 +74,8 @@ public class PartitionFileWriter extends Writer {
 	}
 
 	/**
-	 * PartitionFileWriter which uses the default partition predicate and default character set
+	 * PartitionFileWriter which uses the default partition predicate and default
+	 * character set
 	 * 
 	 * @param outputPath
 	 * @param fileName
@@ -81,7 +87,8 @@ public class PartitionFileWriter extends Writer {
 	 */
 	public PartitionFileWriter(final Path outputPath, final String fileName, final String fileSuffix,
 			final int recordLimit, final int sizeLimitMB) {
-		this(outputPath, fileName, fileSuffix, new PartitionPredicateDefault(recordLimit, sizeLimitMB),  Charset.defaultCharset());
+		this(outputPath, fileName, fileSuffix, new PartitionPredicateDefault(recordLimit, sizeLimitMB),
+				Charset.defaultCharset());
 	}
 
 	public void setHeader(String header) {
@@ -98,8 +105,9 @@ public class PartitionFileWriter extends Writer {
 			this.close();
 
 			Path filePath = getOutputFilePath();
-			LOGGER.info("Opening Writer: {}", filePath);
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath.toFile()), charset));
+			tempFile = File.createTempFile(filePath.toString(), ".tmp");
+			LOGGER.info("Opening Writer: {}", tempFile);
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile), charset));
 			if (header != null) {
 				writer.write(header);
 			}
@@ -111,12 +119,16 @@ public class PartitionFileWriter extends Writer {
 	private Path getOutputFilePath() {
 		StringBuilder stb = new StringBuilder();
 		stb.append(fileName);
-		if (predicate.hasRecordLimit() && filePart > 0) {
+		if (predicate.hasRecordLimit()) {
 			stb.append("-");
 			stb.append("part");
-			stb.append(filePart);
+			stb.append(filePart + 1);
+			stb.append("-");
+			stb.append(lastRecordCount + 1);
+			stb.append("-");
+			stb.append(lastRecordCount + predicate.getRecordCount());
 		}
-		stb.append(".");
+		stb.append("-");
 		stb.append(fileSuffix);
 		return Paths.get(outputPath.toString(), stb.toString());
 	}
@@ -127,10 +139,14 @@ public class PartitionFileWriter extends Writer {
 			if (footer != null) {
 				writer.write(footer);
 			}
-			filePart++;
-			predicate.restCounts();
 			writer.close();
 			writer = null;
+			Path finalFilePath = getOutputFilePath();
+			lastRecordCount = predicate.getRecordCount();
+			filePart++;
+			predicate.restCounts();
+			LOGGER.info("Renaming File: {} -> {}", tempFile.getName(), finalFilePath.getFileName());
+			Files.move(tempFile, finalFilePath.toFile());
 		}
 	}
 
