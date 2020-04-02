@@ -47,7 +47,7 @@ public class PatentDocFormatDetect {
 	public PatentDocFormat fromContent(BufferedReader br) throws IOException {
 		PatentDocFormat foundMimeType = PatentDocFormat.Unknown;
 		br.mark(100000);
-		LINES: for (int i = 0; br.ready() && i < 800; i++) {
+		LINES: for (int i = 0; br.ready() && i < 1500; i++) {
 			String line = br.readLine();
 			for (PatentDocFormat type : PatentDocFormat.values()) {
 				if (line.contains(type.getMatch())) {
