@@ -16,8 +16,10 @@ import gov.uspto.patent.model.DocumentId;
 public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationIdNode.class);
-	
+
 	private static final XPath PATXP = DocumentHelper.createXPath("/DOCUMENT/PATN");
+
+	private static final XPath SERIESCODEXP = DocumentHelper.createXPath("SRC");
 	private static final XPath APNUMXP = DocumentHelper.createXPath("APN");
 	private static final XPath APDATEXP = DocumentHelper.createXPath("APD");
 
@@ -36,7 +38,13 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 	@Override
 	public DocumentId read() {
 		Node parentNode = PATXP.selectSingleNode(document);
-		
+
+		Node seriesNumN = SERIESCODEXP.selectSingleNode(parentNode);
+		if (seriesNumN == null) {
+			LOGGER.warn("Invalid application series code 'SRC' field not found");
+		}
+		String seriesCode = seriesNumN.getText().trim();
+
 		Node docNumN = APNUMXP.selectSingleNode(parentNode);
 		if (docNumN == null) {
 			LOGGER.warn("Invalid application-id 'APN' field not found");
@@ -46,10 +54,10 @@ public class ApplicationIdNode extends DOMFragmentReader<DocumentId> {
 		String docId = docNumN.getText().trim();
 		if (docId.endsWith("&")) {
 			// Remove trailing '&'
-			docId = docId.substring(0, docId.length()-1);
+			docId = docId.substring(0, docId.length() - 1);
 		}
 
-		DocumentId documentId = new DocumentId(defaultCountryCode, docId);
+		DocumentId documentId = new DocumentId(defaultCountryCode, seriesCode + "/" + docId);
 		documentId.setRawText(docNumN.getText().trim());
 
 		Node dateN = APDATEXP.selectSingleNode(parentNode);

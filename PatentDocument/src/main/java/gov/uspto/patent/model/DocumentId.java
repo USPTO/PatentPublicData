@@ -32,8 +32,8 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
  * </ul>
  * <li>Fractional Patents</li>
  * <ul>
- * <li>end with [A-O] e.g. D90793½ becomes D90793H</li>
- * <li>issued ____ to 1966</li>
+ * <li>end with [A-O] e.g. D90793&frac12; becomes D90793H</li>
+ * <li>issued 1790? to 1966</li>
  * <li>purpose was to group patent families issued together</li>
  * </ul>
  * <li>Additions of Improvements</li>
@@ -100,6 +100,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 public class DocumentId implements Comparable<DocumentId> {
 	private DocumentIdType docIdType;
 	private CountryCode countryCode;
+	private String applicationYear;
 	private String docNumber;
 	private String name; // name used in citation.
 	private String kindCode; // different patent offices have different kindcodes.
@@ -111,24 +112,19 @@ public class DocumentId implements Comparable<DocumentId> {
 	/*
 	 * Parsing of Document Id into its parts, such as Citation PatentIds.
 	 */
-	private static final Pattern PARSE_PATTERN = Pattern.compile("^(\\D\\D)(\\d{1,4}[/-])?(X?\\d+)(\\D\\d?)?$");
+	private static final Pattern PARSE_PATTERN = Pattern
+			.compile("^(\\D\\D)(\\d{2,4}[/-])?((?:D|PP|RE|AI|H|T|X|RX|\\d-)?\\d+)(\\D\\d?)?$");
 
-	public DocumentId(CountryCode countryCode, String docNumber) throws IllegalArgumentException {
+	public DocumentId(CountryCode countryCode, String docNumber) {
 		this(countryCode, docNumber, null);
 	}
 
-	public DocumentId(CountryCode countryCode, String docNumber, boolean allowLeadingZeros)
-			throws IllegalArgumentException {
+	public DocumentId(CountryCode countryCode, String docNumber, boolean allowLeadingZeros) {
 		this(countryCode, docNumber, null, allowLeadingZeros);
 	}
 
 	public DocumentId(CountryCode countryCode, String docNumber, String kindCode) {
-		Preconditions.checkNotNull(countryCode, "CountryCode can not be set to Null");
-		Preconditions.checkNotNull(docNumber, "DocNumber can not be set to Null");
-
-		this.countryCode = countryCode;
-		setDocNumber(docNumber);
-		this.kindCode = kindCode;
+		this(countryCode, docNumber, kindCode, false);
 	}
 
 	public DocumentId(CountryCode countryCode, String docNumber, String kindCode, boolean allowLeadingZeros) {
@@ -169,7 +165,8 @@ public class DocumentId implements Comparable<DocumentId> {
 	 * Determine DocType
 	 *
 	 * <p>
-	 * 1) DocumentIdType.APPLICATION or DocumentIdType.PROVISIONAL then DocType.Application <br/>
+	 * 1) DocumentIdType.APPLICATION or DocumentIdType.PROVISIONAL then
+	 * DocType.Application <br/>
 	 * 2) CountryCode.US & docNumber starts with date year then DocType.Application
 	 * <br/>
 	 * 2.1) CountryCode.WO & docNumber starts with PCT/US with date year then
@@ -186,14 +183,14 @@ public class DocumentId implements Comparable<DocumentId> {
 		if (docIdType == DocumentIdType.APPLICATION || docIdType == DocumentIdType.PROVISIONAL) {
 			return DocType.Application;
 		}
-		
+
 		if (CountryCode.US.equals(countryCode)
 				|| CountryCode.WO.equals(countryCode) && docNumber.startsWith("PCT/US")) {
 
 			String docYear = getDate() != null ? String.valueOf(getDate().getYear()) : null;
 
 			// docNumber should be normalized to 4 digit year at this point.
-			if (docYear != null && (docNumber.startsWith(docYear)) || docNumber.startsWith("PCT/US" + docYear)) {
+			if (docYear != null && (applicationYear != null || docNumber.startsWith("PCT/US" + docYear))) {
 				return DocType.Application;
 			} else if (kindCode != null && kindCode.length() > 0) {
 				return DocType.Patent;
@@ -209,16 +206,53 @@ public class DocumentId implements Comparable<DocumentId> {
 
 	private void setDocNumber(String publicationId) {
 		Preconditions.checkNotNull(publicationId, "DocNumber can not be set to Null!");
-		// Remove Leading Zeros.
-		if (!allowLeadingZeros) {
-			this.docNumber = publicationId.replaceFirst("^0+(?!$)", "");
-		} else {
-			this.docNumber = publicationId;
+		this.docNumber = publicationId;
+	}
+
+	/**
+	 * Document Number
+	 * <p>
+	 * Beware: If this is an application, the application year is also needed to
+	 * make it unique.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	public String getDocNumber() {
+		return docNumber;
+	}
+
+	/**
+	 * Set Application Year and DocType to Application ; only use for Patent
+	 * Applications
+	 * 
+	 * @param yearStr
+	 * @throws InvalidDataException
+	 */
+	public void setApplicationYear(String yearStr) throws InvalidDataException {
+		this.applicationYear = yearStr;
+		setType(DocumentIdType.APPLICATION);
+		if (yearStr.length() == 4) {
+			setDate(new DocumentDate(yearStr));
 		}
 	}
 
-	public String getDocNumber() {
-		return docNumber;
+	/**
+	 * Set Application Year and DocType to Application ; only use for Patent
+	 * Applications
+	 * 
+	 * @param yearStr
+	 * @param date
+	 * @throws InvalidDataException
+	 */
+	public void setApplicationYear(String yearStr, DocumentDate date) throws InvalidDataException {
+		this.applicationYear = yearStr;
+		setType(DocumentIdType.APPLICATION);
+		setDate(date);
+	}
+
+	public String getApplicationYear() {
+		return applicationYear;
 	}
 
 	/**
@@ -229,10 +263,18 @@ public class DocumentId implements Comparable<DocumentId> {
 	public String getId() {
 		StringBuilder strb = new StringBuilder();
 
-		if (!docNumber.startsWith("PCT/")) {
-			strb.append(countryCode);
+		if (docNumber.startsWith("PCT/")) {
+			return docNumber;
 		}
-		strb.append(docNumber);
+
+		strb.append(countryCode);
+
+		if (applicationYear != null) {
+			strb.append(applicationYear);
+			strb.append(normDocNumber(docNumber));
+		} else {
+			strb.append(removeLeadingZeros(normDocNumber(docNumber)));
+		}
 
 		if (kindCode != null) {
 			strb.append(kindCode);
@@ -249,10 +291,18 @@ public class DocumentId implements Comparable<DocumentId> {
 	public String getIdNoKind() {
 		StringBuilder strb = new StringBuilder();
 
-		if (!docNumber.startsWith("PCT/")) {
-			strb.append(countryCode);
+		if (docNumber.startsWith("PCT/")) {
+			return docNumber;
 		}
-		strb.append(docNumber);
+
+		strb.append(countryCode);
+
+		if (applicationYear != null) {
+			strb.append(applicationYear);
+			strb.append(normDocNumber(docNumber));
+		} else {
+			strb.append(removeLeadingZeros(normDocNumber(docNumber)));
+		}
 
 		return strb.toString();
 	}
@@ -265,9 +315,24 @@ public class DocumentId implements Comparable<DocumentId> {
 	 * @return
 	 */
 	public String getId(int zeroPadMinLen) {
-		StringBuilder strb = new StringBuilder().append(countryCode);
+		StringBuilder strb = new StringBuilder();
 
-		strb.append(Strings.padStart(docNumber, zeroPadMinLen, '0'));
+		if (docNumber.startsWith("PCT/")) {
+			return docNumber;
+		}
+
+		strb.append(countryCode);
+
+		if (applicationYear != null) {
+			strb.append(applicationYear);
+			strb.append(normDocNumber(docNumber));
+		} else {
+			if (CountryCode.US.equals(countryCode) && docNumber.matches("\\d+")) {
+				strb.append(Strings.padStart(docNumber, zeroPadMinLen, '0'));
+			} else {
+				strb.append(normDocNumber(docNumber));
+			}
+		}
 
 		if (kindCode != null) {
 			strb.append(kindCode);
@@ -307,16 +372,6 @@ public class DocumentId implements Comparable<DocumentId> {
 		this.date = date;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == null || !(o instanceof DocumentId) || this.docNumber == null) {
-			return false;
-		} else {
-			DocumentId other = (DocumentId) o;
-			return this.countryCode.equals(other.countryCode) && this.docNumber.equals(other.docNumber);
-		}
-	}
-
 	public String toTextNoKind() {
 		return getIdNoKind();
 	}
@@ -329,6 +384,63 @@ public class DocumentId implements Comparable<DocumentId> {
 		return getId(zeroPadMinLen);
 	}
 
+	private String normDocNumber(String docNum) {
+		return docNum.replaceAll("[^A-Z0-9\\.]+", "");
+	}
+
+	private String removeLeadingZeros(String docNum) {
+		if (!allowLeadingZeros) {
+			String docNumber;
+			if (CountryCode.US.equals(countryCode)) {
+				docNumber = docNum.replaceFirst("^(D|RE|PP|AI|H|T|X|RX)0+(?!$)", "$1").replaceFirst("^0+(?!$)", "");
+			} else {
+				docNumber = docNum.replaceFirst("^0+(?!$)", "");
+			}
+			return docNumber;
+		} else {
+			return docNum;
+		}
+	}
+
+	public static DocumentId fromPCTText(final String docIdStr) throws InvalidDataException {
+		if (docIdStr.length() > 13 && docIdStr.startsWith("PCT/")) {
+			String cntryCode = docIdStr.substring(4, 6);
+			String applicationYear;
+			String applicationNumber;
+			if (docIdStr.length() == 17) {
+				// PCT/CCYYYY/999999 --> 4-digit year ; 6 digit number
+				applicationYear = docIdStr.substring(6, 10);
+				applicationNumber = docIdStr.substring(11);
+			} else {
+				// PCT/CCYY/99999 -> 2-digit year ; 5 digit number
+				applicationYear = docIdStr.substring(6, 8);
+				applicationNumber = docIdStr.substring(9);
+				
+			}
+
+			DocumentId docId;
+			if ("US".equals(cntryCode)) {
+				docId = new DocumentId(CountryCode.US, applicationNumber);
+			} else {
+				docId = new DocumentId(CountryCode.WO, docIdStr);
+			}
+
+			docId.setRawText(docIdStr);
+			if (applicationYear.length() == 4) {
+				docId.setApplicationYear(applicationYear);
+			} else {
+				try {
+					DocumentDate date = new DocumentDate("19" + applicationYear);
+					docId.setApplicationYear(applicationYear, date);
+				} catch (InvalidDataException e) {
+					docId.setApplicationYear(applicationYear);
+				}
+			}
+			return docId;
+		}
+		return null;
+	}
+	
 	/**
 	 * Parse Patent DocumentId into its parts.
 	 * 
@@ -346,6 +458,15 @@ public class DocumentId implements Comparable<DocumentId> {
 	 */
 	public static DocumentId fromText(final String documentIdStr, int year) throws InvalidDataException {
 		String docIdStr = documentIdStr.replaceAll(" ", "");
+
+		if (docIdStr.length() > 13 && docIdStr.startsWith("PCT/")) {
+			return DocumentId.fromPCTText(documentIdStr);
+		}
+
+		if (docIdStr.length() < 4) {
+			throw new InvalidDataException("Failed to parse DocumentId text [too small]: '" + documentIdStr + "'");
+		}
+
 		Matcher matcher = PARSE_PATTERN.matcher(docIdStr);
 		if (matcher.matches()) {
 			String country = matcher.group(1);
@@ -362,9 +483,8 @@ public class DocumentId implements Comparable<DocumentId> {
 			String kindCode = matcher.group(4);
 
 			DocumentId docId = new DocumentId(cntyCode, id, kindCode);
-			if (applicationYear != null && applicationYear.length() == 4) {
-				docId.setType(DocumentIdType.APPLICATION);
-				docId.setDate(new DocumentDate(applicationYear.replace("/", "")));
+			if (applicationYear != null && applicationYear.length() == 5) {
+				docId.setApplicationYear(applicationYear.replace("/", ""));
 			}
 			docId.setRawText(documentIdStr);
 			return docId;
@@ -398,15 +518,32 @@ public class DocumentId implements Comparable<DocumentId> {
 	}
 
 	@Override
+	public final int hashCode() {
+		if (docNumber != null && countryCode != null) {
+			return getIdNoKind().hashCode();
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof DocumentId) || this.docNumber == null) {
+			return false;
+		} else {
+			DocumentId other = (DocumentId) o;
+			return getIdNoKind().equals(other.getIdNoKind());
+		}
+	}
+
+	@Override
 	public int compareTo(DocumentId o) {
 		if (getDate() == null || o.getDate() == null || getDate().getDate() == null || o.getDate().getDate() == null) {
 			return 1;
 		}
 
-		return new CompareToBuilder()
-				.append(getDate().getDate(), o.getDate().getDate())
-				.append(getDocNumber(), o.getDocNumber())
-				.build();
+		return new CompareToBuilder().append(getDate().getDate(), o.getDate().getDate())
+				.append(getIdNoKind(), o.getIdNoKind()).build();
 	}
 
 	@Override
