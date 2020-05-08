@@ -88,9 +88,6 @@ public class DocumentIdNode extends DOMFragmentReader<DocumentId> {
 
 		String docId = docNumN.getText();
 
-		// Remove Leading Zeros; USD0466643S1 -> USD466643S1
-		docId = docId.replaceFirst("^D0+", "D").replaceFirst("^0+", "");
-
 		DocumentId documentId = new DocumentId(countryCode, docId, kindCode);
 		documentId.setRawText(docNumN.getText());
 		if (docDate != null) {
