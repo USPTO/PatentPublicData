@@ -358,7 +358,7 @@ public class OrgSynonymGenerator {
 	protected void chineseCompanyNames(NameOrg name){
 		for(String nameStr: name.getSynonyms()) {
 			int beginIdx = nameStr.indexOf('(');
-			if (beginIdx != -1) {
+			if (beginIdx > 0) { // Only process further if location is not at beginning of text, otherwise we can't extract the company name
 				int endIdx = nameStr.indexOf(')');
 				if (endIdx != -1) {
 					String bracketWord = nameStr.substring(beginIdx+1, endIdx);
