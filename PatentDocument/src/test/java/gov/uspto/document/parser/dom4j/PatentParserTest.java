@@ -53,7 +53,7 @@ public class PatentParserTest {
 
     @Test
     public void parsePatentGreenbook() throws PatentReaderException, IOException {
-        String xmlString = "PATN\nWKU  039305848\n";
+        String xmlString = "HHHHHT        APS1        ISSUE - 960220\nPATN\nWKU  D03671518\nSRC  D\nAPN  0317454\nAPT  4\nART  291\nAPD  19941205\nTTL  Pasta\nISD  19960220\nNCL  1\nECL  1\nEXA  Burgess; Pamela\nEXP  Word; A. Hugo\nNDR  1\nNFG  3\nTRM  14\nINVT\nNAM  Bonucci; Roberto\nCTY  Perugia\nCNT  ITX\nASSG\nNAM  F.LLi De Cecco di Fillippo Fara S. Martino S.p.A.\nCTY  Fara S. Martino\nCNT  ITX\nCOD  03\nPRIR\nCNT  ITX\nAPD  19940609\nAPN  MI9400306\nCLAS\nOCL  D 1106\nXCL  D11 81\nFSC  D 1\nFSS  106;126;127\nFSC  D11\nFSS  44;47;81;97;99\nFSC  D21\nFSS  212\nFSC  426\nFSS  104\nUREF\nPNO  D245239\nISD  19770800\nNAM  Miller\nXCL  D11 87\nUREF\nPNO  D250134\nISD  19781000\nNAM  Baunmgartner\nOCL  D21212\nUREF\nPNO  D324753\nISD  19920300\nNAM  Meyers, Jr. et al.\nOCL  D 1106\nLREP\nFRM  Merchant, Gould, Smite, Edell, Welter & Schmidt\nDRWD\nPAL  FIG. 1 is a top plan view, in an enlarged scale, of the pasta of the\n      present invention, the bottom plan view being a mirror image thereof;\nPAL  FIG. 2 is a longitudinal cross-sectional view thereof, taken along line\n      2--2 in FIG. 1; and,\nPAL  FIG. 3 is a top plan view thereof, at a greatly reduced scale.\nDCLM\nPAL  The ornamental design for pasta, as shown and described.\n";
 
         PatentReader patentReader = new PatentReader(PatentDocFormat.Greenbook);
         try (StringReader rawText = new StringReader(xmlString)) {

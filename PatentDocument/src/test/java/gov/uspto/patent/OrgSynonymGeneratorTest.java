@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import gov.uspto.patent.model.CountryCode;
@@ -233,6 +234,20 @@ public class OrgSynonymGeneratorTest {
 		}		
 	}
 	
+	@Test 
+	public void ChineseCompanyNamesShouldNotCrashOnStartingWithParentheses() {				
+		OrgSynonymGenerator generator = new OrgSynonymGenerator();
+
+		String nameText = "(SHENZHEN) COMPANY, LIMITED";
+		NameOrg name = new NameOrg(nameText);
+		name.addSynonymNorm(nameText);
+		try {
+			generator.chineseCompanyNames(name);
+		} catch(StringIndexOutOfBoundsException e) {
+			Assert.fail("chineseCompanyNames threw StringIndexOutOfBoundsException: " + e.getMessage());
+		}
+	}
+
 	private List<String> missingSynonyms(NameOrg name, List<String> expect) {
 		List<String> missing = new ArrayList<String>();
 		for(String expectItem: expect) {
