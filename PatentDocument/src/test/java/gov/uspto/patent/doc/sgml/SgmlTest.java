@@ -73,7 +73,7 @@ public class SgmlTest {
 		assertEquals("Continuations not extracted", 2, continuationDocNumbers.size());
 		assertTrue(
 				"Continuation child missing from " + continuationDocNumbers,
-				continuationDocNumbers.contains("9413215"));
+				continuationDocNumbers.contains("09413215"));
 		assertTrue(
 				"Continuation parent missing from " + continuationDocNumbers,
 				continuationDocNumbers.contains("PCTNO9800107"));
