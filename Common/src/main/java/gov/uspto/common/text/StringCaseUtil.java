@@ -127,6 +127,7 @@ public class StringCaseUtil {
 			/*
 			 * Block Quoted or Bracketed; maintain original lettercase.
 			 */
+			if(words[i].length() == 0) continue;
 			char firstChar = words[i].charAt(0);
 			char lastChar = words[i].charAt(words[i].length()-1);
 			if (('\u2018' == firstChar && '\u2019' == lastChar) || '(' == firstChar && ')' == lastChar || (')' == lastChar && !inBlock)) {
