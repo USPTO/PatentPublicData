@@ -18,7 +18,7 @@ import gov.uspto.patent.model.Patent;
 public class ReadBulkPatentZip {
 
     public static void main(String... args) throws IOException, PatentReaderException {
-
+        
         File inputFile = new File(args[0]);
         int skip = 100;
         int limit = 1;

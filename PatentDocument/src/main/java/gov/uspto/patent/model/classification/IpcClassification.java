@@ -315,7 +315,7 @@ public class IpcClassification extends PatentClassification {
 			String section = matchL4.group(1);
 			String mainClass = matchL4.group(2);
 			String subClass = matchL4.group(3);
-			System.out.println("4" + classificationStr + classificationStr.length());
+			//System.out.println("4" + classificationStr + classificationStr.length());
 
 			setSection(section);
 			setMainClass(mainClass);
