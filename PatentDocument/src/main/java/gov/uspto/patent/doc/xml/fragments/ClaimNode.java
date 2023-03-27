@@ -38,15 +38,23 @@ public class ClaimNode extends DOMFragmentReader<List<Claim>> {
 		List<Node> claimNodes = CLAIMSXP.selectNodes(document);
 		for (Node claimN : claimNodes) {
 			Claim claim = readClaim(claimN);
-			claims.add(claim);
+			if(claim != null) {
+				claims.add(claim);
+			}
 		}
 
 		return claims;
 	}
 
-	public Claim readClaim(Node claimNode) {
-
-		String id = CLAIMIDXP.selectSingleNode(claimNode).getText();
+	public Claim readClaim(Node claimNode) {	
+		if(claimNode == null) {
+			return null;
+		}
+		claimNode = CLAIMIDXP.selectSingleNode(claimNode);
+		if(claimNode == null) {
+			return null;
+		}
+		String id = claimNode.getText();
 		
 		// Node claimTypeN = claimNode.selectSingleNode("@claim-type");
 		// String claimType = claimTypeN != null ? claimTypeN.getText() : null;
